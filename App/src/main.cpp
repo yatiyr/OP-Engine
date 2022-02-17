@@ -1,18 +1,22 @@
 #include <iostream>
-#include <OpiumEngine/engine.h>
-#include <glm/glm.hpp>
-#include <OpiumEngine/serviceLocator.h>
+#include <Opium.h>
 
-int main(int argc, char** argv)
+
+class OpiumApp : public Opium::Application
 {
-    std::cout << "Hello From App" << std::endl;
-    OpiumEngine::Init();
-
-
-    ServiceLocator::GetWindow()->OpenWindow();
-
-    while(!ServiceLocator::GetWindow()->Update())
+public:
+    OpiumApp()
     {
 
     }
+
+    ~OpiumApp()
+    {
+
+    }
+};
+
+Opium::Application* Opium::CreateApplication()
+{
+    return new OpiumApp;
 }
