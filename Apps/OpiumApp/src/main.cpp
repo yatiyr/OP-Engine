@@ -1,7 +1,6 @@
 #include <iostream>
 #include <Opium.h>
 
-
 class OpiumApp : public Opium::Application
 {
 public:

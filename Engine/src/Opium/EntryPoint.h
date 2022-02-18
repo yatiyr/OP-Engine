@@ -8,6 +8,10 @@
 
 	int main(int argc, char** argv)
 	{
+		Opium::Logging::Init();
+		OP_ENGINE_WARN("Initialized log for engine");
+		OP_APP_INFO("Initialized app log!");
+
 		auto app = Opium::CreateApplication();
 		app->Run();
 		delete app;
@@ -19,6 +23,8 @@
 
 	int main(int argc, char** argv)
 	{
+		Opium::Logging::Init();
+
 		auto app = Opium::CreateApplication();
 		app->Run();
 		delete app;

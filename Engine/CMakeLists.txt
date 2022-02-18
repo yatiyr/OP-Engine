@@ -5,12 +5,13 @@ project(Opium_Engine VERSION 0.0.1 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/App)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/App)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/Apps/OpiumApp)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/Apps/OpiumApp)
 
 # add external libraries
 add_subdirectory(external/glm)
 add_subdirectory(external/glfw)
+add_subdirectory(external/spdlog)
 
 file(GLOB SOURCES "src/*.cpp", "src/*/*.cpp", "src/*/*/*.cpp", "src/*/*/*/*.cpp")
 
@@ -19,7 +20,7 @@ add_library(${PROJECT_NAME} SHARED  ${SOURCES})
 target_include_directories(${PROJECT_NAME}
     PUBLIC
         $<INSTALL_INTERFACE:include>
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
         glm
     PRIVATE
         glfw
@@ -28,13 +29,16 @@ target_include_directories(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME}
     PUBLIC
         glm
+        spdlog::spdlog_header_only
     PRIVATE
         glfw
 )
 
 # Compiler specific flags
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-    target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra) 
+    target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra)
+    # Set Definition for OP_BUILD_DLL to correctly determine importing/exporting
+    target_compile_definitions(${PROJECT_NAME} PRIVATE OP_BUILD_DLL)
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     target_compile_options(${PROJECT_NAME} PRIVATE /EHsc /MTd /W2 /c)
     # Set Definition for OP_BUILD_DLL to correctly determine importing/exporting
