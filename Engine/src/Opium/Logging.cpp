@@ -1,5 +1,5 @@
+#include <Config/Precomp.h>
 #include <Opium/Logging.h>
-#include <iostream>
 
 namespace Opium
 {

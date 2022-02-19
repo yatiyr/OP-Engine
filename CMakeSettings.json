@@ -9,7 +9,14 @@
             "installRoot": "${projectDir}\\out\\install\\${name}",
             "cmakeCommandArgs": "",
             "buildCommandArgs": "",
-            "ctestCommandArgs": ""
+            "ctestCommandArgs": "",
+            "variables": [
+                {
+                    "name": "GLFW_BUILD_DOCS",
+                    "value": "False",
+                    "type": "BOOL"
+                }
+            ]
         },
         {
             "name": "x64-Release",

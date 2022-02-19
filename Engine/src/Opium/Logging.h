@@ -1,7 +1,6 @@
 #pragma once
 
 #include <Opium/Core.h>
-#include <memory>
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include <spdlog/fmt/ostr.h>
@@ -19,6 +18,20 @@
 #define OP_APP_WARN(...) ::Opium::Logging::GetAppLogger()->warn(__VA_ARGS__);
 #define OP_APP_INFO(...) ::Opium::Logging::GetAppLogger()->info(__VA_ARGS__);
 #define OP_APP_TRACE(...) ::Opium::Logging::GetAppLogger()->trace(__VA_ARGS__);
+
+// Log macros for assertions
+#ifdef OP_ENABLE_ASSERTS
+	#ifdef OP_PLATFORM_WINDOWS
+		#define OP_APP_ASSERT(x, ...) { if(!(x)) { OP_APP_ERROR("Failed assertion: {0}", __VA_ARGS__); __debugbreak(); } }
+		#define OP_ENGINE_ASSERT(x, ...) { if(!(x)) {OP_ENGINE_ERROR("Failed assertion: {0}", __VA_ARGS__); __debugbreak(); } }
+	#elif defined __GNUC__
+		#define OP_APP_ASSERT(x, ...) { if(!(x)) { OP_APP_ERROR("Failed assertion: {0}", __VA_ARGS__); std::raise(SIGINT); } }
+		#define OP_ENGINE_ASSERT(x, ...) { if(!(x)) {OP_ENGINE_ERROR("Failed assertion: {0}", __VA_ARGS__); std::raise(SIGINT); } }		
+	#endif
+#else
+	#define OP_APP_ASSERT(x, ...)
+	#define OP_ENGINE_ASSERT(x, ...)
+#endif
 
 namespace Opium
 {

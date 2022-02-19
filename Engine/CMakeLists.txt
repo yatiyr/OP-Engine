@@ -13,6 +13,9 @@ add_subdirectory(external/glm)
 add_subdirectory(external/glfw)
 add_subdirectory(external/spdlog)
 
+# find opengl
+find_package(OpenGL REQUIRED)
+
 file(GLOB SOURCES "src/*.cpp", "src/*/*.cpp", "src/*/*/*.cpp", "src/*/*/*/*.cpp")
 
 add_library(${PROJECT_NAME} SHARED  ${SOURCES})
@@ -23,7 +26,12 @@ target_include_directories(${PROJECT_NAME}
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
         glm
     PRIVATE
+        ${OPENGL_INCLUDE_DIRS}
         glfw
+)
+
+target_precompile_headers(${PROJECT_NAME}
+    PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/Config/Precomp.h
 )
 
 target_link_libraries(${PROJECT_NAME}
@@ -32,6 +40,7 @@ target_link_libraries(${PROJECT_NAME}
         spdlog::spdlog_header_only
     PRIVATE
         glfw
+        ${OPENGL_LIBRARIES}
 )
 
 # Compiler specific flags
@@ -40,7 +49,7 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     # Set Definition for OP_BUILD_DLL to correctly determine importing/exporting
     target_compile_definitions(${PROJECT_NAME} PRIVATE OP_BUILD_DLL)
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-    target_compile_options(${PROJECT_NAME} PRIVATE /EHsc /MTd /W2 /c)
+    #target_compile_options(${PROJECT_NAME}) # /MTd /W3 /EHsc /c
     # Set Definition for OP_BUILD_DLL to correctly determine importing/exporting
     target_compile_definitions(${PROJECT_NAME} PRIVATE OP_BUILD_DLL)
 endif()

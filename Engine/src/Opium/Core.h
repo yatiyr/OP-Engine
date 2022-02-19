@@ -34,4 +34,5 @@
 	#endif
 #endif
 
+// This is for event categories
 #define BITFIELD(x) (1 << x)

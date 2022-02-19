@@ -1,8 +1,6 @@
 #pragma once
 
 #include <Opium/Core.h>
-#include <functional>
-#include <string>
 
 namespace Opium
 {
@@ -75,9 +73,9 @@ namespace Opium
 		template<typename T>
 		bool Dispatch(EventFn<T> func)
 		{
-			if (m_event.GetEventType() == T::GetStaticType())
+			if (m_Event.GetEventType() == T::GetStaticType())
 			{
-				m_event.m_Handled = func(*(T*)&m_event);
+				m_Event.m_Handled = func(*(T*)&m_Event);
 				return true;
 			}
 			return false;

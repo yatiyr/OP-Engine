@@ -2,8 +2,6 @@
 
 #include <EventSystem/Event.h>
 
-#include <sstream>
-
 namespace Opium
 {
 	class OPIUM_API MouseMovedEvent : public Event

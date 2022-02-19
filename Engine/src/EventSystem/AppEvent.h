@@ -1,8 +1,6 @@
 #pragma once
 
 #include <EventSystem/Event.h>
-#include <sstream>
-
 
 namespace Opium
 {
