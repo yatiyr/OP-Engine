@@ -12,6 +12,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/Apps/OpiumApp)
 add_subdirectory(external/glm)
 add_subdirectory(external/glfw)
 add_subdirectory(external/spdlog)
+add_subdirectory(external/glad)
 
 # find opengl
 find_package(OpenGL REQUIRED)
@@ -28,6 +29,7 @@ target_include_directories(${PROJECT_NAME}
     PRIVATE
         ${OPENGL_INCLUDE_DIRS}
         glfw
+        glad
 )
 
 target_precompile_headers(${PROJECT_NAME}
@@ -39,6 +41,7 @@ target_link_libraries(${PROJECT_NAME}
         glm
         spdlog::spdlog_header_only
     PRIVATE
+        glad
         glfw
         ${OPENGL_LIBRARIES}
 )
@@ -49,7 +52,7 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     # Set Definition for OP_BUILD_DLL to correctly determine importing/exporting
     target_compile_definitions(${PROJECT_NAME} PRIVATE OP_BUILD_DLL)
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-    #target_compile_options(${PROJECT_NAME}) # /MTd /W3 /EHsc /c
+    target_compile_options(${PROJECT_NAME} PRIVATE /MDd) # /MTd /W3 /EHsc /c
     # Set Definition for OP_BUILD_DLL to correctly determine importing/exporting
-    target_compile_definitions(${PROJECT_NAME} PRIVATE OP_BUILD_DLL)
+    target_compile_definitions(${PROJECT_NAME} PRIVATE OP_BUILD_DLL OP_ENABLE_ASSERTS GLFW_INCLUDE_NONE)
 endif()
