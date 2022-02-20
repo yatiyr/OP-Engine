@@ -13,6 +13,7 @@ add_subdirectory(external/glm)
 add_subdirectory(external/glfw)
 add_subdirectory(external/spdlog)
 add_subdirectory(external/glad)
+add_subdirectory(external/imgui)
 
 # find opengl
 find_package(OpenGL REQUIRED)
@@ -26,6 +27,7 @@ target_include_directories(${PROJECT_NAME}
         $<INSTALL_INTERFACE:include>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
         glm
+        imgui
     PRIVATE
         ${OPENGL_INCLUDE_DIRS}
         glfw
@@ -40,6 +42,7 @@ target_link_libraries(${PROJECT_NAME}
     PUBLIC
         glm
         spdlog::spdlog_header_only
+        imgui
     PRIVATE
         glad
         glfw

@@ -22,6 +22,7 @@ public:
     OpiumApp()
     {
         PushLayer(new ExampleLayer());
+        PushOverlay(new Opium::ImGuiLayer());
     }
 
     ~OpiumApp()

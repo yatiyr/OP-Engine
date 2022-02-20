@@ -7,6 +7,8 @@
 #include <Opium/Logging.h>
 #include <Opium/Layer.h>
 
+#include <Gui/ImGuiLayer.h>
+
 // -------------------- ENTRY POINT ----------------------- //
 #include <Opium/EntryPoint.h>
 // -------------------------------------------------------- //
