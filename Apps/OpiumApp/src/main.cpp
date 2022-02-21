@@ -1,5 +1,5 @@
 #include <Opium.h>
-#include <imgui.h>
+#include <imgui/imgui.h>
 
 class ExampleLayer : public Opium::Layer
 {

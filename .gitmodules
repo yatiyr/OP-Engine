@@ -10,3 +10,15 @@
 [submodule "Engine/external/imgui"]
 	path = Engine/external/imgui
 	url = https://github.com/ocornut/imgui
+[submodule "Opium/external/imgui"]
+	path = Opium/external/imgui
+	url = https://github.com/yatiyr/imgui
+[submodule "Opium/external/glfw"]
+	path = Opium/external/glfw
+	url = https://github.com/yatiyr/glfw
+[submodule "Opium/external/spdlog"]
+	path = Opium/external/spdlog
+	url = https://github.com/gabime/spdlog
+[submodule "Opium/external/glm"]
+	path = Opium/external/glm
+	url = https://github.com/g-truc/glm

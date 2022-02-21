@@ -1,3 +1,6 @@
 build
 out
 .vs
+bin
+bin-int
+.vscode

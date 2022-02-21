@@ -1,24 +1,36 @@
-set(PROJECT_NAME OpiumApp)
+set(PROJECT_NAME Glad)
 
 ################################################################################
 # Source groups
 ################################################################################
-set(Sources
-    "src/main.cpp"
+set(include__KHR
+    "include/KHR/khrplatform.h"
 )
-source_group("Sources" FILES ${Sources})
+source_group("include\\KHR" FILES ${include__KHR})
+
+set(include__glad
+    "include/glad/glad.h"
+)
+source_group("include\\glad" FILES ${include__glad})
+
+set(src
+    "src/glad.c"
+)
+source_group("src" FILES ${src})
 
 set(ALL_FILES
-    ${Sources}
+    ${include__KHR}
+    ${include__glad}
+    ${src}
 )
 
 ################################################################################
 # Target
 ################################################################################
-add_executable(${PROJECT_NAME} ${ALL_FILES})
+add_library(${PROJECT_NAME} STATIC ${ALL_FILES})
 
 use_props(${PROJECT_NAME} "${CMAKE_CONFIGURATION_TYPES}" "${DEFAULT_CXX_PROPS}")
-set(ROOT_NAMESPACE OpiumApp)
+set(ROOT_NAMESPACE Glad)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
     VS_GLOBAL_KEYWORD "Win32Proj"
@@ -27,17 +39,17 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 # Target name
 ################################################################################
 set_target_properties(${PROJECT_NAME} PROPERTIES
-    TARGET_NAME_DEBUG   "OpiumApp"
-    TARGET_NAME_DIST    "OpiumApp"
-    TARGET_NAME_RELEASE "OpiumApp"
+    TARGET_NAME_DEBUG   "Glad"
+    TARGET_NAME_DIST    "Glad"
+    TARGET_NAME_RELEASE "Glad"
 )
 ################################################################################
 # Output directory
 ################################################################################
 set_target_properties(${PROJECT_NAME} PROPERTIES
-    OUTPUT_DIRECTORY_DEBUG   "${CMAKE_CURRENT_SOURCE_DIR}/../../bin/Debug-windows-x86_64/OpiumApp/"
-    OUTPUT_DIRECTORY_DIST    "${CMAKE_CURRENT_SOURCE_DIR}/../../bin/Dist-windows-x86_64/OpiumApp/"
-    OUTPUT_DIRECTORY_RELEASE "${CMAKE_CURRENT_SOURCE_DIR}/../../bin/Release-windows-x86_64/OpiumApp/"
+    OUTPUT_DIRECTORY_DEBUG   "${CMAKE_CURRENT_SOURCE_DIR}/bin/Debug-windows-x86_64/Glad/"
+    OUTPUT_DIRECTORY_DIST    "${CMAKE_CURRENT_SOURCE_DIR}/bin/Dist-windows-x86_64/Glad/"
+    OUTPUT_DIRECTORY_RELEASE "${CMAKE_CURRENT_SOURCE_DIR}/bin/Release-windows-x86_64/Glad/"
 )
 ################################################################################
 # MSVC runtime library
@@ -61,27 +73,13 @@ set_target_properties(${PROJECT_NAME} PROPERTIES MSVC_RUNTIME_LIBRARY ${MSVC_RUN
 # Include directories
 ################################################################################
 target_include_directories(${PROJECT_NAME} PUBLIC
-    "${CMAKE_CURRENT_SOURCE_DIR}/../../Opium/external/spdlog/include;"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../../Opium/src;"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../../Opium/src/Config;"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../../Opium/external;"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../../Opium/external/glm"
+    "${CMAKE_CURRENT_SOURCE_DIR}/include"
 )
 
 ################################################################################
 # Compile definitions
 ################################################################################
 target_compile_definitions(${PROJECT_NAME} PRIVATE
-    "$<$<CONFIG:Debug>:"
-        "OP_DEBUG"
-    ">"
-    "$<$<CONFIG:Dist>:"
-        "OP_DIST"
-    ">"
-    "$<$<CONFIG:Release>:"
-        "OP_RELEASE"
-    ">"
-    "OP_PLATFORM_WINDOWS;"
     "UNICODE;"
     "_UNICODE"
 )
@@ -96,11 +94,7 @@ if(MSVC)
             /ZI
         >
         $<$<CONFIG:Dist>:
-            /Gm-;
-            /Ox;
-            /Oi;
-            /GF;
-            /Gy;
+            /Od;
             ${DEFAULT_CXX_DEBUG_INFORMATION_FORMAT}
         >
         $<$<CONFIG:Release>:
@@ -111,37 +105,16 @@ if(MSVC)
             /Gy;
             ${DEFAULT_CXX_DEBUG_INFORMATION_FORMAT}
         >
-        /std:c++17;
         /W3;
         ${DEFAULT_CXX_EXCEPTION_HANDLING};
         /Y-
     )
     target_link_options(${PROJECT_NAME} PRIVATE
-        $<$<CONFIG:Debug>:
-            /DEBUG;
-            /INCREMENTAL
-        >
-        $<$<CONFIG:Dist>:
-            /DEBUG:FULL;
-            /OPT:REF;
-            /OPT:ICF;
-            /INCREMENTAL:NO
-        >
         $<$<CONFIG:Release>:
-            /DEBUG:FULL;
             /OPT:REF;
-            /OPT:ICF;
-            /INCREMENTAL:NO
+            /OPT:ICF
         >
-        /SUBSYSTEM:CONSOLE
+        /SUBSYSTEM:WINDOWS
     )
 endif()
-
-################################################################################
-# Dependencies
-################################################################################
-# Link with other targets.
-target_link_libraries(${PROJECT_NAME} PRIVATE
-    Opium
-)
 
