@@ -20,7 +20,8 @@ find_package(OpenGL REQUIRED)
 
 file(GLOB SOURCES "src/*.cpp", "src/*/*.cpp", "src/*/*/*.cpp", "src/*/*/*/*.cpp")
 
-add_library(${PROJECT_NAME} SHARED  ${SOURCES})
+# Build as static for imgui, it might change later
+add_library(${PROJECT_NAME} STATIC  ${SOURCES})
 
 target_include_directories(${PROJECT_NAME}
     PUBLIC

@@ -1,11 +1,15 @@
 #pragma once
 
+#include <Window/Window.h>
 #include <Opium/Core.h>
 #include <Opium/Logging.h>
-#include <EventSystem/AppEvent.h>
-#include <Window/Window.h>
-
 #include <Opium/LayerStack.h>
+#include <EventSystem/Event.h>
+#include <EventSystem/AppEvent.h>
+
+
+#include <Gui/ImGuiLayer.h>
+
 
 namespace Opium
 {
@@ -27,6 +31,7 @@ namespace Opium
 	private:
 		bool OnWindowClose(WindowCloseEvent& e);
 		std::unique_ptr<Window> m_Window;
+		ImGuiLayer* m_ImGuiLayer;
 		bool is_running = true;
 
 		LayerStack m_LayerStack;

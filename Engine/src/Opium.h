@@ -7,6 +7,10 @@
 #include <Opium/Logging.h>
 #include <Opium/Layer.h>
 
+#include <Input/Input.h>
+#include <Input/KeyCodes.h>
+#include <Input/MouseButtonCodes.h>
+
 #include <Gui/ImGuiLayer.h>
 
 // -------------------- ENTRY POINT ----------------------- //

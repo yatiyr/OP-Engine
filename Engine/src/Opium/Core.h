@@ -36,3 +36,5 @@
 
 // This is for event categories
 #define BITFIELD(x) (1 << x)
+
+#define OP_BIND_EVENT_FUNCTION(x) std::bind(&x, this, std::placeholders::_1)

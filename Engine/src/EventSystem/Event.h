@@ -7,20 +7,21 @@ namespace Opium
 	enum class EventType
 	{
 		None = 0,
-		// --- WINDOW EVENTS ---
+		// ----- WINDOW EVENTS -----
 		WindowClose,
 		WindowResize,
 		WindowFocus,
 		WindowLostFocus,
 		WindowMoved,
-		// ---- APP EVENTS -----
+		// ------ APP EVENTS ------
 		AppTick,
 		AppUpdate,
 		AppRender,
-		// ---- KEY EVENTS -----
+		// ------ KEY EVENTS ------
 		KeyPressed,
 		KeyReleased,
-		// --- MOUSE EVENTS ----
+		KeyTyped,
+		// ----- MOUSE EVENTS -----
 		MouseButtonPressed,
 		MouseButtonReleased,
 		MouseMoved,
