@@ -10,24 +10,34 @@
 // application or opium engine, we define OPIUM_API being
 // import or export
 #ifdef OP_PLATFORM_WINDOWS
-	#ifdef OP_BUILD_DLL
-		#ifdef __GNUC__
-			#define OPIUM_API __attribute__ ((dllexport))
+	#if OP_DYNAMIC_LINK
+		#ifdef OP_BUILD_DLL
+			#ifdef __GNUC__
+				#define OPIUM_API __attribute__ ((dllexport))
+			#else
+				#define OPIUM_API __declspec(dllexport)
+			#endif
 		#else
-			#define OPIUM_API __declspec(dllexport)
+			#ifdef __GNUC__
+				#define OPIUM_API __attribute__ ((dllimport))
+			#else
+				#define OPIUM_API __declspec(dllimport)
+			#endif
 		#endif
+		#define NOT_EXPORTED
 	#else
-		#ifdef __GNUC__
-			#define OPIUM_API __attribute__ ((dllimport))
-		#else
-			#define OPIUM_API __declspec(dllimport)
-		#endif
+		#define OPIUM_API
+		#define NOT_EXPORTED
 	#endif
-	#define NOT_EXPORTED
 #else
-	#if __GNUC__ >= 4
-		#define OPIUM_API __attribute__ ((visibility ("default")))
-		#define NOT_EXPORTED __attribute__ ((visibility ("hidden")))
+	#if OP_DYNAMIC_LINK
+		#if __GNUC__ >= 4
+			#define OPIUM_API __attribute__ ((visibility ("default")))
+			#define NOT_EXPORTED __attribute__ ((visibility ("hidden")))
+		#else
+			#define OPIUM_API
+			#define NOT_EXPORTED
+		#endif
 	#else
 		#define OPIUM_API
 		#define NOT_EXPORTED

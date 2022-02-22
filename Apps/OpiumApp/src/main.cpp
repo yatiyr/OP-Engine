@@ -10,7 +10,7 @@ public:
     {
         //OP_APP_INFO("ExampleLayer::Update");
 
-        if (Opium::Input::IsKeyPressed(OP_KEY_E))
+        if (Opium::Input::IsKeyPressed(OP_KEY_E)) 
             OP_APP_INFO("E key is pressed (poll)!")
 
     }

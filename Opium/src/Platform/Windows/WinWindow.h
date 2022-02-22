@@ -1,8 +1,9 @@
 #pragma once
 
 #include <Window/Window.h>
-
+#include <Renderer/GraphicsContext.h>
 #include <GLFW/glfw3.h>
+
 
 namespace Opium
 {
@@ -28,6 +29,7 @@ namespace Opium
 		virtual void Shutdown();
 
 		GLFWwindow* m_Window;
+		GraphicsContext* m_Context;
 
 		struct WinData
 		{

@@ -571,8 +571,11 @@
     <ClInclude Include="src\Opium\Layer.h" />
     <ClInclude Include="src\Opium\LayerStack.h" />
     <ClInclude Include="src\Opium\Logging.h" />
+    <ClInclude Include="src\Platform\OpenGL\OpenGLContext.h" />
     <ClInclude Include="src\Platform\Windows\WinInput.h" />
     <ClInclude Include="src\Platform\Windows\WinWindow.h" />
+    <ClInclude Include="src\Renderer\GraphicsContext.h" />
+    <ClInclude Include="src\Renderer\Shader.h" />
     <ClInclude Include="src\Window\Window.h" />
   </ItemGroup>
   <ItemGroup>
@@ -585,8 +588,10 @@
     <ClCompile Include="src\Opium\Layer.cpp" />
     <ClCompile Include="src\Opium\LayerStack.cpp" />
     <ClCompile Include="src\Opium\Logging.cpp" />
+    <ClCompile Include="src\Platform\OpenGL\OpenGLContext.cpp" />
     <ClCompile Include="src\Platform\Windows\WinInput.cpp" />
     <ClCompile Include="src\Platform\Windows\WinWindow.cpp" />
+    <ClCompile Include="src\Renderer\Shader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="external\GLFW\GLFW.vcxproj">
