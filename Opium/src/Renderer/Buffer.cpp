@@ -10,8 +10,8 @@ namespace Opium
 	{
 		switch (Renderer::GetAPI())
 		{
-			case RendererAPI::None:   OP_ENGINE_ASSERT(false, "RendererAPI::None is not supported!"); return nullptr;
-			case RendererAPI::OpenGL: return new OpenGLVertexBuffer(vertices, size);
+			case RendererAPI::API::None:   OP_ENGINE_ASSERT(false, "RendererAPI::None is not supported!"); return nullptr;
+			case RendererAPI::API::OpenGL: return new OpenGLVertexBuffer(vertices, size);
 		}
 
 		OP_ENGINE_ASSERT(false, "Unknown RendererAPI!");
@@ -22,8 +22,8 @@ namespace Opium
 	{
 		switch (Renderer::GetAPI())
 		{
-			case RendererAPI::None:   OP_ENGINE_ASSERT(false, "RendererAPI::None is not supported!"); return nullptr;
-			case RendererAPI::OpenGL: return new OpenGLIndexBuffer(indices, size);
+			case RendererAPI::API::None:   OP_ENGINE_ASSERT(false, "RendererAPI::None is not supported!"); return nullptr;
+			case RendererAPI::API::OpenGL: return new OpenGLIndexBuffer(indices, size);
 		}
 
 		OP_ENGINE_ASSERT(false, "Unknown RendererAPI!");

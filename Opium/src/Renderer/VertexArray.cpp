@@ -10,8 +10,8 @@ namespace Opium
 	{
 		switch (Renderer::GetAPI())
 		{
-			case RendererAPI::None:   OP_ENGINE_ASSERT(false, "RendererAPI::None is not supported!"); return nullptr;
-			case RendererAPI::OpenGL: return new OpenGLVertexArray();
+			case RendererAPI::API::None:   OP_ENGINE_ASSERT(false, "RendererAPI::None is not supported!"); return nullptr;
+			case RendererAPI::API::OpenGL: return new OpenGLVertexArray();
 		}
 
 		OP_ENGINE_ASSERT(false, "Unknown RendererAPI!");
