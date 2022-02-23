@@ -7,13 +7,8 @@
 #include <EventSystem/Event.h>
 #include <EventSystem/AppEvent.h>
 
-
 #include <Gui/ImGuiLayer.h>
 
-#include <Renderer/Shader.h>
-#include <Renderer/Buffer.h>
-#include <Renderer/VertexArray.h>
-#include <Renderer/OrthographicCamera.h>
 
 
 namespace Opium
@@ -41,17 +36,7 @@ namespace Opium
 
 		LayerStack m_LayerStack;
 
-		std::shared_ptr<Shader> m_Shader;
-		std::shared_ptr<VertexArray> m_VertexArray;
-
-
-		std::shared_ptr<Shader> m_BlueShader;
-		std::shared_ptr<VertexArray> m_SquareVA;
-
-
 		static Application* s_Instance;
-
-		OrthographicCamera m_Camera;
 	};
 
 	// Client will define this
