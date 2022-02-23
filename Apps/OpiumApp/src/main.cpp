@@ -3,6 +3,10 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 
+#include <Platform/OpenGL/OpenGLShader.h>
+
+#include <glm/gtc/type_ptr.hpp>
+
 class ExampleLayer : public Opium::Layer
 {
 public:
@@ -17,7 +21,7 @@ public:
 		};
 
 		// add vertex buffer class
-		std::shared_ptr<Opium::VertexBuffer> vertexBuffer;
+		Opium::Ref<Opium::VertexBuffer> vertexBuffer;
 		vertexBuffer.reset(Opium::VertexBuffer::Create(vertices, sizeof(vertices)));
 
 		Opium::BufferLayout layout = {
@@ -28,7 +32,7 @@ public:
 		m_VertexArray->AddVertexBuffer(vertexBuffer);
 
 		uint32_t indices[3] = { 0,1,2 };
-		std::shared_ptr<Opium::IndexBuffer> indexBuffer;
+		Opium::Ref<Opium::IndexBuffer> indexBuffer;
 		indexBuffer.reset(Opium::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
 		m_VertexArray->SetIndexBuffer(indexBuffer);
 
@@ -42,7 +46,7 @@ public:
 			-0.5f,  0.5f, 0.0f
 		};
 
-		std::shared_ptr<Opium::VertexBuffer> squareVB;
+		Opium::Ref<Opium::VertexBuffer> squareVB;
 		squareVB.reset(Opium::VertexBuffer::Create(squareVertices, sizeof(squareVertices)));
 		squareVB->SetLayout(
 			{
@@ -51,7 +55,7 @@ public:
 		m_SquareVA->AddVertexBuffer(squareVB);
 
 		uint32_t squareIndices[6] = { 0,1,2, 2,3,0 };
-		std::shared_ptr<Opium::IndexBuffer> squareIB;
+		Opium::Ref<Opium::IndexBuffer> squareIB;
 		squareIB.reset(Opium::IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t)));
 		m_SquareVA->SetIndexBuffer(squareIB);
 
@@ -115,11 +119,11 @@ public:
 			
 			in vec3 v_Position;
 
-			uniform vec4 u_Color;
+			uniform vec3 u_Color;
 
 			void main()
 			{
-				color = u_Color;
+				color = vec4(u_Color, 1.0);
 			}
 		)";
 
@@ -167,19 +171,14 @@ public:
 
 		glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
 
-		glm::vec4 redColor(0.8f, 0.2f, 0.3f, 1.0f);
-		glm::vec4 blueColor(0.2f, 0.3f, 0.8f, 1.0f);
-
+		std::dynamic_pointer_cast<Opium::OpenGLShader>(m_BlueShader)->Bind();
+		std::dynamic_pointer_cast<Opium::OpenGLShader>(m_BlueShader)->UploadUniformFloat3("u_Color", m_SquareColor);
 		for (int y = 0; y < 20; y++)
 		{
 			for (int x = 0; x < 20; x++)
 			{
 				glm::vec3 pos(x * 0.12f, y * 0.12f, 0.0f);
 				glm::mat4 transform = glm::translate(glm::mat4(1.0f), pos) * scale;
-				if (x % 2 == 0)
-					m_BlueShader->UploadUniformFloat4("u_Color", redColor);
-				else
-					m_BlueShader->UploadUniformFloat4("u_Color", blueColor);
 				Opium::Renderer::Submit(m_BlueShader, m_SquareVA, transform);
 			}
 		}
@@ -197,15 +196,17 @@ public:
 
     virtual void OnImGuiRender() override
     {
-
+		ImGui::Begin("Settings");
+		ImGui::ColorEdit3("Square Color", glm::value_ptr(m_SquareColor));
+		ImGui::End();
     }
 private:
-    std::shared_ptr<Opium::Shader> m_Shader;
-    std::shared_ptr<Opium::VertexArray> m_VertexArray;
+    Opium::Ref<Opium::Shader> m_Shader;
+    Opium::Ref<Opium::VertexArray> m_VertexArray;
 
 
-    std::shared_ptr<Opium::Shader> m_BlueShader;
-    std::shared_ptr<Opium::VertexArray> m_SquareVA;
+    Opium::Ref<Opium::Shader> m_BlueShader;
+    Opium::Ref<Opium::VertexArray> m_SquareVA;
 
 
     Opium::OrthographicCamera m_Camera;
@@ -214,6 +215,8 @@ private:
 
 	float m_CameraRotationSpeed = 10.0f;
 	float m_CameraRotation = 0.0;
+
+	glm::vec3 m_SquareColor = { 0.2f, 0.3f, 0.8f };
 };
 
 class OpiumApp : public Opium::Application

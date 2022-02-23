@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Renderer/Shader.h>
+#include <glm/glm.hpp>
 
 namespace Opium
 {
@@ -13,8 +14,15 @@ namespace Opium
 		virtual void Bind() const;
 		virtual void Unbind() const;
 
-		virtual void UploadUniformMat4(const std::string& name, const glm::mat4& matrix) override;
-		virtual void UploadUniformFloat4(const std::string& name, const glm::vec4& vec) override;
+		void UploadUniformInt(const std::string& name, int value);
+
+		void UploadUniformFloat(const std::string& name, float value);
+		void UploadUniformFloat2(const std::string& name, const glm::vec2& vec);
+		void UploadUniformFloat3(const std::string& name, const glm::vec3& vec);
+		void UploadUniformFloat4(const std::string& name, const glm::vec4& vec);
+
+		void UploadUniformMat3(const std::string& name, const glm::mat3& matrix);
+		void UploadUniformMat4(const std::string& name, const glm::mat4& matrix);
 	private:
 		uint32_t m_RendererID;
 	};
