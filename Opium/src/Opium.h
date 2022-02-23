@@ -7,6 +7,8 @@
 #include <Opium/Logging.h>
 #include <Opium/Layer.h>
 
+#include <Opium/Timestep.h>
+
 #include <Input/Input.h>
 #include <Input/KeyCodes.h>
 #include <Input/MouseButtonCodes.h>

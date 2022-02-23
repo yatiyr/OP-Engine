@@ -571,6 +571,7 @@
     <ClInclude Include="src\Opium\Layer.h" />
     <ClInclude Include="src\Opium\LayerStack.h" />
     <ClInclude Include="src\Opium\Logging.h" />
+    <ClInclude Include="src\Opium\Timestep.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLBuffer.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLContext.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLRendererAPI.h" />

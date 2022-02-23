@@ -119,32 +119,35 @@ public:
 		m_BlueShader.reset(Opium::Shader::Create(blueShaderVertexSrc, blueShaderFragmentSrc));
     }
 
-    void OnUpdate() override
+    void OnUpdate(Opium::Timestep ts) override
     {
+
+		OP_APP_INFO("{0} is the delta time", ts.GetSeconds());
+		float deltaTime = ts;
 
 		if (Opium::Input::IsKeyPressed(OP_KEY_LEFT))
 		{
-			m_CameraPosition.x -= m_CameraMoveSpeed;
+			m_CameraPosition.x -= m_CameraMoveSpeed * deltaTime;
 		}
 		else if (Opium::Input::IsKeyPressed(OP_KEY_RIGHT))
 		{
-			m_CameraPosition.x += m_CameraMoveSpeed;
+			m_CameraPosition.x += m_CameraMoveSpeed * deltaTime;
 		}
 
 		if (Opium::Input::IsKeyPressed(OP_KEY_UP))
 		{
-			m_CameraPosition.y += m_CameraMoveSpeed;
+			m_CameraPosition.y += m_CameraMoveSpeed * deltaTime;
 		}
 		else if (Opium::Input::IsKeyPressed(OP_KEY_DOWN))
 		{
-			m_CameraPosition.y -= m_CameraMoveSpeed;
+			m_CameraPosition.y -= m_CameraMoveSpeed * deltaTime;
 		}
 
 
 		if (Opium::Input::IsKeyPressed(OP_KEY_A))
-			m_CameraRotation += m_CameraRotationSpeed;
+			m_CameraRotation += m_CameraRotationSpeed * deltaTime;
 		else if (Opium::Input::IsKeyPressed(OP_KEY_D))
-			m_CameraRotation -= m_CameraRotationSpeed;
+			m_CameraRotation -= m_CameraRotationSpeed * deltaTime;
 
         Opium::RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1.0f });
         Opium::RenderCommand::Clear();
@@ -182,9 +185,9 @@ private:
 
     Opium::OrthographicCamera m_Camera;
 	glm::vec3 m_CameraPosition;
-	float m_CameraMoveSpeed = 0.1f;
+	float m_CameraMoveSpeed = 1.0f;
 
-	float m_CameraRotationSpeed = 0.1f;
+	float m_CameraRotationSpeed = 10.0f;
 	float m_CameraRotation = 0.0;
 };
 

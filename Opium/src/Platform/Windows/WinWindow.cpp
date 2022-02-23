@@ -180,5 +180,10 @@ namespace Opium
 		return m_Data.VSync;
 	}
 
+	float WinWindow::GetTime() const
+	{
+		return glfwGetTime();
+	}
+
 
 }

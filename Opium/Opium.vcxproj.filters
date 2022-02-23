@@ -1398,6 +1398,7 @@
     <ClInclude Include="src\Window\Window.h">
       <Filter>src\Window</Filter>
     </ClInclude>
+    <ClInclude Include="src\Opium\Timestep.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Config\Precomp.cpp">

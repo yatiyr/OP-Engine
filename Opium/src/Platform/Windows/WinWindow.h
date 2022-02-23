@@ -24,6 +24,7 @@ namespace Opium
 		bool IsVSync() const override;
 
 		inline virtual void* GetNativeWindow() const { return m_Window; }
+		virtual float GetTime() const override;
 	private:
 		virtual void Init(const WinProperties& props);
 		virtual void Shutdown();

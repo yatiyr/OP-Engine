@@ -2,7 +2,7 @@
 
 #include <Opium/Core.h>
 #include <EventSystem/Event.h>
-
+#include <Opium/Timestep.h>
 
 namespace Opium
 {
@@ -14,7 +14,7 @@ namespace Opium
 
 		virtual void OnAttach() {}
 		virtual void OnDetach() {}
-		virtual void OnUpdate() {}
+		virtual void OnUpdate(Timestep time) {}
 		virtual void OnImGuiRender() {}
 		virtual void OnEvent(Event& event) {}
 
