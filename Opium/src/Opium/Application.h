@@ -13,6 +13,7 @@
 #include <Renderer/Shader.h>
 #include <Renderer/Buffer.h>
 #include <Renderer/VertexArray.h>
+#include <Renderer/OrthographicCamera.h>
 
 
 namespace Opium
@@ -49,6 +50,8 @@ namespace Opium
 
 
 		static Application* s_Instance;
+
+		OrthographicCamera m_Camera;
 	};
 
 	// Client will define this

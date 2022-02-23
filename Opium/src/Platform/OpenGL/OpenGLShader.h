@@ -13,6 +13,8 @@ namespace Opium
 		virtual void Bind() const;
 		virtual void Unbind() const;
 
+		virtual void UploadUniformMat4(const std::string& name, const glm::mat4& matrix) override;
+
 	private:
 		uint32_t m_RendererID;
 	};
