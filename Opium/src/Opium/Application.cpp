@@ -16,8 +16,11 @@ namespace Opium
 	{
 		OP_ENGINE_ASSERT(!s_Instance, "There is already an application ready!");
 		s_Instance = this;
+
 		m_Window = std::unique_ptr<Window>(Window::Create());
 		m_Window->SetEventCallback(BIND_EVENT_FUNCTION(Application::OnEvent));
+
+		Renderer::Init();
 
 		m_ImGuiLayer = new ImGuiLayer();
 		PushOverlay(m_ImGuiLayer);

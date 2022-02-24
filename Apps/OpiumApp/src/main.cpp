@@ -95,7 +95,7 @@ public:
 			}
 		)";
 
-		m_Shader.reset(Opium::Shader::Create(vertexSrc, fragmentSrc));
+		m_Shader = Opium::Shader::Create("VertexPosColor", vertexSrc, fragmentSrc);
 
 		std::string flatColorShaderVertexSrc = R"(
 			#version 330 core
@@ -128,45 +128,15 @@ public:
 			}
 		)";
 
-		m_BlueShader.reset(Opium::Shader::Create(flatColorShaderVertexSrc, flatColorShaderFragmentSrc));
+		m_BlueShader = Opium::Shader::Create("FlatColorShader", flatColorShaderVertexSrc, flatColorShaderFragmentSrc);
 
 
-		std::string textureShaderVertexSrc = R"(
-			#version 330 core
-			layout(location = 0) in vec3 a_Position;
-			layout(location = 1) in vec2 a_TexCoord;
+		auto textureShader = m_ShaderLibrary.Load("assets/shaders/Texture.glsl");
 
-			uniform mat4 u_ViewProjection;
-			uniform mat4 u_Transform;
-		
-			out vec2 v_TexCoord;
-
-			void main()
-			{
-				v_TexCoord = a_TexCoord;
-				gl_Position = u_ViewProjection * u_Transform * vec4(a_Position, 1.0);
-			}
-		)";
-
-		std::string textureShaderFragmentSrc = R"(
-			#version 330 core
-			layout(location = 0) out vec4 color;
-			
-			in vec2 v_TexCoord;
-
-			uniform sampler2D u_Texture;
-
-			void main()
-			{
-				color = texture(u_Texture, v_TexCoord);
-			}
-		)";
-
-		m_TextureShader.reset(Opium::Shader::Create(textureShaderVertexSrc, textureShaderFragmentSrc));
-
-		std::dynamic_pointer_cast<Opium::OpenGLShader>(m_TextureShader)->Bind();
-		std::dynamic_pointer_cast<Opium::OpenGLShader>(m_TextureShader)->UploadUniformInt("u_Texture", 0);
+		std::dynamic_pointer_cast<Opium::OpenGLShader>(textureShader)->Bind();
+		std::dynamic_pointer_cast<Opium::OpenGLShader>(textureShader)->UploadUniformInt("u_Texture", 0);
 		m_Texture = Opium::Texture2D::Create("assets/textures/Checkerboard.png");
+		m_GrassTexture = Opium::Texture2D::Create("assets/textures/grass.png");
     }
 
     void OnUpdate(Opium::Timestep ts) override
@@ -222,8 +192,13 @@ public:
 			}
 		}
 
+		auto textureShader = m_ShaderLibrary.Get("Texture");
+
 		m_Texture->Bind(0);
-		Opium::Renderer::Submit(m_TextureShader, m_SquareVA, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
+		Opium::Renderer::Submit(textureShader, m_SquareVA, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
+
+		m_GrassTexture->Bind(0);
+		Opium::Renderer::Submit(textureShader, m_SquareVA, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
 
 		// Triangle
        // Opium::Renderer::Submit(m_Shader, m_VertexArray);
@@ -243,14 +218,15 @@ public:
 		ImGui::End();
     }
 private:
+	Opium::ShaderLibrary m_ShaderLibrary;
     Opium::Ref<Opium::Shader> m_Shader;
     Opium::Ref<Opium::VertexArray> m_VertexArray;
 
 
-    Opium::Ref<Opium::Shader> m_BlueShader, m_TextureShader;
+    Opium::Ref<Opium::Shader> m_BlueShader;
     Opium::Ref<Opium::VertexArray> m_SquareVA;
 
-	Opium::Ref<Opium::Texture2D> m_Texture;
+	Opium::Ref<Opium::Texture2D> m_Texture, m_GrassTexture;
 
 
     Opium::OrthographicCamera m_Camera;
