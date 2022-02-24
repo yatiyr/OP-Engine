@@ -22,6 +22,9 @@
     <Filter Include="external\glm\glm\gtx">
       <UniqueIdentifier>{A84358C0-94D2-E189-3DF1-F584295FF22F}</UniqueIdentifier>
     </Filter>
+    <Filter Include="external\stb_image">
+      <UniqueIdentifier>{C27B45E0-AE5F-0636-17C0-008903C3F0B7}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src">
       <UniqueIdentifier>{2DAB880B-99B4-887C-2230-9F7C8E38947C}</UniqueIdentifier>
     </Filter>
@@ -1302,6 +1305,9 @@
     <ClInclude Include="external\glm\glm\vector_relational.hpp">
       <Filter>external\glm\glm</Filter>
     </ClInclude>
+    <ClInclude Include="external\stb_image\stb_image.h">
+      <Filter>external\stb_image</Filter>
+    </ClInclude>
     <ClInclude Include="src\Config\Precomp.h">
       <Filter>src\Config</Filter>
     </ClInclude>
@@ -1350,6 +1356,9 @@
     <ClInclude Include="src\Opium\Logging.h">
       <Filter>src\Opium</Filter>
     </ClInclude>
+    <ClInclude Include="src\Opium\Timestep.h">
+      <Filter>src\Opium</Filter>
+    </ClInclude>
     <ClInclude Include="src\Platform\OpenGL\OpenGLBuffer.h">
       <Filter>src\Platform\OpenGL</Filter>
     </ClInclude>
@@ -1360,6 +1369,9 @@
       <Filter>src\Platform\OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="src\Platform\OpenGL\OpenGLShader.h">
+      <Filter>src\Platform\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Platform\OpenGL\OpenGLTexture.h">
       <Filter>src\Platform\OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="src\Platform\OpenGL\OpenGLVertexArray.h">
@@ -1392,15 +1404,20 @@
     <ClInclude Include="src\Renderer\Shader.h">
       <Filter>src\Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="src\Renderer\Texture.h">
+      <Filter>src\Renderer</Filter>
+    </ClInclude>
     <ClInclude Include="src\Renderer\VertexArray.h">
       <Filter>src\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Window\Window.h">
       <Filter>src\Window</Filter>
     </ClInclude>
-    <ClInclude Include="src\Opium\Timestep.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="external\stb_image\stb_image.cpp">
+      <Filter>external\stb_image</Filter>
+    </ClCompile>
     <ClCompile Include="src\Config\Precomp.cpp">
       <Filter>src\Config</Filter>
     </ClCompile>
@@ -1434,6 +1451,9 @@
     <ClCompile Include="src\Platform\OpenGL\OpenGLShader.cpp">
       <Filter>src\Platform\OpenGL</Filter>
     </ClCompile>
+    <ClCompile Include="src\Platform\OpenGL\OpenGLTexture.cpp">
+      <Filter>src\Platform\OpenGL</Filter>
+    </ClCompile>
     <ClCompile Include="src\Platform\OpenGL\OpenGLVertexArray.cpp">
       <Filter>src\Platform\OpenGL</Filter>
     </ClCompile>
@@ -1459,6 +1479,9 @@
       <Filter>src\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\Renderer\Shader.cpp">
+      <Filter>src\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Renderer\Texture.cpp">
       <Filter>src\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\Renderer\VertexArray.cpp">

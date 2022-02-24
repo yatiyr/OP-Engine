@@ -19,6 +19,8 @@ IncludeDir["GLFW"] = "Opium/external/GLFW/include"
 IncludeDir["Glad"] = "Opium/external/Glad/include"
 IncludeDir["ImGui"] = "Opium/external/imgui"
 IncludeDir["glm"] = "Opium/external/glm"
+IncludeDir["stb_image"] = "Opium/external/stb_image"
+
 
 include "Opium/external/GLFW"
 include "Opium/external/Glad"
@@ -41,6 +43,8 @@ project "Opium"
     {
         "%{prj.name}/src/**.h",
         "%{prj.name}/src/**.cpp",
+        "%{prj.name}/external/stb_image/**.h",
+        "%{prj.name}/external/stb_image/**.cpp",
         "%{prj.name}/external/glm/glm/**.hpp",
         "%{prj.name}/external/glm/glm/**.inl"
     }
@@ -58,7 +62,8 @@ project "Opium"
         "%{IncludeDir.GLFW}",
         "%{IncludeDir.Glad}",
         "%{IncludeDir.ImGui}",
-        "%{IncludeDir.glm}"
+        "%{IncludeDir.glm}",
+        "%{IncludeDir.stb_image}"
     }
 
     links
@@ -115,7 +120,7 @@ project "OpiumApp"
     {
         "Opium/external/spdlog/include",
         "Opium/src",
-	"Opium/src/Config",
+	    "Opium/src/Config",
         "Opium/external",
         "%{IncludeDir.glm}"
     }

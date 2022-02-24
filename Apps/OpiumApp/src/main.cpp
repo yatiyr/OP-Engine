@@ -39,18 +39,19 @@ public:
 
 		m_SquareVA.reset(Opium::VertexArray::Create());
 
-		float squareVertices[3 * 4] = {
-			-0.5f, -0.5f, 0.0f,
-			 0.5f, -0.5f, 0.0f,
-			 0.5f,  0.5f, 0.0f,
-			-0.5f,  0.5f, 0.0f
+		float squareVertices[5 * 4] = {
+			-0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
+			 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+			 0.5f,  0.5f, 0.0f, 1.0f, 1.0f,
+			-0.5f,  0.5f, 0.0f, 0.0f, 1.0f
 		};
 
 		Opium::Ref<Opium::VertexBuffer> squareVB;
 		squareVB.reset(Opium::VertexBuffer::Create(squareVertices, sizeof(squareVertices)));
 		squareVB->SetLayout(
 			{
-				{ Opium::ShaderDataType::Float3, "a_Position"}
+				{ Opium::ShaderDataType::Float3, "a_Position"},
+				{ Opium::ShaderDataType::Float2, "a_TexCoord"}
 			});
 		m_SquareVA->AddVertexBuffer(squareVB);
 
@@ -128,6 +129,44 @@ public:
 		)";
 
 		m_BlueShader.reset(Opium::Shader::Create(flatColorShaderVertexSrc, flatColorShaderFragmentSrc));
+
+
+		std::string textureShaderVertexSrc = R"(
+			#version 330 core
+			layout(location = 0) in vec3 a_Position;
+			layout(location = 1) in vec2 a_TexCoord;
+
+			uniform mat4 u_ViewProjection;
+			uniform mat4 u_Transform;
+		
+			out vec2 v_TexCoord;
+
+			void main()
+			{
+				v_TexCoord = a_TexCoord;
+				gl_Position = u_ViewProjection * u_Transform * vec4(a_Position, 1.0);
+			}
+		)";
+
+		std::string textureShaderFragmentSrc = R"(
+			#version 330 core
+			layout(location = 0) out vec4 color;
+			
+			in vec2 v_TexCoord;
+
+			uniform sampler2D u_Texture;
+
+			void main()
+			{
+				color = texture(u_Texture, v_TexCoord);
+			}
+		)";
+
+		m_TextureShader.reset(Opium::Shader::Create(textureShaderVertexSrc, textureShaderFragmentSrc));
+
+		std::dynamic_pointer_cast<Opium::OpenGLShader>(m_TextureShader)->Bind();
+		std::dynamic_pointer_cast<Opium::OpenGLShader>(m_TextureShader)->UploadUniformInt("u_Texture", 0);
+		m_Texture = Opium::Texture2D::Create("assets/textures/Checkerboard.png");
     }
 
     void OnUpdate(Opium::Timestep ts) override
@@ -183,8 +222,11 @@ public:
 			}
 		}
 
+		m_Texture->Bind(0);
+		Opium::Renderer::Submit(m_TextureShader, m_SquareVA, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
 
-        Opium::Renderer::Submit(m_Shader, m_VertexArray);
+		// Triangle
+       // Opium::Renderer::Submit(m_Shader, m_VertexArray);
 
         Opium::Renderer::EndScene();
     }
@@ -205,8 +247,10 @@ private:
     Opium::Ref<Opium::VertexArray> m_VertexArray;
 
 
-    Opium::Ref<Opium::Shader> m_BlueShader;
+    Opium::Ref<Opium::Shader> m_BlueShader, m_TextureShader;
     Opium::Ref<Opium::VertexArray> m_SquareVA;
+
+	Opium::Ref<Opium::Texture2D> m_Texture;
 
 
     Opium::OrthographicCamera m_Camera;
