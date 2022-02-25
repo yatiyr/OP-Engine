@@ -24,7 +24,4 @@
 #include <Renderer/VertexArray.h>
 
 #include <Renderer/OrthographicCamera.h>
-
-// -------------------- ENTRY POINT ----------------------- //
-#include <Opium/EntryPoint.h>
-// -------------------------------------------------------- //
+#include <Renderer/OrthographicCameraController.h>

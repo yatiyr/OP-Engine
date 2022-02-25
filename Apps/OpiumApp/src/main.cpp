@@ -1,4 +1,7 @@
 #include <Opium.h>
+
+#include <Opium/EntryPoint.h>
+
 #include <imgui/imgui.h>
 
 #include <glm/gtc/matrix_transform.hpp>
@@ -7,12 +10,14 @@
 
 #include <glm/gtc/type_ptr.hpp>
 
+#include <TestingGround2D.h>
+
 class ExampleLayer : public Opium::Layer
 {
 public:
-    ExampleLayer() : Layer("Orneks"), m_Camera(-1.6f, 1.6f, -0.9f, 0.9f) , m_CameraPosition(0.0f)
+    ExampleLayer() : Layer("Orneks"), m_CameraController(1280.0f / 720.0f, true)
     {
-		m_VertexArray.reset(Opium::VertexArray::Create());
+		m_VertexArray = Opium::VertexArray::Create();
 
 		float vertices[3 * 7] = {
 			-0.5f, -0.5f, 0.0f, 0.8f, 0.2f, 0.8f, 1.0f,
@@ -22,7 +27,7 @@ public:
 
 		// add vertex buffer class
 		Opium::Ref<Opium::VertexBuffer> vertexBuffer;
-		vertexBuffer.reset(Opium::VertexBuffer::Create(vertices, sizeof(vertices)));
+		vertexBuffer = Opium::VertexBuffer::Create(vertices, sizeof(vertices));
 
 		Opium::BufferLayout layout = {
 			{ Opium::ShaderDataType::Float3, "a_Position"},
@@ -33,11 +38,11 @@ public:
 
 		uint32_t indices[3] = { 0,1,2 };
 		Opium::Ref<Opium::IndexBuffer> indexBuffer;
-		indexBuffer.reset(Opium::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
+		indexBuffer = Opium::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t));
 		m_VertexArray->SetIndexBuffer(indexBuffer);
 
 
-		m_SquareVA.reset(Opium::VertexArray::Create());
+		m_SquareVA = Opium::VertexArray::Create();
 
 		float squareVertices[5 * 4] = {
 			-0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
@@ -47,7 +52,7 @@ public:
 		};
 
 		Opium::Ref<Opium::VertexBuffer> squareVB;
-		squareVB.reset(Opium::VertexBuffer::Create(squareVertices, sizeof(squareVertices)));
+		squareVB = Opium::VertexBuffer::Create(squareVertices, sizeof(squareVertices));
 		squareVB->SetLayout(
 			{
 				{ Opium::ShaderDataType::Float3, "a_Position"},
@@ -57,7 +62,7 @@ public:
 
 		uint32_t squareIndices[6] = { 0,1,2, 2,3,0 };
 		Opium::Ref<Opium::IndexBuffer> squareIB;
-		squareIB.reset(Opium::IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t)));
+		squareIB = Opium::IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t));
 		m_SquareVA->SetIndexBuffer(squareIB);
 
 
@@ -141,42 +146,14 @@ public:
 
     void OnUpdate(Opium::Timestep ts) override
     {
-
-		//OP_APP_INFO("{0} is the delta time", ts.GetSeconds());
-		float deltaTime = ts;
-
-		if (Opium::Input::IsKeyPressed(OP_KEY_LEFT))
-		{
-			m_CameraPosition.x -= m_CameraMoveSpeed * deltaTime;
-		}
-		else if (Opium::Input::IsKeyPressed(OP_KEY_RIGHT))
-		{
-			m_CameraPosition.x += m_CameraMoveSpeed * deltaTime;
-		}
-
-		if (Opium::Input::IsKeyPressed(OP_KEY_UP))
-		{
-			m_CameraPosition.y += m_CameraMoveSpeed * deltaTime;
-		}
-		else if (Opium::Input::IsKeyPressed(OP_KEY_DOWN))
-		{
-			m_CameraPosition.y -= m_CameraMoveSpeed * deltaTime;
-		}
-
-
-		if (Opium::Input::IsKeyPressed(OP_KEY_A))
-			m_CameraRotation += m_CameraRotationSpeed * deltaTime;
-		else if (Opium::Input::IsKeyPressed(OP_KEY_D))
-			m_CameraRotation -= m_CameraRotationSpeed * deltaTime;
+		// Update
+		m_CameraController.OnUpdate(ts);
 
         Opium::RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1.0f });
         Opium::RenderCommand::Clear();
 
-        m_Camera.SetPosition(m_CameraPosition);
-        //m_Camera.SetPosition({ 0.5f, 0.5f, 0.0 });
-        m_Camera.SetRotation(m_CameraRotation);
 
-        Opium::Renderer::BeginScene(m_Camera);
+        Opium::Renderer::BeginScene(m_CameraController.GetCamera());
 
 		glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
 
@@ -206,8 +183,14 @@ public:
         Opium::Renderer::EndScene();
     }
 
-    void OnEvent(Opium::Event& event) override
+    void OnEvent(Opium::Event& e) override
     {
+		m_CameraController.OnEvent(e);
+
+		if (e.GetEventType() == Opium::EventType::WindowResize)
+		{
+			auto& re = (Opium::WindowResizeEvent&)e;
+		}
     }
 
 
@@ -229,12 +212,7 @@ private:
 	Opium::Ref<Opium::Texture2D> m_Texture, m_GrassTexture;
 
 
-    Opium::OrthographicCamera m_Camera;
-	glm::vec3 m_CameraPosition;
-	float m_CameraMoveSpeed = 1.0f;
-
-	float m_CameraRotationSpeed = 10.0f;
-	float m_CameraRotation = 0.0;
+    Opium::OrthographicCameraController m_CameraController;
 
 	glm::vec3 m_SquareColor = { 0.2f, 0.3f, 0.8f };
 };
@@ -244,7 +222,8 @@ class OpiumApp : public Opium::Application
 public:
     OpiumApp()
     {
-        PushLayer(new ExampleLayer());
+        // PushLayer(new ExampleLayer());
+		PushLayer(new TestingGround2D());
     }
 
     ~OpiumApp()

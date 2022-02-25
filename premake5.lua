@@ -57,7 +57,7 @@ project "Opium"
     includedirs
     {
         "%{prj.name}/src",
-	    "%{prj.name}/src/Config",
+	"%{prj.name}/src/Config",
         "%{prj.name}/external/spdlog/include",
         "%{IncludeDir.GLFW}",
         "%{IncludeDir.Glad}",
@@ -120,9 +120,10 @@ project "OpiumApp"
     {
         "Opium/external/spdlog/include",
         "Opium/src",
-	    "Opium/src/Config",
+	"Opium/src/Config",
         "Opium/external",
-        "%{IncludeDir.glm}"
+        "%{IncludeDir.glm}",
+	"Apps/%{prj.name}/src"
     }
 
     links
