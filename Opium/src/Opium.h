@@ -16,6 +16,7 @@
 #include <Gui/ImGuiLayer.h>
 
 #include <Renderer/Renderer.h>
+#include <Renderer/Renderer2D.h>
 #include <Renderer/RenderCommand.h>
 
 #include <Renderer/Buffer.h>

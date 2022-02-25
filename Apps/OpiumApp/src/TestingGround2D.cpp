@@ -4,8 +4,6 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#include <Platform/OpenGL/OpenGLShader.h>
-
 TestingGround2D::TestingGround2D()
 	: Layer("TestingGround2D"), m_CameraController(1280.0f / 720.0f, true)
 {
@@ -14,32 +12,8 @@ TestingGround2D::TestingGround2D()
 
 void TestingGround2D::OnAttach()
 {
+	m_CheckerboardTexture = Opium::Texture2D::Create("assets/textures/Checkerboard.png");
 
-	m_SquareVA = Opium::VertexArray::Create();
-
-	float squareVertices[5 * 4] = {
-		-0.5f, -0.5f, 0.0f,
-		 0.5f, -0.5f, 0.0f,
-		 0.5f,  0.5f, 0.0f,
-		-0.5f,  0.5f, 0.0f
-	};
-
-	Opium::Ref<Opium::VertexBuffer> squareVB;
-	squareVB = Opium::VertexBuffer::Create(squareVertices, sizeof(squareVertices));
-	squareVB->SetLayout(
-		{
-			{ Opium::ShaderDataType::Float3, "a_Position"}
-		});
-	m_SquareVA->AddVertexBuffer(squareVB);
-
-	uint32_t squareIndices[6] = { 0,1,2, 2,3,0 };
-	Opium::Ref<Opium::IndexBuffer> squareIB;
-	squareIB = Opium::IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t));
-	m_SquareVA->SetIndexBuffer(squareIB);
-
-
-
-	m_FlatColorShader = Opium::Shader::Create("assets/shaders/FlatColorShader.glsl");
 }
 
 void TestingGround2D::OnDetach()
@@ -55,14 +29,15 @@ void TestingGround2D::OnUpdate(Opium::Timestep ts)
 	Opium::RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
 	Opium::RenderCommand::Clear();
 
-	Opium::Renderer::BeginScene(m_CameraController.GetCamera());
+	Opium::Renderer2D::BeginScene(m_CameraController.GetCamera());
+	Opium::Renderer2D::DrawQuad({ -1.0f, 0.0f }, { 0.8f, 0.8f }, { 0.8f, 0.2f, 0.3f, 1.0f });
+	Opium::Renderer2D::DrawQuad({ 0.5f, -0.5f }, { 0.5f, 0.75f }, { 0.2f, 0.3f, 0.7f, 1.0f });
+	Opium::Renderer2D::DrawQuad({ 0.0f, 0.0f, -0.1f }, { 10.0f, 10.0f }, m_CheckerboardTexture);
+	Opium::Renderer2D::EndScene();
 
-	std::dynamic_pointer_cast<Opium::OpenGLShader>(m_FlatColorShader)->Bind();
-	std::dynamic_pointer_cast<Opium::OpenGLShader>(m_FlatColorShader)->UploadUniformFloat4("u_Color", m_SquareColor);
 
-	Opium::Renderer::Submit(m_FlatColorShader, m_SquareVA, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
-
-	Opium::Renderer::EndScene();
+	// std::dynamic_pointer_cast<Opium::OpenGLShader>(m_FlatColorShader)->Bind();
+	// std::dynamic_pointer_cast<Opium::OpenGLShader>(m_FlatColorShader)->UploadUniformFloat4("u_Color", m_SquareColor);
 }
 
 void TestingGround2D::OnImGuiRender()
