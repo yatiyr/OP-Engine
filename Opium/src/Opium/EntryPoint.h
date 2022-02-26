@@ -12,9 +12,17 @@
 		OP_ENGINE_WARN("Initialized log for engine");
 		OP_APP_INFO("Initialized app log!");
 
+		OP_PROFILE_BEGIN_SESSION("Startup Session", "OpiumProfile_startup.json");
 		auto app = Opium::CreateApplication();
+		OP_PROFILE_END_SESSION();
+
+		OP_PROFILE_BEGIN_SESSION("Runtime Session", "OpiumProfile_runtime.json");
 		app->Run();
+		OP_PROFILE_END_SESSION();
+
+		OP_PROFILE_BEGIN_SESSION("Shutdown Session", "OpiumProfile_shutdown.json");
 		delete app;
+		OP_PROFILE_END_SESSION();
 	}
 
 #else

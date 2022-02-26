@@ -1417,6 +1417,7 @@
       <Filter>src\Window</Filter>
     </ClInclude>
     <ClInclude Include="src\Renderer\Renderer2D.h" />
+    <ClInclude Include="src\Profiling\Instrumentor.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="external\stb_image\stb_image.cpp">

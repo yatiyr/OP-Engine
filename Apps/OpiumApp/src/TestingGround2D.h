@@ -16,8 +16,6 @@ public:
 private:
 	Opium::OrthographicCameraController m_CameraController;
 
-
-
 	// Temporary
 	Opium::Ref<Opium::VertexArray> m_SquareVA;
 	Opium::Ref<Opium::Shader> m_FlatColorShader;

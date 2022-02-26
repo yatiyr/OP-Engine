@@ -21,6 +21,8 @@
 
 #include <Opium/Logging.h>
 
+#include <Profiling/Instrumentor.h>
+
 #ifdef OP_PLATFORM_WINDOWS
 	#include <Windows.h>
 #else
