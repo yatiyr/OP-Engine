@@ -24,16 +24,22 @@ namespace Opium
 
 	WinWindow::WinWindow(const WinProperties& props)
 	{
+		OP_PROFILE_FUNCTION();
+
 		Init(props);
 	}
 
 	WinWindow::~WinWindow()
 	{
+		OP_PROFILE_FUNCTION();
+
 		Shutdown();
 	}
 
 	void WinWindow::Init(const WinProperties& props)
 	{
+		OP_PROFILE_FUNCTION();
+
 		m_Data.Title = props.Title;
 		m_Data.Width = props.Width;
 		m_Data.Height = props.Height;
@@ -42,14 +48,17 @@ namespace Opium
 
 		if (!is_glfw_initialized)
 		{
+			OP_PROFILE_SCOPE("glfw initialization");
 			int flag = glfwInit();
 			OP_ENGINE_ASSERT(flag, "GLFW should be initialized!");
 			glfwSetErrorCallback(GLFWErrorCallback);
 			is_glfw_initialized = true;
 		}
 
-		m_Window = glfwCreateWindow((int)props.Width, (int)props.Height, m_Data.Title.c_str(), nullptr, nullptr);
-
+		{
+			OP_PROFILE_SCOPE("glfw window creation");
+			m_Window = glfwCreateWindow((int)props.Width, (int)props.Height, m_Data.Title.c_str(), nullptr, nullptr);
+		}
 		m_Context = new OpenGLContext(m_Window);
 		m_Context->Init();
 
@@ -152,17 +161,23 @@ namespace Opium
 
 	void WinWindow::Shutdown()
 	{
+		OP_PROFILE_FUNCTION();
+
 		glfwDestroyWindow(m_Window);
 	}
 
 	void WinWindow::OnUpdate()
 	{
+		OP_PROFILE_FUNCTION();
+
 		glfwPollEvents();
 		m_Context->SwapBuffers();
 	}
 
 	void WinWindow::SetVSync(bool enable)
 	{
+		OP_PROFILE_FUNCTION();
+
 		if (enable)
 		{
 			glfwSwapInterval(1);

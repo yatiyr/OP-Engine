@@ -10,6 +10,8 @@ namespace Opium
 
 	void Renderer::Init()
 	{
+		OP_PROFILE_FUNCTION();
+
 		RenderCommand::Init();
 		Renderer2D::Init();
 	}

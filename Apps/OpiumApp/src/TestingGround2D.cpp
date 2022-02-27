@@ -12,12 +12,15 @@ TestingGround2D::TestingGround2D()
 
 void TestingGround2D::OnAttach()
 {
+	OP_PROFILE_FUNCTION();
+
 	m_CheckerboardTexture = Opium::Texture2D::Create("assets/textures/Checkerboard.png");
 
 }
 
 void TestingGround2D::OnDetach()
 {
+	OP_PROFILE_FUNCTION();
 }
 
 void TestingGround2D::OnUpdate(Opium::Timestep ts)
@@ -25,10 +28,8 @@ void TestingGround2D::OnUpdate(Opium::Timestep ts)
 	OP_PROFILE_FUNCTION();
 
 	// Update
-	{
-		OP_PROFILE_SCOPE("TestingGround2D::CameraController");
-		m_CameraController.OnUpdate(ts);
-	}
+	m_CameraController.OnUpdate(ts);
+
 	// Render
 	{
 		OP_PROFILE_SCOPE("TestingGround2D::Renderer Prep");

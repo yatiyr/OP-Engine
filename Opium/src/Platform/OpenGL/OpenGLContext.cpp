@@ -14,6 +14,8 @@ namespace Opium
 
 	void OpenGLContext::Init()
 	{
+		OP_PROFILE_FUNCTION();
+
 		glfwMakeContextCurrent(m_WindowHandle);
 		int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 		OP_ENGINE_ASSERT(status, "Could not initialize GLAD properly!");
@@ -26,6 +28,8 @@ namespace Opium
 
 	void OpenGLContext::SwapBuffers()
 	{
+		OP_PROFILE_FUNCTION();
+
 		glfwSwapBuffers(m_WindowHandle);
 	}
 

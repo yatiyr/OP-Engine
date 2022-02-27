@@ -14,6 +14,8 @@ namespace Opium
 
 	Application::Application()
 	{
+		OP_PROFILE_FUNCTION();
+
 		OP_ENGINE_ASSERT(!s_Instance, "There is already an application ready!");
 		s_Instance = this;
 
@@ -28,23 +30,27 @@ namespace Opium
 
 	Application::~Application()
 	{
-
 	}
 
 	void Application::PushLayer(Layer* layer)
 	{
+		OP_PROFILE_FUNCTION();
+
 		m_LayerStack.PushLayer(layer);
 		layer->OnAttach();
 	}
 
 	void Application::PushOverlay(Layer* overlay)
 	{
+		OP_PROFILE_FUNCTION();
+
 		m_LayerStack.PushOverlay(overlay);
 		overlay->OnAttach();
 	}
 
 	void Application::OnEvent(Event& e)
 	{
+		OP_PROFILE_FUNCTION();
 
 		EventDispatcher dispatcher(e);
 		dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FUNCTION(Application::OnWindowClose));
@@ -60,8 +66,12 @@ namespace Opium
 
 	void Application::Run()
 	{
+		OP_PROFILE_FUNCTION();
+
 		while (is_running)
 		{
+
+			OP_PROFILE_SCOPE("Run loop application");
 
 			float time = (float)Application::GetWindow().GetTime();
 			Timestep timestep = time - m_LastFrameTime;
@@ -70,13 +80,21 @@ namespace Opium
 
 			if (!m_Minimized)
 			{
-				for (Layer* layer : m_LayerStack)
-					layer->OnUpdate(timestep);
+				{
+					OP_PROFILE_SCOPE("LayerStack OnUpdate");
+
+					for (Layer* layer : m_LayerStack)
+						layer->OnUpdate(timestep);
+				}
 			}
 
 			m_ImGuiLayer->Begin();
-			for (Layer* layer : m_LayerStack)
-				layer->OnImGuiRender();
+			{
+				OP_PROFILE_SCOPE("LayerStack OnImGuiRender");
+
+				for (Layer* layer : m_LayerStack)
+					layer->OnImGuiRender();
+			}
 			m_ImGuiLayer->End();
 
 			m_Window->OnUpdate();
@@ -92,6 +110,8 @@ namespace Opium
 
 	bool Application::OnWindowResize(WindowResizeEvent& e)
 	{
+		OP_PROFILE_FUNCTION();
+
 		if (e.GetWidth() == 0 || e.GetHeight() == 0)
 		{
 			m_Minimized = true;

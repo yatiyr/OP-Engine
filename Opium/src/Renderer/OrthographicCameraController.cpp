@@ -15,6 +15,8 @@ namespace Opium
 
 	void OrthographicCameraController::OnUpdate(Timestep ts)
 	{
+		OP_PROFILE_FUNCTION();
+
 		if (Input::IsKeyPressed(OP_KEY_A))
 		{
 			m_CameraPosition.x -= m_CameraTranslationSpeed * ts;
@@ -55,6 +57,8 @@ namespace Opium
 
 	void OrthographicCameraController::OnEvent(Event& e)
 	{
+		OP_PROFILE_FUNCTION();
+
 		EventDispatcher dispatcher(e);
 		dispatcher.Dispatch<MouseScrolledEvent>(OP_BIND_EVENT_FUNCTION(OrthographicCameraController::OnMouseScrolled));
 		dispatcher.Dispatch<WindowResizeEvent>(OP_BIND_EVENT_FUNCTION(OrthographicCameraController::OnWindowResized));
@@ -63,6 +67,8 @@ namespace Opium
 
 	bool OrthographicCameraController::OnMouseScrolled(MouseScrolledEvent& e)
 	{
+		OP_PROFILE_FUNCTION();
+
 		m_ZoomLevel -= e.GetYOffset() * 0.25;
 		m_ZoomLevel = std::max(m_ZoomLevel, 0.25f);
 		m_Camera.SetProjection(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
@@ -74,6 +80,8 @@ namespace Opium
 
 	bool OrthographicCameraController::OnWindowResized(WindowResizeEvent& e)
 	{
+		OP_PROFILE_FUNCTION();
+
 		m_AspectRatio = (float)e.GetWidth() / (float)e.GetHeight();
 		m_Camera.SetProjection(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
 		return false;
