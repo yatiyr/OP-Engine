@@ -123,7 +123,7 @@ namespace Opium
     };
 }
 
-#define OP_PROFILE 1
+#define OP_PROFILE 0
 
 #if OP_PROFILE
     #define OP_PROFILE_BEGIN_SESSION(name, filepath) ::Opium::Instrumentor::Get().BeginSession(name, filepath)
