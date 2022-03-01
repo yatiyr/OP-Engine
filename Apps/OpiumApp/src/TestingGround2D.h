@@ -1,6 +1,8 @@
 #pragma once
 
 #include <Opium.h>
+#include <ParticleSystem.h>
+
 
 class TestingGround2D : public Opium::Layer 
 {
@@ -25,4 +27,7 @@ private:
 	Opium::Ref<Opium::Texture2D> m_CheckerboardTexture;
 
 	float m_TilingFactor = 1.0f;
+
+	ParticleSystem m_ParticleSystem;
+	ParticleProps m_Particle;
 };

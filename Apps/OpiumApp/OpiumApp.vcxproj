@@ -136,9 +136,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\ParticleSystem.h" />
     <ClInclude Include="src\TestingGround2D.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\ParticleSystem.cpp" />
     <ClCompile Include="src\TestingGround2D.cpp" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>

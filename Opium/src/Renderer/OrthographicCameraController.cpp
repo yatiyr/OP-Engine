@@ -9,7 +9,8 @@ namespace Opium
 	OrthographicCameraController::OrthographicCameraController(float aspectRatio, bool rotation)
 		: m_Camera(-aspectRatio * m_ZoomLevel, aspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel),
 		  m_Rotation(rotation),
-		  m_AspectRatio(aspectRatio)
+		  m_AspectRatio(aspectRatio),
+		m_Bounds({ -aspectRatio * m_ZoomLevel, aspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel })
 	{
 	}
 
@@ -72,7 +73,7 @@ namespace Opium
 		m_ZoomLevel -= e.GetYOffset() * 0.25;
 		m_ZoomLevel = std::max(m_ZoomLevel, 0.25f);
 		m_Camera.SetProjection(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
-
+		m_Bounds = { -m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel };
 		m_CameraTranslationSpeed = m_ZoomLevel;
 
 		return false;
@@ -84,6 +85,7 @@ namespace Opium
 
 		m_AspectRatio = (float)e.GetWidth() / (float)e.GetHeight();
 		m_Camera.SetProjection(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
+		m_Bounds = { -m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel };
 		return false;
 	}
 
