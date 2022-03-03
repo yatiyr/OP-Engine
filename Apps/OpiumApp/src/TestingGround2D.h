@@ -25,9 +25,17 @@ private:
 	glm::vec4 m_SquareColor = { 0.2f, 0.3f, 0.8f, 1.0f };
 
 	Opium::Ref<Opium::Texture2D> m_CheckerboardTexture;
+	Opium::Ref<Opium::Texture2D> m_Spritesheet;
+	Opium::Ref<Opium::SubTexture2D> m_TextureStairs;
+	Opium::Ref<Opium::SubTexture2D> m_TextureBush;
+	Opium::Ref<Opium::SubTexture2D> m_TextureTree;
+	Opium::Ref<Opium::SubTexture2D> m_TextureBarrel;
 
 	float m_TilingFactor = 1.0f;
 
 	ParticleSystem m_ParticleSystem;
 	ParticleProps m_Particle;
+
+	uint32_t m_MapWidth, m_MapHeight;
+	std::unordered_map<char, Opium::Ref<Opium::SubTexture2D>> m_TextureMap;
 };

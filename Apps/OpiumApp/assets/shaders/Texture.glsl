@@ -37,5 +37,6 @@ void main()
 {
 	// TODO: u_TilingFactor
 	vec4 texColor = texture(u_Textures[int(v_TexIndex)], v_TexCoord * v_TilingFactor) * v_Color;
+
 	color = texColor;
 }

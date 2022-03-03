@@ -1425,6 +1425,7 @@
     <ClInclude Include="src\Window\Window.h">
       <Filter>src\Window</Filter>
     </ClInclude>
+    <ClInclude Include="src\Renderer\SubTexture2D.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="external\stb_image\stb_image.cpp">
@@ -1505,5 +1506,6 @@
     <ClCompile Include="src\Renderer\VertexArray.cpp">
       <Filter>src\Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="src\Renderer\SubTexture2D.cpp" />
   </ItemGroup>
 </Project>
