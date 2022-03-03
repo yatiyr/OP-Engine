@@ -48,6 +48,11 @@ namespace Opium
 		overlay->OnAttach();
 	}
 
+	void Application::Close()
+	{
+		is_running = false;
+	}
+
 	void Application::OnEvent(Event& e)
 	{
 		OP_PROFILE_FUNCTION();

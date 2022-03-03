@@ -2,6 +2,7 @@
 #include <Gui/ImGuiLayer.h>
 
 #include <imgui.h>
+#include <implot.h>
 #include <backends/imgui_impl_glfw.h>
 #include <backends/imgui_impl_opengl3.h>
 
@@ -27,6 +28,8 @@ namespace Opium
 		// Setup Dear ImGui context
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
+		// Add implot too
+		ImPlot::CreateContext();
 		ImGuiIO& io = ImGui::GetIO(); (void)io;
 		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Controls
 		//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
@@ -64,6 +67,7 @@ namespace Opium
 
 		ImGui_ImplOpenGL3_Shutdown();
 		ImGui_ImplGlfw_Shutdown();
+		ImPlot::DestroyContext();
 		ImGui::DestroyContext();
 	}
 
