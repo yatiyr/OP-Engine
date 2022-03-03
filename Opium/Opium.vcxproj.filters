@@ -1428,6 +1428,8 @@
     <ClInclude Include="src\Window\Window.h">
       <Filter>src\Window</Filter>
     </ClInclude>
+    <ClInclude Include="src\Renderer\Framebuffer.h" />
+    <ClInclude Include="src\Platform\OpenGL\OpenGLFramebuffer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="external\stb_image\stb_image.cpp">
@@ -1511,5 +1513,7 @@
     <ClCompile Include="src\Renderer\VertexArray.cpp">
       <Filter>src\Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="src\Renderer\Framebuffer.cpp" />
+    <ClCompile Include="src\Platform\OpenGL\OpenGLFramebuffer.cpp" />
   </ItemGroup>
 </Project>

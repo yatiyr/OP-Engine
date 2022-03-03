@@ -24,6 +24,7 @@
 
 #include <Renderer/Buffer.h>
 #include <Renderer/Shader.h>
+#include <Renderer/Framebuffer.h>
 #include <Renderer/Texture.h>
 #include <Renderer/SubTexture2D.h>
 #include <Renderer/VertexArray.h>

@@ -575,6 +575,7 @@
     <ClInclude Include="src\Opium\Timestep.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLBuffer.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLContext.h" />
+    <ClInclude Include="src\Platform\OpenGL\OpenGLFramebuffer.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLRendererAPI.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLShader.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLTexture.h" />
@@ -583,6 +584,7 @@
     <ClInclude Include="src\Platform\Windows\WinWindow.h" />
     <ClInclude Include="src\Profiling\Instrumentor.h" />
     <ClInclude Include="src\Renderer\Buffer.h" />
+    <ClInclude Include="src\Renderer\Framebuffer.h" />
     <ClInclude Include="src\Renderer\GraphicsContext.h" />
     <ClInclude Include="src\Renderer\OrthographicCamera.h" />
     <ClInclude Include="src\Renderer\OrthographicCameraController.h" />
@@ -609,6 +611,7 @@
     <ClCompile Include="src\Opium\Logging.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLBuffer.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLContext.cpp" />
+    <ClCompile Include="src\Platform\OpenGL\OpenGLFramebuffer.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLRendererAPI.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLShader.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLTexture.cpp" />
@@ -616,6 +619,7 @@
     <ClCompile Include="src\Platform\Windows\WinInput.cpp" />
     <ClCompile Include="src\Platform\Windows\WinWindow.cpp" />
     <ClCompile Include="src\Renderer\Buffer.cpp" />
+    <ClCompile Include="src\Renderer\Framebuffer.cpp" />
     <ClCompile Include="src\Renderer\OrthographicCamera.cpp" />
     <ClCompile Include="src\Renderer\OrthographicCameraController.cpp" />
     <ClCompile Include="src\Renderer\RenderCommand.cpp" />

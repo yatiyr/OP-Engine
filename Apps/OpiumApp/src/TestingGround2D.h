@@ -31,6 +31,8 @@ private:
 	Opium::Ref<Opium::SubTexture2D> m_TextureTree;
 	Opium::Ref<Opium::SubTexture2D> m_TextureBarrel;
 
+	Opium::Ref<Opium::Framebuffer> m_Framebuffer;
+
 	float m_TilingFactor = 1.0f;
 
 	ParticleSystem m_ParticleSystem;

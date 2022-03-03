@@ -14,8 +14,8 @@ namespace Opium
 		unsigned int Height;
 
 		WinProperties(const std::string& title = "Opium 03",
-					  unsigned int width = 1440,
-			          unsigned int height = 800) : 
+					  unsigned int width = 1280,
+			          unsigned int height = 720) : 
 					  Title(title), Width(width), Height(height) {}
 	};
 
