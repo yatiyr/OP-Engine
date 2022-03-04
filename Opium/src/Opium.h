@@ -18,6 +18,9 @@
 
 #include <Gui/ImGuiLayer.h>
 
+#include <Scene/Scene.h>
+#include <Scene/Components.h>
+
 #include <Renderer/Renderer.h>
 #include <Renderer/Renderer2D.h>
 #include <Renderer/RenderCommand.h>

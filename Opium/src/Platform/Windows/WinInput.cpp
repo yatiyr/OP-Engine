@@ -1,5 +1,5 @@
 #include <Precomp.h>
-#include <Platform/Windows/WinInput.h>
+#include <Input/Input.h>
 
 #include <GLFW/glfw3.h>
 #include <Opium/Application.h>
@@ -7,39 +7,37 @@
 namespace Opium
 {
 
-	Input* Input::s_Instance = new WinInput();
-
-	bool WinInput::IsKeyPressedImpl(int keycode)
+	bool Input::IsKeyPressed(KeyCode keycode)
 	{
 		auto window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
 
-		auto state = glfwGetKey(window, keycode);
+		auto state = glfwGetKey(window,static_cast<int32_t>(keycode));
 
 		return state == GLFW_PRESS || state == GLFW_REPEAT;
 	}
 
-	bool WinInput::IsMouseButtonPressedImpl(int button)
+	bool Input::IsMouseButtonPressed(MouseButtonCode button)
 	{
 		auto window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
 
-		auto state = glfwGetMouseButton(window, button);
+		auto state = glfwGetMouseButton(window, static_cast<int32_t>(button));
 
 		return state == GLFW_PRESS;
 	}
 
-	float WinInput::GetMouseXImpl()
+	float Input::GetMouseX()
 	{
-		auto [x, y] = GetMousePosImpl();
+		auto [x, y] = GetMousePos();
 		return x;
 	}
 
-	float WinInput::GetMouseYImpl()
+	float Input::GetMouseY()
 	{
-		auto [x, y] = GetMousePosImpl();
+		auto [x, y] = GetMousePos();
 		return y;
 	}
 
-	std::pair<float, float> WinInput::GetMousePosImpl()
+	std::pair<float, float> Input::GetMousePos()
 	{
 		auto window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
 		double xpos, ypos;

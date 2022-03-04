@@ -18,7 +18,7 @@ namespace Opium
 	class OPIUM_API Application
 	{
 	public:
-		Application();
+		Application(const std::string& name = "Opium Application");
 		virtual ~Application();
 
 		void Run();
@@ -31,6 +31,8 @@ namespace Opium
 		inline Window& GetWindow() { return *m_Window; }
 
 		void Close();
+
+		ImGuiLayer* GetImGuiLayer() { return m_ImGuiLayer; }
 
 		inline static Application& Get() { return *s_Instance; }
 	private:

@@ -1,127 +1,272 @@
 #pragma once
 
-/* Printable keys taken from glfw */
-#define OP_KEY_SPACE              32
-#define OP_KEY_APOSTROPHE         39  /* ' */
-#define OP_KEY_COMMA              44  /* , */
-#define OP_KEY_MINUS              45  /* - */
-#define OP_KEY_PERIOD             46  /* . */
-#define OP_KEY_SLASH              47  /* / */
-#define OP_KEY_0                  48
-#define OP_KEY_1                  49
-#define OP_KEY_2                  50
-#define OP_KEY_3                  51
-#define OP_KEY_4                  52
-#define OP_KEY_5                  53
-#define OP_KEY_6                  54
-#define OP_KEY_7                  55
-#define OP_KEY_8                  56
-#define OP_KEY_9                  57
-#define OP_KEY_SEMICOLON          59  /* ; */
-#define OP_KEY_EQUAL              61  /* = */
-#define OP_KEY_A                  65
-#define OP_KEY_B                  66
-#define OP_KEY_C                  67
-#define OP_KEY_D                  68
-#define OP_KEY_E                  69
-#define OP_KEY_F                  70
-#define OP_KEY_G                  71
-#define OP_KEY_H                  72
-#define OP_KEY_I                  73
-#define OP_KEY_J                  74
-#define OP_KEY_K                  75
-#define OP_KEY_L                  76
-#define OP_KEY_M                  77
-#define OP_KEY_N                  78
-#define OP_KEY_O                  79
-#define OP_KEY_P                  80
-#define OP_KEY_Q                  81
-#define OP_KEY_R                  82
-#define OP_KEY_S                  83
-#define OP_KEY_T                  84
-#define OP_KEY_U                  85
-#define OP_KEY_V                  86
-#define OP_KEY_W                  87
-#define OP_KEY_X                  88
-#define OP_KEY_Y                  89
-#define OP_KEY_Z                  90
-#define OP_KEY_LEFT_BRACKET       91  /* [ */
-#define OP_KEY_BACKSLASH          92  /* \ */
-#define OP_KEY_RIGHT_BRACKET      93  /* ] */
-#define OP_KEY_GRAVE_ACCENT       96  /* ` */
-#define OP_KEY_WORLD_1            161 /* non-US #1 */
-#define OP_KEY_WORLD_2            162 /* non-US #2 */
+namespace Opium
+{
+	typedef enum class KeyCode : uint16_t
+	{
+		Space = 32,
+		Apostrophe = 39, /* ' */
+		Comma = 44, /* , */
+		Minus = 45, /* - */
+		Period = 46, /* . */
+		Slash = 47, /* / */
+
+		D0 = 48, /* 0 */
+		D1 = 49, /* 1 */
+		D2 = 50, /* 2 */
+		D3 = 51, /* 3 */
+		D4 = 52, /* 4 */
+		D5 = 53, /* 5 */
+		D6 = 54, /* 6 */
+		D7 = 55, /* 7 */
+		D8 = 56, /* 8 */
+		D9 = 57, /* 9 */
+
+		Semicolon = 59, /* ; */
+		Equal = 61, /* = */
+
+		A = 65,
+		B = 66,
+		C = 67,
+		D = 68,
+		E = 69,
+		F = 70,
+		G = 71,
+		H = 72,
+		I = 73,
+		J = 74,
+		K = 75,
+		L = 76,
+		M = 77,
+		N = 78,
+		O = 79,
+		P = 80,
+		Q = 81,
+		R = 82,
+		S = 83,
+		T = 84,
+		U = 85,
+		V = 86,
+		W = 87,
+		X = 88,
+		Y = 89,
+		Z = 90,
+
+		LeftBracket = 91,  /* [ */
+		Backslash = 92,  /* \ */
+		RightBracket = 93,  /* ] */
+		GraveAccent = 96,  /* ` */
+
+		World1 = 161, /* non-US #1 */
+		World2 = 162, /* non-US #2 */
+
+		/* Function keys */
+		Escape = 256,
+		Enter = 257,
+		Tab = 258,
+		Backspace = 259,
+		Insert = 260,
+		Delete = 261,
+		Right = 262,
+		Left = 263,
+		Down = 264,
+		Up = 265,
+		PageUp = 266,
+		PageDown = 267,
+		Home = 268,
+		End = 269,
+		CapsLock = 280,
+		ScrollLock = 281,
+		NumLock = 282,
+		PrintScreen = 283,
+		Pause = 284,
+		F1 = 290,
+		F2 = 291,
+		F3 = 292,
+		F4 = 293,
+		F5 = 294,
+		F6 = 295,
+		F7 = 296,
+		F8 = 297,
+		F9 = 298,
+		F10 = 299,
+		F11 = 300,
+		F12 = 301,
+		F13 = 302,
+		F14 = 303,
+		F15 = 304,
+		F16 = 305,
+		F17 = 306,
+		F18 = 307,
+		F19 = 308,
+		F20 = 309,
+		F21 = 310,
+		F22 = 311,
+		F23 = 312,
+		F24 = 313,
+		F25 = 314,
+
+		/* Keypad */
+		KP0 = 320,
+		KP1 = 321,
+		KP2 = 322,
+		KP3 = 323,
+		KP4 = 324,
+		KP5 = 325,
+		KP6 = 326,
+		KP7 = 327,
+		KP8 = 328,
+		KP9 = 329,
+		KPDecimal = 330,
+		KPDivide = 331,
+		KPMultiply = 332,
+		KPSubtract = 333,
+		KPAdd = 334,
+		KPEnter = 335,
+		KPEqual = 336,
+
+		LeftShift = 340,
+		LeftControl = 341,
+		LeftAlt = 342,
+		LeftSuper = 343,
+		RightShift = 344,
+		RightControl = 345,
+		RightAlt = 346,
+		RightSuper = 347,
+		Menu = 348
+	} Key;
+
+	inline std::ostream& operator<<(std::ostream& os, KeyCode keyCode)
+	{
+		os << static_cast<int32_t>(keyCode);
+		return os;
+	}
+}
+
+#define OP_KEY_SPACE           ::Opium::Key::Space
+#define OP_KEY_APOSTROPHE      ::Opium::Key::Apostrophe    /* ' */
+#define OP_KEY_COMMA           ::Opium::Key::Comma         /* , */
+#define OP_KEY_MINUS           ::Opium::Key::Minus         /* - */
+#define OP_KEY_PERIOD          ::Opium::Key::Period        /* . */
+#define OP_KEY_SLASH           ::Opium::Key::Slash         /* / */
+#define OP_KEY_0               ::Opium::Key::D0
+#define OP_KEY_1               ::Opium::Key::D1
+#define OP_KEY_2               ::Opium::Key::D2
+#define OP_KEY_3               ::Opium::Key::D3
+#define OP_KEY_4               ::Opium::Key::D4
+#define OP_KEY_5               ::Opium::Key::D5
+#define OP_KEY_6               ::Opium::Key::D6
+#define OP_KEY_7               ::Opium::Key::D7
+#define OP_KEY_8               ::Opium::Key::D8
+#define OP_KEY_9               ::Opium::Key::D9
+#define OP_KEY_SEMICOLON       ::Opium::Key::Semicolon     /* ; */
+#define OP_KEY_EQUAL           ::Opium::Key::Equal         /* = */
+#define OP_KEY_A               ::Opium::Key::A
+#define OP_KEY_B               ::Opium::Key::B
+#define OP_KEY_C               ::Opium::Key::C
+#define OP_KEY_D               ::Opium::Key::D
+#define OP_KEY_E               ::Opium::Key::E
+#define OP_KEY_F               ::Opium::Key::F
+#define OP_KEY_G               ::Opium::Key::G
+#define OP_KEY_H               ::Opium::Key::H
+#define OP_KEY_I               ::Opium::Key::I
+#define OP_KEY_J               ::Opium::Key::J
+#define OP_KEY_K               ::Opium::Key::K
+#define OP_KEY_L               ::Opium::Key::L
+#define OP_KEY_M               ::Opium::Key::M
+#define OP_KEY_N               ::Opium::Key::N
+#define OP_KEY_O               ::Opium::Key::O
+#define OP_KEY_P               ::Opium::Key::P
+#define OP_KEY_Q               ::Opium::Key::Q
+#define OP_KEY_R               ::Opium::Key::R
+#define OP_KEY_S               ::Opium::Key::S
+#define OP_KEY_T               ::Opium::Key::T
+#define OP_KEY_U               ::Opium::Key::U
+#define OP_KEY_V               ::Opium::Key::V
+#define OP_KEY_W               ::Opium::Key::W
+#define OP_KEY_X               ::Opium::Key::X
+#define OP_KEY_Y               ::Opium::Key::Y
+#define OP_KEY_Z               ::Opium::Key::Z
+#define OP_KEY_LEFT_BRACKET    ::Opium::Key::LeftBracket   /* [ */
+#define OP_KEY_BACKSLASH       ::Opium::Key::Backslash     /* \ */
+#define OP_KEY_RIGHT_BRACKET   ::Opium::Key::RightBracket  /* ] */
+#define OP_KEY_GRAVE_ACCENT    ::Opium::Key::GraveAccent   /* ` */
+#define OP_KEY_WORLD_1         ::Opium::Key::World1        /* non-US #1 */
+#define OP_KEY_WORLD_2         ::Opium::Key::World2        /* non-US #2 */
 
 /* Function keys */
-#define OP_KEY_ESCAPE             256
-#define OP_KEY_ENTER              257
-#define OP_KEY_TAB                258
-#define OP_KEY_BACKSPACE          259
-#define OP_KEY_INSERT             260
-#define OP_KEY_DELETE             261
-#define OP_KEY_RIGHT              262
-#define OP_KEY_LEFT               263
-#define OP_KEY_DOWN               264
-#define OP_KEY_UP                 265
-#define OP_KEY_PAGE_UP            266
-#define OP_KEY_PAGE_DOWN          267
-#define OP_KEY_HOME               268
-#define OP_KEY_END                269
-#define OP_KEY_CAPS_LOCK          280
-#define OP_KEY_SCROLL_LOCK        281
-#define OP_KEY_NUM_LOCK           282
-#define OP_KEY_PRINT_SCREEN       283
-#define OP_KEY_PAUSE              284
-#define OP_KEY_F1                 290
-#define OP_KEY_F2                 291
-#define OP_KEY_F3                 292
-#define OP_KEY_F4                 293
-#define OP_KEY_F5                 294
-#define OP_KEY_F6                 295
-#define OP_KEY_F7                 296
-#define OP_KEY_F8                 297
-#define OP_KEY_F9                 298
-#define OP_KEY_F10                299
-#define OP_KEY_F11                300
-#define OP_KEY_F12                301
-#define OP_KEY_F13                302
-#define OP_KEY_F14                303
-#define OP_KEY_F15                304
-#define OP_KEY_F16                305
-#define OP_KEY_F17                306
-#define OP_KEY_F18                307
-#define OP_KEY_F19                308
-#define OP_KEY_F20                309
-#define OP_KEY_F21                310
-#define OP_KEY_F22                311
-#define OP_KEY_F23                312
-#define OP_KEY_F24                313
-#define OP_KEY_F25                314
-#define OP_KEY_KP_0               320
-#define OP_KEY_KP_1               321
-#define OP_KEY_KP_2               322
-#define OP_KEY_KP_3               323
-#define OP_KEY_KP_4               324
-#define OP_KEY_KP_5               325
-#define OP_KEY_KP_6               326
-#define OP_KEY_KP_7               327
-#define OP_KEY_KP_8               328
-#define OP_KEY_KP_9               329
-#define OP_KEY_KP_DECIMAL         330
-#define OP_KEY_KP_DIVIDE          331
-#define OP_KEY_KP_MULTIPLY        332
-#define OP_KEY_KP_SUBTRACT        333
-#define OP_KEY_KP_ADD             334
-#define OP_KEY_KP_ENTER           335
-#define OP_KEY_KP_EQUAL           336
-#define OP_KEY_LEFT_SHIFT         340
-#define OP_KEY_LEFT_CONTROL       341
-#define OP_KEY_LEFT_ALT           342
-#define OP_KEY_LEFT_SUPER         343
-#define OP_KEY_RIGHT_SHIFT        344
-#define OP_KEY_RIGHT_CONTROL      345
-#define OP_KEY_RIGHT_ALT          346
-#define OP_KEY_RIGHT_SUPER        347
-#define OP_KEY_MENU               348
+#define OP_KEY_ESCAPE          ::Opium::Key::Escape
+#define OP_KEY_ENTER           ::Opium::Key::Enter
+#define OP_KEY_TAB             ::Opium::Key::Tab
+#define OP_KEY_BACKSPACE       ::Opium::Key::Backspace
+#define OP_KEY_INSERT          ::Opium::Key::Insert
+#define OP_KEY_DELETE          ::Opium::Key::Delete
+#define OP_KEY_RIGHT           ::Opium::Key::Right
+#define OP_KEY_LEFT            ::Opium::Key::Left
+#define OP_KEY_DOWN            ::Opium::Key::Down
+#define OP_KEY_UP              ::Opium::Key::Up
+#define OP_KEY_PAGE_UP         ::Opium::Key::PageUp
+#define OP_KEY_PAGE_DOWN       ::Opium::Key::PageDown
+#define OP_KEY_HOME            ::Opium::Key::Home
+#define OP_KEY_END             ::Opium::Key::End
+#define OP_KEY_CAPS_LOCK       ::Opium::Key::CapsLock
+#define OP_KEY_SCROLL_LOCK     ::Opium::Key::ScrollLock
+#define OP_KEY_NUM_LOCK        ::Opium::Key::NumLock
+#define OP_KEY_PRINT_SCREEN    ::Opium::Key::PrintScreen
+#define OP_KEY_PAUSE           ::Opium::Key::Pause
+#define OP_KEY_F1              ::Opium::Key::F1
+#define OP_KEY_F2              ::Opium::Key::F2
+#define OP_KEY_F3              ::Opium::Key::F3
+#define OP_KEY_F4              ::Opium::Key::F4
+#define OP_KEY_F5              ::Opium::Key::F5
+#define OP_KEY_F6              ::Opium::Key::F6
+#define OP_KEY_F7              ::Opium::Key::F7
+#define OP_KEY_F8              ::Opium::Key::F8
+#define OP_KEY_F9              ::Opium::Key::F9
+#define OP_KEY_F10             ::Opium::Key::F10
+#define OP_KEY_F11             ::Opium::Key::F11
+#define OP_KEY_F12             ::Opium::Key::F12
+#define OP_KEY_F13             ::Opium::Key::F13
+#define OP_KEY_F14             ::Opium::Key::F14
+#define OP_KEY_F15             ::Opium::Key::F15
+#define OP_KEY_F16             ::Opium::Key::F16
+#define OP_KEY_F17             ::Opium::Key::F17
+#define OP_KEY_F18             ::Opium::Key::F18
+#define OP_KEY_F19             ::Opium::Key::F19
+#define OP_KEY_F20             ::Opium::Key::F20
+#define OP_KEY_F21             ::Opium::Key::F21
+#define OP_KEY_F22             ::Opium::Key::F22
+#define OP_KEY_F23             ::Opium::Key::F23
+#define OP_KEY_F24             ::Opium::Key::F24
+#define OP_KEY_F25             ::Opium::Key::F25
+
+/* Keypad */
+#define OP_KEY_KP_0            ::Opium::Key::KP0
+#define OP_KEY_KP_1            ::Opium::Key::KP1
+#define OP_KEY_KP_2            ::Opium::Key::KP2
+#define OP_KEY_KP_3            ::Opium::Key::KP3
+#define OP_KEY_KP_4            ::Opium::Key::KP4
+#define OP_KEY_KP_5            ::Opium::Key::KP5
+#define OP_KEY_KP_6            ::Opium::Key::KP6
+#define OP_KEY_KP_7            ::Opium::Key::KP7
+#define OP_KEY_KP_8            ::Opium::Key::KP8
+#define OP_KEY_KP_9            ::Opium::Key::KP9
+#define OP_KEY_KP_DECIMAL      ::Opium::Key::KPDecimal
+#define OP_KEY_KP_DIVIDE       ::Opium::Key::KPDivide
+#define OP_KEY_KP_MULTIPLY     ::Opium::Key::KPMultiply
+#define OP_KEY_KP_SUBTRACT     ::Opium::Key::KPSubtract
+#define OP_KEY_KP_ADD          ::Opium::Key::KPAdd
+#define OP_KEY_KP_ENTER        ::Opium::Key::KPEnter
+#define OP_KEY_KP_EQUAL        ::Opium::Key::KPEqual
+
+#define OP_KEY_LEFT_SHIFT      ::Opium::Key::LeftShift
+#define OP_KEY_LEFT_CONTROL    ::Opium::Key::LeftControl
+#define OP_KEY_LEFT_ALT        ::Opium::Key::LeftAlt
+#define OP_KEY_LEFT_SUPER      ::Opium::Key::LeftSuper
+#define OP_KEY_RIGHT_SHIFT     ::Opium::Key::RightShift
+#define OP_KEY_RIGHT_CONTROL   ::Opium::Key::RightControl
+#define OP_KEY_RIGHT_ALT       ::Opium::Key::RightAlt
+#define OP_KEY_RIGHT_SUPER     ::Opium::Key::RightSuper
+#define OP_KEY_MENU            ::Opium::Key::Menu
 
 #define OP_KEY_LAST               OP_KEY_MENU

@@ -10,12 +10,12 @@ namespace Opium
 	struct WinProperties
 	{
 		std::string Title;
-		unsigned int Width;
-		unsigned int Height;
+		uint32_t Width;
+		uint32_t Height;
 
 		WinProperties(const std::string& title = "Opium 03",
-					  unsigned int width = 1280,
-			          unsigned int height = 720) : 
+					  uint32_t width = 1280,
+			          uint32_t height = 720) : 
 					  Title(title), Width(width), Height(height) {}
 	};
 
@@ -27,8 +27,8 @@ namespace Opium
 		virtual ~Window() {}
 		virtual void OnUpdate() = 0;
 
-		virtual unsigned int GetWidth() const = 0;
-		virtual unsigned int GetHeight() const = 0;
+		virtual uint32_t GetWidth() const = 0;
+		virtual uint32_t GetHeight() const = 0;
 
 		// Window attributes
 		virtual void SetEventCallback(const EventCallbackFunction& callback) = 0;

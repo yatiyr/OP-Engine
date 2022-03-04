@@ -76,8 +76,8 @@ namespace Opium
 		{
 			if (m_Event.GetEventType() == T::GetStaticType())
 			{
-				m_Event.Handled = func(*(T*)&m_Event);
-				return true;
+				m_Event.Handled |= func(*(T*)&m_Event);
+				return m_Event.Handled;
 			}
 			return false;
 		}

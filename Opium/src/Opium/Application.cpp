@@ -12,14 +12,14 @@ namespace Opium
 	Application* Application::s_Instance = nullptr;
 
 
-	Application::Application()
+	Application::Application(const std::string& name)
 	{
 		OP_PROFILE_FUNCTION();
 
 		OP_ENGINE_ASSERT(!s_Instance, "There is already an application ready!");
 		s_Instance = this;
 
-		m_Window = std::unique_ptr<Window>(Window::Create());
+		m_Window = std::unique_ptr<Window>(Window::Create(WinProperties(name)));
 		m_Window->SetEventCallback(BIND_EVENT_FUNCTION(Application::OnEvent));
 
 		Renderer::Init();
