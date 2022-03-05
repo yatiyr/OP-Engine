@@ -5,6 +5,8 @@
 #include <Scene/Components.h>
 #include <Renderer/Renderer2D.h>
 
+#include <Scene/Entity.h>
+
 namespace Opium
 {
 	Scene::Scene()
@@ -55,9 +57,13 @@ namespace Opium
 
 	}
 
-	entt::entity Scene::CreateEntity()
+	Entity Scene::CreateEntity(const std::string& name)
 	{
-		return m_Registry.create();
+		Entity entity = { m_Registry.create(), this };
+		entity.AddComponent<TransformComponent>();
+		auto& tag = entity.AddComponent<TagComponent>();
+		tag.Tag = name.empty() ? tag.Tag = "Entity" : name;
+		return entity;
 	}
 
 	void Scene::OnUpdate(Timestep ts)

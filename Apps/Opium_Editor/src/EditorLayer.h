@@ -24,7 +24,7 @@ namespace Opium
 
 		Ref<Scene> m_ActiveScene;
 
-		entt::entity m_SquareEntity;
+		Entity m_SquareEntity;
 
 		// Temporary
 		Ref<VertexArray> m_SquareVA;
