@@ -1,5 +1,6 @@
 #pragma once
 
+#include <Renderer/Camera.h>
 #include <Renderer/OrthographicCamera.h>
 #include <Renderer/Texture.h>
 #include <Renderer/SubTexture2D.h>
@@ -12,7 +13,8 @@ namespace Opium
 		static void Init();
 		static void Shutdown();
 
-		static void BeginScene(const OrthographicCamera& camera);
+		static void BeginScene(const Camera& camera, const glm::mat4& transform);
+		static void BeginScene(const OrthographicCamera& camera); // TODO: REMOVE
 		static void EndScene();
 		static void Flush();
 

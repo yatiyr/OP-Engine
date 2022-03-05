@@ -1,6 +1,7 @@
 #pragma once
 
 #include <glm/glm.hpp>
+#include <Renderer/Camera.h>
 
 namespace Opium
 {
@@ -37,5 +38,16 @@ namespace Opium
 		SpriteRendererComponent(const SpriteRendererComponent&) = default;
 		SpriteRendererComponent(const glm::vec4 color)
 			: Color(color) {}		
+	};
+
+	struct CameraComponent
+	{
+		Opium::Camera Camera;
+		bool Primary = true; // TODO: move to scene
+
+		CameraComponent() = default;
+		CameraComponent(const CameraComponent&) = default;
+		CameraComponent(const glm::mat4& projection)
+			: Camera(projection) {}
 	};
 }

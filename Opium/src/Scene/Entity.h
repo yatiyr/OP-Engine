@@ -9,7 +9,7 @@ namespace Opium
 	{
 	public:
 		Entity() = default;
-		Entity(entt::entity handle, Scene* scene, bool initialized = true);
+		Entity(entt::entity handle, Scene* scene);
 		Entity(const Entity& other) = default;
 
 
@@ -43,11 +43,10 @@ namespace Opium
 
 		operator bool() const 
 		{ 
-			return m_Initialized; 
+			return m_EntityHandle != entt::null; 
 		}
 	private:
-		bool m_Initialized = false;
-		entt::entity m_EntityHandle;
+		entt::entity m_EntityHandle{ entt::null };
 		Scene* m_Scene = nullptr;
 	};
 }

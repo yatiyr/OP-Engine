@@ -50,6 +50,7 @@
 
 #define OP_BIND_EVENT_FUNCTION(x) std::bind(&x, this, std::placeholders::_1)
 
+#define OP_BIND_EVENT_FUNCTION2(x) [this](auto&&... args) -> decltype(auto) { return this->x(std::forward<decltype(args)>(args)...); }
 
 namespace Opium
 {

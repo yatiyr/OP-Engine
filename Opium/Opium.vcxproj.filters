@@ -1450,6 +1450,7 @@
       <Filter>src\Window</Filter>
     </ClInclude>
     <ClInclude Include="src\Scene\Entity.h" />
+    <ClInclude Include="src\Renderer\Camera.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="external\stb_image\stb_image.cpp">

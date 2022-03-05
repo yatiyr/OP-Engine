@@ -568,6 +568,7 @@
     <ClInclude Include="src\Input\MouseButtonCodes.h" />
     <ClInclude Include="src\Opium.h" />
     <ClInclude Include="src\Opium\Application.h" />
+    <ClInclude Include="src\Renderer\Camera.h" />
     <ClInclude Include="src\Opium\Core.h" />
     <ClInclude Include="src\Opium\EntryPoint.h" />
     <ClInclude Include="src\Opium\Layer.h" />

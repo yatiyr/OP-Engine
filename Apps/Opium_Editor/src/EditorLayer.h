@@ -25,6 +25,10 @@ namespace Opium
 		Ref<Scene> m_ActiveScene;
 
 		Entity m_SquareEntity;
+		Entity m_CameraEntity;
+		Entity m_CameraEntity2;
+
+		bool m_PrimaryCamera = true;
 
 		// Temporary
 		Ref<VertexArray> m_SquareVA;
