@@ -40,10 +40,10 @@ namespace Opium
 		m_SquareEntity = square;
 
 		m_CameraEntity = m_ActiveScene->CreateEntity("Camera Entity");
-		m_CameraEntity.AddComponent<CameraComponent>(glm::ortho(-16.0f, 16.0f, -9.0f, 9.0f, -1.0f, 1.0f));
+		m_CameraEntity.AddComponent<CameraComponent>();
 
 		m_CameraEntity2 = m_ActiveScene->CreateEntity("ClipSpace Entity2");
-		auto& cc = m_CameraEntity2.AddComponent<CameraComponent>(glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f));
+		auto& cc = m_CameraEntity2.AddComponent<CameraComponent>();
 		cc.Primary = false;
 	}
 
@@ -64,6 +64,8 @@ namespace Opium
 		{
 			m_Framebuffer->Resize(m_ViewportSize.x, m_ViewportSize.y);
 			m_CameraController.OnResize(m_ViewportSize.x, m_ViewportSize.y);
+
+			m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
 		}
 
 		// Update
@@ -189,6 +191,16 @@ namespace Opium
 		{
 			m_CameraEntity2.GetComponent<CameraComponent>().Primary = !m_PrimaryCamera;
 			m_CameraEntity.GetComponent<CameraComponent>().Primary = m_PrimaryCamera;
+		}
+
+
+		{
+			auto& camera = m_CameraEntity2.GetComponent<CameraComponent>().Camera;
+			float orthoSize = camera.GetOrthographicSize();
+			if (ImGui::DragFloat("SecondCamera Ortho Size", &orthoSize))
+			{
+				camera.SetOrthographicSize(orthoSize);
+			}
 		}
 
 		bool showDemoPlot = true;

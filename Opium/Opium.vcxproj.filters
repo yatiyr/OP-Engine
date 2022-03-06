@@ -1451,6 +1451,7 @@
     </ClInclude>
     <ClInclude Include="src\Scene\Entity.h" />
     <ClInclude Include="src\Renderer\Camera.h" />
+    <ClInclude Include="src\Scene\SceneCamera.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="external\stb_image\stb_image.cpp">
@@ -1544,5 +1545,6 @@
       <Filter>src\Scene</Filter>
     </ClCompile>
     <ClCompile Include="src\Scene\Entity.cpp" />
+    <ClCompile Include="src\Scene\SceneCamera.cpp" />
   </ItemGroup>
 </Project>

@@ -600,6 +600,7 @@
     <ClInclude Include="src\Scene\Components.h" />
     <ClInclude Include="src\Scene\Entity.h" />
     <ClInclude Include="src\Scene\Scene.h" />
+    <ClInclude Include="src\Scene\SceneCamera.h" />
     <ClInclude Include="src\Window\Window.h" />
   </ItemGroup>
   <ItemGroup>
@@ -636,6 +637,7 @@
     <ClCompile Include="src\Renderer\VertexArray.cpp" />
     <ClCompile Include="src\Scene\Entity.cpp" />
     <ClCompile Include="src\Scene\Scene.cpp" />
+    <ClCompile Include="src\Scene\SceneCamera.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="external\GLFW\GLFW.vcxproj">

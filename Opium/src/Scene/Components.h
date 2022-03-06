@@ -1,7 +1,7 @@
 #pragma once
 
 #include <glm/glm.hpp>
-#include <Renderer/Camera.h>
+#include <Scene/SceneCamera.h>
 
 namespace Opium
 {
@@ -42,12 +42,11 @@ namespace Opium
 
 	struct CameraComponent
 	{
-		Opium::Camera Camera;
+		SceneCamera Camera;
 		bool Primary = true; // TODO: move to scene
+		bool FixedAspectRatio = false;
 
 		CameraComponent() = default;
 		CameraComponent(const CameraComponent&) = default;
-		CameraComponent(const glm::mat4& projection)
-			: Camera(projection) {}
 	};
 }
