@@ -31,8 +31,13 @@ namespace Opium
 
 	void OpenGLRendererAPI::DrawIndexed(const Ref<VertexArray>& vertexArray, uint32_t indexCount)
 	{
-		uint32_t count = indexCount ? vertexArray->GetIndexBuffer()->GetCount() : indexCount;
-		glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, nullptr);
+
+		// I could not understand why cherno did the thing below, it created some artifacts in
+		// my case. Maybe I did wrong while I was following him. 
+		// uint32_t count = indexCount ? vertexArray->GetIndexBuffer()->GetCount() : indexCount;
+
+		// I'm giving indexCount, it should be enough I guess
+		glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, nullptr);
 	}
 
 }
