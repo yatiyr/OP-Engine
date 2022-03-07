@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Opium.h>
-#include <Components/SceneHierarchyComponent.h>
+#include <GuiComponents/SceneHierarchyComponent.h>
 
 namespace Opium
 {
