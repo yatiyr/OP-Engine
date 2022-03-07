@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Opium.h>
+#include <Components/SceneHierarchyComponent.h>
 
 namespace Opium
 {
@@ -42,6 +43,9 @@ namespace Opium
 		Ref<SubTexture2D> m_TextureBush;
 		Ref<SubTexture2D> m_TextureTree;
 		Ref<SubTexture2D> m_TextureBarrel;
+
+		// Components
+		SceneHierarchyComponent m_SceneGraph;
 
 	};
 }

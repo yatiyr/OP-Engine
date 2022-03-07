@@ -85,6 +85,8 @@ namespace Opium
 
 		m_CameraEntity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
 		m_CameraEntity2.AddComponent<NativeScriptComponent>().Bind<CameraController>();
+
+		m_SceneGraph.SetContext(m_ActiveScene);
 	}
 
 	void EditorLayer::OnDetach()
@@ -206,6 +208,8 @@ namespace Opium
 
 			ImGui::EndMenuBar();
 		}
+
+		m_SceneGraph.OnImGuiRender();
 
 		ImGui::Begin("Settings");
 		ImGui::Text("Renderer2D Stats:");
