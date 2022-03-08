@@ -37,6 +37,10 @@ namespace Opium
 		auto square = m_ActiveScene->CreateEntity("Green Square");
 		square.AddComponent<SpriteRendererComponent>(glm::vec4{0.0f, 1.0f, 0.0f, 1.0f});
 
+
+		auto square2 = m_ActiveScene->CreateEntity("Pink Square");
+		square2.AddComponent<SpriteRendererComponent>(glm::vec4{ 0.5f, 1.0f, 0.0f, 1.0f });
+
 		m_SquareEntity = square;
 
 		m_CameraEntity = m_ActiveScene->CreateEntity("Camera Entity");
