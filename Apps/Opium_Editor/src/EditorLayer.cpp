@@ -43,10 +43,10 @@ namespace Opium
 
 		m_SquareEntity = square;
 
-		m_CameraEntity = m_ActiveScene->CreateEntity("Camera Entity");
+		m_CameraEntity = m_ActiveScene->CreateEntity("Camera A");
 		m_CameraEntity.AddComponent<CameraComponent>();
 
-		m_CameraEntity2 = m_ActiveScene->CreateEntity("ClipSpace Entity2");
+		m_CameraEntity2 = m_ActiveScene->CreateEntity("Camera B");
 		auto& cc = m_CameraEntity2.AddComponent<CameraComponent>();
 		cc.Primary = false;
 
@@ -215,45 +215,17 @@ namespace Opium
 
 		m_SceneGraph.OnImGuiRender();
 
-		ImGui::Begin("Settings");
+		ImGui::Begin("Stats");
 		ImGui::Text("Renderer2D Stats:");
 		ImGui::Text("Draw Calls: %d:", stats.DrawCalls);
 		ImGui::Text("QuadCount: %d:", stats.QuadCount);
 		ImGui::Text("Vertices: %d:", stats.GetTotalVertexCount());
 		ImGui::Text("Indices: %d:", stats.GetTotalIndexCount());
+		
 
-		if (m_SquareEntity)
-		{
-			ImGui::Separator();
-			ImGui::Text("%s", m_SquareEntity.GetComponent<TagComponent>().Tag.c_str());
-			auto& squareColor = m_SquareEntity.GetComponent<SpriteRendererComponent>().Color;
-			ImGui::ColorEdit4("Square Color", glm::value_ptr(squareColor));
-			ImGui::Separator();
-		}
-
-		ImGui::DragFloat3("Camera Transform",
-			glm::value_ptr(m_CameraEntity.GetComponent<TransformComponent>().Transform[3])
-		);
-
-		if (ImGui::Checkbox("Switch Camera", &m_PrimaryCamera))
-		{
-			m_CameraEntity2.GetComponent<CameraComponent>().Primary = !m_PrimaryCamera;
-			m_CameraEntity.GetComponent<CameraComponent>().Primary = m_PrimaryCamera;
-		}
-
-
-		{
-			auto& camera = m_CameraEntity2.GetComponent<CameraComponent>().Camera;
-			float orthoSize = camera.GetOrthographicSize();
-			if (ImGui::DragFloat("SecondCamera Ortho Size", &orthoSize))
-			{
-				camera.SetOrthographicSize(orthoSize);
-			}
-		}
-
-		bool showDemoPlot = true;
-		ImPlot::GetStyle().AntiAliasedLines = true;
-		ImPlot::ShowDemoWindow(&showDemoPlot);
+		// bool showDemoPlot = true;
+		// ImPlot::GetStyle().AntiAliasedLines = true;
+		// ImPlot::ShowDemoWindow(&showDemoPlot);
 		ImGui::End();
 
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0,0 });
