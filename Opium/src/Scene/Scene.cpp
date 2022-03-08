@@ -49,7 +49,7 @@ namespace Opium
 
 		// Render 2D
 		Camera* PrimaryCamera = nullptr;
-		glm::mat4* cameraTransform = nullptr;
+		glm::mat4 cameraTransform;
 		{
 			auto group = m_Registry.group<CameraComponent>(entt::get<TransformComponent>);
 			for (auto entity : group)
@@ -59,7 +59,7 @@ namespace Opium
 				if (camera.Primary)
 				{
 					PrimaryCamera = &camera.Camera;
-					cameraTransform = &transform.Transform;
+					cameraTransform = transform.GetTransform();
 					break;
 				}
 			}
@@ -69,14 +69,14 @@ namespace Opium
 		{
 
 
-			Renderer2D::BeginScene(PrimaryCamera->GetProjection(), *cameraTransform);
+			Renderer2D::BeginScene(PrimaryCamera->GetProjection(), cameraTransform);
 
 			auto group = m_Registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
 			for (auto entity : group)
 			{
 				auto [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
 
-				Renderer2D::DrawQuad(transform, sprite.Color);
+				Renderer2D::DrawQuad(transform.GetTransform(), sprite.Color);
 			}
 
 			Renderer2D::EndScene();
