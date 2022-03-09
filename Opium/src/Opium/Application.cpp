@@ -7,7 +7,6 @@
 
 namespace Opium
 {
-#define BIND_EVENT_FUNCTION(x) std::bind(&x, this, std::placeholders::_1)
 
 	Application* Application::s_Instance = nullptr;
 
@@ -20,7 +19,7 @@ namespace Opium
 		s_Instance = this;
 
 		m_Window = std::unique_ptr<Window>(Window::Create(WinProperties(name)));
-		m_Window->SetEventCallback(BIND_EVENT_FUNCTION(Application::OnEvent));
+		m_Window->SetEventCallback(OP_BIND_EVENT_FUNCTION(Application::OnEvent));
 
 		Renderer::Init();
 
@@ -58,8 +57,8 @@ namespace Opium
 		OP_PROFILE_FUNCTION();
 
 		EventDispatcher dispatcher(e);
-		dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FUNCTION(Application::OnWindowClose));
-		dispatcher.Dispatch<WindowResizeEvent>(BIND_EVENT_FUNCTION(Application::OnWindowResize));
+		dispatcher.Dispatch<WindowCloseEvent>(OP_BIND_EVENT_FUNCTION(Application::OnWindowClose));
+		dispatcher.Dispatch<WindowResizeEvent>(OP_BIND_EVENT_FUNCTION(Application::OnWindowResize));
 
 		for (auto it = m_LayerStack.end(); it != m_LayerStack.begin();)
 		{

@@ -17,6 +17,12 @@ namespace Opium
 		virtual void OnImGuiRender() override;
 		virtual void OnEvent(Event& e) override;
 	private:
+		bool OnKeyPressed(KeyPressedEvent& e);
+
+		void NewScene();
+		void OpenScene();
+		void SaveSceneAs();
+	private:
 		OrthographicCameraController m_CameraController;
 		bool m_ViewportFocused = false;
 		bool m_ViewportHovered = false;

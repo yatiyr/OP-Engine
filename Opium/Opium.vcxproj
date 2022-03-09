@@ -603,6 +603,7 @@
     <ClInclude Include="src\Scene\SceneCamera.h" />
     <ClInclude Include="src\Scene\SceneSerializer.h" />
     <ClInclude Include="src\Scene\ScriptableEntity.h" />
+    <ClInclude Include="src\Utils\PlatformUtils.h" />
     <ClInclude Include="src\Window\Window.h" />
   </ItemGroup>
   <ItemGroup>
@@ -624,6 +625,7 @@
     <ClCompile Include="src\Platform\OpenGL\OpenGLTexture.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLVertexArray.cpp" />
     <ClCompile Include="src\Platform\Windows\WinInput.cpp" />
+    <ClCompile Include="src\Platform\Windows\WinPlatformUtils.cpp" />
     <ClCompile Include="src\Platform\Windows\WinWindow.cpp" />
     <ClCompile Include="src\Renderer\Buffer.cpp" />
     <ClCompile Include="src\Renderer\Framebuffer.cpp" />

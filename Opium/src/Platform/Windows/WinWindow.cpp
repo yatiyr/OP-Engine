@@ -94,19 +94,19 @@ namespace Opium
 				{
 					case GLFW_PRESS:
 					{
-						KeyPressedEvent event(key, 0);
+						KeyPressedEvent event((KeyCode)key, (uint16_t)0);
 						data.EventCallback(event);
 						break;
 					}
 					case GLFW_RELEASE:
 					{
-						KeyReleasedEvent event(key);
+						KeyReleasedEvent event((KeyCode)key);
 						data.EventCallback(event);
 						break;
 					}
 					case GLFW_REPEAT:
 					{
-						KeyPressedEvent event(key, 1);
+						KeyPressedEvent event((KeyCode)key, 1);
 						data.EventCallback(event);
 						break;
 					}
@@ -117,7 +117,7 @@ namespace Opium
 			{
 				WinData& data = *(WinData*)glfwGetWindowUserPointer(window);
 
-				KeyTypedEvent event(keycode);
+				KeyTypedEvent event((KeyCode)keycode);
 				data.EventCallback(event);
 			});
 
