@@ -5,6 +5,8 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+#include <Scene/SceneSerializer.h>
+
 namespace Opium
 {
 	EditorLayer::EditorLayer()
@@ -33,7 +35,7 @@ namespace Opium
 		m_Framebuffer = Framebuffer::Create(fbSpec);
 
 		m_ActiveScene = CreateRef<Scene>();
-
+#if 0
 		auto square = m_ActiveScene->CreateEntity("Green Square");
 		square.AddComponent<SpriteRendererComponent>(glm::vec4{0.0f, 1.0f, 0.0f, 1.0f});
 
@@ -89,8 +91,11 @@ namespace Opium
 
 		m_CameraEntity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
 		m_CameraEntity2.AddComponent<NativeScriptComponent>().Bind<CameraController>();
-
+#endif
 		m_SceneGraph.SetContext(m_ActiveScene);
+
+		// SceneSerializer serializer(m_ActiveScene);
+		// serializer.DeserializeText("assets/scenes/Example.opium");
 	}
 
 	void EditorLayer::OnDetach()
@@ -206,9 +211,18 @@ namespace Opium
 			{
 				// Disabling fullscreen would allow the window to be moved to the front of other windows,
 				// which we can't undo at the moment without finer window depth/z control.
-				ImGui::MenuItem("Fullscreen", NULL, &opt_fullscreen);
-				ImGui::MenuItem("Padding", NULL, &opt_padding);
-				ImGui::Separator();
+				// ImGui::MenuItem("Fullscreen", NULL, &opt_fullscreen);
+				if (ImGui::MenuItem("Serialize")) 
+				{
+					SceneSerializer serializer(m_ActiveScene);
+					serializer.SerializeText("assets/scenes/Example.opium");
+				}
+
+				if (ImGui::MenuItem("Deserialize"))
+				{
+					SceneSerializer serializer(m_ActiveScene);
+					serializer.DeserializeText("assets/scenes/Example.opium");
+				}
 
 				if (ImGui::MenuItem("Exit")) { Application::Get().Close(); }
 				/*if (ImGui::MenuItem("Flag: NoResize", "", (dockspace_flags & ImGuiDockNodeFlags_NoResize) != 0)) { dockspace_flags ^= ImGuiDockNodeFlags_NoResize; } */

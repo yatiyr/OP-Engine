@@ -22,3 +22,6 @@
 [submodule "Opium/external/glm"]
 	path = Opium/external/glm
 	url = https://github.com/g-truc/glm
+[submodule "Opium/external/yaml-cpp"]
+	path = Opium/external/yaml-cpp
+	url = https://github.com/yatiyr/yaml-cpp

@@ -21,11 +21,13 @@ IncludeDir["ImGui"] = "Opium/external/imgui"
 IncludeDir["glm"] = "Opium/external/glm"
 IncludeDir["stb_image"] = "Opium/external/stb_image"
 IncludeDir["entt"] = "Opium/external/entt/include"
+IncludeDir["yaml_cpp"] = "Opium/external/yaml-cpp/include"
 
 
 include "Opium/external/GLFW"
 include "Opium/external/Glad"
 include "Opium/external/imgui"
+include "Opium/external/yaml-cpp"
 
 project "Opium"
     location "Opium"
@@ -53,7 +55,8 @@ project "Opium"
 
     defines
     {
-        "_CRT_SECURE_NO_WARNINGS"
+        "_CRT_SECURE_NO_WARNINGS",
+	"YAML_CPP_STATIC_DEFINE"
     }
 
     includedirs
@@ -66,7 +69,8 @@ project "Opium"
         "%{IncludeDir.ImGui}",
         "%{IncludeDir.glm}",
         "%{IncludeDir.stb_image}",
-        "%{IncludeDir.entt}"
+        "%{IncludeDir.entt}",
+        "%{IncludeDir.yaml_cpp}"
     }
 
     links
@@ -74,6 +78,7 @@ project "Opium"
         "GLFW",
         "Glad",
         "ImGui",
+        "yaml-cpp",
         "opengl32.lib"
     }
 
