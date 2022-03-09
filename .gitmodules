@@ -25,3 +25,9 @@
 [submodule "Opium/external/yaml-cpp"]
 	path = Opium/external/yaml-cpp
 	url = https://github.com/yatiyr/yaml-cpp
+[submodule "Opium/external/ImGuizmo"]
+	path = Opium/external/ImGuizmo
+	url = https://github.com/yatiyr/ImGuizmo
+[submodule "Opium/external/imgui-node-editor"]
+	path = Opium/external/imgui-node-editor
+	url = https://github.com/yatiyr/imgui-node-editor

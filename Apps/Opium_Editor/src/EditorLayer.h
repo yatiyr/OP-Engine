@@ -54,5 +54,7 @@ namespace Opium
 		// Components
 		SceneHierarchyComponent m_SceneGraph;
 
+		int m_GizmoType = -1;
+
 	};
 }

@@ -4,6 +4,9 @@
     <Filter Include="external">
       <UniqueIdentifier>{2839F3DC-1406-4EE8-3D1F-3C90294B8376}</UniqueIdentifier>
     </Filter>
+    <Filter Include="external\ImGuizmo">
+      <UniqueIdentifier>{88789350-F48E-91E6-3D06-1D08A95B626E}</UniqueIdentifier>
+    </Filter>
     <Filter Include="external\entt">
       <UniqueIdentifier>{72F7B843-DEB7-347A-A7F2-7DF713727956}</UniqueIdentifier>
     </Filter>
@@ -67,11 +70,32 @@
     <Filter Include="src\Scene">
       <UniqueIdentifier>{0A06D2B3-7670-862A-BFAE-37D02B58647F}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Utils">
+      <UniqueIdentifier>{4D9AFFB3-B904-B42A-0243-65D06EEC917F}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\Window">
       <UniqueIdentifier>{74C3D837-607B-1A85-C982-F3E0B559B575}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="external\ImGuizmo\GraphEditor.h">
+      <Filter>external\ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="external\ImGuizmo\ImCurveEdit.h">
+      <Filter>external\ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="external\ImGuizmo\ImGradient.h">
+      <Filter>external\ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="external\ImGuizmo\ImGuizmo.h">
+      <Filter>external\ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="external\ImGuizmo\ImSequencer.h">
+      <Filter>external\ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="external\ImGuizmo\ImZoomSlider.h">
+      <Filter>external\ImGuizmo</Filter>
+    </ClInclude>
     <ClInclude Include="external\entt\include\entt.hpp">
       <Filter>external\entt\include</Filter>
     </ClInclude>
@@ -1461,12 +1485,30 @@
     <ClInclude Include="src\Scene\ScriptableEntity.h">
       <Filter>src\Scene</Filter>
     </ClInclude>
+    <ClInclude Include="src\Utils\PlatformUtils.h">
+      <Filter>src\Utils</Filter>
+    </ClInclude>
     <ClInclude Include="src\Window\Window.h">
       <Filter>src\Window</Filter>
     </ClInclude>
-    <ClInclude Include="src\Utils\PlatformUtils.h" />
+    <ClInclude Include="src\Math\Math.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="external\ImGuizmo\GraphEditor.cpp">
+      <Filter>external\ImGuizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="external\ImGuizmo\ImCurveEdit.cpp">
+      <Filter>external\ImGuizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="external\ImGuizmo\ImGradient.cpp">
+      <Filter>external\ImGuizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="external\ImGuizmo\ImGuizmo.cpp">
+      <Filter>external\ImGuizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="external\ImGuizmo\ImSequencer.cpp">
+      <Filter>external\ImGuizmo</Filter>
+    </ClCompile>
     <ClCompile Include="external\stb_image\stb_image.cpp">
       <Filter>external\stb_image</Filter>
     </ClCompile>
@@ -1513,6 +1555,9 @@
       <Filter>src\Platform\OpenGL</Filter>
     </ClCompile>
     <ClCompile Include="src\Platform\Windows\WinInput.cpp">
+      <Filter>src\Platform\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Platform\Windows\WinPlatformUtils.cpp">
       <Filter>src\Platform\Windows</Filter>
     </ClCompile>
     <ClCompile Include="src\Platform\Windows\WinWindow.cpp">
@@ -1566,6 +1611,6 @@
     <ClCompile Include="src\Scene\SceneSerializer.cpp">
       <Filter>src\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="src\Platform\Windows\WinPlatformUtils.cpp" />
+    <ClCompile Include="src\Math\Math.cpp" />
   </ItemGroup>
 </Project>

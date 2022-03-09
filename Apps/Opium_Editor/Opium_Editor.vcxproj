@@ -79,7 +79,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>OP_PLATFORM_WINDOWS;OP_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\..\Opium\external\spdlog\include;..\..\Opium\src;..\..\Opium\src\Config;..\..\Opium\external;..\..\Opium\external\glm;..\..\Opium\external\entt\include;src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\Opium\external\spdlog\include;..\..\Opium\src;..\..\Opium\src\Config;..\..\Opium\external;..\..\Opium\external\glm;..\..\Opium\external\entt\include;..\..\Opium\external\ImGuizmo;src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -95,7 +95,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>OP_PLATFORM_WINDOWS;OP_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\..\Opium\external\spdlog\include;..\..\Opium\src;..\..\Opium\src\Config;..\..\Opium\external;..\..\Opium\external\glm;..\..\Opium\external\entt\include;src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\Opium\external\spdlog\include;..\..\Opium\src;..\..\Opium\src\Config;..\..\Opium\external;..\..\Opium\external\glm;..\..\Opium\external\entt\include;..\..\Opium\external\ImGuizmo;src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -115,7 +115,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>OP_PLATFORM_WINDOWS;OP_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\..\Opium\external\spdlog\include;..\..\Opium\src;..\..\Opium\src\Config;..\..\Opium\external;..\..\Opium\external\glm;..\..\Opium\external\entt\include;src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\Opium\external\spdlog\include;..\..\Opium\src;..\..\Opium\src\Config;..\..\Opium\external;..\..\Opium\external\glm;..\..\Opium\external\entt\include;..\..\Opium\external\ImGuizmo;src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>

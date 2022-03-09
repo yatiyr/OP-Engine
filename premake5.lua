@@ -22,6 +22,7 @@ IncludeDir["glm"] = "Opium/external/glm"
 IncludeDir["stb_image"] = "Opium/external/stb_image"
 IncludeDir["entt"] = "Opium/external/entt/include"
 IncludeDir["yaml_cpp"] = "Opium/external/yaml-cpp/include"
+IncludeDir["ImGuizmo"] = "Opium/external/ImGuizmo"
 
 
 include "Opium/external/GLFW"
@@ -50,7 +51,9 @@ project "Opium"
         "%{prj.name}/external/stb_image/**.cpp",
         "%{prj.name}/external/glm/glm/**.hpp",
         "%{prj.name}/external/glm/glm/**.inl",
-        "%{prj.name}/external/entt/include/**.hpp"
+        "%{prj.name}/external/entt/include/**.hpp",
+        "%{prj.name}/external/ImGuizmo/*.h",
+        "%{prj.name}/external/ImGuizmo/*.cpp"
     }
 
     defines
@@ -70,7 +73,8 @@ project "Opium"
         "%{IncludeDir.glm}",
         "%{IncludeDir.stb_image}",
         "%{IncludeDir.entt}",
-        "%{IncludeDir.yaml_cpp}"
+        "%{IncludeDir.yaml_cpp}",
+        "%{IncludeDir.ImGuizmo}"
     }
 
     links
@@ -81,6 +85,9 @@ project "Opium"
         "yaml-cpp",
         "opengl32.lib"
     }
+
+    filter "files:Opium/external/ImGuizmo/**.cpp"
+    flags { "NoPCH" }
 
     filter "system:windows"
         systemversion "latest"
@@ -187,6 +194,7 @@ project "Opium_Editor"
         "Opium/external",
         "%{IncludeDir.glm}",
         "%{IncludeDir.entt}",
+        "%{IncludeDir.ImGuizmo}",
 	    "Apps/%{prj.name}/src"
     }
 
