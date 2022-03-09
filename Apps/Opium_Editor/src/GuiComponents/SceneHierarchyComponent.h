@@ -4,6 +4,7 @@
 #include <Opium/Core.h>
 #include <Opium/Logging.h>
 #include <Scene/Entity.h>
+#include <Opium.h>
 
 namespace Opium
 {

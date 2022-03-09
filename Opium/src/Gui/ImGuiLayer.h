@@ -6,8 +6,12 @@
 #include <EventSystem/KeyEvent.h>
 #include <EventSystem/MouseEvent.h>
 
+#include <unordered_map>
+
+
 namespace Opium
 {
+
 	class OPIUM_API ImGuiLayer : public Layer
 	{
 	public:
@@ -24,7 +28,14 @@ namespace Opium
 		
 		void BlockEvents(bool block) { m_BlockEvents = block; }
 
+		void* GetFontPtr(const std::string& fontName);
+
+		void SetDarkThemeColors();
 	private:
+
+		void LoadFonts(const std::string& fontName);
+		std::unordered_map<std::string, void*> ImGuiFontTable;
+
 		bool m_BlockEvents = true;
 		float m_Time = 0.0f;
 
