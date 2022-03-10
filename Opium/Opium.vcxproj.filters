@@ -1492,6 +1492,7 @@
       <Filter>src\Window</Filter>
     </ClInclude>
     <ClInclude Include="src\Math\Math.h" />
+    <ClInclude Include="src\Renderer\EditorCamera.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="external\ImGuizmo\GraphEditor.cpp">
@@ -1612,5 +1613,6 @@
       <Filter>src\Scene</Filter>
     </ClCompile>
     <ClCompile Include="src\Math\Math.cpp" />
+    <ClCompile Include="src\Renderer\EditorCamera.cpp" />
   </ItemGroup>
 </Project>

@@ -2,6 +2,7 @@
 
 #include <entt.hpp>
 #include <Opium/Timestep.h>
+#include <Renderer/EditorCamera.h>
 
 namespace Opium
 {
@@ -16,7 +17,9 @@ namespace Opium
 		Entity CreateEntity(const std::string& name = std::string());
 		void RemoveEntity(Entity entity);
 
-		void OnUpdate(Timestep ts);
+
+		void OnUpdateEditor(Timestep ts, EditorCamera& camera);
+		void OnUpdateRuntime(Timestep ts);
 		void OnViewportResize(uint32_t width, uint32_t height);
 
 		Entity GetPrimaryCameraEntity();

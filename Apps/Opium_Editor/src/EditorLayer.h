@@ -3,6 +3,8 @@
 #include <Opium.h>
 #include <GuiComponents/SceneHierarchyComponent.h>
 
+#include <Renderer/EditorCamera.h>
+
 namespace Opium
 {
 	class EditorLayer : public Opium::Layer
@@ -37,6 +39,7 @@ namespace Opium
 		Entity m_CameraEntity2;
 
 		bool m_PrimaryCamera = true;
+		EditorCamera m_EditorCamera;
 
 		// Temporary
 		Ref<VertexArray> m_SquareVA;
