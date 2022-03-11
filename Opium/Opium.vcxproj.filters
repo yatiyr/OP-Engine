@@ -49,6 +49,9 @@
     <Filter Include="src\Input">
       <UniqueIdentifier>{EC4823B3-58B3-D729-A1F1-88CF0D9BB57E}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Math">
+      <UniqueIdentifier>{261422CF-12E1-7CDA-3BFA-6A822726B268}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\Opium">
       <UniqueIdentifier>{E6D690B3-5241-452A-9B7F-F6CF0729237F}</UniqueIdentifier>
     </Filter>
@@ -69,6 +72,9 @@
     </Filter>
     <Filter Include="src\Scene">
       <UniqueIdentifier>{0A06D2B3-7670-862A-BFAE-37D02B58647F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\ScriptManager">
+      <UniqueIdentifier>{8C4688AF-F85C-8645-41D4-1167AD2957CD}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\Utils">
       <UniqueIdentifier>{4D9AFFB3-B904-B42A-0243-65D06EEC917F}</UniqueIdentifier>
@@ -1374,6 +1380,9 @@
     <ClInclude Include="src\Input\MouseButtonCodes.h">
       <Filter>src\Input</Filter>
     </ClInclude>
+    <ClInclude Include="src\Math\Math.h">
+      <Filter>src\Math</Filter>
+    </ClInclude>
     <ClInclude Include="src\Opium.h">
       <Filter>src</Filter>
     </ClInclude>
@@ -1431,6 +1440,9 @@
     <ClInclude Include="src\Renderer\Camera.h">
       <Filter>src\Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="src\Renderer\EditorCamera.h">
+      <Filter>src\Renderer</Filter>
+    </ClInclude>
     <ClInclude Include="src\Renderer\Framebuffer.h">
       <Filter>src\Renderer</Filter>
     </ClInclude>
@@ -1485,14 +1497,21 @@
     <ClInclude Include="src\Scene\ScriptableEntity.h">
       <Filter>src\Scene</Filter>
     </ClInclude>
+    <ClInclude Include="src\ScriptManager\InternalCallArranger.h">
+      <Filter>src\ScriptManager</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ScriptManager\ScriptManager.h">
+      <Filter>src\ScriptManager</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ScriptManager\Wrappers.h">
+      <Filter>src\ScriptManager</Filter>
+    </ClInclude>
     <ClInclude Include="src\Utils\PlatformUtils.h">
       <Filter>src\Utils</Filter>
     </ClInclude>
     <ClInclude Include="src\Window\Window.h">
       <Filter>src\Window</Filter>
     </ClInclude>
-    <ClInclude Include="src\Math\Math.h" />
-    <ClInclude Include="src\Renderer\EditorCamera.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="external\ImGuizmo\GraphEditor.cpp">
@@ -1521,6 +1540,9 @@
     </ClCompile>
     <ClCompile Include="src\Gui\ImGuiLayer.cpp">
       <Filter>src\Gui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Math\Math.cpp">
+      <Filter>src\Math</Filter>
     </ClCompile>
     <ClCompile Include="src\Opium\Application.cpp">
       <Filter>src\Opium</Filter>
@@ -1565,6 +1587,9 @@
       <Filter>src\Platform\Windows</Filter>
     </ClCompile>
     <ClCompile Include="src\Renderer\Buffer.cpp">
+      <Filter>src\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Renderer\EditorCamera.cpp">
       <Filter>src\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\Renderer\Framebuffer.cpp">
@@ -1612,7 +1637,14 @@
     <ClCompile Include="src\Scene\SceneSerializer.cpp">
       <Filter>src\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="src\Math\Math.cpp" />
-    <ClCompile Include="src\Renderer\EditorCamera.cpp" />
+    <ClCompile Include="src\ScriptManager\InternalCallArranger.cpp">
+      <Filter>src\ScriptManager</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ScriptManager\ScriptManager.cpp">
+      <Filter>src\ScriptManager</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ScriptManager\Wrappers.cpp">
+      <Filter>src\ScriptManager</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

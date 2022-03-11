@@ -19,7 +19,7 @@ namespace Opium
 
 			OP_ENGINE_ASSERT(!HasComponent<T>(), "Entity already has a component");
 			T& component = m_Scene->m_Registry.emplace<T>(m_EntityHandle, std::forward<Args>(args)...);
-			m_Scene->OnComponentAdded<T>(*this, component);
+			m_Scene->OnComponentAdded<T>(*this, component); // TODO: SORT THIS OUT
 			return component;
 		}
 
@@ -60,5 +60,7 @@ namespace Opium
 	private:
 		entt::entity m_EntityHandle{ entt::null };
 		Scene* m_Scene = nullptr;
+
+		friend class ScriptManager;
 	};
 }

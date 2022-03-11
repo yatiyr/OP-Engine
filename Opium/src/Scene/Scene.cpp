@@ -7,6 +7,9 @@
 
 #include <Scene/Entity.h>
 
+#include <ScriptManager/ScriptManager.h>
+
+
 namespace Opium
 {
 	Scene::Scene()
@@ -37,9 +40,23 @@ namespace Opium
 	{
 		Renderer2D::BeginScene(camera);
 
+
+		m_Registry.view<ScriptComponent>().each([=](auto entity, auto& comp)
+		{
+				Entity e = { entity, this };
+				ScriptManager::OnUpdateEntity(e, ts);
+		});
+
 		auto group = m_Registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
 		for (auto entity : group)
 		{
+			Entity e = { entity, this };
+
+			if (e.HasComponent<ScriptComponent>())
+			{
+				ScriptManager::OnUpdateEntity((uint32_t)e, ts);
+			}
+
 			auto [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
 
 			Renderer2D::DrawQuad(transform.GetTransform(), sprite.Color);
@@ -169,6 +186,14 @@ namespace Opium
 	void Scene::OnComponentAdded<NativeScriptComponent>(Entity entity, NativeScriptComponent& component)
 	{
 
+	}
+
+
+	template<>
+	void Scene::OnComponentAdded<ScriptComponent>(Entity entity, ScriptComponent& component)
+	{
+		uint32_t sceneID = 0;
+		ScriptManager::OnInitEntity(component, (uint32_t)entity, sceneID);
 	}
 
 }

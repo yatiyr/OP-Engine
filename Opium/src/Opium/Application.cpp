@@ -5,6 +5,8 @@
 
 #include <Renderer/Renderer.h>
 
+#include <ScriptManager/ScriptManager.h>
+
 namespace Opium
 {
 
@@ -22,6 +24,7 @@ namespace Opium
 		m_Window->SetEventCallback(OP_BIND_EVENT_FUNCTION(Application::OnEvent));
 
 		Renderer::Init();
+		ScriptManager::InitializeManager("assets/scripts/ExampleOpiumApp.dll");
 
 		m_ImGuiLayer = new ImGuiLayer();
 		PushOverlay(m_ImGuiLayer);

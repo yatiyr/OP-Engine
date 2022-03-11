@@ -80,4 +80,12 @@ namespace Opium
 			DestroyScript = [](NativeScriptComponent* nsc) { delete nsc->Instance; nsc->Instance = nullptr; };
 		}
 	};
+
+	struct ScriptComponent
+	{
+		std::string ModuleName;
+
+		ScriptComponent() = default;
+		ScriptComponent(const ScriptComponent&) = default;
+	};
 }

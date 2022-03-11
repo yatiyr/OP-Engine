@@ -2,7 +2,7 @@
 
 workspace "Opium"
     architecture "x64"
-    startproject "OpiumApp"
+    startproject "Opium_Editor"
 
     configurations
     {
@@ -13,7 +13,7 @@ workspace "Opium"
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
--- Include directories relative to root folder ( solution directory )
+-- Directories we which we need to include
 IncludeDir = {}
 IncludeDir["GLFW"] = "Opium/external/GLFW/include"
 IncludeDir["Glad"] = "Opium/external/Glad/include"
@@ -23,13 +23,21 @@ IncludeDir["stb_image"] = "Opium/external/stb_image"
 IncludeDir["entt"] = "Opium/external/entt/include"
 IncludeDir["yaml_cpp"] = "Opium/external/yaml-cpp/include"
 IncludeDir["ImGuizmo"] = "Opium/external/ImGuizmo"
+IncludeDir["Mono"] = "Opium/external/mono/include"
 
+LibraryDir = {}
+LibraryDir["Mono"] = "%{wks.location}/Opium/external/mono/lib/Release/mono-2.0-sgen.lib"
 
+--MonoBinDir = "%{wks.location}/Opium/external/mono/mono/bin"
+
+group "ThirdParty"
 include "Opium/external/GLFW"
 include "Opium/external/Glad"
 include "Opium/external/imgui"
 include "Opium/external/yaml-cpp"
+group ""
 
+group "OpiumProjectCore"
 project "Opium"
     location "Opium"
     kind "StaticLib"
@@ -47,6 +55,8 @@ project "Opium"
     {
         "%{prj.name}/src/**.h",
         "%{prj.name}/src/**.cpp",
+        "%{prj.name}/src/**.hpp",
+	    "%{prj.name}/src/**.cpp",
         "%{prj.name}/external/stb_image/**.h",
         "%{prj.name}/external/stb_image/**.cpp",
         "%{prj.name}/external/glm/glm/**.hpp",
@@ -59,7 +69,7 @@ project "Opium"
     defines
     {
         "_CRT_SECURE_NO_WARNINGS",
-	"YAML_CPP_STATIC_DEFINE"
+	    "YAML_CPP_STATIC_DEFINE"
     }
 
     includedirs
@@ -74,7 +84,8 @@ project "Opium"
         "%{IncludeDir.stb_image}",
         "%{IncludeDir.entt}",
         "%{IncludeDir.yaml_cpp}",
-        "%{IncludeDir.ImGuizmo}"
+        "%{IncludeDir.ImGuizmo}",
+	    "%{IncludeDir.Mono}"
     }
 
     links
@@ -83,7 +94,8 @@ project "Opium"
         "Glad",
         "ImGui",
         "yaml-cpp",
-        "opengl32.lib"
+        "opengl32.lib",
+	    "%{LibraryDir.Mono}"
     }
 
     filter "files:Opium/external/ImGuizmo/**.cpp"
@@ -114,8 +126,110 @@ project "Opium"
         runtime "Release"
         optimize "on"
 
+project "Opium-Script"
+	location "Opium-Script"
+	kind "SharedLib"
+	language "C#"
 
-project "OpiumApp"
+	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+
+	files
+	{
+		"%{prj.name}/src/**.cs"
+	}
+group ""
+
+
+group "Opium-Tools"
+project "Opium_Editor"
+    location "Tools/Opium_Editor"
+    kind "ConsoleApp"
+    language "C++"
+    cppdialect "C++17"
+    staticruntime "on"
+
+    targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+    objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+
+    files
+    {
+        "Tools/%{prj.name}/src/**.h",
+	    "Tools/%{prj.name}/src/**.hpp",
+        "Tools/%{prj.name}/src/**.cpp",
+	    "Tools/%{prj.name}/src/**.c"
+    }
+
+    includedirs
+    {
+        "Opium/external/spdlog/include",
+        "Opium/src",
+	    "Opium/src/Config",
+        "Opium/external",
+        "%{IncludeDir.glm}",
+        "%{IncludeDir.entt}",
+        "%{IncludeDir.ImGuizmo}",
+	    "Tools/%{prj.name}/src"
+    }
+
+    links
+    {
+        "Opium"
+    }
+
+
+    postbuildcommands
+	{
+           '{COPY} "%{wks.location}/Tools/Opium_Editor/assets" "%{cfg.targetdir}/assets"',
+	       '{COPY} "%{wks.location}/Opium/external/mono/bin/Release/mono-2.0-sgen.dll" "%{cfg.targetdir}"'
+	}
+
+
+    filter "system:windows"
+        systemversion "latest"
+
+        defines
+        {
+            "OP_PLATFORM_WINDOWS"
+        }
+
+    filter "configurations:Debug"
+        defines "OP_DEBUG"
+        runtime "Debug"
+        symbols "on"
+
+    filter "configurations:Release"
+        defines "OP_RELEASE"
+        runtime "Release"
+        optimize "speed"
+
+    filter "configurations:Dist"
+        defines "OP_DIST"
+        runtime "Release"
+        optimize "on"
+group ""    
+    
+
+
+group "OpiumApps"
+project "ExampleOpiumApp"
+	location "Apps/ExampleOpiumApp"
+	kind "SharedLib"
+	language "C#"
+
+	targetdir ("Tools/Opium_Editor/assets/scripts")
+	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+
+	files
+	{
+		"%{prj.name}/src/**.cs"
+	}
+
+	links
+	{
+		"Opium-Script"
+	}
+--[[project "OpiumApp"
     location "Apps/OpiumApp"
     kind "ConsoleApp"
     language "C++"
@@ -168,66 +282,6 @@ project "OpiumApp"
         defines "OP_DIST"
         runtime "Release"
         optimize "on"
-    
-    
-project "Opium_Editor"
-    location "Apps/Opium_Editor"
-    kind "ConsoleApp"
-    language "C++"
-    cppdialect "C++17"
-    staticruntime "on"
-
-    targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-    objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
-
-    files
-    {
-        "Apps/%{prj.name}/src/**.h",
-        "Apps/%{prj.name}/src/**.cpp"
-    }
-
-    includedirs
-    {
-        "Opium/external/spdlog/include",
-        "Opium/src",
-	    "Opium/src/Config",
-        "Opium/external",
-        "%{IncludeDir.glm}",
-        "%{IncludeDir.entt}",
-        "%{IncludeDir.ImGuizmo}",
-	    "Apps/%{prj.name}/src"
-    }
-
-    links
-    {
-        "Opium"
-    }
-
-    filter "system:windows"
-        systemversion "latest"
-
-        defines
-        {
-            "OP_PLATFORM_WINDOWS"
-        }
-
-    filter "configurations:Debug"
-        defines "OP_DEBUG"
-        runtime "Debug"
-        symbols "on"
-
-    filter "configurations:Release"
-        defines "OP_RELEASE"
-        runtime "Release"
-        optimize "speed"
-
-    filter "configurations:Dist"
-        defines "OP_DIST"
-        runtime "Release"
-        optimize "on"
-    
-    
-
-    
-
+--]] 
+group ""
         
