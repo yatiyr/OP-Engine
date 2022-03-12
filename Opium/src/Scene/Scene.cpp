@@ -41,11 +41,11 @@ namespace Opium
 		Renderer2D::BeginScene(camera);
 
 
-		m_Registry.view<ScriptComponent>().each([=](auto entity, auto& comp)
+		/*m_Registry.view<ScriptComponent>().each([=](auto entity, auto& comp)
 		{
 				Entity e = { entity, this };
 				ScriptManager::OnUpdateEntity(e, ts);
-		});
+		}); */
 
 		auto group = m_Registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
 		for (auto entity : group)

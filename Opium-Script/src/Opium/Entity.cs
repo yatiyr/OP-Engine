@@ -9,6 +9,20 @@ namespace Opium
 {
     public class Entity
     {
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void CreateComponent_Native(uint sceneID, uint entityID, Type type);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern bool HasComponent_Native(uint sceneID, uint entityID, Type type);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void GetTransform_Native(uint sceneID, uint entityID, out Mat4 matrix);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void SetTransform_Native(uint sceneID, uint entityID, ref Mat4 matrix);
+
+
         public uint SceneID { get; private set; }
         public uint EntityID { get; private set; }
 
@@ -52,18 +66,6 @@ namespace Opium
         {
             SetTransform_Native(SceneID, EntityID, ref transform);
         }
-
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        private static extern void CreateComponent_Native(uint sceneID, uint entityID, Type type);
-
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        private static extern bool HasComponent_Native(uint sceneID, uint entityID, Type type);
-
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        private static extern void GetTransform_Native(uint sceneID, uint entityID, out Mat4 matrix);
-
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        private static extern void SetTransform_Native(uint sceneID, uint entityID, ref Mat4 matrix);
 
     }
 }
