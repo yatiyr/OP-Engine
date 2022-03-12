@@ -65,6 +65,11 @@ namespace Opium
 		ImGui::End();
 	}
 
+	void SceneHierarchyComponent::SetSelectedEntity(Entity entity)
+	{
+		m_SelectionContext = entity;
+	}
+
 	void SceneHierarchyComponent::DrawEntityNode(Entity entity)
 	{
 		auto& tag = entity.GetComponent<TagComponent>().Tag;
