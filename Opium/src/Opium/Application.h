@@ -15,10 +15,23 @@
 
 namespace Opium
 {
+
+	struct AppCommandLineArguments
+	{
+		int Count = 0;
+		char** Args = nullptr;
+
+		const char* operator[](int index) const
+		{
+			OP_ENGINE_ASSERT(index < Count);
+			return Args[index];
+		}
+	};
+
 	class OPIUM_API Application
 	{
 	public:
-		Application(const std::string& name = "Opium Application");
+		Application(const std::string& name = "Opium Application", AppCommandLineArguments args = AppCommandLineArguments());
 		virtual ~Application();
 
 		void Run();
@@ -34,11 +47,15 @@ namespace Opium
 
 		ImGuiLayer* GetImGuiLayer() { return m_ImGuiLayer; }
 
-		inline static Application& Get() { return *s_Instance; }
+		static Application& Get() { return *s_Instance; }
+
+		AppCommandLineArguments GetCommandLineArguments() const { return m_CommandLineArguments; }
+
 	private:
 		bool OnWindowClose(WindowCloseEvent& e);
 		bool OnWindowResize(WindowResizeEvent& e);
 	private:
+		AppCommandLineArguments m_CommandLineArguments;
 		std::unique_ptr<Window> m_Window;
 		ImGuiLayer* m_ImGuiLayer;
 		bool is_running = true;
@@ -50,5 +67,5 @@ namespace Opium
 	};
 
 	// Client will define this
-	Application* CreateApplication();
+	Application* CreateApplication(AppCommandLineArguments args);
 }

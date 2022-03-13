@@ -13,7 +13,8 @@ namespace Opium
 	Application* Application::s_Instance = nullptr;
 
 
-	Application::Application(const std::string& name)
+	Application::Application(const std::string& name, AppCommandLineArguments args)
+		: m_CommandLineArguments(args)
 	{
 		OP_PROFILE_FUNCTION();
 

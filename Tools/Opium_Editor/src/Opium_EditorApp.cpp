@@ -12,8 +12,8 @@ namespace Opium
     class OpiumEditor : public Application
     {
     public:
-        OpiumEditor()
-            : Application("Opium Editor")
+        OpiumEditor(AppCommandLineArguments args)
+            : Application("Opium Editor", args)
         {
             PushLayer(new EditorLayer());
         }
@@ -24,8 +24,8 @@ namespace Opium
         }
     };
 
-    Application* CreateApplication()
+    Application* CreateApplication(AppCommandLineArguments args)
     {
-        return new OpiumEditor;
+        return new OpiumEditor(args);
     }
 }

@@ -3,7 +3,7 @@
 #define GLM_FORCE_AVX
 #define GLM_FORCE_SSE2
 
-#include <stdio.h>
+// #include <stdio.h>
 
 // Applications using Opium Engine library use this header
 #include <Opium/Application.h>

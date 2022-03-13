@@ -21,8 +21,7 @@
     <OutputPath>..\..\Tools\Opium_Editor\assets\scripts\</OutputPath>
     <BaseIntermediateOutputPath>..\..\bin-int\Debug-windows-x86_64\ExampleOpiumApp\</BaseIntermediateOutputPath>
     <IntermediateOutputPath>$(BaseIntermediateOutputPath)</IntermediateOutputPath>
-    <DefineConstants>
-    </DefineConstants>
+    <DefineConstants></DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -34,8 +33,7 @@
     <OutputPath>..\..\Tools\Opium_Editor\assets\scripts\</OutputPath>
     <BaseIntermediateOutputPath>..\..\bin-int\Release-windows-x86_64\ExampleOpiumApp\</BaseIntermediateOutputPath>
     <IntermediateOutputPath>$(BaseIntermediateOutputPath)</IntermediateOutputPath>
-    <DefineConstants>
-    </DefineConstants>
+    <DefineConstants></DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -47,8 +45,7 @@
     <OutputPath>..\..\Tools\Opium_Editor\assets\scripts\</OutputPath>
     <BaseIntermediateOutputPath>..\..\bin-int\Dist-windows-x86_64\ExampleOpiumApp\</BaseIntermediateOutputPath>
     <IntermediateOutputPath>$(BaseIntermediateOutputPath)</IntermediateOutputPath>
-    <DefineConstants>
-    </DefineConstants>
+    <DefineConstants></DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -59,7 +56,6 @@
   <ItemGroup Condition=" '$(Configuration)|$(Platform)' == 'Dist|x64' ">
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="src\Script.cs" />
   </ItemGroup>
   <ItemGroup>

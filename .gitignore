@@ -1,6 +1,15 @@
 build
 out
-.vs
+.vs/
 bin
 bin-int
 .vscode
+ConfigureScripts/__pycache__
+
+**.log
+**.sln
+**.vcxproj
+**.vcxproj.filters
+**.vcxproj.user
+
+Tools/Opium_Editor/assets/cache

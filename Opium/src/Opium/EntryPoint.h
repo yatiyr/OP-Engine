@@ -4,7 +4,7 @@
 // But this is going to be changed in the future
 #ifdef OP_PLATFORM_WINDOWS
 
-	extern Opium::Application* Opium::CreateApplication();
+	extern Opium::Application* Opium::CreateApplication(AppCommandLineArguments args);
 
 	int main(int argc, char** argv)
 	{
@@ -13,7 +13,7 @@
 		OP_APP_INFO("Initialized app log!");
 
 		OP_PROFILE_BEGIN_SESSION("Startup Session", "OpiumProfile_startup.json");
-		auto app = Opium::CreateApplication();
+		auto app = Opium::CreateApplication({ argc, argv });
 		OP_PROFILE_END_SESSION();
 
 		OP_PROFILE_BEGIN_SESSION("Runtime Session", "OpiumProfile_runtime.json");

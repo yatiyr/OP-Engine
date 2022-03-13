@@ -45,6 +45,15 @@ namespace Opium
 		m_Framebuffer = Framebuffer::Create(fbSpec);
 
 		m_ActiveScene = CreateRef<Scene>();
+
+		auto commandLineArguments = Application::Get().GetCommandLineArguments();
+		if (commandLineArguments.Count > 1)
+		{
+			auto sceneFilePath = commandLineArguments[1];
+			SceneSerializer serializer(m_ActiveScene);
+			serializer.DeserializeText(sceneFilePath);
+		}
+
 		s_ActiveScene = m_ActiveScene.get();
 
 		m_EditorCamera = EditorCamera(30.0f, 1280.0f / 720.0f, 0.1, 1000.0f);
