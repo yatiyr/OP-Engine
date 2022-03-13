@@ -10,6 +10,7 @@
     <ClInclude Include="src\GuiComponents\SceneHierarchyComponent.h">
       <Filter>GuiComponents</Filter>
     </ClInclude>
+    <ClInclude Include="src\GuiComponents\ContentBrowserComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\EditorLayer.cpp" />
@@ -17,5 +18,6 @@
       <Filter>GuiComponents</Filter>
     </ClCompile>
     <ClCompile Include="src\Opium_EditorApp.cpp" />
+    <ClCompile Include="src\GuiComponents\ContentBrowserComponent.cpp" />
   </ItemGroup>
 </Project>

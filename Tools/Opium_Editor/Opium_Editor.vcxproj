@@ -148,10 +148,12 @@ IF EXIST "$(SolutionDir)\Opium\external\mono\bin\Release\mono-2.0-sgen.dll"\ (xc
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="src\EditorLayer.h" />
+    <ClInclude Include="src\GuiComponents\ContentBrowserComponent.h" />
     <ClInclude Include="src\GuiComponents\SceneHierarchyComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\EditorLayer.cpp" />
+    <ClCompile Include="src\GuiComponents\ContentBrowserComponent.cpp" />
     <ClCompile Include="src\GuiComponents\SceneHierarchyComponent.cpp" />
     <ClCompile Include="src\Opium_EditorApp.cpp" />
   </ItemGroup>

@@ -2,6 +2,7 @@
 
 #include <Opium.h>
 #include <GuiComponents/SceneHierarchyComponent.h>
+#include <GuiComponents/ContentBrowserComponent.h>
 
 #include <Renderer/EditorCamera.h>
 
@@ -60,6 +61,7 @@ namespace Opium
 
 		// Components
 		SceneHierarchyComponent m_SceneGraph;
+		ContentBrowserComponent m_ContentBrowser;
 
 		int m_GizmoType = -1;
 

@@ -289,7 +289,7 @@ namespace Opium
 		}
 
 		m_SceneGraph.OnImGuiRender();
-
+		m_ContentBrowser.OnImGuiRender();
 
 		ImGui::Begin("Stats");
 
