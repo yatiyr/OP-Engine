@@ -2,6 +2,8 @@
 
 #include <filesystem>
 
+#include <Renderer/Texture.h>
+
 namespace Opium
 {
 	class ContentBrowserComponent
@@ -12,5 +14,8 @@ namespace Opium
 
 	private:
 		std::filesystem::path m_CurrentDirectory;
+
+		Ref<Texture2D> m_FolderIcon;
+		Ref<Texture2D> m_FileIcon;
 	};
 }
