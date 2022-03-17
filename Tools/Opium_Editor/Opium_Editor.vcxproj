@@ -148,13 +148,21 @@ IF EXIST "$(SolutionDir)\Opium\external\mono\bin\Release\mono-2.0-sgen.dll"\ (xc
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="src\EditorLayer.h" />
-    <ClInclude Include="src\GuiComponents\ContentBrowserComponent.h" />
-    <ClInclude Include="src\GuiComponents\SceneHierarchyComponent.h" />
+    <ClInclude Include="src\GuiComponents\Scene\SceneUtilities\ContentBrowserComponent.h" />
+    <ClInclude Include="src\GuiComponents\Footer\FooterUI.h" />
+    <ClInclude Include="src\GuiComponents\Header\HeaderUI.h" />
+    <ClInclude Include="src\GuiComponents\Scene\SceneUtilities\SceneHierarchyComponent.h" />
+    <ClInclude Include="src\GuiComponents\Scene\SceneUI.h" />
+    <ClInclude Include="src\GuiComponents\Scene\SceneUtilities\ViewportComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\EditorLayer.cpp" />
-    <ClCompile Include="src\GuiComponents\ContentBrowserComponent.cpp" />
-    <ClCompile Include="src\GuiComponents\SceneHierarchyComponent.cpp" />
+    <ClCompile Include="src\GuiComponents\Scene\SceneUtilities\ContentBrowserComponent.cpp" />
+    <ClCompile Include="src\GuiComponents\Footer\FooterUI.cpp" />
+    <ClCompile Include="src\GuiComponents\Header\HeaderUI.cpp" />
+    <ClCompile Include="src\GuiComponents\Scene\SceneUtilities\SceneHierarchyComponent.cpp" />
+    <ClCompile Include="src\GuiComponents\Scene\SceneUI.cpp" />
+    <ClCompile Include="src\GuiComponents\Scene\SceneUtilities\ViewportComponent.cpp" />
     <ClCompile Include="src\Opium_EditorApp.cpp" />
   </ItemGroup>
   <ItemGroup>

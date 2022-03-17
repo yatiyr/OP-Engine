@@ -1,8 +1,11 @@
 #pragma once
 
 #include <Opium.h>
-#include <GuiComponents/SceneHierarchyComponent.h>
-#include <GuiComponents/ContentBrowserComponent.h>
+#include <GuiComponents/Scene/SceneUtilities/SceneHierarchyComponent.h>
+#include <GuiComponents/Scene/SceneUtilities/ContentBrowserComponent.h>
+
+// Temp
+#include <GuiComponents/Scene/SceneUtilities/ViewportComponent.h>
 
 #include <Renderer/EditorCamera.h>
 
@@ -19,6 +22,11 @@ namespace Opium
 		virtual void OnUpdate(Timestep ts) override;
 		virtual void OnImGuiRender() override;
 		virtual void OnEvent(Event& e) override;
+
+
+		static EditorLayer* CreateEditor();
+		static EditorLayer* GetEditor() { return s_Instance; }
+
 	private:
 		bool OnKeyPressed(KeyPressedEvent& e);
 		bool OnMouseButtonPressed(MouseButtonPressedEvent& e);
@@ -33,7 +41,20 @@ namespace Opium
 
 		// UI Panels
 		void UI_Toolbar();
+
+
+		// Temp
+		void SetSelectedEntity();
+
 	private:
+		void RenderDockspace();
+
+	private:
+		// Temp
+		ViewportComponent m_ViewportComponent;
+
+
+
 		OrthographicCameraController m_CameraController;
 		bool m_ViewportFocused = false;
 		bool m_ViewportHovered = false;
@@ -85,5 +106,10 @@ namespace Opium
 
 		SceneState m_SceneState = SceneState::Edit;
 
+	private:
+		static EditorLayer* s_Instance;
+
+
+		friend class ViewportComponent;
 	};
 }

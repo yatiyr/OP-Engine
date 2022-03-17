@@ -31,6 +31,9 @@ namespace Opium
 		void* GetFontPtr(const std::string& fontName);
 
 		void SetDarkThemeColors();
+		// void PushGlobalStyles();
+		// void PopGlobalStyles();
+		void SetGlobalStyles();
 	private:
 
 		void LoadFonts(const std::string& fontName);

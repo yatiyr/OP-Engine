@@ -57,6 +57,9 @@ namespace Opium
 
 		{
 			OP_PROFILE_SCOPE("glfw window creation");
+
+			glfwWindowHint(GLFW_SCALE_TO_MONITOR, true);
+
 			m_Window = glfwCreateWindow((int)props.Width, (int)props.Height, m_Data.Title.c_str(), nullptr, nullptr);
 		}
 		m_Context = new OpenGLContext(m_Window);
@@ -198,6 +201,15 @@ namespace Opium
 	float WinWindow::GetTime() const
 	{
 		return glfwGetTime();
+	}
+
+	float WinWindow::GetDpiScale() const
+	{
+		float xscale, yscale;
+		GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+		glfwGetMonitorContentScale(monitor, &xscale, &yscale);
+
+		return xscale;
 	}
 
 

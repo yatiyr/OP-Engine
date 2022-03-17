@@ -51,6 +51,8 @@ namespace Opium
 
 		AppCommandLineArguments GetCommandLineArguments() const { return m_CommandLineArguments; }
 
+		float GetDpiScale() { return m_DpiScale; }
+
 	private:
 		bool OnWindowClose(WindowCloseEvent& e);
 		bool OnWindowResize(WindowResizeEvent& e);
@@ -62,6 +64,7 @@ namespace Opium
 		bool m_Minimized = false;
 		LayerStack m_LayerStack;
 		float m_LastFrameTime = 0.0f;
+		float m_DpiScale = 0.0f;
 	private:
 		static Application* s_Instance;
 	};

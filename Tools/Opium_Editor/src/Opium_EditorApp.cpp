@@ -15,7 +15,8 @@ namespace Opium
         OpiumEditor(AppCommandLineArguments args)
             : Application("Opium Editor", args)
         {
-            PushLayer(new EditorLayer());
+            EditorLayer* editorLayer = EditorLayer::CreateEditor();
+            PushLayer(editorLayer);
         }
 
         ~OpiumEditor()

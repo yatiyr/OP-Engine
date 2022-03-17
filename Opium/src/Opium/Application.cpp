@@ -24,6 +24,8 @@ namespace Opium
 		m_Window = std::unique_ptr<Window>(Window::Create(WinProperties(name)));
 		m_Window->SetEventCallback(OP_BIND_EVENT_FUNCTION(Application::OnEvent));
 
+		m_DpiScale = m_Window->GetDpiScale();
+
 		Renderer::Init();
 		ScriptManager::InitializeManager("assets/scripts/ExampleOpiumApp.dll");
 

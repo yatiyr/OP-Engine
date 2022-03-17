@@ -1,4 +1,4 @@
-#include <GuiComponents/SceneHierarchyComponent.h>
+#include <GuiComponents/Scene/SceneUtilities/SceneHierarchyComponent.h>
 
 #include <imgui/imgui.h>
 #include <imgui/imgui_internal.h>

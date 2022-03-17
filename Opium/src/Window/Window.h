@@ -38,6 +38,8 @@ namespace Opium
 		virtual void* GetNativeWindow() const = 0;
 		virtual float GetTime() const = 0;
 
+		virtual float GetDpiScale() const = 0;
+
 		static Window* Create(const WinProperties& props = WinProperties());
 	};
 }

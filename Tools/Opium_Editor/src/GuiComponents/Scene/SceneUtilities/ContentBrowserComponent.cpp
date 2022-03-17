@@ -1,6 +1,6 @@
 #include <Precomp.h>
 
-#include <GuiComponents/ContentBrowserComponent.h>
+#include <GuiComponents/Scene/SceneUtilities/ContentBrowserComponent.h>
 #include <imgui/imgui.h>
 
 

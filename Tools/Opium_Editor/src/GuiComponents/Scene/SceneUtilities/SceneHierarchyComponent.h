@@ -8,6 +8,7 @@
 
 namespace Opium
 {
+
 	class SceneHierarchyComponent
 	{
 	public:
