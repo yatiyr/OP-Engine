@@ -31,6 +31,7 @@ namespace Opium
 		}
 
 		const glm::mat4& GetViewMatrix() const { return m_ViewMatrix; }
+		void SetViewMatrix(const glm::mat4& view) { m_ViewMatrix = view; }
 		glm::mat4 GetViewProjection() const { return m_Projection * m_ViewMatrix; }
 
 		glm::vec3 GetUpDirection() const;

@@ -23,6 +23,7 @@ project "Opium_Editor"
         "%{wks.location}/Opium/external",
         "%{IncludeDir.glm}",
         "%{IncludeDir.entt}",
+	"%{IncludeDir.FontAwesome}",
         "%{IncludeDir.ImGuizmo}",
 	    "src"
     }

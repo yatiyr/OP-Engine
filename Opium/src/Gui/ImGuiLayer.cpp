@@ -11,8 +11,15 @@
 
 #include <ImGuizmo.h>
 
+#include <IconsMaterialDesign.h>
+
+#include <Gui/Font/Font.h>
+
 namespace Opium
 {
+	extern ImFont* ImGuiIconFontBg = nullptr;
+	extern ImFont* ImGuiIconFontMd = nullptr;
+	extern ImFont* ImGuiIconFontText = nullptr;
 
 	std::unordered_map<std::string, void*> ImGuiFontTable{};
 
@@ -44,8 +51,10 @@ namespace Opium
 		// io.ConfigViewportsNoTaskBarIcon = true;
 
 		LoadFonts("Inter");
-		LoadFonts("Ubuntu");
-		LoadFonts("OpenSans");
+		// LoadFonts("Ubuntu");
+		// LoadFonts("OpenSans");
+		LoadIconFonts();
+
 		io.FontDefault = (ImFont*)ImGuiFontTable["Inter-Light-14"];
 		
 
@@ -226,7 +235,7 @@ namespace Opium
 		style.WindowRounding = 1.0f;
 		style.FrameRounding = 2.0f;
 
-		style.WindowPadding = ImVec2{ 0.0f, 0.0f };
+		// style.WindowPadding = ImVec2{ 0.0f, 0.0f };
 
 		style.AntiAliasedLinesUseTex = true;
 		style.AntiAliasedFill = true;
@@ -244,24 +253,48 @@ namespace Opium
 		float dpiScale = Application::Get().GetDpiScale();
 
 		ImGuiIO& io = ImGui::GetIO();
+		// io.Fonts->AddFontDefault();
 
 		std::string fontStyles[4] = { "Light", "Regular", "Medium", "Bold" };
 		int fontSizes[8] = { 6, 8, 10, 12, 14, 16, 18, 20 };
 
-		for (int i = 0; i < 4; i++)
+		for (int i = 0; i < 1; i++)
 		{
-			for (int j = 0; j < 8; j++)
+			for (int j = 0; j < 1; j++)
 			{
 				ImFontConfig fontCfg;
 				fontCfg.OversampleH = 8;
 				fontCfg.OversampleV = 2;
 				fontCfg.RasterizerMultiply = 1.2f;
 
-				std::string path = std::string("assets/fonts/") + fontName + "/" + fontName + "-" + fontStyles[i] + ".ttf";
-				std::string finalName = fontName + "-" + fontStyles[i] + "-" + std::to_string(fontSizes[j]);
-				ImGuiFontTable[finalName] = (void*)io.Fonts->AddFontFromFileTTF(path.c_str(), fontSizes[j] * dpiScale * 1.1f, &fontCfg);
+				std::string path = std::string("assets/fonts/") + fontName + "/" + fontName + "-" + fontStyles[1] + ".ttf";
+				std::string finalName = fontName + "-" + fontStyles[1] + "-" + std::to_string(fontSizes[4]);
+				ImGuiFontTable[finalName] = (void*)io.Fonts->AddFontFromFileTTF(path.c_str(), fontSizes[4] * dpiScale * 1.1f, &fontCfg);
 			}
 		}
+	}
+
+	void ImGuiLayer::LoadIconFonts()
+	{
+		float dpiScale = Application::Get().GetDpiScale();
+
+		ImFontConfig fontCfg;
+		fontCfg.OversampleH = 1;
+		fontCfg.OversampleV = 1;
+		fontCfg.RasterizerMultiply = 1.2f;
+		// fontCfg.MergeMode = true;
+		// fontCfg.GlyphMinAdvanceX = 28.0f * dpiScale;
+		// fontCfg.GlyphOffset.y = 10.0;
+		// fontCfg.GlyphMinAdvanceX = 28.0f;
+		// fontCfg.PixelSnapH = true;
+
+		ImGuiIO& io = ImGui::GetIO();
+		static const ImWchar icons_ranges[] = { ICON_MIN_OP, ICON_MAX_OP, 0 };
+		ImGuiIconFontBg = io.Fonts->AddFontFromFileTTF("assets/fonts/Webfonts/icomoon.ttf", 32.0f * dpiScale, &fontCfg, icons_ranges);
+
+		ImGuiIconFontMd = io.Fonts->AddFontFromFileTTF("assets/fonts/Webfonts/icomoon.ttf", 24.0f * dpiScale, &fontCfg, icons_ranges);
+
+		ImGuiIconFontText = io.Fonts->AddFontFromFileTTF("assets/fonts/Webfonts/icomoon.ttf", 14.0f * dpiScale, &fontCfg, icons_ranges);
 	}
 
 }

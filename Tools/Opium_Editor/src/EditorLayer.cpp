@@ -13,8 +13,19 @@
 
 #include <Math/Math.h>
 
+
+// #include <IconsMaterialDesign.h>
+
+#include <Gui/Font/Font.h>
+#include <GuiComponents/GuiBlocks/GuiBlockGenerator.h>
+
 namespace Opium
 {
+
+	extern ImFont* ImGuiIconFontBg;
+	extern ImFont* ImGuiIconFontMd;
+	extern ImFont* ImGuiIconFontText;
+
 	EditorLayer* EditorLayer::s_Instance = nullptr;
 	extern const std::filesystem::path  g_AssetPath;
 
@@ -79,7 +90,7 @@ namespace Opium
 		static bool dockspaceOpen = true;
 		static bool opt_fullscreen = true;
 		static bool opt_padding = false;
-		static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_None;
+		static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_None | ImGuiDockNodeFlags_AutoHideTabBar;
 
 		// We are using the ImGuiWindowFlags_NoDocking flag to make the parent window not dockable into,
 		// because it would be confusing to have two docking targets within each others.
@@ -191,6 +202,7 @@ namespace Opium
 		RenderDockspace();
 
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 10,10 });
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2{ 1000, 200 });
 		if (ImGui::BeginMenuBar())
 		{
 			if (ImGui::BeginMenu("File"))
@@ -221,16 +233,50 @@ namespace Opium
 			ImGui::EndMenuBar();
 		}
 		ImGui::PopStyleVar();
+		ImGui::PopStyleVar();
 
 		m_SceneGraph.OnImGuiRender();
 		m_ContentBrowser.OnImGuiRender();
 
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 50, 50 });
 		ImGui::Begin("Stats");
 
 		std::string name = "None";
 		if (m_HoveredEntity)
 			name = m_HoveredEntity.GetComponent<TagComponent>().Tag;
 		ImGui::Text("Hovered Entity: %s", name.c_str());
+
+
+		Button_BackgroundCol_Text(OP_ICON, ImVec4{ 0.8f, 0.8f, 0.2f, 1.0f },
+			[this]()-> void {
+				OP_ENGINE_TRACE("Clicked Warning Button!");
+				OP_ENGINE_TRACE("Class Member Name {0}", m_DebugName);
+		});
+
+		ImGui::SameLine();
+
+		Button_BackgroundCol_MD(OP_ICON_ADD, ImVec4{ 0.8f, 0.2f, 0.1f, 1.0f },
+			[this]()-> void {
+				OP_ENGINE_TRACE("Clicked Error Button!");
+				OP_ENGINE_TRACE("Class Member Name {0}", m_DebugName);
+		});
+
+		ImGui::SameLine();
+
+		Button_BackgroundCol_MD(OP_ICON_BUILD, ImVec4{0.2f, 0.8f, 0.1f, 1.0f},
+			[this]()-> void {
+				OP_ENGINE_TRACE("Clicked Success Button!");
+				OP_ENGINE_TRACE("Class Member Name {0}", m_DebugName);
+			});
+
+		ImGui::SameLine();
+
+		Button_BackgroundCol_MD(OP_ICON_EYE, ImVec4{ 0.2f, 0.8f, 0.8f, 1.0f },
+			[this]()-> void {
+				OP_ENGINE_TRACE("Clicked Success Button!");
+				OP_ENGINE_TRACE("Class Member Name {0}", m_DebugName);
+			});
+
 
 		auto stats = Renderer2D::GetStats();
 		ImGui::Text("Renderer2D Stats:");
@@ -244,6 +290,10 @@ namespace Opium
 		// ImPlot::GetStyle().AntiAliasedLines = true;
 		// ImPlot::ShowDemoWindow(&showDemoPlot);
 		ImGui::End();
+		ImGui::PopStyleVar();
+
+		bool x = true;
+		ImGui::ShowDemoWindow(&x);
 
 		m_ViewportComponent.OnImGuiRender();
 
@@ -251,6 +301,50 @@ namespace Opium
 
 		ImGui::End();
 		
+		{
+			ImGui::SetNextWindowSize(ImVec2(500, 440), ImGuiCond_FirstUseEver);
+			ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0, 0.0));
+			ImGui::Begin("OP_Test Properties Layout", nullptr, ImGuiWindowFlags_NoTitleBar);
+			ImGui::PushStyleVar(ImGuiStyleVar_ChildBorderSize, 0);
+
+			// search button and menu
+			{
+				ImGui::BeginChild("OP_Test_Top", ImVec2(0, 32), true);
+					ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2{ 4, 4 });
+					ImGui::PushFont(ImGuiIconFontMd);
+					ImGui::Button(OP_ICON);
+					ImGui::PopFont();
+					ImGui::PopStyleVar();
+				ImGui::EndChild();
+			}
+			
+			
+			// icons
+			{
+				ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4{ 0.152f, 0.152f, 0.152f, 1.0f });
+				ImGui::BeginChild("left", ImVec2(32, 0), true);
+					ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2{ 6, 6 });
+					ImGui::PushFont(ImGuiIconFontMd);
+					ImGui::Button(OP_ICON_TRANSFORM);
+					ImGui::Button(OP_ICON_PHYSICS);
+					ImGui::Button(OP_ICON_LIGHT);
+					ImGui::PopFont();
+					ImGui::PopStyleVar();
+				ImGui::EndChild();
+				ImGui::PopStyleColor();
+			}
+
+			ImGui::SameLine();
+
+			ImGui::BeginChild("OP_TestChild_1");
+				ImGui::Text("Hello from child 1");
+			ImGui::EndChild();
+
+
+			ImGui::PopStyleVar();
+			ImGui::End();
+			ImGui::PopStyleVar();
+		}
 
 	}
 

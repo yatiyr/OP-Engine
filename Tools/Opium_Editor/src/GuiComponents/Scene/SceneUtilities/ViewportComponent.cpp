@@ -129,21 +129,22 @@ namespace Opium
 	void ViewportComponent::HandleImGuizmo()
 	{
 		EditorLayer* editorInstance = EditorLayer::GetEditor();
+		// TODO: Support orthographic in the future
+		ImGuizmo::SetOrthographic(false);
+		ImGuizmo::SetDrawlist();
+
+		ImGuizmo::SetRect(m_ViewportBounds[0].x, m_ViewportBounds[0].y,
+			m_ViewportBounds[1].x - m_ViewportBounds[0].x,
+			m_ViewportBounds[1].y - m_ViewportBounds[0].y);
+
+		// Editor Camera
+		const glm::mat4& cameraProjection = EditorLayer::s_Instance->m_EditorCamera.GetProjection();
+		glm::mat4 cameraView = EditorLayer::s_Instance->m_EditorCamera.GetViewMatrix();
+
 
 		Entity selectedEntity = editorInstance->m_SceneGraph.GetSelectedEntity();
 		if (selectedEntity && editorInstance->m_GizmoType != -1)
 		{
-			// TODO: Support orthographic in the future
-			ImGuizmo::SetOrthographic(false);
-			ImGuizmo::SetDrawlist();
-
-			ImGuizmo::SetRect(m_ViewportBounds[0].x, m_ViewportBounds[0].y,
-				m_ViewportBounds[1].x - m_ViewportBounds[0].x,
-				m_ViewportBounds[1].y - m_ViewportBounds[0].y);
-
-			// Editor Camera
-			const glm::mat4& cameraProjection = EditorLayer::s_Instance->m_EditorCamera.GetProjection();
-			glm::mat4 cameraView = EditorLayer::s_Instance->m_EditorCamera.GetViewMatrix();
 
 			// Entity transform
 			auto& tc = selectedEntity.GetComponent<TransformComponent>();
@@ -173,8 +174,22 @@ namespace Opium
 				tc.Rotation += dRotation;
 				tc.Scale = scale;
 			}
-		}
 
+		}
+		const float im[16] =
+		{ 1.f, 0.f, 0.f, 0.f,
+			0.f, 1.f, 0.f, 0.f,
+			0.f, 0.f, 1.f, 0.f,
+			0.f, 0.f, 0.f, 1.f };
+		// ImGuizmo::DrawGrid(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection), im, 100.0f);
+		// ImVec2 viewManipulateBounds( 4 * m_ViewportBounds[1].x / 5, 4 * m_ViewportBounds[0].y / 5);
+		ImVec2 viewManipulateBounds( m_ViewportBounds[1].x - 128, m_ViewportBounds[0].y);
+		// ImGuizmo::ViewManipulate(glm::value_ptr(cameraView), 8.0f, viewManipulateBounds, ImVec2(128, 128), 0x00000000);
+		
+
+		if (ImGuizmo::IsUsing())
+		{
+		}
 	}
 
 }

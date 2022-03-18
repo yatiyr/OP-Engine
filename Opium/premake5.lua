@@ -46,7 +46,8 @@ project "Opium"
         "%{IncludeDir.yaml_cpp}",
         "%{IncludeDir.ImGuizmo}",
 	    "%{IncludeDir.Mono}",
-        "%{IncludeDir.VK_SDK}"
+        "%{IncludeDir.VK_SDK}",
+	"%{IncludeDir.FontAwesome}"
     }
 
     links

@@ -31,3 +31,6 @@
 [submodule "Opium/external/imgui-node-editor"]
 	path = Opium/external/imgui-node-editor
 	url = https://github.com/yatiyr/imgui-node-editor
+[submodule "Opium/external/IconFontCppHeaders"]
+	path = Opium/external/IconFontCppHeaders
+	url = https://github.com/juliettef/IconFontCppHeaders.git

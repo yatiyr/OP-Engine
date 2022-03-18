@@ -14,6 +14,7 @@ IncludeDir["Mono"]        = "%{wks.location}/Opium/external/mono/include"
 IncludeDir["shaderc"]     = "%{wks.location}/Opium/external/shaderc/include"
 IncludeDir["SPIRV_Cross"] = "%{wks.location}/Opium/external/SPIRV-Cross"
 IncludeDir["VK_SDK"]      = "%{VK_SDK}/Include"
+IncludeDir["FontAwesome"] = "%{wks.location}/Opium/external/iconFont"
  
 LibraryDir = {}
 LibraryDir["Mono"]   = "%{wks.location}/Opium/external/mono/lib/Release"

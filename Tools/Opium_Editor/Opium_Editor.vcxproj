@@ -79,7 +79,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>OP_PLATFORM_WINDOWS;OP_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\..\Opium\external\spdlog\include;..\..\Opium\src;..\..\Opium\src\Config;..\..\Opium\external;..\..\Opium\external\glm;..\..\Opium\external\entt\include;..\..\Opium\external\ImGuizmo;src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\Opium\external\spdlog\include;..\..\Opium\src;..\..\Opium\src\Config;..\..\Opium\external;..\..\Opium\external\glm;..\..\Opium\external\entt\include;..\..\Opium\external\iconFont;..\..\Opium\external\ImGuizmo;src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <MinimalRebuild>false</MinimalRebuild>
@@ -101,7 +101,7 @@ IF EXIST "$(SolutionDir)\Opium\external\mono\bin\Release\mono-2.0-sgen.dll"\ (xc
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>OP_PLATFORM_WINDOWS;OP_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\..\Opium\external\spdlog\include;..\..\Opium\src;..\..\Opium\src\Config;..\..\Opium\external;..\..\Opium\external\glm;..\..\Opium\external\entt\include;..\..\Opium\external\ImGuizmo;src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\Opium\external\spdlog\include;..\..\Opium\src;..\..\Opium\src\Config;..\..\Opium\external;..\..\Opium\external\glm;..\..\Opium\external\entt\include;..\..\Opium\external\iconFont;..\..\Opium\external\ImGuizmo;src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -126,7 +126,7 @@ IF EXIST "$(SolutionDir)\Opium\external\mono\bin\Release\mono-2.0-sgen.dll"\ (xc
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>OP_PLATFORM_WINDOWS;OP_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\..\Opium\external\spdlog\include;..\..\Opium\src;..\..\Opium\src\Config;..\..\Opium\external;..\..\Opium\external\glm;..\..\Opium\external\entt\include;..\..\Opium\external\ImGuizmo;src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\Opium\external\spdlog\include;..\..\Opium\src;..\..\Opium\src\Config;..\..\Opium\external;..\..\Opium\external\glm;..\..\Opium\external\entt\include;..\..\Opium\external\iconFont;..\..\Opium\external\ImGuizmo;src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -148,20 +148,21 @@ IF EXIST "$(SolutionDir)\Opium\external\mono\bin\Release\mono-2.0-sgen.dll"\ (xc
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="src\EditorLayer.h" />
-    <ClInclude Include="src\GuiComponents\Scene\SceneUtilities\ContentBrowserComponent.h" />
     <ClInclude Include="src\GuiComponents\Footer\FooterUI.h" />
     <ClInclude Include="src\GuiComponents\Header\HeaderUI.h" />
-    <ClInclude Include="src\GuiComponents\Scene\SceneUtilities\SceneHierarchyComponent.h" />
     <ClInclude Include="src\GuiComponents\Scene\SceneUI.h" />
+    <ClInclude Include="src\GuiComponents\Scene\SceneUtilities\ContentBrowserComponent.h" />
+    <ClInclude Include="src\GuiComponents\Scene\SceneUtilities\SceneHierarchyComponent.h" />
     <ClInclude Include="src\GuiComponents\Scene\SceneUtilities\ViewportComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\EditorLayer.cpp" />
-    <ClCompile Include="src\GuiComponents\Scene\SceneUtilities\ContentBrowserComponent.cpp" />
     <ClCompile Include="src\GuiComponents\Footer\FooterUI.cpp" />
+    <ClCompile Include="src\GuiComponents\GuiBlocks\GuiBlockGenerator.h" />
     <ClCompile Include="src\GuiComponents\Header\HeaderUI.cpp" />
-    <ClCompile Include="src\GuiComponents\Scene\SceneUtilities\SceneHierarchyComponent.cpp" />
     <ClCompile Include="src\GuiComponents\Scene\SceneUI.cpp" />
+    <ClCompile Include="src\GuiComponents\Scene\SceneUtilities\ContentBrowserComponent.cpp" />
+    <ClCompile Include="src\GuiComponents\Scene\SceneUtilities\SceneHierarchyComponent.cpp" />
     <ClCompile Include="src\GuiComponents\Scene\SceneUtilities\ViewportComponent.cpp" />
     <ClCompile Include="src\Opium_EditorApp.cpp" />
   </ItemGroup>

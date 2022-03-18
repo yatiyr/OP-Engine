@@ -50,6 +50,10 @@ namespace Opium
 		void RenderDockspace();
 
 	private:
+		// Components
+		SceneHierarchyComponent m_SceneGraph;
+		ContentBrowserComponent m_ContentBrowser;
+
 		// Temp
 		ViewportComponent m_ViewportComponent;
 
@@ -64,35 +68,13 @@ namespace Opium
 
 		Ref<Scene> m_ActiveScene;
 
-		Entity m_SquareEntity;
-
-		Entity m_CameraEntity;
-		Entity m_CameraEntity2;
-
 		Entity m_HoveredEntity;
 
-		bool m_PrimaryCamera = true;
 		EditorCamera m_EditorCamera;
 
-		// Temporary
-		Ref<VertexArray> m_SquareVA;
-		Ref<Shader> m_FlatColorShader;
-
-		glm::vec4 m_SquareColor = { 0.2f, 0.3f, 0.8f, 1.0f };
-
-		Ref<Texture2D> m_CheckerboardTexture;
-		Ref<Texture2D> m_Spritesheet;
-		Ref<SubTexture2D> m_TextureStairs;
-		Ref<SubTexture2D> m_TextureBush;
-		Ref<SubTexture2D> m_TextureTree;
-		Ref<SubTexture2D> m_TextureBarrel;
 
 		Ref<Texture2D> m_IconPlay;
 		Ref<Texture2D> m_IconStop;
-
-		// Components
-		SceneHierarchyComponent m_SceneGraph;
-		ContentBrowserComponent m_ContentBrowser;
 
 		int m_GizmoType = -1;
 

@@ -37,6 +37,7 @@ namespace Opium
 	private:
 
 		void LoadFonts(const std::string& fontName);
+		void LoadIconFonts();
 		std::unordered_map<std::string, void*> ImGuiFontTable;
 
 		bool m_BlockEvents = true;
