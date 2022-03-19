@@ -3,10 +3,15 @@
 #include <GuiComponents/Scene/SceneUtilities/ContentBrowserComponent.h>
 #include <imgui/imgui.h>
 
+#include <Gui/Font/Font.h>
 
 
 namespace Opium
 {
+
+	extern ImFont* ImGuiIconFontBg;
+	extern ImFont* ImGuiIconFontMd;
+	extern ImFont* ImGuiIconFontText;
 
 	extern const std::filesystem::path  g_AssetPath = "assets";
 
@@ -19,6 +24,7 @@ namespace Opium
 
 	void ContentBrowserComponent::OnImGuiRender()
 	{
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(25, 25));
 		ImGui::Begin("Content Browser");
 
 		if (m_CurrentDirectory != std::filesystem::path(g_AssetPath))
@@ -29,9 +35,13 @@ namespace Opium
 			}
 		}
 
-		static float padding = 16.0f;
-		static float thumbnailSize = 128.0f;
-		float cellSize = thumbnailSize + padding;
+
+		{
+
+		}
+
+		static float padding = 100.0f;
+		float cellSize = padding;
 
 		float panelWidth = ImGui::GetContentRegionAvail().x;
 		int columnCount = (int)(panelWidth / cellSize);
@@ -47,10 +57,12 @@ namespace Opium
 			std::string filenameString = relativePath.filename().string();
 
 			ImGui::PushID(filenameString.c_str());
-			Ref<Texture2D> icon = directoryEntry.is_directory() ? m_FolderIcon : m_FileIcon;
+			char* type = directoryEntry.is_directory() ? OP_ICON_FOLDER : OP_ICON_FILE_EMPTY;
 			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.0f, 0.0f, 0.0f, 0.0f));
-			ImGui::ImageButton((ImTextureID)icon->GetRendererID(), { thumbnailSize, thumbnailSize }, { 0, 1 }, { 1, 0 });
-
+			ImGui::PushFont(ImGuiIconFontBg);
+			ImGui::Button(type);
+			// ImGui::ImageButton((ImTextureID)icon->GetRendererID(), { thumbnailSize, thumbnailSize }, { 0, 1 }, { 1, 0 });
+			ImGui::PopFont();
 			if (ImGui::BeginDragDropSource())
 			{
 				const wchar_t* itemPath = relativePath.c_str();
@@ -74,9 +86,7 @@ namespace Opium
 
 		ImGui::Columns(1);
 
-		ImGui::SliderFloat("Thumbnail Size", &thumbnailSize, 16, 512);
-		ImGui::SliderFloat("Padding", &padding, 0, 32);
-
 		ImGui::End();
+		ImGui::PopStyleVar();
 	}
 }

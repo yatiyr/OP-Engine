@@ -322,7 +322,7 @@ namespace Opium
 			// icons
 			{
 				ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4{ 0.152f, 0.152f, 0.152f, 1.0f });
-				ImGui::BeginChild("left", ImVec2(32, 0), true);
+				ImGui::BeginChild("left", ImVec2(44, 0), true);
 					ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2{ 6, 6 });
 					ImGui::PushFont(ImGuiIconFontMd);
 					ImGui::Button(OP_ICON_TRANSFORM);

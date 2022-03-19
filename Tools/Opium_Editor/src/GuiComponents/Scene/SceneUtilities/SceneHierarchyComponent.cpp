@@ -28,11 +28,6 @@ namespace Opium
 
 		ImGui::Begin("Scene Graph");
 
-		// We can add different fonts from font table
-		// ImGui::PushFont((ImFont*)Application::Get().GetImGuiLayer()->GetFontPtr("Ubuntu-Regular-12"));
-
-
-
 		m_Context->m_Registry.each([&](auto entityID)
 			{
 				Entity entity{ entityID, m_Context.get() };
