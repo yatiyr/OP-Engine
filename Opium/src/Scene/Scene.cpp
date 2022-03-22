@@ -107,7 +107,7 @@ namespace Opium
 		{
 
 
-			Renderer2D::BeginScene(PrimaryCamera->GetProjection(), cameraTransform);
+			Renderer2D::BeginScene(PrimaryCamera, cameraTransform);
 
 			auto group = m_Registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
 			for (auto entity : group)

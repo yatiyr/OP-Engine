@@ -162,6 +162,21 @@ namespace Opium
 
 	}
 
+	void Renderer2D::BeginScene(Camera* camera, const glm::mat4& transform)
+	{
+		OP_PROFILE_FUNCTION();
+
+		s_Data.CameraBuffer.ViewProjection = camera->GetProjection() * glm::inverse(transform);
+		s_Data.CameraUniformBuffer->SetData(&s_Data.CameraBuffer, sizeof(Renderer2DData::CameraData));
+
+		// s_Data.QuadIndexCount = 0;
+		// s_Data.QuadVertexBufferPtr = s_Data.QuadVertexBufferBase;
+
+		// s_Data.TextureSlotIndex = 1;
+
+		StartBatch();
+	}
+
 	void Renderer2D::BeginScene(const EditorCamera& camera)
 	{
 		OP_PROFILE_FUNCTION();

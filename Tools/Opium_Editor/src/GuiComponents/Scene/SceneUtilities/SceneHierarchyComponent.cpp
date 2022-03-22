@@ -62,6 +62,8 @@ namespace Opium
 				DrawEntityNode(entity);
 			});
 
+		ImGui::EndTable();
+
 		if (ImGui::IsMouseDown(0) && ImGui::IsWindowHovered())
 		{
 			// m_SelectionContext = {};
@@ -79,7 +81,6 @@ namespace Opium
 		}
 
 		// ImGui::PopFont();
-		ImGui::EndTable();
 		ImGui::End();
 		ImGui::PopStyleVar();
 
@@ -87,11 +88,12 @@ namespace Opium
 
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(20, 40));
 		ImGui::Begin("Properties", nullptr, ImGuiWindowFlags_NoTitleBar);
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(5, 5));
 		if (m_SelectionContext)
 		{
 			DrawComponents(m_SelectionContext);
 		}
-
+		ImGui::PopStyleVar();
 		ImGui::End();
 		ImGui::PopStyleVar();
 	}

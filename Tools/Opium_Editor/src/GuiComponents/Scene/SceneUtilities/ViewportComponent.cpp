@@ -35,6 +35,9 @@ namespace Opium
 		{
 			m_Framebuffer->Resize(m_ViewportSize.x, m_ViewportSize.y);
 			elInstance->m_EditorCamera.SetViewportSize(m_ViewportSize.x, m_ViewportSize.y);
+			Entity primaryCam = elInstance->GetPrimaryCamera();
+			if(primaryCam)
+				elInstance->GetPrimaryCamera().GetComponent<CameraComponent>().Camera.SetViewportSize(m_ViewportSize.x, m_ViewportSize.y);
 			elInstance->m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);			
 		}
 	}
@@ -138,9 +141,15 @@ namespace Opium
 			m_ViewportBounds[1].y - m_ViewportBounds[0].y);
 
 		// Editor Camera
-		const glm::mat4& cameraProjection = EditorLayer::s_Instance->m_EditorCamera.GetProjection();
+		glm::mat4 cameraProjection = EditorLayer::s_Instance->m_EditorCamera.GetProjection();
 		glm::mat4 cameraView = EditorLayer::s_Instance->m_EditorCamera.GetViewMatrix();
 
+		Entity primaryCamera = editorInstance->GetPrimaryCamera();
+		if (editorInstance->m_SceneState == EditorLayer::SceneState::Play && primaryCamera)
+		{
+			cameraProjection = primaryCamera.GetComponent<CameraComponent>().Camera.GetProjection();
+			cameraView = primaryCamera.GetComponent<TransformComponent>().GetTransform();
+		}
 
 		Entity selectedEntity = editorInstance->m_SceneGraph.GetSelectedEntity();
 		if (selectedEntity && editorInstance->m_GizmoType != -1)

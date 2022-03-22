@@ -46,8 +46,11 @@ namespace Opium
 		// Temp
 		void SetSelectedEntity();
 
+
+
 	private:
 		void RenderDockspace();
+		Entity GetPrimaryCamera();
 
 	private:
 		// Components
@@ -58,8 +61,6 @@ namespace Opium
 		ViewportComponent m_ViewportComponent;
 
 
-
-		OrthographicCameraController m_CameraController;
 		bool m_ViewportFocused = false;
 		bool m_ViewportHovered = false;
 		glm::vec2 m_ViewportSize = { 0.0f, 0.0f };

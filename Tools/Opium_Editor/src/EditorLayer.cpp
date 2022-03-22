@@ -38,7 +38,7 @@ namespace Opium
 	}
 
 	EditorLayer::EditorLayer()
-		: Layer("EditorLayer"), m_CameraController(1280.0f / 720.0f, true)
+		: Layer("EditorLayer")
 	{
 
 	}
@@ -144,6 +144,12 @@ namespace Opium
 		style.WindowMinSize.x = minWinSizeX;
 	}
 
+	Entity EditorLayer::GetPrimaryCamera()
+	{
+		// Render 2D
+		return m_ActiveScene->GetPrimaryCameraEntity();
+	}
+
 	void EditorLayer::OnDetach()
 	{
 	}
@@ -169,12 +175,6 @@ namespace Opium
 		{
 			case SceneState::Edit:
 			{
-
-				// Update
-				if (m_ViewportFocused)
-				{
-					m_CameraController.OnUpdate(ts);
-				}
 
 				m_EditorCamera.OnUpdate(ts);
 
@@ -397,7 +397,6 @@ namespace Opium
 
 	void EditorLayer::OnEvent(Event& e)
 	{
-		m_CameraController.OnEvent(e);
 		m_EditorCamera.OnEvent(e);
 		EventDispatcher dispatcher(e);
 		dispatcher.Dispatch<KeyPressedEvent>(OP_BIND_EVENT_FUNCTION(EditorLayer::OnKeyPressed));
