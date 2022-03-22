@@ -227,11 +227,13 @@ namespace Opium
 		style.TabRounding = 0.0f;
 		style.AntiAliasedLines = true;
 		style.FrameBorderSize = 0.0f;
+		style.ChildBorderSize = 0.0f;
+		style.PopupBorderSize = 1.0f;
+
 		style.ScrollbarRounding = false;
 		style.WindowTitleAlign = ImVec2{ 0.5f, 0.5f };
 
 		style.TabBorderSize = 0.0f;
-
 		style.WindowRounding = 1.0f;
 		style.FrameRounding = 2.0f;
 

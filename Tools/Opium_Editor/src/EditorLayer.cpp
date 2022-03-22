@@ -238,8 +238,10 @@ namespace Opium
 		m_SceneGraph.OnImGuiRender();
 		m_ContentBrowser.OnImGuiRender();
 
+
+		ImGui::SetNextWindowSize(ImVec2(100, 32), ImGuiCond_Once);
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 50, 50 });
-		ImGui::Begin("Stats");
+		ImGui::Begin("Stats", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar);
 
 		std::string name = "None";
 		if (m_HoveredEntity)
@@ -322,7 +324,7 @@ namespace Opium
 			// icons
 			{
 				ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4{ 0.152f, 0.152f, 0.152f, 1.0f });
-				ImGui::BeginChild("left", ImVec2(44, 0), true);
+				ImGui::BeginChild("left", ImVec2(36, 0), true);
 					ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2{ 6, 6 });
 					ImGui::PushFont(ImGuiIconFontMd);
 					ImGui::Button(OP_ICON_TRANSFORM);
@@ -389,7 +391,8 @@ namespace Opium
 
 	void EditorLayer::SetSelectedEntity()
 	{
-		m_SceneGraph.SetSelectedEntity(m_HoveredEntity);
+		if(m_HoveredEntity)
+			m_SceneGraph.SetSelectedEntity(m_HoveredEntity);
 	}
 
 	void EditorLayer::OnEvent(Event& e)

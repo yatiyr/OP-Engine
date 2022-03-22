@@ -78,9 +78,6 @@ namespace Opium
 
 		int m_GizmoType = -1;
 
-		Entity m_ScriptedTestEntity;
-
-
 		enum class SceneState
 		{
 			Edit = 0, Play = 1

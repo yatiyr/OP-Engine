@@ -6,9 +6,15 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include <Scene/Components.h>
+#include <Gui/Font/Font.h>
+
 
 namespace Opium
 {
+
+	extern ImFont* ImGuiIconFontBg;
+	extern ImFont* ImGuiIconFontMd;
+	extern ImFont* ImGuiIconFontText;
 
 	extern const std::filesystem::path g_AssetPath;
 
@@ -26,7 +32,29 @@ namespace Opium
 	void SceneHierarchyComponent::OnImGuiRender()
 	{
 
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 2, 10 });
+
 		ImGui::Begin("Scene Graph");
+		
+		auto windowWidth = ImGui::GetWindowSize().x;
+		auto textWidth = ImGui::CalcTextSize(OP_ICON_TRANSFORM " Scene Graph").x;
+
+		ImGui::SetCursorPosX((windowWidth - textWidth) * 0.1f);
+
+		ImGui::PushFont(ImGuiIconFontText);
+		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.3f, 1.0f, 0.6f, 1.0f));
+		ImGui::Text(OP_ICON_TRANSFORM_2);
+		ImGui::PopStyleColor();
+		ImGui::PopFont();
+		ImGui::SameLine();
+		ImGui::Text("Scene Graph");
+		ImGui::Separator();
+	
+
+		
+		ImGui::BeginTable("sceneGraph", 3, ImGuiTableFlags_RowBg | ImGuiTableFlags_SizingFixedFit);
+
+
 
 		m_Context->m_Registry.each([&](auto entityID)
 			{
@@ -34,10 +62,9 @@ namespace Opium
 				DrawEntityNode(entity);
 			});
 
-
 		if (ImGui::IsMouseDown(0) && ImGui::IsWindowHovered())
 		{
-			m_SelectionContext = {};
+			// m_SelectionContext = {};
 		}
 
 		// Right-click on blank space
@@ -52,15 +79,21 @@ namespace Opium
 		}
 
 		// ImGui::PopFont();
+		ImGui::EndTable();
 		ImGui::End();
+		ImGui::PopStyleVar();
 
-		ImGui::Begin("Properties");
+
+
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(20, 40));
+		ImGui::Begin("Properties", nullptr, ImGuiWindowFlags_NoTitleBar);
 		if (m_SelectionContext)
 		{
 			DrawComponents(m_SelectionContext);
 		}
 
 		ImGui::End();
+		ImGui::PopStyleVar();
 	}
 
 	void SceneHierarchyComponent::SetSelectedEntity(Entity entity)
@@ -70,6 +103,12 @@ namespace Opium
 
 	void SceneHierarchyComponent::DrawEntityNode(Entity entity)
 	{
+
+		ImGui::TableNextRow();
+
+
+		ImGui::TableNextColumn();
+
 		auto& tag = entity.GetComponent<TagComponent>().Tag;
 		
 		ImGuiTreeNodeFlags flags = ((m_SelectionContext == entity) ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow;
@@ -79,7 +118,6 @@ namespace Opium
 		{
 			m_SelectionContext = entity;
 		}
-
 		bool entityDeleted = false;
 		// Right-click on entity
 		if (ImGui::BeginPopupContextItem())
@@ -92,6 +130,26 @@ namespace Opium
 			ImGui::EndPopup();
 		}
 
+		ImGui::TableNextColumn();
+		ImGui::PushFont(ImGuiIconFontText);
+		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
+		ImGui::Selectable(OP_ICON_EYE);
+		ImGui::PopStyleColor();
+		ImGui::PopFont();
+		if (ImGui::IsItemClicked())
+		{
+			m_SelectionContext = entity;
+		}
+		ImGui::TableNextColumn();
+		ImGui::PushFont(ImGuiIconFontText);
+		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.7f, 0.0f, 1.0f));
+		ImGui::Selectable(OP_ICON_STAR_FILLED);
+		ImGui::PopStyleColor();
+		ImGui::PopFont();
+		if (ImGui::IsItemClicked())
+		{
+			m_SelectionContext = entity;
+		}
 
 		if (opened)
 		{
@@ -101,6 +159,7 @@ namespace Opium
 				ImGui::TreePop();
 			ImGui::TreePop();
 		}
+
 
 		if (entityDeleted)
 		{
@@ -230,6 +289,9 @@ namespace Opium
 
 	void SceneHierarchyComponent::DrawComponents(Entity entity)
 	{
+
+		// Tag Field
+
 		if (entity.HasComponent<TagComponent>())
 		{
 			auto& tag = entity.GetComponent<TagComponent>().Tag;
