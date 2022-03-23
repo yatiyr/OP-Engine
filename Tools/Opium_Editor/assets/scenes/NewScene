@@ -1,0 +1,27 @@
+Scene: Unitled
+Entities:
+  - Entity: 12837192831273
+    TagComponent:
+      Tag: Empty Entity
+    TransformComponent:
+      Translation: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+  - Entity: 12837192831273
+    TagComponent:
+      Tag: Empty Entity
+    TransformComponent:
+      Translation: [0, 1.00781476, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    SpriteRendererComponent:
+      Color: [0.790940762, 0.07440909, 0.07440909, 1]
+  - Entity: 12837192831273
+    TagComponent:
+      Tag: ScriptedEntity
+    TransformComponent:
+      Translation: [0.349749923, -0.0195922721, -0.0205078218]
+      Rotation: [-1.73118567, 0, 0]
+      Scale: [18.6815987, 18.6815739, 18.6815739]
+    SpriteRendererComponent:
+      Color: [1, 1, 1, 1]

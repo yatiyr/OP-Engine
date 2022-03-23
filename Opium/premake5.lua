@@ -37,6 +37,7 @@ project "Opium"
         "src",
 	    "src/Config",
         "external/spdlog/include",
+        "%{IncludeDir.Box2D}",
         "%{IncludeDir.GLFW}",
         "%{IncludeDir.Glad}",
         "%{IncludeDir.ImGui}",
@@ -52,6 +53,7 @@ project "Opium"
 
     links
     {
+        "Box2D",
         "GLFW",
         "Glad",
         "ImGui",

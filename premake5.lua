@@ -39,6 +39,7 @@ group ""
 
 group "ThirdParty"
     include "Opium/external/GLFW"
+    include "Opium/external/Box2D"
     include "Opium/external/Glad"
     include "Opium/external/imgui"
     include "Opium/external/yaml-cpp"

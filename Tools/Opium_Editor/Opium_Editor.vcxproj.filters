@@ -7,6 +7,9 @@
     <Filter Include="GuiComponents\Footer">
       <UniqueIdentifier>{6E45516F-5AD4-DA38-03F3-EE33EF60EBDE}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GuiComponents\GuiBlocks">
+      <UniqueIdentifier>{C242CA5B-2E7A-12F3-3784-7616A33A39EC}</UniqueIdentifier>
+    </Filter>
     <Filter Include="GuiComponents\Header">
       <UniqueIdentifier>{48B03E73-343F-C83C-DD5D-DC37C9CBD8E2}</UniqueIdentifier>
     </Filter>
@@ -21,6 +24,9 @@
     <ClInclude Include="src\EditorLayer.h" />
     <ClInclude Include="src\GuiComponents\Footer\FooterUI.h">
       <Filter>GuiComponents\Footer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GuiComponents\GuiBlocks\GuiBlockGenerator.h">
+      <Filter>GuiComponents\GuiBlocks</Filter>
     </ClInclude>
     <ClInclude Include="src\GuiComponents\Header\HeaderUI.h">
       <Filter>GuiComponents\Header</Filter>
@@ -59,6 +65,5 @@
       <Filter>GuiComponents\Scene\SceneUtilities</Filter>
     </ClCompile>
     <ClCompile Include="src\Opium_EditorApp.cpp" />
-    <ClCompile Include="src\GuiComponents\GuiBlocks\GuiBlockGenerator.h" />
   </ItemGroup>
 </Project>

@@ -77,7 +77,7 @@
       <PrecompiledHeaderFile>Precomp.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;YAML_CPP_STATIC_DEFINE;GLFW_INCLUDE_NONE;OP_PLATFORM_WINDOWS;OP_BUILD_DLL;OP_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;src\Config;external\spdlog\include;external\GLFW\include;external\Glad\include;external\imgui;external\glm;external\stb_image;external\entt\include;external\yaml-cpp\include;external\ImGuizmo;external\mono\include;C:\VulkanSDK\1.3.204.1\Include;external\iconFont;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;src\Config;external\spdlog\include;external\Box2D\include;external\GLFW\include;external\Glad\include;external\imgui;external\glm;external\stb_image;external\entt\include;external\yaml-cpp\include;external\ImGuizmo;external\mono\include;C:\VulkanSDK\1.3.204.1\Include;external\iconFont;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <MinimalRebuild>false</MinimalRebuild>
@@ -99,7 +99,7 @@
       <PrecompiledHeaderFile>Precomp.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;YAML_CPP_STATIC_DEFINE;GLFW_INCLUDE_NONE;OP_PLATFORM_WINDOWS;OP_BUILD_DLL;OP_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;src\Config;external\spdlog\include;external\GLFW\include;external\Glad\include;external\imgui;external\glm;external\stb_image;external\entt\include;external\yaml-cpp\include;external\ImGuizmo;external\mono\include;C:\VulkanSDK\1.3.204.1\Include;external\iconFont;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;src\Config;external\spdlog\include;external\Box2D\include;external\GLFW\include;external\Glad\include;external\imgui;external\glm;external\stb_image;external\entt\include;external\yaml-cpp\include;external\ImGuizmo;external\mono\include;C:\VulkanSDK\1.3.204.1\Include;external\iconFont;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -124,7 +124,7 @@
       <PrecompiledHeaderFile>Precomp.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;YAML_CPP_STATIC_DEFINE;GLFW_INCLUDE_NONE;OP_PLATFORM_WINDOWS;OP_BUILD_DLL;OP_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;src\Config;external\spdlog\include;external\GLFW\include;external\Glad\include;external\imgui;external\glm;external\stb_image;external\entt\include;external\yaml-cpp\include;external\ImGuizmo;external\mono\include;C:\VulkanSDK\1.3.204.1\Include;external\iconFont;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;src\Config;external\spdlog\include;external\Box2D\include;external\GLFW\include;external\Glad\include;external\imgui;external\glm;external\stb_image;external\entt\include;external\yaml-cpp\include;external\ImGuizmo;external\mono\include;C:\VulkanSDK\1.3.204.1\Include;external\iconFont;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -686,6 +686,9 @@
     <ClCompile Include="src\ScriptManager\Wrappers.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="external\Box2D\Box2D.vcxproj">
+      <Project>{A434E80C-1049-10BE-D9CA-B31D459E0CEF}</Project>
+    </ProjectReference>
     <ProjectReference Include="external\GLFW\GLFW.vcxproj">
       <Project>{154B857C-0182-860D-AA6E-6C109684020F}</Project>
     </ProjectReference>

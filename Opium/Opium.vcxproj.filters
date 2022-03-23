@@ -46,6 +46,9 @@
     <Filter Include="src\Gui">
       <UniqueIdentifier>{017D2FA9-6D5C-AE44-7674-391BE2D214A6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Gui\Font">
+      <UniqueIdentifier>{A78E3559-93F1-C4FD-3C77-FDB328B99080}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\Input">
       <UniqueIdentifier>{EC4823B3-58B3-D729-A1F1-88CF0D9BB57E}</UniqueIdentifier>
     </Filter>
@@ -1368,6 +1371,9 @@
     <ClInclude Include="src\EventSystem\MouseEvent.h">
       <Filter>src\EventSystem</Filter>
     </ClInclude>
+    <ClInclude Include="src\Gui\Font\Font.h">
+      <Filter>src\Gui\Font</Filter>
+    </ClInclude>
     <ClInclude Include="src\Gui\ImGuiLayer.h">
       <Filter>src\Gui</Filter>
     </ClInclude>
@@ -1521,7 +1527,6 @@
     <ClInclude Include="src\Window\Window.h">
       <Filter>src\Window</Filter>
     </ClInclude>
-    <ClInclude Include="src\Gui\Font\Font.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="external\ImGuizmo\GraphEditor.cpp">

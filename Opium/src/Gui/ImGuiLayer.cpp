@@ -11,8 +11,6 @@
 
 #include <ImGuizmo.h>
 
-#include <IconsMaterialDesign.h>
-
 #include <Gui/Font/Font.h>
 
 namespace Opium

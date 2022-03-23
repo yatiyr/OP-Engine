@@ -3,6 +3,7 @@ VK_SDK = os.getenv("VULKAN_SDK")
 -- Directories we which we need to include
 IncludeDir = {}
 IncludeDir["GLFW"]        = "%{wks.location}/Opium/external/GLFW/include"
+IncludeDir["Box2D"]       = "%{wks.location}/Opium/external/Box2D/include"
 IncludeDir["Glad"]        = "%{wks.location}/Opium/external/Glad/include"
 IncludeDir["ImGui"]       = "%{wks.location}/Opium/external/imgui"
 IncludeDir["glm"]         = "%{wks.location}/Opium/external/glm"

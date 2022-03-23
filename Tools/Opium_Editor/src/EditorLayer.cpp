@@ -243,41 +243,6 @@ namespace Opium
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 50, 50 });
 		ImGui::Begin("Stats", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar);
 
-		std::string name = "None";
-		if (m_HoveredEntity)
-			name = m_HoveredEntity.GetComponent<TagComponent>().Tag;
-		ImGui::Text("Hovered Entity: %s", name.c_str());
-
-
-		Button_BackgroundCol_Text(OP_ICON, ImVec4{ 0.8f, 0.8f, 0.2f, 1.0f },
-			[this]()-> void {
-				OP_ENGINE_TRACE("Clicked Warning Button!");
-				OP_ENGINE_TRACE("Class Member Name {0}", m_DebugName);
-		});
-
-		ImGui::SameLine();
-
-		Button_BackgroundCol_MD(OP_ICON_ADD, ImVec4{ 0.8f, 0.2f, 0.1f, 1.0f },
-			[this]()-> void {
-				OP_ENGINE_TRACE("Clicked Error Button!");
-				OP_ENGINE_TRACE("Class Member Name {0}", m_DebugName);
-		});
-
-		ImGui::SameLine();
-
-		Button_BackgroundCol_MD(OP_ICON_BUILD, ImVec4{0.2f, 0.8f, 0.1f, 1.0f},
-			[this]()-> void {
-				OP_ENGINE_TRACE("Clicked Success Button!");
-				OP_ENGINE_TRACE("Class Member Name {0}", m_DebugName);
-			});
-
-		ImGui::SameLine();
-
-		Button_BackgroundCol_MD(OP_ICON_EYE, ImVec4{ 0.2f, 0.8f, 0.8f, 1.0f },
-			[this]()-> void {
-				OP_ENGINE_TRACE("Clicked Success Button!");
-				OP_ENGINE_TRACE("Class Member Name {0}", m_DebugName);
-			});
 
 
 		auto stats = Renderer2D::GetStats();
@@ -507,11 +472,13 @@ namespace Opium
 
 	void EditorLayer::OnScenePlay()
 	{
+		m_ActiveScene->OnRuntimeStart();
 		m_SceneState = SceneState::Play;
 	}
 
 	void EditorLayer::OnSceneStop()
 	{
+		m_ActiveScene->OnRuntimeStop();
 		m_SceneState = SceneState::Edit;
 	}
 

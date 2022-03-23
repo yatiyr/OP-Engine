@@ -1,5 +1,4 @@
 #include <imgui/imgui.h>
-#include <IconsMaterialDesign.h>
 
 #include <string>
 #include <vector>

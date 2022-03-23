@@ -149,6 +149,7 @@ IF EXIST "$(SolutionDir)\Opium\external\mono\bin\Release\mono-2.0-sgen.dll"\ (xc
   <ItemGroup>
     <ClInclude Include="src\EditorLayer.h" />
     <ClInclude Include="src\GuiComponents\Footer\FooterUI.h" />
+    <ClInclude Include="src\GuiComponents\GuiBlocks\GuiBlockGenerator.h" />
     <ClInclude Include="src\GuiComponents\Header\HeaderUI.h" />
     <ClInclude Include="src\GuiComponents\Scene\SceneUI.h" />
     <ClInclude Include="src\GuiComponents\Scene\SceneUtilities\ContentBrowserComponent.h" />
@@ -158,7 +159,6 @@ IF EXIST "$(SolutionDir)\Opium\external\mono\bin\Release\mono-2.0-sgen.dll"\ (xc
   <ItemGroup>
     <ClCompile Include="src\EditorLayer.cpp" />
     <ClCompile Include="src\GuiComponents\Footer\FooterUI.cpp" />
-    <ClCompile Include="src\GuiComponents\GuiBlocks\GuiBlockGenerator.h" />
     <ClCompile Include="src\GuiComponents\Header\HeaderUI.cpp" />
     <ClCompile Include="src\GuiComponents\Scene\SceneUI.cpp" />
     <ClCompile Include="src\GuiComponents\Scene\SceneUtilities\ContentBrowserComponent.cpp" />

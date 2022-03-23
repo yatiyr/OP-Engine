@@ -34,3 +34,6 @@
 [submodule "Opium/external/IconFontCppHeaders"]
 	path = Opium/external/IconFontCppHeaders
 	url = https://github.com/juliettef/IconFontCppHeaders.git
+[submodule "Opium/external/box2d"]
+	path = Opium/external/box2d
+	url = https://github.com/yatiyr/box2d.git
