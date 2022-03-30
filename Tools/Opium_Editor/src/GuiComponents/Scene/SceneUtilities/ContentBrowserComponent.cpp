@@ -6,7 +6,7 @@
 #include <Gui/Font/Font.h>
 
 
-namespace Opium
+namespace OP
 {
 
 	extern ImFont* ImGuiIconFontBg;

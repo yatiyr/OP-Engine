@@ -3,7 +3,7 @@
 #include <Opium/Core.h>
 #include <Precomp.h>
 
-namespace Opium
+namespace OP
 {
 	enum class EventType
 	{
@@ -46,7 +46,7 @@ namespace Opium
 
 #define EVENT_CLASS_CATEGORY(category) virtual int GetCategoryFlags() const override { return category; }
 
-	class OPIUM_API Event
+	class Event
 	{
 		friend class EventDispatcher;
 	public:
@@ -64,7 +64,7 @@ namespace Opium
 
 
 
-	class OPIUM_API EventDispatcher
+	class EventDispatcher
 	{
 		template<typename T>
 		using EventFn = std::function<bool(T&)>;

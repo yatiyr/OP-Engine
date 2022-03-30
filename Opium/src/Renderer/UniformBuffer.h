@@ -2,7 +2,7 @@
 
 #include <Opium/Core.h>
 
-namespace Opium
+namespace OP
 {
 	class UniformBuffer
 	{

@@ -3,7 +3,7 @@
 
 #include <glad/glad.h>
 
-namespace Opium
+namespace OP
 {
 	OpenGLUniformBuffer::OpenGLUniformBuffer(uint32_t size, uint32_t binding)
 	{

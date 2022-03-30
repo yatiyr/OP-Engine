@@ -3,7 +3,7 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 
-namespace Opium
+namespace OP
 {
 	SceneCamera::SceneCamera()
 	{

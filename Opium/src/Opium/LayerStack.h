@@ -5,9 +5,9 @@
 
 #include <vector>
 
-namespace Opium
+namespace OP
 {
-	class OPIUM_API LayerStack
+	class LayerStack
 	{
 	public:
 		LayerStack();

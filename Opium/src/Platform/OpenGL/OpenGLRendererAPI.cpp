@@ -3,7 +3,7 @@
 
 #include <glad/glad.h>
 
-namespace Opium
+namespace OP
 {
 
 	void OpenGLRendererAPI::Init()

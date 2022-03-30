@@ -4,7 +4,7 @@
 #include <Renderer/Renderer.h>
 #include <Platform/OpenGL/OpenGLTexture.h>
 
-namespace Opium
+namespace OP
 {
 	Ref<Texture2D> Texture2D::Create(uint32_t width, uint32_t height)
 	{

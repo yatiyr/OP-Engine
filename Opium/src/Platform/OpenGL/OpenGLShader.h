@@ -7,7 +7,7 @@
 // Remove this later
 typedef unsigned int GLenum;
 
-namespace Opium
+namespace OP
 {
 	class OpenGLShader : public Shader
 	{

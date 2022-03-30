@@ -2,7 +2,7 @@
 
 #include <GuiComponents/Header/HeaderUI.h>
 
-namespace Opium
+namespace OP
 {
 
 }

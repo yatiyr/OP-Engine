@@ -2,7 +2,7 @@
 
 #include <EditorLayer.h>
 
-namespace Opium
+namespace OP
 {
 	class HeaderUI
 	{

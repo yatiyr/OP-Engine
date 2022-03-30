@@ -4,7 +4,7 @@
 
 #include <Renderer/Texture.h>
 
-namespace Opium
+namespace OP
 {
 	class ContentBrowserComponent
 	{

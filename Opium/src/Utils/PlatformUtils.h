@@ -2,7 +2,7 @@
 
 #include <string>
 
-namespace Opium
+namespace OP
 {
 	class FileDialogs
 	{

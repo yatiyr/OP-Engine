@@ -3,9 +3,9 @@
 #include <EventSystem/Event.h>
 #include <Input/KeyCodes.h>
 
-namespace Opium
+namespace OP
 {
-	class OPIUM_API KeyEvent : public Event
+	class KeyEvent : public Event
 	{
 	public:
 		KeyCode GetKeyCode() const { return m_KeyCode;  }
@@ -17,7 +17,7 @@ namespace Opium
 		KeyCode m_KeyCode;
 	};
 
-	class OPIUM_API KeyPressedEvent : public KeyEvent
+	class KeyPressedEvent : public KeyEvent
 	{
 	public:
 		KeyPressedEvent(const KeyCode keycode, const uint16_t repeatCount) : KeyEvent(keycode), m_RepeatCount(repeatCount) {}
@@ -37,7 +37,7 @@ namespace Opium
 		uint16_t m_RepeatCount;
 	};
 
-	class OPIUM_API KeyReleasedEvent : public KeyEvent
+	class KeyReleasedEvent : public KeyEvent
 	{
 	public:
 		KeyReleasedEvent(const KeyCode keycode) : KeyEvent(keycode) {}
@@ -53,7 +53,7 @@ namespace Opium
 	};
 
 
-	class OPIUM_API KeyTypedEvent : public KeyEvent
+	class KeyTypedEvent : public KeyEvent
 	{
 	public:
 		KeyTypedEvent(const KeyCode keycode) : KeyEvent(keycode) {}

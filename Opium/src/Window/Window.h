@@ -5,7 +5,7 @@
 #include <EventSystem/Event.h>
 
 
-namespace Opium
+namespace OP
 {
 	struct WinProperties
 	{
@@ -19,7 +19,7 @@ namespace Opium
 					  Title(title), Width(width), Height(height) {}
 	};
 
-	class OPIUM_API Window
+	class Window
 	{
 	public:
 		using EventCallbackFunction = std::function<void(Event&)>;

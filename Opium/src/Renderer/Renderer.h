@@ -4,7 +4,7 @@
 #include <Renderer/OrthographicCamera.h>
 #include <Renderer/Shader.h>
 
-namespace Opium
+namespace OP
 {
 	class Renderer
 	{

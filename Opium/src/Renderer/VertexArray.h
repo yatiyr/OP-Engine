@@ -3,7 +3,7 @@
 #include <memory>
 #include <Renderer/Buffer.h>
 
-namespace Opium
+namespace OP
 {
 	class VertexArray
 	{

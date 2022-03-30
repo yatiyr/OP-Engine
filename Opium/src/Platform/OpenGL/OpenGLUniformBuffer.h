@@ -2,7 +2,7 @@
 
 #include <Renderer/UniformBuffer.h>
 
-namespace Opium
+namespace OP
 {
 	class OpenGLUniformBuffer : public UniformBuffer
 	{

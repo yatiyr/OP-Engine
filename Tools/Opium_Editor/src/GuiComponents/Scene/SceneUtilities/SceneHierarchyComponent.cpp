@@ -9,7 +9,7 @@
 #include <Gui/Font/Font.h>
 
 
-namespace Opium
+namespace OP
 {
 
 	extern ImFont* ImGuiIconFontBg;
@@ -35,49 +35,52 @@ namespace Opium
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 2, 10 });
 
 		ImGui::Begin("Scene Graph");
-		
-		auto windowWidth = ImGui::GetWindowSize().x;
-		auto textWidth = ImGui::CalcTextSize(OP_ICON_TRANSFORM " Scene Graph").x;
 
-		ImGui::SetCursorPosX((windowWidth - textWidth) * 0.1f);
-
-		ImGui::PushFont(ImGuiIconFontText);
-		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.3f, 1.0f, 0.6f, 1.0f));
-		ImGui::Text(OP_ICON_TRANSFORM_2);
-		ImGui::PopStyleColor();
-		ImGui::PopFont();
-		ImGui::SameLine();
-		ImGui::Text("Scene Graph");
-		ImGui::Separator();
-	
-
-		
-		ImGui::BeginTable("sceneGraph", 3, ImGuiTableFlags_RowBg | ImGuiTableFlags_SizingFixedFit);
-
-
-
-		m_Context->m_Registry.each([&](auto entityID)
-			{
-				Entity entity{ entityID, m_Context.get() };
-				DrawEntityNode(entity);
-			});
-
-		ImGui::EndTable();
-
-		if (ImGui::IsMouseDown(0) && ImGui::IsWindowHovered())
+		if (m_Context)
 		{
-			// m_SelectionContext = {};
-		}
+			auto windowWidth = ImGui::GetWindowSize().x;
+			auto textWidth = ImGui::CalcTextSize(OP_ICON_TRANSFORM " Scene Graph").x;
 
-		// Right-click on blank space
-		if (ImGui::BeginPopupContextWindow(0, 1, false))
-		{
-			if (ImGui::MenuItem("Create Empty Entity"))
+			ImGui::SetCursorPosX((windowWidth - textWidth) * 0.1f);
+
+			ImGui::PushFont(ImGuiIconFontText);
+			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.3f, 1.0f, 0.6f, 1.0f));
+			ImGui::Text(OP_ICON_TRANSFORM_2);
+			ImGui::PopStyleColor();
+			ImGui::PopFont();
+			ImGui::SameLine();
+			ImGui::Text("Scene Graph");
+			ImGui::Separator();
+
+
+
+			ImGui::BeginTable("sceneGraph", 3, ImGuiTableFlags_RowBg | ImGuiTableFlags_SizingFixedFit);
+
+
+
+			m_Context->m_Registry.each([&](auto entityID)
+				{
+					Entity entity{ entityID, m_Context.get() };
+					DrawEntityNode(entity);
+				});
+
+			ImGui::EndTable();
+
+			if (ImGui::IsMouseDown(0) && ImGui::IsWindowHovered())
 			{
-				m_Context->CreateEntity("Empty Entity");
+				// m_SelectionContext = {};
 			}
 
-			ImGui::EndPopup();
+			// Right-click on blank space
+			if (ImGui::BeginPopupContextWindow(0, 1, false))
+			{
+				if (ImGui::MenuItem("Create Empty Entity"))
+				{
+					m_Context->CreateEntity("Empty Entity");
+				}
+
+				ImGui::EndPopup();
+			}
 		}
 
 		// ImGui::PopFont();
@@ -94,6 +97,9 @@ namespace Opium
 			DrawComponents(m_SelectionContext);
 		}
 		ImGui::PopStyleVar();
+		
+		
+
 		ImGui::End();
 		ImGui::PopStyleVar();
 	}

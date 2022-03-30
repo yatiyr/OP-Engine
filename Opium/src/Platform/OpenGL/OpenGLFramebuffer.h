@@ -2,7 +2,7 @@
 
 #include <Renderer/Framebuffer.h>
 
-namespace Opium
+namespace OP
 {
 	class OpenGLFramebuffer : public Framebuffer
 	{

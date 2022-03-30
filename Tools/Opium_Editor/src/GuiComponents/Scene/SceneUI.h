@@ -3,7 +3,7 @@
 #include <Scene/Scene.h>
 #include <EditorLayer.h>
 
-namespace Opium
+namespace OP
 {
 	class SceneUI
 	{

@@ -10,7 +10,7 @@
 #include <Input/Input.h>
 #include <mono/jit/jit.h>
 
-namespace Opium
+namespace OP
 {
 	//extern std::unordered_map<uint32_t, Scene*> s_ActiveScenes;
 	// we have one active scene for now

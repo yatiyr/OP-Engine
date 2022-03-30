@@ -16,7 +16,7 @@
 
 #include <Renderer/Framebuffer.h>
 
-namespace Opium
+namespace OP
 {
 
 	extern const std::filesystem::path  g_AssetPath;

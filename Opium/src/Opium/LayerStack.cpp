@@ -1,7 +1,7 @@
 #include <Precomp.h>
 #include <Opium/LayerStack.h>
 
-namespace Opium
+namespace OP
 {
 	LayerStack::LayerStack()
 	{

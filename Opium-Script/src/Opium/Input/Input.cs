@@ -1,6 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 
-namespace Opium
+namespace OP
 {
     public class Input
     {

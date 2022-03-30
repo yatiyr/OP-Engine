@@ -2,7 +2,7 @@
 
 #include <GuiComponents/Scene/SceneUI.h>
 
-namespace Opium
+namespace OP
 {
 
 }

@@ -4,7 +4,7 @@
 
 struct GLFWwindow;
 
-namespace Opium
+namespace OP
 {
 	class OpenGLContext : public GraphicsContext
 	{

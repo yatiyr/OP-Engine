@@ -13,7 +13,7 @@
 
 
 
-namespace Opium
+namespace OP
 {
 
 	struct AppCommandLineArguments
@@ -28,10 +28,10 @@ namespace Opium
 		}
 	};
 
-	class OPIUM_API Application
+	class Application
 	{
 	public:
-		Application(const std::string& name = "Opium Application", AppCommandLineArguments args = AppCommandLineArguments());
+		Application(const std::string& name = "Noname Application", AppCommandLineArguments args = AppCommandLineArguments());
 		virtual ~Application();
 
 		void Run();
@@ -41,7 +41,7 @@ namespace Opium
 		void PushLayer(Layer* layer);
 		void PushOverlay(Layer* overlay);
 
-		inline Window& GetWindow() { return *m_Window; }
+		Window& GetWindow() { return *m_Window; }
 
 		void Close();
 

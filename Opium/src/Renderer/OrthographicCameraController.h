@@ -5,7 +5,7 @@
 #include <EventSystem/AppEvent.h>
 #include <EventSystem/MouseEvent.h>
 
-namespace Opium
+namespace OP
 {
 	struct OrthographicCameraBounds
 	{

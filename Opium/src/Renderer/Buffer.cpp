@@ -4,7 +4,7 @@
 #include <Renderer/Renderer.h>
 #include <Platform/OpenGL/OpenGLBuffer.h>
 
-namespace Opium
+namespace OP
 {
 	Ref<VertexBuffer> VertexBuffer::Create(uint32_t size)
 	{

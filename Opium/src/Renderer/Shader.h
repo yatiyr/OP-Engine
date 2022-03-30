@@ -4,7 +4,7 @@
 #include <unordered_map>
 #include <glm/glm.hpp>
 
-namespace Opium
+namespace OP
 {
 	class Shader
 	{

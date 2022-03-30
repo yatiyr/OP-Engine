@@ -4,7 +4,7 @@
 #include <Scene/Entity.h>
 
 
-namespace Opium
+namespace OP
 {
 
 	class ScriptableEntity

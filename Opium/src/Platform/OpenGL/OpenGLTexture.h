@@ -3,7 +3,7 @@
 #include <Renderer/Texture.h>
 #include <glad/glad.h>
 
-namespace Opium
+namespace OP
 {
 	class OpenGLTexture2D : public Texture2D
 	{

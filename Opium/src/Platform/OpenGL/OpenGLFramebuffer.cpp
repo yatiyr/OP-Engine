@@ -3,7 +3,7 @@
 
 #include <glad/glad.h>
 
-namespace Opium
+namespace OP
 {
 	static const uint32_t s_MaxFramebufferSize = 8192;
 

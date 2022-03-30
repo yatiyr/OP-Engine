@@ -4,9 +4,9 @@
 #include <EventSystem/Event.h>
 #include <Opium/Timestep.h>
 
-namespace Opium
+namespace OP
 {
-	class OPIUM_API Layer
+	class Layer
 	{
 	public:
 		Layer(const std::string& name = "Layer");

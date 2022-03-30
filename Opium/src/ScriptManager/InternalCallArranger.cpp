@@ -13,7 +13,7 @@
 
 
 
-namespace Opium
+namespace OP
 {
 	std::unordered_map<MonoType*, std::function<bool(Entity&)>> s_HasComponentFuncs;
 	std::unordered_map<MonoType*, std::function<void(Entity&)>> s_CreateComponentFuncs;
@@ -44,12 +44,12 @@ namespace Opium
 	{
 		InitComponentTypes();
 
-		mono_add_internal_call("Opium.Input::IsKeyPressed_Native", Opium::Script::Opium_Input_IsKeyPressed);
+		mono_add_internal_call("Opium.Input::IsKeyPressed_Native", OP::Script::Opium_Input_IsKeyPressed);
 
-		mono_add_internal_call("Opium.Entity::GetTransform_Native", Opium::Script::Opium_Entity_GetTransform);
-		mono_add_internal_call("Opium.Entity::SetTransform_Native", Opium::Script::Opium_Entity_SetTransform);
-		mono_add_internal_call("Opium.Entity::CreateComponent_Native", Opium::Script::Opium_Entity_CreateComponent);
-		mono_add_internal_call("Opium.Entity::HasComponent_Native", Opium::Script::Opium_Entity_HasComponent);
+		mono_add_internal_call("Opium.Entity::GetTransform_Native", OP::Script::Opium_Entity_GetTransform);
+		mono_add_internal_call("Opium.Entity::SetTransform_Native", OP::Script::Opium_Entity_SetTransform);
+		mono_add_internal_call("Opium.Entity::CreateComponent_Native", OP::Script::Opium_Entity_CreateComponent);
+		mono_add_internal_call("Opium.Entity::HasComponent_Native", OP::Script::Opium_Entity_HasComponent);
 
 		//mono_add_internal_call("Opium.Entity::GetTransform_Native", 
 	}

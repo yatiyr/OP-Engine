@@ -3,7 +3,7 @@
 #include <glm/glm.hpp>
 #include <Renderer/Texture.h>
 
-namespace Opium
+namespace OP
 {
 	class SubTexture2D
 	{

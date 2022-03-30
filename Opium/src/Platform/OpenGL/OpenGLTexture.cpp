@@ -2,7 +2,7 @@
 #include <Platform/OpenGL/OpenGLTexture.h>
 #include <stb_image.h>
 
-namespace Opium
+namespace OP
 {
 	OpenGLTexture2D::OpenGLTexture2D(uint32_t width, uint32_t height) : m_Width(width), m_Height(height)
 	{

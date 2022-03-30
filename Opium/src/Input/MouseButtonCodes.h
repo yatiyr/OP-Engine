@@ -1,6 +1,6 @@
 #pragma once
 
-namespace Opium
+namespace OP
 {
 	typedef enum class MouseButtonCode : uint16_t
 	{
@@ -28,15 +28,15 @@ namespace Opium
 }
 
 /* Mouse button code taken from glfw */
-#define OP_MOUSE_BUTTON_0      ::Opium::Mouse::Button0
-#define OP_MOUSE_BUTTON_1      ::Opium::Mouse::Button1
-#define OP_MOUSE_BUTTON_2      ::Opium::Mouse::Button2
-#define OP_MOUSE_BUTTON_3      ::Opium::Mouse::Button3
-#define OP_MOUSE_BUTTON_4      ::Opium::Mouse::Button4
-#define OP_MOUSE_BUTTON_5      ::Opium::Mouse::Button5
-#define OP_MOUSE_BUTTON_6      ::Opium::Mouse::Button6
-#define OP_MOUSE_BUTTON_7      ::Opium::Mouse::Button7
-#define OP_MOUSE_BUTTON_LAST   ::Opium::Mouse::ButtonLast
-#define OP_MOUSE_BUTTON_LEFT   ::Opium::Mouse::ButtonLeft
-#define OP_MOUSE_BUTTON_RIGHT  ::Opium::Mouse::ButtonRight
-#define OP_MOUSE_BUTTON_MIDDLE ::Opium::Mouse::ButtonMiddle
+#define OP_MOUSE_BUTTON_0      ::OP::Mouse::Button0
+#define OP_MOUSE_BUTTON_1      ::OP::Mouse::Button1
+#define OP_MOUSE_BUTTON_2      ::OP::Mouse::Button2
+#define OP_MOUSE_BUTTON_3      ::OP::Mouse::Button3
+#define OP_MOUSE_BUTTON_4      ::OP::Mouse::Button4
+#define OP_MOUSE_BUTTON_5      ::OP::Mouse::Button5
+#define OP_MOUSE_BUTTON_6      ::OP::Mouse::Button6
+#define OP_MOUSE_BUTTON_7      ::OP::Mouse::Button7
+#define OP_MOUSE_BUTTON_LAST   ::OP::Mouse::ButtonLast
+#define OP_MOUSE_BUTTON_LEFT   ::OP::Mouse::ButtonLeft
+#define OP_MOUSE_BUTTON_RIGHT  ::OP::Mouse::ButtonRight
+#define OP_MOUSE_BUTTON_MIDDLE ::OP::Mouse::ButtonMiddle

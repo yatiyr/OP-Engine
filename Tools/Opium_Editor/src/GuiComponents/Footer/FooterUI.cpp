@@ -2,7 +2,7 @@
 
 #include <GuiComponents/Footer/FooterUI.h>
 
-namespace Opium
+namespace OP
 {
 
 }

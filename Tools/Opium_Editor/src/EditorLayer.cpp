@@ -19,7 +19,7 @@
 #include <Gui/Font/Font.h>
 #include <GuiComponents/GuiBlocks/GuiBlockGenerator.h>
 
-namespace Opium
+namespace OP
 {
 
 	extern ImFont* ImGuiIconFontBg;
@@ -407,9 +407,24 @@ namespace Opium
 
 			case Key::S:
 			{
-				if (controlPressed && shiftPressed)
+
+				if (controlPressed)
 				{
-					SaveSceneAs();
+					if (shiftPressed)
+						SaveSceneAs();
+					else
+						SaveScene();
+				}
+
+				break;
+			}
+
+			// Scene Commands
+			case Key::D:
+			{
+				if (controlPressed)
+				{
+					OnDuplicateEntity();
 				}
 
 				break;
@@ -437,8 +452,10 @@ namespace Opium
 	void EditorLayer::NewScene()
 	{
 		m_ActiveScene = CreateRef<Scene>();
-		m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+		m_ActiveScene->OnViewportResize((uint32_t)m_ViewportComponent.m_ViewportSize.x, (uint32_t)m_ViewportComponent.m_ViewportSize.y);
 		m_SceneGraph.SetContext(m_ActiveScene);
+
+		m_EditorScenePath = std::filesystem::path();
 	}
 
 	void EditorLayer::OpenScene()
@@ -452,12 +469,29 @@ namespace Opium
 
 	void EditorLayer::OpenScene(const std::filesystem::path& path)
 	{
-		m_ActiveScene = CreateRef<Scene>();
-		m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
-		m_SceneGraph.SetContext(m_ActiveScene);
+		if (m_SceneState != SceneState::Edit)
+			OnSceneStop();
 
-		SceneSerializer serializer(m_ActiveScene);
-		serializer.DeserializeText(path.string());
+		if (path.extension().string() != ".opium")
+		{
+			OP_ENGINE_WARN("Could not load {0} - not a scene file", path.filename().string());
+			return;
+		}
+
+
+		Ref<Scene> newScene = CreateRef<Scene>();
+		SceneSerializer serializer(newScene);
+		if (serializer.DeserializeText(path.string()))
+		{
+			m_EditorScene = newScene;
+			m_EditorScene->OnViewportResize((uint32_t)m_ViewportComponent.m_ViewportSize.x, (uint32_t)m_ViewportComponent.m_ViewportSize.y);
+			m_SceneGraph.SetContext(m_EditorScene);
+
+			m_ActiveScene = m_EditorScene;
+			m_EditorScenePath = path;
+
+		}
+
 	}
 
 	void EditorLayer::SaveSceneAs()
@@ -465,21 +499,58 @@ namespace Opium
 		std::string filePath = FileDialogs::SaveFile("Opium Scene file (*.opium)\0*.opium\0");
 		if (!filePath.empty())
 		{
-			SceneSerializer serializer(m_ActiveScene);
-			serializer.SerializeText(filePath);
+			SerializeScene(m_ActiveScene, filePath);
+			m_EditorScenePath = filePath;
 		}
+	}
+
+	void EditorLayer::SaveScene()
+	{
+		if (!m_EditorScenePath.empty())
+		{
+			if(m_SceneState == SceneState::Edit)
+				SerializeScene(m_ActiveScene, m_EditorScenePath);
+		}
+		else
+			SaveSceneAs();
+	}
+
+	void EditorLayer::SerializeScene(Ref<Scene> scene, const std::filesystem::path& path)
+	{
+		SceneSerializer serializer(scene);
+		serializer.SerializeText(path.string());
 	}
 
 	void EditorLayer::OnScenePlay()
 	{
-		m_ActiveScene->OnRuntimeStart();
+
 		m_SceneState = SceneState::Play;
+
+		m_ActiveScene = Scene::Copy(m_EditorScene);
+		m_ActiveScene->OnRuntimeStart();
+
+		m_SceneGraph.SetContext(m_ActiveScene);
 	}
 
 	void EditorLayer::OnSceneStop()
 	{
-		m_ActiveScene->OnRuntimeStop();
 		m_SceneState = SceneState::Edit;
+
+		m_ActiveScene->OnRuntimeStop();
+		m_ActiveScene = m_EditorScene;
+
+		m_SceneGraph.SetContext(m_ActiveScene);
+	}
+
+	void EditorLayer::OnDuplicateEntity()
+	{
+		if (m_SceneState != SceneState::Edit)
+			return;
+
+		Entity selectedEntity = m_SceneGraph.GetSelectedEntity();
+		if (selectedEntity)
+			m_EditorScene->DuplicateEntity(selectedEntity);
+
 	}
 
 }

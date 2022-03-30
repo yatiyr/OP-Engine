@@ -7,12 +7,21 @@
 #include <glm/gtx/quaternion.hpp>
 
 #include <Scene/SceneCamera.h>
-#include <Scene/ScriptableEntity.h>
-
+// #include <Scene/ScriptableEntity.h>
+#include <Opium/UUID.h>
 #include <Renderer/Texture.h>
 
-namespace Opium
+namespace OP
 {
+
+	struct IDComponent
+	{
+		UUID ID;
+
+		IDComponent() = default;
+		IDComponent(const IDComponent&) = default;
+
+	};
 
 	struct TagComponent
 	{
@@ -68,6 +77,8 @@ namespace Opium
 		CameraComponent(const CameraComponent&) = default;
 	};
 
+	// Forward declaration
+	class ScriptableEntity;
 	struct NativeScriptComponent
 	{
 		ScriptableEntity* Instance = nullptr;

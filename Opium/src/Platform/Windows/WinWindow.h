@@ -5,7 +5,7 @@
 #include <GLFW/glfw3.h>
 
 
-namespace Opium
+namespace OP
 {
 	class WinWindow : public Window
 	{

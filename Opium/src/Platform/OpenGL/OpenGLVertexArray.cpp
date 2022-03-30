@@ -3,7 +3,7 @@
 
 #include <glad/glad.h>
 
-namespace Opium
+namespace OP
 {
 
 	static GLenum ShaderDataTypeToOpenGLBaseType(ShaderDataType type)

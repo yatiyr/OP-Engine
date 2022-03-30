@@ -4,7 +4,7 @@
 
 #include <Platform/OpenGL/OpenGLVertexArray.h>
 
-namespace Opium
+namespace OP
 {
 	Ref<VertexArray> VertexArray::Create()
 	{

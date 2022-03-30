@@ -5,9 +5,9 @@
 #include <Input/MouseButtonCodes.h>
 #include <Input/KeyCodes.h>
 
-namespace Opium
+namespace OP
 {
-	class OPIUM_API Input
+	class Input
 	{
 	public:
 		static bool IsKeyPressed(KeyCode keycode);

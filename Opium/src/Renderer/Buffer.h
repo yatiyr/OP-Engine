@@ -1,7 +1,7 @@
 #pragma once
 
 
-namespace Opium
+namespace OP
 {
 
 	enum class ShaderDataType : uint8_t

@@ -10,7 +10,7 @@
 
 #include <Profiling/Timer.h>
 
-namespace Opium
+namespace OP
 {
 	namespace Utils
 	{

@@ -2,7 +2,7 @@
 
 #include <Scene/Scene.h>
 
-namespace Opium
+namespace OP
 {
 	class SceneSerializer
 	{

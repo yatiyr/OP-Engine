@@ -4,7 +4,7 @@
 #include <Scene/Entity.h>
 #include <Renderer/Framebuffer.h>
 
-namespace Opium
+namespace OP
 {
 	class ViewportComponent
 	{
@@ -37,6 +37,9 @@ namespace Opium
 		bool m_ViewportHovered = false;
 		glm::vec2 m_ViewportSize = { 0.0f, 0.0f };
 		glm::vec2 m_ViewportBounds[2] = { {0.0f, 0.0f}, {0.0f, 0.0f}};
+
+
+		friend class EditorLayer;
 
 	};
 }

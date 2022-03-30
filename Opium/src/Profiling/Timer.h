@@ -2,7 +2,7 @@
 
 #include <chrono>
 
-namespace Opium
+namespace OP
 {
 	class Timer
 	{

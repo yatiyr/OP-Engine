@@ -3,7 +3,7 @@
 #include <Renderer/Camera.h>
 
 
-namespace Opium
+namespace OP
 {
 	class SceneCamera : public Camera
 	{

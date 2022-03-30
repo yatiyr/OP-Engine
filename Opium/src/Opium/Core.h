@@ -53,7 +53,7 @@
 #define OP_BIND_EVENT_FUNCTION(x) [this](auto&&... args) -> decltype(auto) { return this->x(std::forward<decltype(args)>(args)...); }
 
 #define OP_BIND_FUNCTION(x) [this](auto&&... args) -> decltype(auto) { return this->x(std::forward<decltype(args)>(args)...); }
-namespace Opium
+namespace OP
 {
 	template<typename T>
 	using Scope = std::unique_ptr<T>;

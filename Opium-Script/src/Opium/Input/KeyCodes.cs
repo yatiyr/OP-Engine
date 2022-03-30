@@ -1,5 +1,5 @@
 ﻿
-namespace Opium
+namespace OP
 {
     public enum KeyCode
     {

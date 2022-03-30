@@ -4,7 +4,7 @@
 #include <Platform/OpenGL/OpenGLShader.h>
 #include <Renderer/Renderer2D.h>
 
-namespace Opium
+namespace OP
 {
 	Renderer::SceneData* Renderer::m_SceneData = new Renderer::SceneData;
 

@@ -3,7 +3,7 @@
 #include <glm/glm.hpp>
 #include <Renderer/VertexArray.h>
 
-namespace Opium
+namespace OP
 {
 	class RendererAPI
 	{

@@ -4,7 +4,7 @@
 #include <Renderer/Renderer.h>
 #include <Platform/OpenGL/OpenGLUniformBuffer.h>
 
-namespace Opium
+namespace OP
 {
 	Ref<UniformBuffer> UniformBuffer::Create(uint32_t size, uint32_t binding)
 	{

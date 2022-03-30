@@ -2,7 +2,7 @@
 
 #include <Renderer/Buffer.h>
 
-namespace Opium
+namespace OP
 {
 	class OpenGLVertexBuffer : public VertexBuffer
 	{

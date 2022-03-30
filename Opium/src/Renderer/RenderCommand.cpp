@@ -3,7 +3,7 @@
 
 #include <Platform/OpenGL/OpenGLRendererAPI.h>
 
-namespace Opium
+namespace OP
 {
 	RendererAPI* RenderCommand::s_RendererAPI = new OpenGLRendererAPI;
 }

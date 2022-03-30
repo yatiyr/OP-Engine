@@ -2,7 +2,7 @@
 
 #include <glm/glm.hpp>
 
-namespace Opium
+namespace OP
 {
 
 	class OrthographicCamera

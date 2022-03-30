@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace Opium
+namespace OP
 {
 
     [StructLayout(LayoutKind.Explicit)]

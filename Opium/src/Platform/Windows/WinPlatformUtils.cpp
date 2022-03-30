@@ -10,7 +10,7 @@
 
 #include <Opium/Application.h>
 
-namespace Opium
+namespace OP
 {
 	std::string FileDialogs::OpenFile(const char* filter)
 	{

@@ -4,7 +4,7 @@
 #include <GLFW/glfw3.h>
 #include <Opium/Application.h>
 
-namespace Opium
+namespace OP
 {
 
 	bool Input::IsKeyPressed(KeyCode keycode)

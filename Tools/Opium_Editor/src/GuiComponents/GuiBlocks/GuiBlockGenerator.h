@@ -4,7 +4,7 @@
 #include <vector>
 #include <functional>
 
-namespace Opium
+namespace OP
 {
 	extern ImFont* ImGuiIconFontBg;
 	extern ImFont* ImGuiIconFontMd;

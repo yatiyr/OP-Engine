@@ -3,7 +3,7 @@
 #include <Platform/OpenGL/OpenGLFramebuffer.h>
 #include <Renderer/Renderer.h>
 
-namespace Opium
+namespace OP
 {
 	Ref<Framebuffer> Framebuffer::Create(const FramebufferSpecification& spec)
 	{

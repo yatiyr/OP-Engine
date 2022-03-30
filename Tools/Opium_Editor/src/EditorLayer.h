@@ -9,9 +9,9 @@
 
 #include <Renderer/EditorCamera.h>
 
-namespace Opium
+namespace OP
 {
-	class EditorLayer : public Opium::Layer
+	class EditorLayer : public Layer
 	{
 	public:
 		EditorLayer();
@@ -35,9 +35,14 @@ namespace Opium
 		void OpenScene();
 		void OpenScene(const std::filesystem::path& path);
 		void SaveSceneAs();
+		void SaveScene();
+
+		void SerializeScene(Ref<Scene> scene, const std::filesystem::path& path);
 
 		void OnScenePlay();
 		void OnSceneStop();
+
+		void OnDuplicateEntity();
 
 		// UI Panels
 		void UI_Toolbar();
@@ -68,6 +73,8 @@ namespace Opium
 		Ref<Framebuffer> m_Framebuffer;
 
 		Ref<Scene> m_ActiveScene;
+		Ref<Scene> m_EditorScene;
+		std::filesystem::path m_EditorScenePath;
 
 		Entity m_HoveredEntity;
 

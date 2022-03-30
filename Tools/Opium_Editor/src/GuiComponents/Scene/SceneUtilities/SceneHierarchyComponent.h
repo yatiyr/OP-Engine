@@ -6,7 +6,7 @@
 #include <Scene/Entity.h>
 #include <Opium.h>
 
-namespace Opium
+namespace OP
 {
 
 	class SceneHierarchyComponent

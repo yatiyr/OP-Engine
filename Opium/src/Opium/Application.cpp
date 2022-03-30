@@ -7,7 +7,7 @@
 
 #include <ScriptManager/ScriptManager.h>
 
-namespace Opium
+namespace OP
 {
 
 	Application* Application::s_Instance = nullptr;
@@ -16,7 +16,6 @@ namespace Opium
 	Application::Application(const std::string& name, AppCommandLineArguments args)
 		: m_CommandLineArguments(args)
 	{
-		OP_PROFILE_FUNCTION();
 
 		OP_ENGINE_ASSERT(!s_Instance, "There is already an application ready!");
 		s_Instance = this;
@@ -39,16 +38,12 @@ namespace Opium
 
 	void Application::PushLayer(Layer* layer)
 	{
-		OP_PROFILE_FUNCTION();
-
 		m_LayerStack.PushLayer(layer);
 		layer->OnAttach();
 	}
 
 	void Application::PushOverlay(Layer* overlay)
 	{
-		OP_PROFILE_FUNCTION();
-
 		m_LayerStack.PushOverlay(overlay);
 		overlay->OnAttach();
 	}
@@ -60,8 +55,6 @@ namespace Opium
 
 	void Application::OnEvent(Event& e)
 	{
-		OP_PROFILE_FUNCTION();
-
 		EventDispatcher dispatcher(e);
 		dispatcher.Dispatch<WindowCloseEvent>(OP_BIND_EVENT_FUNCTION(Application::OnWindowClose));
 		dispatcher.Dispatch<WindowResizeEvent>(OP_BIND_EVENT_FUNCTION(Application::OnWindowResize));
@@ -76,12 +69,9 @@ namespace Opium
 
 	void Application::Run()
 	{
-		OP_PROFILE_FUNCTION();
 
 		while (is_running)
 		{
-
-			OP_PROFILE_SCOPE("Run loop application");
 
 			float time = (float)Application::GetWindow().GetTime();
 			Timestep timestep = time - m_LastFrameTime;
@@ -91,7 +81,6 @@ namespace Opium
 			if (!m_Minimized)
 			{
 				{
-					OP_PROFILE_SCOPE("LayerStack OnUpdate");
 
 					for (Layer* layer : m_LayerStack)
 						layer->OnUpdate(timestep);
@@ -100,7 +89,6 @@ namespace Opium
 
 			m_ImGuiLayer->Begin();
 			{
-				OP_PROFILE_SCOPE("LayerStack OnImGuiRender");
 
 				for (Layer* layer : m_LayerStack)
 					layer->OnImGuiRender();
@@ -120,8 +108,6 @@ namespace Opium
 
 	bool Application::OnWindowResize(WindowResizeEvent& e)
 	{
-		OP_PROFILE_FUNCTION();
-
 		if (e.GetWidth() == 0 || e.GetHeight() == 0)
 		{
 			m_Minimized = true;

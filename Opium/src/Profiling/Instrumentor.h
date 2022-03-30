@@ -7,7 +7,7 @@
 
 #include <thread>
 
-namespace Opium
+namespace OP
 {
     struct ProfileResult
     {

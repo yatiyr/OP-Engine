@@ -4,7 +4,7 @@
 #include <Input/Input.h>
 #include <Input/KeyCodes.h>
 
-namespace Opium
+namespace OP
 {
 	OrthographicCameraController::OrthographicCameraController(float aspectRatio, bool rotation)
 		: m_Camera(-aspectRatio * m_ZoomLevel, aspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel),

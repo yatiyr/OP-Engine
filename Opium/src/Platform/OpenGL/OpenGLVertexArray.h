@@ -3,7 +3,7 @@
 #include <Renderer/VertexArray.h>
 
 
-namespace Opium
+namespace OP
 {
 
 	class OpenGLVertexArray : public VertexArray

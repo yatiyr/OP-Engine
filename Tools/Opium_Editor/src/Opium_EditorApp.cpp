@@ -1,13 +1,13 @@
 #include <Opium.h>
 
-#include <Opium/EntryPoint.h>
+#include <EntryPoint.h>
 #include <imgui/imgui.h>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <EditorLayer.h>
 
 
-namespace Opium
+namespace OP
 {
     class OpiumEditor : public Application
     {

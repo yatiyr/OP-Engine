@@ -5,7 +5,7 @@
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
 
-namespace Opium
+namespace OP
 {
 	OpenGLContext::OpenGLContext(GLFWwindow* windowHandle) : m_WindowHandle(windowHandle)
 	{

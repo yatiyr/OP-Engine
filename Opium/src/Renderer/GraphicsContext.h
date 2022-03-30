@@ -1,6 +1,6 @@
 #pragma once
 
-namespace Opium
+namespace OP
 {
 	class GraphicsContext
 	{

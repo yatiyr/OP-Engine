@@ -12,7 +12,7 @@ extern "C"
 }
 
 
-namespace Opium
+namespace OP
 {
 
 	namespace Script

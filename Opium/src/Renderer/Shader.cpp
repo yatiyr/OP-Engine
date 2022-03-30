@@ -4,7 +4,7 @@
 #include <Renderer/Renderer.h>
 #include <Platform/OpenGL/OpenGLShader.h>
 
-namespace Opium
+namespace OP
 {
 
 	Ref<Shader> Shader::Create(const std::string& filePath)

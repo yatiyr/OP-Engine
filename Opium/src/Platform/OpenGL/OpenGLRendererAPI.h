@@ -3,7 +3,7 @@
 #include <Renderer/RendererAPI.h>
 
 
-namespace Opium
+namespace OP
 {
 	class OpenGLRendererAPI : public RendererAPI
 	{

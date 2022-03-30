@@ -2,8 +2,10 @@
 
 #include <Scene/Scene.h>
 #include <entt.hpp>
+#include <Opium/UUID.h>
+#include <Scene/Components.h>
 
-namespace Opium
+namespace OP
 {
 	class Entity
 	{
@@ -19,6 +21,14 @@ namespace Opium
 
 			OP_ENGINE_ASSERT(!HasComponent<T>(), "Entity already has a component");
 			T& component = m_Scene->m_Registry.emplace<T>(m_EntityHandle, std::forward<Args>(args)...);
+			m_Scene->OnComponentAdded<T>(*this, component); // TODO: SORT THIS OUT
+			return component;
+		}
+
+		template<typename T, typename... Args>
+		T& AddOrReplaceComponent(Args&&... args)
+		{
+			T& component = m_Scene->m_Registry.emplace_or_replace<T>(m_EntityHandle, std::forward<Args>(args)...);
 			m_Scene->OnComponentAdded<T>(*this, component); // TODO: SORT THIS OUT
 			return component;
 		}
@@ -46,6 +56,10 @@ namespace Opium
 		operator bool() const { return m_EntityHandle != entt::null; }
 		operator uint32_t() const { return (uint32_t)m_EntityHandle; }
 		operator entt::entity() const { return m_EntityHandle; }
+
+
+		UUID GetUUID() { return GetComponent<IDComponent>().ID; }
+		const std::string& GetName() { return GetComponent<TagComponent>().Tag; }
 
 		bool operator == (const Entity& other) const
 		{

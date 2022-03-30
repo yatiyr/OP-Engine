@@ -3,7 +3,7 @@
 #include <string>
 #include <Opium/Core.h>
 
-namespace Opium
+namespace OP
 {
 	class Texture
 	{

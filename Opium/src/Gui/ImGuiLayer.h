@@ -9,7 +9,7 @@
 #include <unordered_map>
 
 
-namespace Opium
+namespace OP
 {
 
 	class OPIUM_API ImGuiLayer : public Layer

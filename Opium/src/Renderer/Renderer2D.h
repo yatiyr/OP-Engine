@@ -10,7 +10,7 @@
 
 #include <Scene/Components.h>
 
-namespace Opium
+namespace OP
 {
 	class Renderer2D
 	{

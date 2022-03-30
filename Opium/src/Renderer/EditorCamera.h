@@ -9,7 +9,7 @@
 
 
 
-namespace Opium
+namespace OP
 {
 	class EditorCamera : public Camera
 	{

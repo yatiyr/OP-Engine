@@ -12,7 +12,7 @@
 #include <ScriptManager/InternalCallArranger.h>
 #include <Scene/Scene.h>
 
-namespace Opium
+namespace OP
 {
 
 	static MonoDomain* s_MonoDomain = nullptr;
@@ -348,7 +348,7 @@ namespace Opium
 		}
 	}
 
-	const Opium::ScriptModuleFieldMap& ScriptManager::GetFieldMap()
+	const OP::ScriptModuleFieldMap& ScriptManager::GetFieldMap()
 	{
 		return s_PublicFields;
 	}
