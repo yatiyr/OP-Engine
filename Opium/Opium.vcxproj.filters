@@ -1528,6 +1528,10 @@
       <Filter>src\Window</Filter>
     </ClInclude>
     <ClInclude Include="src\Opium\UUID.h" />
+    <ClInclude Include="src\Scene\SceneRenderer.h" />
+    <ClInclude Include="src\Geometry\Mesh.h" />
+    <ClInclude Include="src\Geometry\Icosphere.h" />
+    <ClInclude Include="src\Geometry\RadialSphere.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="external\ImGuizmo\GraphEditor.cpp">
@@ -1669,5 +1673,9 @@
       <Filter>src\ScriptManager</Filter>
     </ClCompile>
     <ClCompile Include="src\Opium\UUID.cpp" />
+    <ClCompile Include="src\Scene\SceneRenderer.cpp" />
+    <ClCompile Include="src\Geometry\Mesh.cpp" />
+    <ClCompile Include="src\Geometry\Icosphere.cpp" />
+    <ClCompile Include="src\Geometry\RadialSphere.cpp" />
   </ItemGroup>
 </Project>

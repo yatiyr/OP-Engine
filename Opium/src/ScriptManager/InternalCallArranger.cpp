@@ -23,7 +23,7 @@ namespace OP
 
 #define Component_RegisterType(Type) \
 	{\
-		MonoType* type = mono_reflection_type_from_name("Opium." #Type, s_CoreAssemblyImage);\
+		MonoType* type = mono_reflection_type_from_name("OP." #Type, s_CoreAssemblyImage);\
 		if (type) {\
 			uint32_t id = mono_type_get_type(type);\
 			s_HasComponentFuncs[type] = [](Entity& entity) { return entity.HasComponent<Type>(); };\

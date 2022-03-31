@@ -62,7 +62,6 @@ namespace OP
 
 	void Renderer2D::Init()
 	{
-		OP_PROFILE_FUNCTION();
 
 		s_Data.QuadVertexArray = VertexArray::Create();
 
