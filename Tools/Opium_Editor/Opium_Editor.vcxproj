@@ -171,6 +171,11 @@ IF EXIST "$(SolutionDir)\Opium\external\mono\bin\Release\mono-2.0-sgen.dll"\ (xc
       <Project>{8FC8D30D-FBDC-FBBE-C45E-9F1E3032F8EF}</Project>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="assets\shaders\Pbr\Depth.glsl" />
+    <None Include="assets\shaders\Pbr\DepthDebug.glsl" />
+    <None Include="assets\shaders\Pbr\Main.glsl" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

@@ -15,6 +15,9 @@ namespace OP
 
 		// Depth/stencil
 		DEPTH24STENCIL8,
+		
+		// For Shadow Maps
+		DEPTH16,
 
 		// Default
 		Depth = DEPTH24STENCIL8

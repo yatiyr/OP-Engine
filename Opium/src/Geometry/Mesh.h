@@ -1,13 +1,17 @@
 #pragma once
 
+#include <Renderer/VertexArray.h>
+
+
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-// Temp
-#include <glad/glad.h>
 
 #include <vector>
+
+
+
 
 namespace OP
 {
@@ -80,9 +84,13 @@ namespace OP
 
 
 		// Array object and buffers
-		unsigned int m_VAO = 0, m_VBO = 0, m_EBO = 0;
+
 		std::vector<float> m_ArrayBuffer;
 		std::vector<uint32_t> m_Indices;
+
+		Ref<VertexArray> m_VertexArray;
+		Ref<VertexBuffer> m_VertexBuffer;
+		Ref<IndexBuffer> m_IndexBuffer;
 
 
 		bool m_Smooth;

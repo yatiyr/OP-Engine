@@ -56,6 +56,11 @@ namespace OP
 			<< "   TexCoord Count:" << GetTexCoordCount() << std::endl;
 	}
 
+	Ref<Icosphere> Icosphere::Create(float radius, int subdivision, bool smooth)
+	{
+		return std::make_shared<Icosphere>(radius, subdivision, smooth);
+	}
+
 	void Icosphere::BuildVertices()
 	{
 		if (m_Smooth)

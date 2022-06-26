@@ -46,6 +46,8 @@ namespace OP
 	void EditorLayer::OnAttach()
 	{
 
+		SceneRenderer::Init();
+
 		m_IconPlay = Texture2D::Create("EditorResources/Icons/playbutton_icon.png");
 		m_IconStop = Texture2D::Create("EditorResources/Icons/stopbutton_icon.png");
 
@@ -163,7 +165,7 @@ namespace OP
 		Renderer2D::ResetStats();
 
 		m_Framebuffer->Bind();
-		RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
+		RenderCommand::SetClearColor({ 0.0f, 0.0f, 0.0f, 1 });
 		RenderCommand::Clear();
 
 
@@ -171,6 +173,19 @@ namespace OP
 		m_Framebuffer->ClearAttachment(1, -1);
 
 
+		// Playground code
+
+		m_EditorCamera.OnUpdate(ts);
+
+		glm::vec2 viewportSize = m_ViewportComponent.GetViewportSize();
+
+		SceneRenderer::ResizeViewport(viewportSize.x, viewportSize.y);
+		SceneRenderer::Render(m_EditorCamera);
+
+
+		// End Playground Code
+		
+		/*
 		switch (m_SceneState)
 		{
 			case SceneState::Edit:
@@ -187,10 +202,11 @@ namespace OP
 				break;
 			}
 		}
+		
 
 		m_ViewportComponent.SetHoveredEntity();
 		
-
+		*/
 		m_Framebuffer->Unbind();
 
 		

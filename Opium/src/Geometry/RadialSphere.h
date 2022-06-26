@@ -23,6 +23,8 @@ namespace OP
 		void PrintSelf() const;
 
 
+		static Ref<RadialSphere> Create(float radius = 1.0f, int sectorCount = 64, int stackCount = 64, bool smooth = true);
+
 	private:
 		virtual void BuildVertices();
 

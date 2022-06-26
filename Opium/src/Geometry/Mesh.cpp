@@ -2,7 +2,7 @@
 #include <Geometry/Mesh.h>
 
 // Temp
-#include <glad/glad.h>
+#include <Renderer/RenderCommand.h>
 
 namespace OP
 {
@@ -10,9 +10,6 @@ namespace OP
 
 	Mesh::~Mesh()
 	{
-		glDeleteVertexArrays(1, &m_VAO);
-		glDeleteBuffers(1, &m_VBO);
-		glDeleteBuffers(1, &m_EBO);
 	}
 
 	void Mesh::SetupArrayBuffer()
@@ -53,47 +50,27 @@ namespace OP
 	void Mesh::SetupMesh()
 	{
 		// clear buffers if they are already allocated
-		if (m_VAO != 0)
-		{
-			glDeleteVertexArrays(1, &m_VAO);
-			glDeleteBuffers(1, &m_VBO);
-			glDeleteBuffers(1, &m_EBO);
-		}
 
-		glGenVertexArrays(1, &m_VAO);
-		glGenBuffers(1, &m_VBO);
-		glGenBuffers(1, &m_EBO);
+		if (m_VertexArray.get())
+			delete m_VertexArray.get();
 
-		glBindVertexArray(m_VAO);
-		glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
+		
+		m_VertexArray = VertexArray::Create();
+		
+		m_VertexBuffer = VertexBuffer::Create(m_ArrayBuffer.size() * sizeof(float));
+		m_VertexBuffer->SetLayout(
+			{
+				{ ShaderDataType::Float3, "a_Position"},
+				{ ShaderDataType::Float3, "a_Normal"},
+				{ ShaderDataType::Float2, "a_TexCoord"},
+				{ ShaderDataType::Float3, "a_Tangent"},
+				{ ShaderDataType::Float3, "a_Bitangent"}
+			}
+		);
 
-		glBufferData(GL_ARRAY_BUFFER, m_ArrayBuffer.size() * sizeof(float), &m_ArrayBuffer[0], GL_STATIC_DRAW);
-
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_Indices.size() * sizeof(unsigned int), &m_Indices[0], GL_STATIC_DRAW);
-
-		// position data of vertices
-		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 56, (void*)0);
-
-		// normal data of vertices
-		glEnableVertexAttribArray(1);
-		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 56, (void*)(3 * sizeof(float)));
-
-		// texture coordinates of vertices
-		glEnableVertexAttribArray(2);
-		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 56, (void*)(6 * sizeof(float)));
-
-		// tangets of vertices
-		glEnableVertexAttribArray(3);
-		glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 56, (void*)(8 * sizeof(float)));
-
-		// bitangents of vertices
-		glEnableVertexAttribArray(4);
-		glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, 56, (void*)(11 * sizeof(float)));
-
-		// unbind vertex array
-		glBindVertexArray(0);
+		m_VertexArray->AddVertexBuffer(m_VertexBuffer);
+		m_IndexBuffer = IndexBuffer::Create(&m_Indices[0], m_Indices.size());
+		m_VertexArray->SetIndexBuffer(m_IndexBuffer);
 	}
 
 	void Mesh::SetupTangentBitangents()
@@ -198,9 +175,7 @@ namespace OP
 
 	void Mesh::Draw() const
 	{
-		glBindVertexArray(m_VAO);
-		glDrawElements(GL_TRIANGLES, m_Indices.size(), GL_UNSIGNED_INT, 0);
-		glBindVertexArray(0);
+		RenderCommand::DrawIndexed(m_VertexArray, m_Indices.size());
 	}
 
 	void Mesh::SetSmooth(bool smooth)

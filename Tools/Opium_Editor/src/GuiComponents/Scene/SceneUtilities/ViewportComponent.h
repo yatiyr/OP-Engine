@@ -24,6 +24,8 @@ namespace OP
 		void SetHoveredEntity();
 		bool OnMouseButtonPressed(MouseButtonPressedEvent& e);
 
+		glm::vec2 GetViewportSize() { return m_ViewportSize; }
+
 	private:
 		void HandleDragAndDrop();
 		void HandleImGuizmo();

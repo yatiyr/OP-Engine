@@ -63,6 +63,11 @@ namespace OP
 			<< " TexCoord Count:"  << GetTexCoordCount() << std::endl;
 	}
 
+    Ref<RadialSphere> RadialSphere::Create(float radius, int sectorCount, int stackCount, bool smooth)
+    {
+        return std::make_shared<RadialSphere>(radius, sectorCount, stackCount, smooth);
+    }
+
 	void RadialSphere::BuildVertices()
 	{
         if (m_Smooth)

@@ -10,9 +10,6 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 
-// Temp
-#include <glad/glad.h>
-
 namespace OP
 {
 	class Icosphere : public Mesh
@@ -28,6 +25,8 @@ namespace OP
 		void SetSubdivision(int subdivision);
 		void UpdateRadius();
 		void PrintSelf() const;
+
+		static Ref<Icosphere> Create(float radius = 1.0f, int subdivision = 1, bool smooth = true);
 
 	private:
 

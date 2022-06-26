@@ -1,7 +1,7 @@
 #pragma once
 
 #include <cstdint>
-
+#include <Renderer/EditorCamera.h>
 
 namespace OP
 {
@@ -16,9 +16,11 @@ namespace OP
 	public:
 		static void Init();
 
-		static void Render();
+		static void Render(EditorCamera& camera);
 
 		static SceneRendererStats GetStats();
+
+		static void ResizeViewport(float width, float height);
 
 	private:
 

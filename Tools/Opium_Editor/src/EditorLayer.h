@@ -9,6 +9,8 @@
 
 #include <Renderer/EditorCamera.h>
 
+#include <Scene/SceneRenderer.h>
+
 namespace OP
 {
 	class EditorLayer : public Layer
