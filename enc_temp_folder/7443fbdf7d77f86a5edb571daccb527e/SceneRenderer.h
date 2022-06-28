@@ -2,7 +2,6 @@
 
 #include <cstdint>
 #include <Renderer/EditorCamera.h>
-#include <Renderer/Framebuffer.h>
 
 namespace OP
 {
@@ -15,7 +14,7 @@ namespace OP
 	class SceneRenderer
 	{
 	public:
-		static void Init(float width, float height, Ref<Framebuffer> fB);
+		static void Init();
 
 		static void Render(EditorCamera& camera);
 

@@ -46,6 +46,7 @@ namespace OP
 	void EditorLayer::OnAttach()
 	{
 
+		SceneRenderer::Init();
 
 		m_IconPlay = Texture2D::Create("EditorResources/Icons/playbutton_icon.png");
 		m_IconStop = Texture2D::Create("EditorResources/Icons/stopbutton_icon.png");
@@ -58,9 +59,6 @@ namespace OP
 		fbSpec.Height = 720;
 		m_Framebuffer = Framebuffer::Create(fbSpec);
 		/////////////////////////////////////////////////////////
-
-
-		SceneRenderer::Init(1280, 720, m_Framebuffer);
 
 		// Temp
 		m_ViewportComponent.SetFramebuffer(m_Framebuffer);

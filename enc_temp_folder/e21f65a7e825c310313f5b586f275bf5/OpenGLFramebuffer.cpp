@@ -83,7 +83,6 @@ namespace OP
 			switch (format)
 			{
 				case FramebufferTextureFormat::DEPTH24STENCIL8: return true;
-				case FramebufferTextureFormat::DEPTH16: return true;
 			}
 
 			return false;

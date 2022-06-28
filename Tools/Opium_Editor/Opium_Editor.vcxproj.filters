@@ -70,5 +70,6 @@
     <None Include="assets\shaders\Pbr\Main.glsl" />
     <None Include="assets\shaders\Pbr\Depth.glsl" />
     <None Include="assets\shaders\Pbr\DepthDebug.glsl" />
+    <None Include="assets\shaders\Pbr\Test.glsl" />
   </ItemGroup>
 </Project>
