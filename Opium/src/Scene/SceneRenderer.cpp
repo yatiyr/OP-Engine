@@ -201,7 +201,7 @@ namespace OP
 
 	void SceneRenderer::Render(EditorCamera& camera)
 	{
-		s_SceneRendererData.CameraBuffer.ViewProjection = camera.GetProjection();
+		s_SceneRendererData.CameraBuffer.ViewProjection = camera.GetViewProjection();
 		s_SceneRendererData.CameraBuffer.ViewPos = camera.GetPosition();
 		s_SceneRendererData.CameraUniformBuffer->SetData(&s_SceneRendererData.CameraBuffer, sizeof(SceneRendererData::CameraData));
 

@@ -36,9 +36,7 @@ void main()
 	vs_out.TexCoords = a_TexCoords;
 	vs_out.FragPosLightSpace = u_LightSpaceMatrix * vec4(vs_out.FragPos, 1.0);
 
-	mat4 testMat = mat4(1.0);
-
-	gl_Position =  /*u_ViewProjection*/ u_Model * vec4(a_Position, 1.0);
+	gl_Position =  u_ViewProjection * /*u_Model * */vec4(a_Position, 1.0);
 }
 
 #type fragment
@@ -190,5 +188,5 @@ void main()
 	float shadow = ShadowCalculation(fs_in.FragPosLightSpace, lightDir, normal);
 	vec3 lighting = (ambient + (visibility) * (diffuse + specular)) * color;
 
-	FragColor = vec4(0.0,1.0,0.0,1.0);//vec4(lighting, 1.0);
+	FragColor = vec4(0.4,0.9,0.3,1.0);//vec4(lighting, 1.0);
 }
