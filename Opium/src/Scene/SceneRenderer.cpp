@@ -138,7 +138,7 @@ namespace OP
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_BACK);
 
-		s_SceneRendererData.icosphere = Icosphere::Create(1.0f, 1, false);
+		s_SceneRendererData.icosphere = Icosphere::Create(2.0f, 0, false);
 
 		s_SceneRendererData.mainShader = Shader::Create("assets/shaders/Pbr/Main.glsl");
 		s_SceneRendererData.depthShader = Shader::Create("assets/shaders/Pbr/Depth.glsl");
@@ -249,8 +249,8 @@ namespace OP
 		//model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(0.0f, 0.0f, -10.0f));
 		s_SceneRendererData.mainShader->SetMat4("u_Model", model);
-		renderCube();
-		//s_SceneRendererData.icosphere->Draw();
+		//renderCube();
+		s_SceneRendererData.icosphere->Draw();
 		
 		//model = glm::translate(model, glm::vec3(2.0f, 1.0f, 1.0f));
 		//s_SceneRendererData.mainShader->SetMat4("u_Model", model);

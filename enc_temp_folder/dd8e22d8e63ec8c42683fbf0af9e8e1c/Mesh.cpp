@@ -57,7 +57,7 @@ namespace OP
 		
 		m_VertexArray = VertexArray::Create();
 		
-		m_VertexBuffer = VertexBuffer::Create(&m_ArrayBuffer[0], m_ArrayBuffer.size() * sizeof(float));
+		m_VertexBuffer = VertexBuffer::Create(m_ArrayBuffer.size() * sizeof(float));
 		m_VertexBuffer->SetLayout(
 			{
 				{ ShaderDataType::Float3, "a_Position"},
@@ -175,7 +175,7 @@ namespace OP
 
 	void Mesh::Draw() const
 	{
-		RenderCommand::DrawIndexedBinded(m_VertexArray, m_Indices.size());
+		RenderCommand::DrawIndexed(m_VertexArray, m_Indices.size());
 	}
 
 	void Mesh::SetSmooth(bool smooth)

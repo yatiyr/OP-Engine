@@ -19,7 +19,6 @@ namespace OP
 		virtual void Clear() = 0;
 
 		virtual void DrawIndexed(const Ref<VertexArray>& vertexArray, uint32_t indexCount = 0) = 0;
-		virtual void DrawIndexedBinded(const Ref<VertexArray>& vertexArray, uint32_t indexCount) = 0;
 
 		inline static API GetAPI() { return s_API; }
 	private:

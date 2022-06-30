@@ -40,11 +40,4 @@ namespace OP
 		glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, nullptr);
 	}
 
-	void OpenGLRendererAPI::DrawIndexedBinded(const Ref<VertexArray>& vertexArray, uint32_t indexCount)
-	{
-		vertexArray->Bind();
-		glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, nullptr);
-		vertexArray->Unbind();
-	}
-
 }

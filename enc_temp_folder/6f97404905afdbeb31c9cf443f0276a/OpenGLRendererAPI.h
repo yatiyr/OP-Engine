@@ -14,6 +14,5 @@ namespace OP
 		virtual void Clear() override;
 
 		virtual void DrawIndexed(const Ref<VertexArray>& vertexArray, uint32_t indexCount = 0)  override;
-		virtual void DrawIndexedBinded(const Ref<VertexArray>& vertexArray, uint32_t indexCount) override;
 	};
 }

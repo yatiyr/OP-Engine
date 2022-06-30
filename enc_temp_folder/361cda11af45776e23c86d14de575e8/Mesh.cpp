@@ -57,7 +57,7 @@ namespace OP
 		
 		m_VertexArray = VertexArray::Create();
 		
-		m_VertexBuffer = VertexBuffer::Create(&m_ArrayBuffer[0], m_ArrayBuffer.size() * sizeof(float));
+		m_VertexBuffer = VertexBuffer::Create(m_ArrayBuffer.size() * sizeof(float));
 		m_VertexBuffer->SetLayout(
 			{
 				{ ShaderDataType::Float3, "a_Position"},
