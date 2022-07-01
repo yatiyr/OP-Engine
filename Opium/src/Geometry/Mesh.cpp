@@ -7,6 +7,7 @@
 namespace OP
 {
 	Mesh::Mesh(bool smooth) : m_Smooth(smooth) {}
+	Mesh::Mesh() {}
 
 	Mesh::~Mesh()
 	{

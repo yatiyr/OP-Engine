@@ -16,6 +16,8 @@
 #include <glad/glad.h>
 
 #include <Geometry/Icosphere.h>
+#include <Geometry/Cube.h>
+#include <Geometry/Plane.h>
 
 namespace OP
 {
@@ -31,6 +33,11 @@ namespace OP
 		Ref<Texture2D> WhiteTexture;
 
 		Ref<Icosphere> icosphere;
+		Ref<Icosphere> icosphere2;
+		Ref<Icosphere> icosphere3;
+		Ref<Cube> cube;
+		Ref<Plane> plane;
+
 		// Ref<Icosphere> icosphere2;
 
 		glm::vec3 lightPos{-2.0f, 4.0f, -1.0f};
@@ -45,7 +52,17 @@ namespace OP
 		CameraData CameraBuffer;
 		Ref<UniformBuffer> CameraUniformBuffer;
 
+		struct ModelLightSpaceData
+		{
+			glm::mat4 Model;
+			glm::mat4 LightSpaceMatrix;
 
+			// Test
+			glm::vec3 Color;
+		};
+
+		ModelLightSpaceData ModelLightSpaceBuffer;
+		Ref<UniformBuffer> ModelLightSpaceUniformBuffer;
 
 		glm::vec2 ViewportSize{0.0f, 0.0f};
 
@@ -63,88 +80,24 @@ namespace OP
 
 	static SceneRendererData s_SceneRendererData;
 
-	float vertices[] = {
-		// back face
-		-1.0f, -1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 0.0f, 0.0f, // bottom-left
-		 1.0f,  1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 1.0f, 1.0f, // top-right
-		 1.0f, -1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 1.0f, 0.0f, // bottom-right         
-		 1.0f,  1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 1.0f, 1.0f, // top-right
-		-1.0f, -1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 0.0f, 0.0f, // bottom-left
-		-1.0f,  1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 0.0f, 1.0f, // top-left
-		// front face
-		-1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f, 0.0f, // bottom-left
-		 1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f, 0.0f, // bottom-right
-		 1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f, 1.0f, // top-right
-		 1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f, 1.0f, // top-right
-		-1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f, 1.0f, // top-left
-		-1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f, 0.0f, // bottom-left
-		// left face
-		-1.0f,  1.0f,  1.0f, -1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-right
-		-1.0f,  1.0f, -1.0f, -1.0f,  0.0f,  0.0f, 1.0f, 1.0f, // top-left
-		-1.0f, -1.0f, -1.0f, -1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-left
-		-1.0f, -1.0f, -1.0f, -1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-left
-		-1.0f, -1.0f,  1.0f, -1.0f,  0.0f,  0.0f, 0.0f, 0.0f, // bottom-right
-		-1.0f,  1.0f,  1.0f, -1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-right
-		// right face
-		 1.0f,  1.0f,  1.0f,  1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-left
-		 1.0f, -1.0f, -1.0f,  1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-right
-		 1.0f,  1.0f, -1.0f,  1.0f,  0.0f,  0.0f, 1.0f, 1.0f, // top-right         
-		 1.0f, -1.0f, -1.0f,  1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-right
-		 1.0f,  1.0f,  1.0f,  1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-left
-		 1.0f, -1.0f,  1.0f,  1.0f,  0.0f,  0.0f, 0.0f, 0.0f, // bottom-left     
-		// bottom face
-		-1.0f, -1.0f, -1.0f,  0.0f, -1.0f,  0.0f, 0.0f, 1.0f, // top-right
-		 1.0f, -1.0f, -1.0f,  0.0f, -1.0f,  0.0f, 1.0f, 1.0f, // top-left
-		 1.0f, -1.0f,  1.0f,  0.0f, -1.0f,  0.0f, 1.0f, 0.0f, // bottom-left
-		 1.0f, -1.0f,  1.0f,  0.0f, -1.0f,  0.0f, 1.0f, 0.0f, // bottom-left
-		-1.0f, -1.0f,  1.0f,  0.0f, -1.0f,  0.0f, 0.0f, 0.0f, // bottom-right
-		-1.0f, -1.0f, -1.0f,  0.0f, -1.0f,  0.0f, 0.0f, 1.0f, // top-right
-		// top face
-		-1.0f,  1.0f, -1.0f,  0.0f,  1.0f,  0.0f, 0.0f, 1.0f, // top-left
-		 1.0f,  1.0f , 1.0f,  0.0f,  1.0f,  0.0f, 1.0f, 0.0f, // bottom-right
-		 1.0f,  1.0f, -1.0f,  0.0f,  1.0f,  0.0f, 1.0f, 1.0f, // top-right     
-		 1.0f,  1.0f,  1.0f,  0.0f,  1.0f,  0.0f, 1.0f, 0.0f, // bottom-right
-		-1.0f,  1.0f, -1.0f,  0.0f,  1.0f,  0.0f, 0.0f, 1.0f, // top-left
-		-1.0f,  1.0f,  1.0f,  0.0f,  1.0f,  0.0f, 0.0f, 0.0f  // bottom-left   
-	};
-
-	void renderCube()
-	{
-		if (s_SceneRendererData.cubeVAO == 0)
-		{
-			unsigned int VBO;
-			glGenVertexArrays(1, &s_SceneRendererData.cubeVAO);
-			glGenBuffers(1, &VBO);
-			// bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
-			glBindVertexArray(s_SceneRendererData.cubeVAO);
-
-			glBindBuffer(GL_ARRAY_BUFFER, VBO);
-			glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-			// position attribute
-			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-			glEnableVertexAttribArray(0);
-
-		}
-
-		glBindVertexArray(s_SceneRendererData.cubeVAO);
-		glDrawArrays(GL_TRIANGLES, 0, 36);
-		glBindVertexArray(0);
-	}
-
 	void SceneRenderer::Init(float width, float height, Ref<Framebuffer> fB)
 	{
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_BACK);
 
-		s_SceneRendererData.icosphere = Icosphere::Create(2.0f, 0, false);
+		s_SceneRendererData.icosphere = Icosphere::Create(1.0f, 2, false);
+		s_SceneRendererData.icosphere2 = Icosphere::Create(2.0f, 0, false);
+		s_SceneRendererData.icosphere3 = Icosphere::Create(1.5f, 1, false);
+		s_SceneRendererData.cube = Cube::Create();
+		s_SceneRendererData.plane = Plane::Create();
 
 		s_SceneRendererData.mainShader = Shader::Create("assets/shaders/Pbr/Main.glsl");
 		s_SceneRendererData.depthShader = Shader::Create("assets/shaders/Pbr/Depth.glsl");
 		s_SceneRendererData.depthDebugShader = Shader::Create("assets/shaders/Pbr/DepthDebug.glsl");
 
 		s_SceneRendererData.CameraUniformBuffer = UniformBuffer::Create(sizeof(SceneRendererData::CameraData), 0);
+		s_SceneRendererData.ModelLightSpaceUniformBuffer = UniformBuffer::Create(sizeof(SceneRendererData::ModelLightSpaceData), 1);
 		
 		s_SceneRendererData.ViewportSize.x = width;
 		s_SceneRendererData.ViewportSize.y = height;
@@ -238,7 +191,7 @@ namespace OP
 
 		s_SceneRendererData.finalFramebuffer->Bind();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glDisable(GL_CULL_FACE);
+		//glDisable(GL_CULL_FACE);
 		s_SceneRendererData.mainShader->Bind();
 		//s_SceneRendererData.mainShader->SetFloat3("u_LightPos", s_SceneRendererData.lightPos);
 		//s_SceneRendererData.mainShader->SetMat4("u_LightSpaceMatrix", lightSpaceMatrix);
@@ -248,13 +201,48 @@ namespace OP
 		// simdilik kapa glBindTexture(GL_TEXTURE_2D, s_SceneRendererData.depthFramebuffer->GetColorAttachmentRendererID(0));
 		//model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(0.0f, 0.0f, -10.0f));
-		s_SceneRendererData.mainShader->SetMat4("u_Model", model);
+		s_SceneRendererData.ModelLightSpaceBuffer.Model = model;
+		// yellowish
+		s_SceneRendererData.ModelLightSpaceBuffer.Color = glm::vec3(0.7f, 0.6f, 0.2f);
+		s_SceneRendererData.ModelLightSpaceUniformBuffer->SetData(&s_SceneRendererData.ModelLightSpaceBuffer, sizeof(SceneRendererData::ModelLightSpaceData));
 		//renderCube();
 		s_SceneRendererData.icosphere->Draw();
+
+		model = glm::translate(model, glm::vec3(0.0f, 4.0f, 5.0f));
+		s_SceneRendererData.ModelLightSpaceBuffer.Model = model;
+		// cyanish
+		s_SceneRendererData.ModelLightSpaceBuffer.Color = glm::vec3(0.2f, 0.7f, 0.6f);
+		s_SceneRendererData.ModelLightSpaceUniformBuffer->SetData(&s_SceneRendererData.ModelLightSpaceBuffer, sizeof(SceneRendererData::ModelLightSpaceData));
+		s_SceneRendererData.icosphere2->Draw();
+
+
+		model = glm::translate(model, glm::vec3(6.0f, 4.0f, 5.0f));
+		s_SceneRendererData.ModelLightSpaceBuffer.Model = model;
+		// blue
+		s_SceneRendererData.ModelLightSpaceBuffer.Color = glm::vec3(0.2f, 0.3f, 0.8f);
+		s_SceneRendererData.ModelLightSpaceUniformBuffer->SetData(&s_SceneRendererData.ModelLightSpaceBuffer, sizeof(SceneRendererData::ModelLightSpaceData));
+		s_SceneRendererData.icosphere3->Draw();
+
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(0.0f, -10.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(20.0f, 20.0f, 20.0f));
+		model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));;
+		s_SceneRendererData.ModelLightSpaceBuffer.Model = model;
+		// bright grey
+		s_SceneRendererData.ModelLightSpaceBuffer.Color = glm::vec3(0.9f, 0.9f, 0.9f);
+		s_SceneRendererData.ModelLightSpaceUniformBuffer->SetData(&s_SceneRendererData.ModelLightSpaceBuffer, sizeof(SceneRendererData::ModelLightSpaceData));
+		s_SceneRendererData.plane->Draw();
+
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(-5.0f, 5.0f, 2.0f));
+		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
+		s_SceneRendererData.ModelLightSpaceBuffer.Model = model;
+		// dark orange
+		s_SceneRendererData.ModelLightSpaceBuffer.Color = glm::vec3(0.8f, 0.2f, 0.4f);
+		s_SceneRendererData.ModelLightSpaceUniformBuffer->SetData(&s_SceneRendererData.ModelLightSpaceBuffer, sizeof(SceneRendererData::ModelLightSpaceData));
+		s_SceneRendererData.cube->Draw();
+
 		
-		//model = glm::translate(model, glm::vec3(2.0f, 1.0f, 1.0f));
-		//s_SceneRendererData.mainShader->SetMat4("u_Model", model);
-		//s_SceneRendererData.icosphere->Draw();
 
 	}
 

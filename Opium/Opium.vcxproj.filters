@@ -1532,6 +1532,8 @@
     <ClInclude Include="src\Geometry\Mesh.h" />
     <ClInclude Include="src\Geometry\Icosphere.h" />
     <ClInclude Include="src\Geometry\RadialSphere.h" />
+    <ClInclude Include="src\Geometry\Plane.h" />
+    <ClInclude Include="src\Geometry\Cube.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="external\ImGuizmo\GraphEditor.cpp">
@@ -1677,5 +1679,7 @@
     <ClCompile Include="src\Geometry\Mesh.cpp" />
     <ClCompile Include="src\Geometry\Icosphere.cpp" />
     <ClCompile Include="src\Geometry\RadialSphere.cpp" />
+    <ClCompile Include="src\Geometry\Plane.cpp" />
+    <ClCompile Include="src\Geometry\Cube.cpp" />
   </ItemGroup>
 </Project>

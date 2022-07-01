@@ -20,15 +20,16 @@ namespace OP
 	public:
 
 		Mesh(bool smooth);
+		Mesh();
 		~Mesh();
 
 		virtual void BuildVertices() = 0;
 
 
-		void SetupArrayBuffer();
-		void SetupMesh();
+		virtual void SetupArrayBuffer();
+		virtual void SetupMesh();
 
-		void SetupTangentBitangents();
+		virtual void SetupTangentBitangents();
 		void AddIndices(uint32_t i1, uint32_t i2, uint32_t i3);
 
 		void ClearArrays();

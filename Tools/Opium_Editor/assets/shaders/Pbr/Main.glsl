@@ -19,6 +19,7 @@ struct VS_OUT
 	vec3 Normal;
 	vec2 TexCoords;
 	vec4 FragPosLightSpace;
+	vec3 Color;
 };
 
 layout (location = 0) out VS_OUT vs_out;
@@ -27,6 +28,7 @@ layout(std140, binding = 1) uniform Matrices
 {
 	mat4 u_Model;
 	mat4 u_LightSpaceMatrix;
+	vec3 u_Color;
 };
 
 
@@ -37,7 +39,7 @@ void main()
 	vs_out.TexCoords = a_TexCoords;
 	vs_out.FragPosLightSpace = u_LightSpaceMatrix * vec4(vs_out.FragPos, 1.0);
 
-	gl_Position =  u_ViewProjection * /*u_Model * */vec4(a_Position, 1.0);
+	gl_Position =  u_ViewProjection * u_Model * vec4(a_Position, 1.0);
 }
 
 #type fragment
@@ -57,6 +59,14 @@ layout (location = 0) in VS_OUT fs_in;
 
 layout (binding = 0) uniform sampler2D u_DiffuseTexture;
 layout (binding = 1) uniform sampler2D u_ShadowMap;
+
+layout(std140, binding = 1) uniform Matrices
+{
+	mat4 u_Model;
+	mat4 u_LightSpaceMatrix;
+	vec3 u_Color;
+};
+
 
 layout(std140, binding = 2) uniform LightPos
 {
@@ -189,5 +199,5 @@ void main()
 	float shadow = ShadowCalculation(fs_in.FragPosLightSpace, lightDir, normal);
 	vec3 lighting = (ambient + (visibility) * (diffuse + specular)) * color;
 
-	FragColor = vec4(0.4,0.9,0.3,1.0);//vec4(lighting, 1.0);
+	FragColor = vec4(u_Color,1.0);//vec4(lighting, 1.0);
 }

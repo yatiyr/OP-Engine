@@ -572,8 +572,10 @@
     <ClInclude Include="src\EventSystem\Event.h" />
     <ClInclude Include="src\EventSystem\KeyEvent.h" />
     <ClInclude Include="src\EventSystem\MouseEvent.h" />
+    <ClInclude Include="src\Geometry\Cube.h" />
     <ClInclude Include="src\Geometry\Mesh.h" />
     <ClInclude Include="src\Geometry\Icosphere.h" />
+    <ClInclude Include="src\Geometry\Plane.h" />
     <ClInclude Include="src\Geometry\RadialSphere.h" />
     <ClInclude Include="src\Gui\Font\Font.h" />
     <ClInclude Include="src\Gui\ImGuiLayer.h" />
@@ -650,8 +652,10 @@
     <ClCompile Include="src\Config\Precomp.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="src\Geometry\Cube.cpp" />
     <ClCompile Include="src\Geometry\Icosphere.cpp" />
     <ClCompile Include="src\Geometry\Mesh.cpp" />
+    <ClCompile Include="src\Geometry\Plane.cpp" />
     <ClCompile Include="src\Geometry\RadialSphere.cpp" />
     <ClCompile Include="src\Gui\ImGuiBuild.cpp" />
     <ClCompile Include="src\Gui\ImGuiLayer.cpp" />
