@@ -10,8 +10,8 @@ namespace OP
 	{
 		switch (Renderer::GetAPI())
 		{
-			case RendererAPI::API::None:   OP_ENGINE_ASSERT(false, "RendererAPI::None is not supported!"); return nullptr;
-			case RendererAPI::API::OpenGL: return std::make_shared<OpenGLTexture2D>(width, height);
+		case RendererAPI::API::None:   OP_ENGINE_ASSERT(false, "RendererAPI::None is not supported!"); return nullptr;
+		case RendererAPI::API::OpenGL: return std::make_shared<OpenGLTexture2D>(width, height);
 		}
 
 		OP_ENGINE_ASSERT(false, "Unknown RendererAPI!");
@@ -22,8 +22,8 @@ namespace OP
 	{
 		switch (Renderer::GetAPI())
 		{
-			case RendererAPI::API::None:   OP_ENGINE_ASSERT(false, "RendererAPI::None is not supported!"); return nullptr;
-			case RendererAPI::API::OpenGL: return std::make_shared<OpenGLTexture2D>(path);
+		case RendererAPI::API::None:   OP_ENGINE_ASSERT(false, "RendererAPI::None is not supported!"); return nullptr;
+		case RendererAPI::API::OpenGL: return std::make_shared<OpenGLTexture2D>(path);
 		}
 
 		OP_ENGINE_ASSERT(false, "Unknown RendererAPI!");

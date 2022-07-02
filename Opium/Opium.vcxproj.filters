@@ -1534,6 +1534,7 @@
     <ClInclude Include="src\Geometry\RadialSphere.h" />
     <ClInclude Include="src\Geometry\Plane.h" />
     <ClInclude Include="src\Geometry\Cube.h" />
+    <ClInclude Include="src\Renderer\ShaderPass.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="external\ImGuizmo\GraphEditor.cpp">
@@ -1681,5 +1682,6 @@
     <ClCompile Include="src\Geometry\RadialSphere.cpp" />
     <ClCompile Include="src\Geometry\Plane.cpp" />
     <ClCompile Include="src\Geometry\Cube.cpp" />
+    <ClCompile Include="src\Renderer\ShaderPass.cpp" />
   </ItemGroup>
 </Project>

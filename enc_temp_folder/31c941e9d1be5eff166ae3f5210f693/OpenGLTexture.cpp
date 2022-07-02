@@ -23,7 +23,7 @@ namespace OP
 		m_DataFormat = dataFormat;
 
 	}
-	
+
 	OpenGLTexture2D::OpenGLTexture2D(const std::string& path)
 		: m_Path(path)
 	{

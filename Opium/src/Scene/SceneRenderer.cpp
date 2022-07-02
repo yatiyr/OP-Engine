@@ -40,6 +40,8 @@ namespace OP
 
 		// Ref<Icosphere> icosphere2;
 
+
+		// Directional light
 		glm::vec3 lightPos{-2.0f, 4.0f, -1.0f};
 
 
@@ -126,7 +128,7 @@ namespace OP
 
 		s_SceneRendererData.finalFramebuffer = fB;
 
-
+		
 		// Configure Shaders
 		s_SceneRendererData.mainShader->Bind();
 		s_SceneRendererData.mainShader->SetInt("u_DiffuseTexture", 0);
@@ -169,7 +171,8 @@ namespace OP
 
 		// render scene from light's point of view
 		s_SceneRendererData.depthShader->Bind();
-		s_SceneRendererData.depthShader->SetMat4("u_LightSpaceMatrix", lightSpaceMatrix);
+		s_SceneRendererData.ModelLightSpaceBuffer.LightSpaceMatrix = lightSpaceMatrix;
+		s_SceneRendererData.ModelLightSpaceUniformBuffer->SetData(&s_SceneRendererData.ModelLightSpaceBuffer, sizeof(SceneRendererData::ModelLightSpaceData));
 		glViewport(0, 0, s_SceneRendererData.ViewportSize.x, s_SceneRendererData.ViewportSize.y);
 
 		s_SceneRendererData.depthFramebuffer->Bind();
@@ -187,11 +190,10 @@ namespace OP
 		s_SceneRendererData.depthFramebuffer->Unbind();
 
 
-		// render the scene normally
+		// FINAL RENDERING - (FOR NOW!)
 
 		s_SceneRendererData.finalFramebuffer->Bind();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		//glDisable(GL_CULL_FACE);
 		s_SceneRendererData.mainShader->Bind();
 		//s_SceneRendererData.mainShader->SetFloat3("u_LightPos", s_SceneRendererData.lightPos);
 		//s_SceneRendererData.mainShader->SetMat4("u_LightSpaceMatrix", lightSpaceMatrix);
@@ -200,31 +202,18 @@ namespace OP
 		//glActiveTexture(GL_TEXTURE1);
 		// simdilik kapa glBindTexture(GL_TEXTURE_2D, s_SceneRendererData.depthFramebuffer->GetColorAttachmentRendererID(0));
 		//model = glm::mat4(1.0f);
+
+
+
 		model = glm::translate(model, glm::vec3(0.0f, 0.0f, -10.0f));
 		s_SceneRendererData.ModelLightSpaceBuffer.Model = model;
 		// yellowish
 		s_SceneRendererData.ModelLightSpaceBuffer.Color = glm::vec3(0.7f, 0.6f, 0.2f);
 		s_SceneRendererData.ModelLightSpaceUniformBuffer->SetData(&s_SceneRendererData.ModelLightSpaceBuffer, sizeof(SceneRendererData::ModelLightSpaceData));
-		//renderCube();
 		s_SceneRendererData.icosphere->Draw();
 
-		model = glm::translate(model, glm::vec3(0.0f, 4.0f, 5.0f));
-		s_SceneRendererData.ModelLightSpaceBuffer.Model = model;
-		// cyanish
-		s_SceneRendererData.ModelLightSpaceBuffer.Color = glm::vec3(0.2f, 0.7f, 0.6f);
-		s_SceneRendererData.ModelLightSpaceUniformBuffer->SetData(&s_SceneRendererData.ModelLightSpaceBuffer, sizeof(SceneRendererData::ModelLightSpaceData));
-		s_SceneRendererData.icosphere2->Draw();
-
-
-		model = glm::translate(model, glm::vec3(6.0f, 4.0f, 5.0f));
-		s_SceneRendererData.ModelLightSpaceBuffer.Model = model;
-		// blue
-		s_SceneRendererData.ModelLightSpaceBuffer.Color = glm::vec3(0.2f, 0.3f, 0.8f);
-		s_SceneRendererData.ModelLightSpaceUniformBuffer->SetData(&s_SceneRendererData.ModelLightSpaceBuffer, sizeof(SceneRendererData::ModelLightSpaceData));
-		s_SceneRendererData.icosphere3->Draw();
-
 		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(0.0f, -10.0f, 0.0f));
+		model = glm::translate(model, glm::vec3(0.0f, -3.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(20.0f, 20.0f, 20.0f));
 		model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));;
 		s_SceneRendererData.ModelLightSpaceBuffer.Model = model;

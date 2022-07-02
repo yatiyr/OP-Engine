@@ -28,6 +28,7 @@ layout(std140, binding = 1) uniform Matrices
 {
 	mat4 u_Model;
 	mat4 u_LightSpaceMatrix;
+	// TEST
 	vec3 u_Color;
 };
 
