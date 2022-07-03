@@ -22,6 +22,7 @@ namespace OP
 		virtual void ClearAttachment(uint32_t attachmentIndex, int value) override;
 
 		virtual uint32_t GetColorAttachmentRendererID(uint32_t index = 0) const override { return m_ColorAttachments[index]; }
+		virtual uint32_t GetDepthAttachmentRendererID(uint32_t index = 0) const override { return m_DepthAttachment; }
 		virtual const FramebufferSpecification& GetSpecification() const override { return m_Specification; }
 	private:
 		uint32_t m_RendererID = 0;

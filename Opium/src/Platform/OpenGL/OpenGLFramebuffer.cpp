@@ -233,7 +233,7 @@ namespace OP
 		m_Specification.Height = height;
 		Invalidate();
 	}
-
+	
 	int OpenGLFramebuffer::ReadPixel(uint32_t attachmentIndex, int x, int y)
 	{
 		OP_ENGINE_ASSERT(attachmentIndex < m_ColorAttachments.size());

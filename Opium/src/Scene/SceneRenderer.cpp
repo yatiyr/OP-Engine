@@ -5,6 +5,7 @@
 #include <Renderer/Shader.h>
 #include <Renderer/UniformBuffer.h>
 #include <Renderer/RenderCommand.h>
+#include <Renderer/ShaderPass.h>
 
 #include <Renderer/Texture.h>
 
@@ -77,6 +78,9 @@ namespace OP
 		unsigned int cubeVAO = 0;
 		unsigned int cubeVBO = 0;
 
+		Ref<ShaderPass> depthShaderPass;
+		Ref<ShaderPass> finalShaderPass;
+
 	};
 
 
@@ -118,6 +122,8 @@ namespace OP
 		depthFBSpec.Height = s_SceneRendererData.ViewportSize.y;
 		s_SceneRendererData.depthFramebuffer = Framebuffer::Create(depthFBSpec);
 
+		s_SceneRendererData.depthShaderPass = ShaderPass::Create(std::string("Depth Pass"), depthFBSpec, s_SceneRendererData.depthShader);
+
 		// Final Framebuffer
 		
 		FramebufferSpecification finalFBSpec;
@@ -125,6 +131,10 @@ namespace OP
 		finalFBSpec.Width = s_SceneRendererData.ViewportSize.x;
 		finalFBSpec.Height = s_SceneRendererData.ViewportSize.y;
 		s_SceneRendererData.finalFramebuffer = Framebuffer::Create(finalFBSpec);
+
+		s_SceneRendererData.finalShaderPass = ShaderPass::Create(std::string("Final Pass"), fB);
+
+
 
 		s_SceneRendererData.finalFramebuffer = fB;
 
@@ -170,41 +180,111 @@ namespace OP
 		lightSpaceMatrix = lightProjection * lightView;
 
 		// render scene from light's point of view
-		s_SceneRendererData.depthShader->Bind();
-		s_SceneRendererData.ModelLightSpaceBuffer.LightSpaceMatrix = lightSpaceMatrix;
-		s_SceneRendererData.ModelLightSpaceUniformBuffer->SetData(&s_SceneRendererData.ModelLightSpaceBuffer, sizeof(SceneRendererData::ModelLightSpaceData));
-		glViewport(0, 0, s_SceneRendererData.ViewportSize.x, s_SceneRendererData.ViewportSize.y);
+		//s_SceneRendererData.depthShader->Bind();
+		//s_SceneRendererData.ModelLightSpaceBuffer.LightSpaceMatrix = lightSpaceMatrix;
+		//s_SceneRendererData.ModelLightSpaceUniformBuffer->SetData(&s_SceneRendererData.ModelLightSpaceBuffer, sizeof(SceneRendererData::ModelLightSpaceData));
+		//glViewport(0, 0, s_SceneRendererData.ViewportSize.x, s_SceneRendererData.ViewportSize.y);
 
-		s_SceneRendererData.depthFramebuffer->Bind();
-			glClear(GL_DEPTH_BUFFER_BIT);
-			glActiveTexture(GL_TEXTURE0);
-			s_SceneRendererData.WhiteTexture->Bind();
-			glCullFace(GL_FRONT);
-			glm::mat4 model = glm::mat4(1.0f);
-			s_SceneRendererData.depthShader->SetMat4("u_Model", model);
-			//s_SceneRendererData.icosphere->Draw();
-			model = glm::translate(model, glm::vec3(2.0f, 1.0f, 1.0f));
-			s_SceneRendererData.depthShader->SetMat4("u_Model", model);
-			//s_SceneRendererData.icosphere->Draw();
-			glCullFace(GL_BACK);
-		s_SceneRendererData.depthFramebuffer->Unbind();
+		glm::mat4 model = glm::mat4(1.0f);
+
+		s_SceneRendererData.depthShaderPass->InvokeCommands(
+			[&] () -> void {
+
+				s_SceneRendererData.depthShader->Bind();
+				s_SceneRendererData.ModelLightSpaceBuffer.LightSpaceMatrix = lightSpaceMatrix;
+				s_SceneRendererData.ModelLightSpaceUniformBuffer->SetData(&s_SceneRendererData.ModelLightSpaceBuffer, sizeof(SceneRendererData::ModelLightSpaceData));
+				glViewport(0, 0, s_SceneRendererData.ViewportSize.x, s_SceneRendererData.ViewportSize.y);
+
+				glClear(GL_DEPTH_BUFFER_BIT);
+				glCullFace(GL_FRONT);
+				// ------------ DRAW SCENE ------------
+
+
+				model = glm::mat4(1.0f);
+				model = glm::translate(model, glm::vec3(0.0f, 0.0f, -10.0f));
+				s_SceneRendererData.ModelLightSpaceBuffer.Model = model;
+				// yellowish
+				s_SceneRendererData.ModelLightSpaceBuffer.Color = glm::vec3(0.7f, 0.6f, 0.2f);
+				s_SceneRendererData.ModelLightSpaceUniformBuffer->SetData(&s_SceneRendererData.ModelLightSpaceBuffer, sizeof(SceneRendererData::ModelLightSpaceData));
+				s_SceneRendererData.icosphere->Draw();
+
+				model = glm::mat4(1.0f);
+				model = glm::translate(model, glm::vec3(0.0f, -3.0f, 0.0f));
+				model = glm::scale(model, glm::vec3(20.0f, 20.0f, 20.0f));
+				model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));;
+				s_SceneRendererData.ModelLightSpaceBuffer.Model = model;
+				// bright grey
+				s_SceneRendererData.ModelLightSpaceBuffer.Color = glm::vec3(0.9f, 0.9f, 0.9f);
+				s_SceneRendererData.ModelLightSpaceUniformBuffer->SetData(&s_SceneRendererData.ModelLightSpaceBuffer, sizeof(SceneRendererData::ModelLightSpaceData));
+				s_SceneRendererData.plane->Draw();
+
+				model = glm::mat4(1.0f);
+				model = glm::translate(model, glm::vec3(-5.0f, 5.0f, 2.0f));
+				model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
+				s_SceneRendererData.ModelLightSpaceBuffer.Model = model;
+				// dark orange
+				s_SceneRendererData.ModelLightSpaceBuffer.Color = glm::vec3(0.8f, 0.2f, 0.4f);
+				s_SceneRendererData.ModelLightSpaceUniformBuffer->SetData(&s_SceneRendererData.ModelLightSpaceBuffer, sizeof(SceneRendererData::ModelLightSpaceData));
+				s_SceneRendererData.cube->Draw();
+
+
+				// ---------- DRAW SCENE END ----------
+				glCullFace(GL_BACK);
+			}
+		);
 
 
 		// FINAL RENDERING - (FOR NOW!)
 
-		s_SceneRendererData.finalFramebuffer->Bind();
+		s_SceneRendererData.finalShaderPass->InvokeCommands(
+			[&]()-> void {
+				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+				s_SceneRendererData.mainShader->Bind();
+
+				// ------------ DRAW SCENE ------------
+
+
+				model = glm::mat4(1.0f);
+				model = glm::translate(model, glm::vec3(0.0f, 0.0f, -10.0f));
+				s_SceneRendererData.ModelLightSpaceBuffer.Model = model;
+				// yellowish
+				s_SceneRendererData.ModelLightSpaceBuffer.Color = glm::vec3(0.7f, 0.6f, 0.2f);
+				s_SceneRendererData.ModelLightSpaceUniformBuffer->SetData(&s_SceneRendererData.ModelLightSpaceBuffer, sizeof(SceneRendererData::ModelLightSpaceData));
+				s_SceneRendererData.icosphere->Draw();
+
+				model = glm::mat4(1.0f);
+				model = glm::translate(model, glm::vec3(0.0f, -3.0f, 0.0f));
+				model = glm::scale(model, glm::vec3(20.0f, 20.0f, 20.0f));
+				model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));;
+				s_SceneRendererData.ModelLightSpaceBuffer.Model = model;
+				// bright grey
+				s_SceneRendererData.ModelLightSpaceBuffer.Color = glm::vec3(0.9f, 0.9f, 0.9f);
+				s_SceneRendererData.ModelLightSpaceUniformBuffer->SetData(&s_SceneRendererData.ModelLightSpaceBuffer, sizeof(SceneRendererData::ModelLightSpaceData));
+				s_SceneRendererData.plane->Draw();
+
+				model = glm::mat4(1.0f);
+				model = glm::translate(model, glm::vec3(-5.0f, 5.0f, 2.0f));
+				model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
+				s_SceneRendererData.ModelLightSpaceBuffer.Model = model;
+				// dark orange
+				s_SceneRendererData.ModelLightSpaceBuffer.Color = glm::vec3(0.8f, 0.2f, 0.4f);
+				s_SceneRendererData.ModelLightSpaceUniformBuffer->SetData(&s_SceneRendererData.ModelLightSpaceBuffer, sizeof(SceneRendererData::ModelLightSpaceData));
+				s_SceneRendererData.cube->Draw();
+
+
+				// ---------- DRAW SCENE END ----------
+			}
+		);
+
+		/*s_SceneRendererData.finalFramebuffer->Bind();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		s_SceneRendererData.mainShader->Bind();
-		//s_SceneRendererData.mainShader->SetFloat3("u_LightPos", s_SceneRendererData.lightPos);
-		//s_SceneRendererData.mainShader->SetMat4("u_LightSpaceMatrix", lightSpaceMatrix);
-		//glActiveTexture(GL_TEXTURE0);
-		//s_SceneRendererData.WhiteTexture->Bind();
-		//glActiveTexture(GL_TEXTURE1);
-		// simdilik kapa glBindTexture(GL_TEXTURE_2D, s_SceneRendererData.depthFramebuffer->GetColorAttachmentRendererID(0));
-		//model = glm::mat4(1.0f);
 
 
 
+		//simdilik kapa glBindTexture(GL_TEXTURE_2D, s_SceneRendererData.depthFramebuffer->GetColorAttachmentRendererID(0));
+
+		model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(0.0f, 0.0f, -10.0f));
 		s_SceneRendererData.ModelLightSpaceBuffer.Model = model;
 		// yellowish
@@ -229,7 +309,7 @@ namespace OP
 		// dark orange
 		s_SceneRendererData.ModelLightSpaceBuffer.Color = glm::vec3(0.8f, 0.2f, 0.4f);
 		s_SceneRendererData.ModelLightSpaceUniformBuffer->SetData(&s_SceneRendererData.ModelLightSpaceBuffer, sizeof(SceneRendererData::ModelLightSpaceData));
-		s_SceneRendererData.cube->Draw();
+		s_SceneRendererData.cube->Draw(); */
 
 		
 
