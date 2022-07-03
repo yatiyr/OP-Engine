@@ -66,6 +66,11 @@ namespace OP
 		return std::make_shared<ShaderPass>(name, framebuffer);
 	}
 
+	void ShaderPass::ResizeFramebuffer(uint32_t width, uint32_t height)
+	{
+		m_Framebuffer->Resize(width, height);
+	}
+
 	void ShaderPass::InvokeCommands(std::function<void(void)> commands)
 	{
 		m_Framebuffer->Bind();

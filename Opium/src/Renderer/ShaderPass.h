@@ -34,6 +34,7 @@ namespace OP
 		Ref<Shader> m_Shader;
 
 
+		void ResizeFramebuffer(uint32_t width, uint32_t height);
 
 	public:
 		static Ref<ShaderPass> Create(std::string name, FramebufferSpecification spec);

@@ -182,7 +182,7 @@ namespace OP
 		glm::vec2 viewportSize = m_ViewportComponent.GetViewportSize();
 
 		SceneRenderer::ResizeViewport(viewportSize.x, viewportSize.y);
-		SceneRenderer::Render(m_EditorCamera);
+		SceneRenderer::Render(m_EditorCamera, ts);
 
 
 		// End Playground Code

@@ -61,10 +61,17 @@ layout (location = 0) in VS_OUT fs_in;
 layout (binding = 0) uniform sampler2D u_DiffuseTexture;
 layout (binding = 1) uniform sampler2D u_ShadowMap;
 
+layout(std140, binding = 0) uniform Camera
+{
+	mat4 u_ViewProjection;
+	vec3 u_ViewPos;
+};
+
 layout(std140, binding = 1) uniform Matrices
 {
 	mat4 u_Model;
 	mat4 u_LightSpaceMatrix;
+	// TEST
 	vec3 u_Color;
 };
 
@@ -75,10 +82,10 @@ layout(std140, binding = 2) uniform LightPos
 };
 
 
-layout(std140, binding = 3) uniform ViewPos
-{
-	vec3 u_ViewPos;
-};
+//layout(std140, binding = 3) uniform ViewPos
+//{
+//	vec3 u_ViewPos;
+//};
 
 
 vec2 poissonDisk[16] = vec2[]
@@ -174,7 +181,7 @@ float ShadowCalculation(vec4 fragPosLightSpace, vec3 lightDir, vec3 normal)
 
 void main()
 {
-	vec3 color = texture(u_DiffuseTexture, fs_in.TexCoords).rgb;
+	vec3 color = u_Color;//texture(u_DiffuseTexture, fs_in.TexCoords).rgb;
 	vec3 normal = normalize(fs_in.Normal);
 
 	vec3 lightColor = vec3(0.3);
@@ -198,7 +205,7 @@ void main()
 	float visibility = CalculateVisibility(fs_in.FragPosLightSpace, lightDir, normal);
 
 	float shadow = ShadowCalculation(fs_in.FragPosLightSpace, lightDir, normal);
-	vec3 lighting = (ambient + (visibility) * (diffuse + specular)) * color;
+	vec3 lighting = (ambient + (1 - shadow) * (diffuse + specular)) * color;
 
-	FragColor = vec4(u_Color,1.0);//vec4(lighting, 1.0);
+	FragColor = vec4(lighting, 1.0);
 }
