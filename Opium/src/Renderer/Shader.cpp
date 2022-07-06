@@ -31,6 +31,18 @@ namespace OP
 		return nullptr;
 	}
 
+	Ref<Shader> Shader::Create(const std::string& name, const std::string& vertexSrc, const std::string& geomSrc, const std::string& fragmentSrc)
+	{
+		switch (Renderer::GetAPI())
+		{
+			case RendererAPI::API::None:   OP_ENGINE_ASSERT(false, "RendererAPI::None is not supported!"); return nullptr;
+			case RendererAPI::API::OpenGL: return std::make_shared<OpenGLShader>(name, vertexSrc, geomSrc, fragmentSrc);
+		}
+
+		OP_ENGINE_ASSERT(false, "Unknown RendererAPI!");
+		return nullptr;
+	}
+
 	void ShaderLibrary::Add(const std::string& name, const Ref<Shader>& shader)
 	{
 		OP_ENGINE_ASSERT(!Exists(name), "Shader already exists!");

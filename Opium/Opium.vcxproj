@@ -590,6 +590,7 @@
     <ClInclude Include="src\Opium\Layer.h" />
     <ClInclude Include="src\Opium\LayerStack.h" />
     <ClInclude Include="src\Opium\Logging.h" />
+    <ClInclude Include="src\Opium\ResourceManager.h" />
     <ClInclude Include="src\Opium\Timestep.h" />
     <ClInclude Include="src\Opium\UUID.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLBuffer.h" />
@@ -665,6 +666,7 @@
     <ClCompile Include="src\Opium\Layer.cpp" />
     <ClCompile Include="src\Opium\LayerStack.cpp" />
     <ClCompile Include="src\Opium\Logging.cpp" />
+    <ClCompile Include="src\Opium\ResourceManager.cpp" />
     <ClCompile Include="src\Opium\UUID.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLBuffer.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLContext.cpp" />

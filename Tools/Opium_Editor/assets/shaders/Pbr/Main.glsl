@@ -7,12 +7,6 @@ layout (location = 2) in vec2 a_TexCoords;
 layout (location = 3) in vec3 a_Tangent;
 layout (location = 4) in vec3 a_Bitangent;
 
-layout(std140, binding = 0) uniform Camera
-{
-	mat4 u_ViewProjection;
-	vec3 view_Pos;
-};
-
 struct VS_OUT
 {
 	vec3 FragPos;
@@ -24,14 +18,22 @@ struct VS_OUT
 
 layout (location = 0) out VS_OUT vs_out;
 
-layout(std140, binding = 1) uniform Matrices
+layout(std140, binding = 0) uniform Camera
 {
-	mat4 u_Model;
-	mat4 u_LightSpaceMatrix;
-	// TEST
-	vec3 u_Color;
+	mat4 u_ViewProjection;
+	vec3 u_ViewPos;
 };
 
+layout(std140, binding = 1)  uniform Transform
+{
+	mat4 u_Model;
+};
+
+layout(std140, binding = 2) uniform Light
+{
+	mat4 u_LightSpaceMatrix;
+	vec3 u_LightPos;
+};
 
 void main()
 {
@@ -67,20 +69,21 @@ layout(std140, binding = 0) uniform Camera
 	vec3 u_ViewPos;
 };
 
-layout(std140, binding = 1) uniform Matrices
+layout(std140, binding = 1)  uniform Transform
 {
 	mat4 u_Model;
-	mat4 u_LightSpaceMatrix;
-	// TEST
-	vec3 u_Color;
 };
 
-
-layout(std140, binding = 2) uniform LightPos
+layout(std140, binding = 2) uniform Light
 {
+	mat4 u_LightSpaceMatrix;
 	vec3 u_LightPos;
 };
 
+layout(std140, binding = 3) uniform Material
+{
+	vec3 u_Color;
+};
 
 //layout(std140, binding = 3) uniform ViewPos
 //{
@@ -184,7 +187,7 @@ void main()
 	vec3 color = u_Color;//texture(u_DiffuseTexture, fs_in.TexCoords).rgb;
 	vec3 normal = normalize(fs_in.Normal);
 
-	vec3 lightColor = vec3(0.3);
+	vec3 lightColor = vec3(0.8);
 
 	// ambient
 	vec3 ambient = 0.3 * lightColor;

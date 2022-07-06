@@ -20,6 +20,8 @@ namespace OP
 				return GL_VERTEX_SHADER;
 			if (type == "fragment" || type == "pixel")
 				return GL_FRAGMENT_SHADER;
+			if (type == "geometry")
+				return GL_GEOMETRY_SHADER;
 
 			OP_ENGINE_ASSERT(false, "Unknown shader type!");
 			return 0;
@@ -31,6 +33,7 @@ namespace OP
 			{
 				case GL_VERTEX_SHADER: return shaderc_glsl_vertex_shader;
 				case GL_FRAGMENT_SHADER: return shaderc_glsl_fragment_shader;
+				case GL_GEOMETRY_SHADER: return shaderc_glsl_geometry_shader;
 			}
 
 			OP_ENGINE_ASSERT(false);
@@ -43,6 +46,7 @@ namespace OP
 			{
 				case GL_VERTEX_SHADER: return "GL_VERTEX_SHADER";
 				case GL_FRAGMENT_SHADER: return "GL_FRAGMENT_SHADER";
+				case GL_GEOMETRY_SHADER: return "GL_GEOMETRY_SHADER";
 			}
 
 			OP_ENGINE_ASSERT(false);
@@ -67,6 +71,7 @@ namespace OP
 			{
 				case GL_VERTEX_SHADER: return ".cached_opengl.vert";
 				case GL_FRAGMENT_SHADER: return ".cached_opengl.frag";
+				case GL_GEOMETRY_SHADER: return ".cached_opengl.geom";
 			}
 
 			OP_ENGINE_ASSERT(false);
@@ -79,6 +84,7 @@ namespace OP
 			{
 				case GL_VERTEX_SHADER: return ".cached_vulkan.vert";
 				case GL_FRAGMENT_SHADER: return ".cached_vulkan.frag";
+				case GL_GEOMETRY_SHADER: return ".cached_vulkan.geom";
 			}
 
 			OP_ENGINE_ASSERT(false);
@@ -118,12 +124,23 @@ namespace OP
 
 	OpenGLShader::OpenGLShader(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc) : m_Name(name)
 	{
-		OP_PROFILE_FUNCTION();
 
 		std::unordered_map<GLenum, std::string> sources;
 		sources[GL_VERTEX_SHADER] = vertexSrc;
 		sources[GL_FRAGMENT_SHADER] = fragmentSrc;
-		
+
+		CompileOrGetVulkanBinaries(sources);
+		CompileOrGetOpenGLBinaries();
+		CreateProgram();
+	}
+
+	OpenGLShader::OpenGLShader(const std::string& name, const std::string& vertexSrc, const std::string& geomSrc, const std::string& fragmentSrc) : m_Name(name)
+	{
+		std::unordered_map<GLenum, std::string> sources;
+		sources[GL_VERTEX_SHADER] = vertexSrc;
+		sources[GL_FRAGMENT_SHADER] = fragmentSrc;
+		sources[GL_GEOMETRY_SHADER] = geomSrc;
+
 		CompileOrGetVulkanBinaries(sources);
 		CompileOrGetOpenGLBinaries();
 		CreateProgram();
@@ -131,15 +148,11 @@ namespace OP
 
 	OpenGLShader::~OpenGLShader()
 	{
-		OP_PROFILE_FUNCTION();
-
 		glDeleteProgram(m_RendererID);
 	}
 
 	std::string OpenGLShader::ReadFile(const std::string& filePath)
 	{
-		OP_PROFILE_FUNCTION();
-
 		std::string result;
 		// ifstream closes itself after scope ends (RAII)
 		std::ifstream in(filePath, std::ios::in | std::ios::binary);
@@ -169,8 +182,6 @@ namespace OP
 
 	std::unordered_map<GLenum, std::string> OpenGLShader::PreProcess(const std::string& source)
 	{
-		OP_PROFILE_FUNCTION();
-
 		std::unordered_map<GLenum, std::string> shaderSources;
 
 		const char* typeToken = "#type";
@@ -380,64 +391,46 @@ namespace OP
 
 	void OpenGLShader::Bind() const
 	{
-		OP_PROFILE_FUNCTION();
-
 		glUseProgram(m_RendererID);
 	}
 
 	void OpenGLShader::Unbind() const
 	{
-		OP_PROFILE_FUNCTION();
-
 		glUseProgram(0);
 	}
 
 	void OpenGLShader::SetInt(const std::string& name, int value)
 	{
-		OP_PROFILE_FUNCTION();
-
 		UploadUniformInt(name, value);
 	}
 
 	void OpenGLShader::SetIntArray(const std::string& name, int* values, uint32_t count)
 	{
-		OP_PROFILE_FUNCTION();
-
 		UploadUniformIntArray(name, values, count);
 	}
 
 	void OpenGLShader::SetFloat(const std::string& name, float value)
 	{
-		OP_PROFILE_FUNCTION();
-
 		UploadUniformFloat(name, value);
 	}
 
 	void OpenGLShader::SetFloat2(const std::string& name, const glm::vec2& value)
 	{
-		OP_PROFILE_FUNCTION();
-
 		UploadUniformFloat2(name, value);
 	}
 
 	void OpenGLShader::SetFloat3(const std::string& name, const glm::vec3& value)
 	{
-		OP_PROFILE_FUNCTION();
-
 		UploadUniformFloat3(name, value);
 	}
 
 	void OpenGLShader::SetFloat4(const std::string& name, const glm::vec4& value)
 	{
-		OP_PROFILE_FUNCTION();
-
 		UploadUniformFloat4(name, value);
 	}
 
 	void OpenGLShader::SetMat4(const std::string& name, const glm::mat4& value)
 	{
-		OP_PROFILE_FUNCTION();
-
 		UploadUniformMat4(name, value);
 	}
 

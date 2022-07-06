@@ -1,0 +1,10 @@
+
+
+
+class ResourceManager
+{
+public:
+
+
+private:
+};

@@ -19,6 +19,9 @@ namespace OP
 		// For Shadow Maps
 		DEPTH16,
 
+		// For omnidirectional shadow mapping
+		CUBEMAP_DEPTH,
+
 		// Default
 		Depth = DEPTH24STENCIL8
 	};

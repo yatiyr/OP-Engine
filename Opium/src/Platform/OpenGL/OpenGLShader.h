@@ -14,6 +14,8 @@ namespace OP
 	public:
 		OpenGLShader(const std::string& filePath);
 		OpenGLShader(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc);
+		OpenGLShader(const std::string& name, const std::string& vertexSrc, const std::string& geomSrc, const std::string& fragmentSrc);
+
 		virtual ~OpenGLShader();
 
 		virtual void Bind() const override;
