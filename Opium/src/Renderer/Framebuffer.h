@@ -18,6 +18,8 @@ namespace OP
 		
 		// For Shadow Maps
 		DEPTH16,
+		SHADOWMAP_ARRAY_DEPTH,
+		SHADOWMAP_OD_ARRAY_DEPTH,
 
 		// For omnidirectional shadow mapping
 		CUBEMAP_DEPTH,
@@ -34,6 +36,7 @@ namespace OP
 
 
 		FramebufferTextureFormat TextureFormat = FramebufferTextureFormat::None;
+		uint32_t layerCount = MAX_DIR_LIGHTS + MAX_SPOT_LIGHTS;
 		// TODO: filtering/wrap
 	};
 

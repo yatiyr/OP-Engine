@@ -29,91 +29,10 @@
 namespace OP
 {
 
-
-	// ---------------------------- UTILITY FUNCTIONS ------------------------------------ //
-		
-		// ----------- CASCADED SHADOW MAPPING ------------ //
-
-			// Finds world coordinates of the frustum represented by
-			// the projection matrix
-			// We will use camera's projection matrix in this function
-			static std::vector<glm::vec4> GetFrustumCornerCoordinatesWorldSpace(const glm::mat4& projectionMatrix, const glm::mat4& view)
-			{
-				// We need this matrix for converting from NDC cube
-				const glm::mat4 inv = glm::inverse(projectionMatrix * view);
-
-				std::vector<glm::vec4> frustumCoordinates;
-				for (uint32_t x = 0; x < 2; x++)
-				{
-					for (uint32_t y = 0; y < 2; y++)
-					{
-						for (uint32_t z = 0; z < 2; z++)
-						{
-							const glm::vec4 ndcPoint = inv * glm::vec4(2.0f * x - 1.0f,
-																	   2.0f * y - 1.0f,
-								                                       2.0f * z - 1.0f,
-								                                       1.0f);
-						}
-					}
-				}
-
-				return frustumCoordinates;
-			}
-
-			// We will get find orthographic projection matrix which tightly overlaps the frustum part and
-			// view matrix of the light (light will be on the center of frustum)
-			static glm::mat4 GetLightViewProjectionMatrix(const std::vector<glm::vec4>& frustumCornerCoordinates, const glm::vec3& lightDir)
-			{
-
-				// Calculate view matrix
-				glm::vec3 center = glm::vec3(0.0f, 0.0f, 0.0f);
-				for (const glm::vec4& coord : frustumCornerCoordinates)
-				{
-					center += glm::vec3(coord);
-				}
-				center /= frustumCornerCoordinates.size();
-
-				const glm::mat4 lightView = glm::lookAt(center + lightDir, center, glm::vec3(0.0f, 1.0f, 0.0f));
-
-				float minX = std::numeric_limits<float>::max();
-				float maxX = std::numeric_limits<float>::min();
-				float minY = std::numeric_limits<float>::max();
-				float maxY = std::numeric_limits<float>::min();
-				float minZ = std::numeric_limits<float>::max();
-				float maxZ = std::numeric_limits<float>::min();
-
-				// Determine box bounds by traversing frustum coordinates
-				for (const glm::vec4& coord : frustumCornerCoordinates)
-				{
-					const glm::vec4 coordAccordingToLight = lightView * coord;
-					minX = std::min(minX, coordAccordingToLight.x);
-					maxX = std::max(maxX, coordAccordingToLight.x);
-					minY = std::min(minY, coordAccordingToLight.y);
-					maxY = std::max(maxY, coordAccordingToLight.y);
-					minZ = std::min(minZ, coordAccordingToLight.z);
-					maxZ = std::max(maxZ, coordAccordingToLight.z);
-				}
-
-				// Devam et zMult Kismiyla!
-			}
-
-		
-
-
-
-
-
-
-		// -------- END CASCADED SHADOW MAPPING ----------- //
-
-
-
-
 	struct SceneRendererData
 	{
 		// --------- RENDERER CONSTANTS -------- //
 		float Epsilon = 0.00000001;
-		// ------ END RENDER CONSTANTS --------- //
 
 		// ----------- UNIFORM BUFFERS --------- //
 
@@ -132,29 +51,15 @@ namespace OP
 
 		Ref<UniformBuffer> TransformUniformBuffer;
 
-		// ------ END UNIFORM BUFFERS ---------- //
 
-
-
-		// -------- CASCADED SHADOW MAPPING SETTINGS ------- //
-
-
-
-
-
-		// ----- END CASCADED SHADOW MAPPING SETTINGS ------ //
-
-
-
-		// --------
-
+		// Needs an overhaul
 
 		// --------- DIRECTIONAL LIGHT ------------- //
 		struct DirLight
 		{
 			glm::mat4 LightSpaceMatrix;
-			alignas(16) glm::vec3 LightDir;
-			alignas(16) glm::vec3 Color;
+			glm::vec3 LightDir;
+			glm::vec3 Color;
 		};
 
 		struct DirLightData
@@ -301,10 +206,10 @@ namespace OP
 
 		// Depth framebuffer for Spot and Directional Lights
 		FramebufferSpecification depthFBSpec;
-		depthFBSpec.Attachments = { FramebufferTextureFormat::SHADOWMAP_ARRAY_DEPTH };
+		depthFBSpec.Attachments = { FramebufferTextureFormat::DEPTH16 };
 		depthFBSpec.Width = s_SceneRendererData.ViewportSize.x;
 		depthFBSpec.Height = s_SceneRendererData.ViewportSize.y;
-		// s_SceneRendererData.depthFramebuffer = Framebuffer::Create(depthFBSpec);
+		s_SceneRendererData.depthFramebuffer = Framebuffer::Create(depthFBSpec);
 		s_SceneRendererData.depthShaderPass = ShaderPass::Create(std::string("Depth Pass"), depthFBSpec, s_SceneRendererData.depthShader);
 
 
@@ -344,7 +249,7 @@ namespace OP
 			s_SceneRendererData.ViewportSize.y = height;
 
 			// Resize necessary framebuffers
-			// s_SceneRendererData.depthFramebuffer->Resize(width, height);
+			s_SceneRendererData.depthFramebuffer->Resize(width, height);
 			s_SceneRendererData.finalFramebuffer->Resize(width, height);
 
 			s_SceneRendererData.depthShaderPass->ResizeFramebuffer(width, height);
@@ -355,7 +260,7 @@ namespace OP
 	{
 
 		float time = (float)Application::Get().GetWindow().GetTime();
-		glm::mat3 rotationMatrix = glm::mat3(cos(0.001), sin(0.001), 0, -sin(0.001), cos(0.001f), 0, 0, 0, 1);
+
 
 		// -------------------- CALCULATE CAMERA DATA -------------------------------- //
 			s_SceneRendererData.CameraBuffer.ViewProjection = camera.GetViewProjection();
@@ -368,13 +273,13 @@ namespace OP
 			// THIS WILL BE REPLACED WITH ENTITY COMPONENT SYSTEM !!!!!
 			s_SceneRendererData.DirLightsBuffer.Size = 3;
 			// light1 props
-			float light1_xmin = -20.0f;
-			float light1_xmax =  20.0f;
-			float light1_ymin = -20.0f;
-			float light1_ymax =  20.0f;
-			float light1_zmin = -20.0f;
-			float light1_zmax =  20.0f;
-			glm::vec3 light1_color(0.2f, 0.26f, 0.2f); // yellow
+			float light1_xmin = -50.0f;
+			float light1_xmax =  50.0f;
+			float light1_ymin = -50.0f;
+			float light1_ymax =  50.0f;
+			float light1_zmin = -50.0f;
+			float light1_zmax =  50.0f;
+			glm::vec3 light1_color(0.8f, 0.86f, 0.3f); // yellow
 			glm::vec3 light1_dir(0.0f, -1.0f, 0.0f);
 			glm::mat4 light1_proj = glm::ortho(light1_xmin, light1_xmax, light1_ymin, light1_ymax, light1_zmin, light1_zmax);
 			s_SceneRendererData.DirLightsBuffer.DirLights[0].Color = light1_color;
@@ -383,34 +288,34 @@ namespace OP
 			s_SceneRendererData.DirLightsBuffer.DirLights[0].LightSpaceMatrix = light1_proj * light1_view;
 			
 			// light2 props
-			float light2_xmin = -20.0f;
-			float light2_xmax = 20.0f;
-			float light2_ymin = -20.0f;
-			float light2_ymax = 20.0f;
-			float light2_zmin = -20.0f;
-			float light2_zmax = 20.0f;
-			glm::vec3 light2_color(0.2f, 0.2f, 0.6f); // dimmed white
-			glm::vec3 light2_dir(-1.0f, -1.0f, -0.0f);
+			float light2_xmin = -50.0f;
+			float light2_xmax = 50.0f;
+			float light2_ymin = -50.0f;
+			float light2_ymax = 50.0f;
+			float light2_zmin = -50.0f;
+			float light2_zmax = 50.0f;
+			glm::vec3 light2_color(0.5f, 0.5f, 0.5f); // dimmed white
+			glm::vec3 light2_dir(-1.0f, -1.0f, -1.0f);
 			glm::mat4 light2_proj = glm::ortho(light2_xmin, light2_xmax, light2_ymin, light2_ymax, light2_zmin, light2_zmax);
 			s_SceneRendererData.DirLightsBuffer.DirLights[1].Color = light2_color;
 			s_SceneRendererData.DirLightsBuffer.DirLights[1].LightDir = glm::normalize(light2_dir);
-			glm::mat4 light2_view = glm::lookAt(dirLightPos, glm::normalize(light2_dir), glm::vec3(0.0f, 1.0f, 0.0f));
+			glm::mat4 light2_view = glm::lookAt(dirLightPos, light2_dir, glm::vec3(0.0f, 1.0f, 0.0f));
 			s_SceneRendererData.DirLightsBuffer.DirLights[1].LightSpaceMatrix = light2_proj * light2_view;
 
 
 			// light3 props
-			float light3_xmin = -20.0f;
-			float light3_xmax = 20.0f;
-			float light3_ymin = -20.0f;
-			float light3_ymax = 20.0f;
-			float light3_zmin = -20.0f;
-			float light3_zmax = 20.0f;
-			glm::vec3 light3_color(0.5f, 0.1f, 0.6f); // dimmed cyanish
+			float light3_xmin = -50.0f;
+			float light3_xmax = 50.0f;
+			float light3_ymin = -50.0f;
+			float light3_ymax = 50.0f;
+			float light3_zmin = -50.0f;
+			float light3_zmax = 50.0f;
+			glm::vec3 light3_color(0.1f, 0.3f, 0.6f); // dimmed cyanish
 			glm::vec3 light3_dir(1.0f, -1.0f, -1.0f);
 			glm::mat4 light3_proj = glm::ortho(light3_xmin, light3_xmax, light3_ymin, light3_ymax, light3_zmin, light3_zmax);
 			s_SceneRendererData.DirLightsBuffer.DirLights[2].Color = light3_color;
 			s_SceneRendererData.DirLightsBuffer.DirLights[2].LightDir = glm::normalize(light3_dir);
-			glm::mat4 light3_view = glm::lookAt(dirLightPos, glm::normalize(light3_dir), glm::vec3(0.0f, 1.0f, 0.0f));
+			glm::mat4 light3_view = glm::lookAt(dirLightPos, light3_dir, glm::vec3(0.0f, 1.0f, 0.0f));
 			s_SceneRendererData.DirLightsBuffer.DirLights[2].LightSpaceMatrix = light3_proj * light3_view;
 		// ------------------- END FILL IN DIR LIGHT UNIFORMS --------------------- //
 
@@ -438,7 +343,8 @@ namespace OP
 
 		
 		s_SceneRendererData.DirLightUniformBuffer->SetData(&s_SceneRendererData.DirLightsBuffer,
-			sizeof(s_SceneRendererData.DirLightsBuffer));
+			sizeof(int) +
+			sizeof(s_SceneRendererData.DirLightsBuffer.DirLights) * s_SceneRendererData.DirLightsBuffer.Size);
 
 		s_SceneRendererData.depthShaderPass->InvokeCommands(
 			[&] () -> void {

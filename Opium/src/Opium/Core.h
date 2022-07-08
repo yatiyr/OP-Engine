@@ -1,6 +1,11 @@
 #pragma once
 #include <memory>
 
+// 3D RENDERER CONSTANTS
+#define MAX_DIR_LIGHTS 4
+#define MAX_SPOT_LIGHTS 4
+// --------------------
+
 // We understand what is the platform that our
 // application is working
 #if defined _WIN32 || defined __CYGWIN__

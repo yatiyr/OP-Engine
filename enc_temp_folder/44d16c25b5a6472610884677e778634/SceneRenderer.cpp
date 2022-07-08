@@ -29,91 +29,10 @@
 namespace OP
 {
 
-
-	// ---------------------------- UTILITY FUNCTIONS ------------------------------------ //
-		
-		// ----------- CASCADED SHADOW MAPPING ------------ //
-
-			// Finds world coordinates of the frustum represented by
-			// the projection matrix
-			// We will use camera's projection matrix in this function
-			static std::vector<glm::vec4> GetFrustumCornerCoordinatesWorldSpace(const glm::mat4& projectionMatrix, const glm::mat4& view)
-			{
-				// We need this matrix for converting from NDC cube
-				const glm::mat4 inv = glm::inverse(projectionMatrix * view);
-
-				std::vector<glm::vec4> frustumCoordinates;
-				for (uint32_t x = 0; x < 2; x++)
-				{
-					for (uint32_t y = 0; y < 2; y++)
-					{
-						for (uint32_t z = 0; z < 2; z++)
-						{
-							const glm::vec4 ndcPoint = inv * glm::vec4(2.0f * x - 1.0f,
-																	   2.0f * y - 1.0f,
-								                                       2.0f * z - 1.0f,
-								                                       1.0f);
-						}
-					}
-				}
-
-				return frustumCoordinates;
-			}
-
-			// We will get find orthographic projection matrix which tightly overlaps the frustum part and
-			// view matrix of the light (light will be on the center of frustum)
-			static glm::mat4 GetLightViewProjectionMatrix(const std::vector<glm::vec4>& frustumCornerCoordinates, const glm::vec3& lightDir)
-			{
-
-				// Calculate view matrix
-				glm::vec3 center = glm::vec3(0.0f, 0.0f, 0.0f);
-				for (const glm::vec4& coord : frustumCornerCoordinates)
-				{
-					center += glm::vec3(coord);
-				}
-				center /= frustumCornerCoordinates.size();
-
-				const glm::mat4 lightView = glm::lookAt(center + lightDir, center, glm::vec3(0.0f, 1.0f, 0.0f));
-
-				float minX = std::numeric_limits<float>::max();
-				float maxX = std::numeric_limits<float>::min();
-				float minY = std::numeric_limits<float>::max();
-				float maxY = std::numeric_limits<float>::min();
-				float minZ = std::numeric_limits<float>::max();
-				float maxZ = std::numeric_limits<float>::min();
-
-				// Determine box bounds by traversing frustum coordinates
-				for (const glm::vec4& coord : frustumCornerCoordinates)
-				{
-					const glm::vec4 coordAccordingToLight = lightView * coord;
-					minX = std::min(minX, coordAccordingToLight.x);
-					maxX = std::max(maxX, coordAccordingToLight.x);
-					minY = std::min(minY, coordAccordingToLight.y);
-					maxY = std::max(maxY, coordAccordingToLight.y);
-					minZ = std::min(minZ, coordAccordingToLight.z);
-					maxZ = std::max(maxZ, coordAccordingToLight.z);
-				}
-
-				// Devam et zMult Kismiyla!
-			}
-
-		
-
-
-
-
-
-
-		// -------- END CASCADED SHADOW MAPPING ----------- //
-
-
-
-
 	struct SceneRendererData
 	{
 		// --------- RENDERER CONSTANTS -------- //
 		float Epsilon = 0.00000001;
-		// ------ END RENDER CONSTANTS --------- //
 
 		// ----------- UNIFORM BUFFERS --------- //
 
@@ -132,22 +51,8 @@ namespace OP
 
 		Ref<UniformBuffer> TransformUniformBuffer;
 
-		// ------ END UNIFORM BUFFERS ---------- //
 
-
-
-		// -------- CASCADED SHADOW MAPPING SETTINGS ------- //
-
-
-
-
-
-		// ----- END CASCADED SHADOW MAPPING SETTINGS ------ //
-
-
-
-		// --------
-
+		// Needs an overhaul
 
 		// --------- DIRECTIONAL LIGHT ------------- //
 		struct DirLight
@@ -355,7 +260,7 @@ namespace OP
 	{
 
 		float time = (float)Application::Get().GetWindow().GetTime();
-		glm::mat3 rotationMatrix = glm::mat3(cos(0.001), sin(0.001), 0, -sin(0.001), cos(0.001f), 0, 0, 0, 1);
+
 
 		// -------------------- CALCULATE CAMERA DATA -------------------------------- //
 			s_SceneRendererData.CameraBuffer.ViewProjection = camera.GetViewProjection();
