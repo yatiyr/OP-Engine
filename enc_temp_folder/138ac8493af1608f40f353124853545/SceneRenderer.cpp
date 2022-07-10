@@ -95,12 +95,7 @@ namespace OP
 				}
 				center /= frustumCornerCoordinates.size();
 
-				glm::vec3 controlledLightDir = lightDir;
-				if (controlledLightDir.x == 0.0 && controlledLightDir.z == 0.0)
-				{
-					controlledLightDir += glm::vec3(0.0000001f, 0.0f, -0.0000001f);
-				}
-				glm::mat4 lightView = glm::lookAt(center, center + controlledLightDir, glm::vec3(0.0f, 1.0f, 0.0f));
+				glm::mat4 lightView = glm::lookAt(center + lightDir, center, glm::vec3(0.0f, 1.0f, 0.0f));
 
 				float minX = std::numeric_limits<float>::max();
 				float maxX = std::numeric_limits<float>::min();
@@ -158,7 +153,7 @@ namespace OP
 				for (uint32_t i = 2; i < newPlaneSize + 1; i++)
 				{
 					float newSum = std::pow(i, distFactor);
-					levels.push_back(unitSize * (newSum));
+					levels.push_back(unitSize * (newSum - prevSum));
 					prevSum = newSum;
 				}
 				
@@ -456,7 +451,7 @@ namespace OP
 			// s_SceneRendererData.depthFramebuffer->Resize(width, height);
 			s_SceneRendererData.finalFramebuffer->Resize(width, height);
 
-			// s_SceneRendererData.depthShaderPass->ResizeFramebuffer(width, height);
+			s_SceneRendererData.depthShaderPass->ResizeFramebuffer(width, height);
 		}
 	}
 
@@ -476,10 +471,10 @@ namespace OP
 			glm::mat4 cameraProjection = camera.GetProjection();
 			glm::vec3 dirLightPos(s_SceneRendererData.Epsilon, s_SceneRendererData.Epsilon, s_SceneRendererData.Epsilon);
 			// THIS WILL BE REPLACED WITH ENTITY COMPONENT SYSTEM !!!!!
-			s_SceneRendererData.DirLightsBuffer.Size = 1;
+			s_SceneRendererData.DirLightsBuffer.Size = 3;
 			// light1 props
 			glm::vec3 light1_color(0.2f, 0.26f, 0.2f);
-			glm::vec3 light1_dir(0.0f, -1.1f, 0.0f);
+			glm::vec3 light1_dir(0.0f, -1.0f, 0.0f);
 			int light1CascadeSize = 4;
 			float light1FrustaDistFactor = 2;
 			s_SceneRendererData.DirLightsBuffer.DirLights[0].Color = light1_color;
@@ -503,10 +498,10 @@ namespace OP
 			// !!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 			// light2 props
-			/*glm::vec3 light2_color(0.2f, 0.2f, 0.6f);
+			glm::vec3 light2_color(0.2f, 0.2f, 0.6f);
 			glm::vec3 light2_dir(-1.0f, -1.0f, -0.0f);
 			int light2CascadeSize = 4;
-			float light2FrustaDistFactor = 1;
+			float light2FrustaDistFactor = 2;
 			s_SceneRendererData.DirLightsBuffer.DirLights[1].Color = light2_color;
 			s_SceneRendererData.DirLightsBuffer.DirLights[1].LightDir = glm::normalize(light2_dir);
 			s_SceneRendererData.DirLightsBuffer.DirLights[1].CascadeSize = light2CascadeSize;
@@ -521,10 +516,9 @@ namespace OP
 			for (uint32_t i = 0; i < cascadeLevels2.size(); i++)
 			{
 				s_SceneRendererData.CascadePlaneDistancesBuffer.cascadePlaneDistances[(MAX_CASCADE_SIZE - 1) * 1 + i] = cascadeLevels2[i];
-			}*/
+			}
 
 			// light3 props
-			/*
 			glm::vec3 light3_color(0.5f, 0.1f, 0.6f);
 			glm::vec3 light3_dir(1.0f, -1.0f, -1.0f);
 			int light3CascadeSize = 4;
@@ -544,7 +538,7 @@ namespace OP
 			for (uint32_t i = 0; i < cascadeLevels3.size(); i++)
 			{
 				s_SceneRendererData.CascadePlaneDistancesBuffer.cascadePlaneDistances[(MAX_CASCADE_SIZE - 1) * 2 + i] = cascadeLevels3[i];
-			}*/
+			}
 		// ------------------- END FILL IN DIR LIGHT UNIFORMS --------------------- //
 
 
@@ -565,7 +559,7 @@ namespace OP
 			[&] () -> void {
 
 				s_SceneRendererData.depthShader->Bind();
-				glViewport(0, 0, s_SceneRendererData.shadowMapResX, s_SceneRendererData.shadowMapResY);
+				glViewport(0, 0, s_SceneRendererData.ViewportSize.x, s_SceneRendererData.ViewportSize.y);
 
 				glClear(GL_DEPTH_BUFFER_BIT);
 				glCullFace(GL_FRONT);
@@ -611,7 +605,6 @@ namespace OP
 
 				// ---------- DRAW SCENE END ----------
 				glCullFace(GL_BACK);
-
 			}
 		);
 
@@ -620,9 +613,6 @@ namespace OP
 
 		s_SceneRendererData.finalShaderPass->InvokeCommands(
 			[&]()-> void {
-				// reset viewport
-				glViewport(0, 0, s_SceneRendererData.ViewportSize.x, s_SceneRendererData.ViewportSize.y);
-
 				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 				s_SceneRendererData.mainShader->Bind();
 

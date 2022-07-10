@@ -17,7 +17,12 @@ namespace OP
 
 		void SetPerspective() {}
 		void SetOrtho() {}
+
+		float GetFarClip() { return m_FarClip; }
+		float GetNearClip() { return m_NearClip; }
 	protected:
 		glm::mat4 m_Projection = glm::mat4(1.0f);
+		float m_FarClip = 1000.0f;
+		float m_NearClip = 0.1f;
 	};
 }

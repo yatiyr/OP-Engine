@@ -16,6 +16,8 @@ namespace OP
 		m_OrthographicSize = size;
 		m_OrthographicNear = nearClip;
 		m_OrthographicFar = farClip;
+		m_FarClip = farClip;
+		m_NearClip = nearClip;
 		RecalculateProjection();
 	}
 
@@ -25,6 +27,8 @@ namespace OP
 		m_PerspectiveFOV = verticalFov;
 		m_PerspectiveNear = nearClip;
 		m_PerspectiveFar = farClip;
+		m_FarClip = farClip;
+		m_NearClip = nearClip;
 		RecalculateProjection();
 		
 	}

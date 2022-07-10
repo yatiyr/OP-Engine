@@ -95,12 +95,7 @@ namespace OP
 				}
 				center /= frustumCornerCoordinates.size();
 
-				glm::vec3 controlledLightDir = lightDir;
-				if (controlledLightDir.x == 0.0 && controlledLightDir.z == 0.0)
-				{
-					controlledLightDir += glm::vec3(0.0000001f, 0.0f, -0.0000001f);
-				}
-				glm::mat4 lightView = glm::lookAt(center, center + controlledLightDir, glm::vec3(0.0f, 1.0f, 0.0f));
+				glm::mat4 lightView = glm::lookAt(center, center + lightDir, glm::vec3(0.0f, 1.0f, 0.0f));
 
 				float minX = std::numeric_limits<float>::max();
 				float maxX = std::numeric_limits<float>::min();
@@ -456,7 +451,7 @@ namespace OP
 			// s_SceneRendererData.depthFramebuffer->Resize(width, height);
 			s_SceneRendererData.finalFramebuffer->Resize(width, height);
 
-			// s_SceneRendererData.depthShaderPass->ResizeFramebuffer(width, height);
+			s_SceneRendererData.depthShaderPass->ResizeFramebuffer(width, height);
 		}
 	}
 
@@ -481,7 +476,7 @@ namespace OP
 			glm::vec3 light1_color(0.2f, 0.26f, 0.2f);
 			glm::vec3 light1_dir(0.0f, -1.1f, 0.0f);
 			int light1CascadeSize = 4;
-			float light1FrustaDistFactor = 2;
+			float light1FrustaDistFactor = 1;
 			s_SceneRendererData.DirLightsBuffer.DirLights[0].Color = light1_color;
 			s_SceneRendererData.DirLightsBuffer.DirLights[0].LightDir = glm::normalize(light1_dir);
 			s_SceneRendererData.DirLightsBuffer.DirLights[0].CascadeSize = light1CascadeSize;
@@ -565,7 +560,7 @@ namespace OP
 			[&] () -> void {
 
 				s_SceneRendererData.depthShader->Bind();
-				glViewport(0, 0, s_SceneRendererData.shadowMapResX, s_SceneRendererData.shadowMapResY);
+				glViewport(0, 0, s_SceneRendererData.ViewportSize.x, s_SceneRendererData.ViewportSize.y);
 
 				glClear(GL_DEPTH_BUFFER_BIT);
 				glCullFace(GL_FRONT);
@@ -611,7 +606,6 @@ namespace OP
 
 				// ---------- DRAW SCENE END ----------
 				glCullFace(GL_BACK);
-
 			}
 		);
 
@@ -620,9 +614,6 @@ namespace OP
 
 		s_SceneRendererData.finalShaderPass->InvokeCommands(
 			[&]()-> void {
-				// reset viewport
-				glViewport(0, 0, s_SceneRendererData.ViewportSize.x, s_SceneRendererData.ViewportSize.y);
-
 				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 				s_SceneRendererData.mainShader->Bind();
 

@@ -68,14 +68,14 @@ namespace OP::Math
 		float& outNear, float& outFar)
 	{
 
-		outNear   = perspectiveProjection[3][2] / (perspectiveProjection[2][2] - 1);
-		outFar    = perspectiveProjection[3][2] / (perspectiveProjection[2][2] + 1);
+		outNear   = perspectiveProjection[4][3] / (perspectiveProjection[3][3] - 1);
+		outFar    = perspectiveProjection[4][3] / (perspectiveProjection[3][3] + 1);
 
-		outLeft   = outNear * (perspectiveProjection[2][0] - 1) / perspectiveProjection[0][0];
-		outRight  = outNear * (perspectiveProjection[2][0] + 1) / perspectiveProjection[0][0];
+		outLeft   = outNear * (perspectiveProjection[3][1] - 1) / perspectiveProjection[1][1];
+		outRight  = outNear * (perspectiveProjection[3][1] + 1) / perspectiveProjection[1][1];
 
-		outBottom = outNear * (perspectiveProjection[2][1] - 1) / perspectiveProjection[1][1];
-		outTop    = outNear * (perspectiveProjection[2][1] + 1) / perspectiveProjection[1][1];
+		outBottom = outNear * (perspectiveProjection[3][2] - 1) / perspectiveProjection[2][2];
+		outTop    = outNear * (perspectiveProjection[3][2] + 1) / perspectiveProjection[2][2];
 
 		return true;
 	}

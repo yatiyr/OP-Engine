@@ -456,7 +456,7 @@ namespace OP
 			// s_SceneRendererData.depthFramebuffer->Resize(width, height);
 			s_SceneRendererData.finalFramebuffer->Resize(width, height);
 
-			// s_SceneRendererData.depthShaderPass->ResizeFramebuffer(width, height);
+			s_SceneRendererData.depthShaderPass->ResizeFramebuffer(width, height);
 		}
 	}
 
