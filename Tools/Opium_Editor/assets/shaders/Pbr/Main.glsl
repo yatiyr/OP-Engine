@@ -3,7 +3,7 @@
 
 #define MAX_DIR_LIGHTS 4
 #define MAX_SPOT_LIGHTS 4
-#define MAX_CASCADE_SIZE 5
+#define MAX_CASCADE_SIZE 20
 
 layout (location = 0) in vec3 a_Position;
 layout (location = 1) in vec3 a_Normal;
@@ -47,9 +47,14 @@ layout(std140, binding = 2) uniform DirLightData
 	DirLight u_DirLights[MAX_DIR_LIGHTS];
 };
 
+struct LightSpaceMat
+{
+	mat4 mat;
+};
+
 layout(std140, binding = 3) uniform LightSpaceMatricesDSData
 {
-	mat4 u_LightSpaceMatricesDirSpot[MAX_DIR_LIGHTS * MAX_CASCADE_SIZE + MAX_SPOT_LIGHTS];
+	LightSpaceMat u_LightSpaceMatricesDirSpot[MAX_DIR_LIGHTS * MAX_CASCADE_SIZE + MAX_SPOT_LIGHTS];
 };
 
 void main()
@@ -67,7 +72,7 @@ void main()
 
 #define MAX_DIR_LIGHTS 4
 #define MAX_SPOT_LIGHTS 4
-#define MAX_CASCADE_SIZE 5
+#define MAX_CASCADE_SIZE 20
 
 layout(location = 0) out vec4 FragColor;
 
@@ -110,14 +115,27 @@ layout(std140, binding = 2) uniform DirLightData
 	DirLight u_DirLights[MAX_DIR_LIGHTS];
 };
 
+struct LightSpaceMat
+{
+	mat4 mat;
+};
+
 layout(std140, binding = 3) uniform LightSpaceMatricesDSData
 {
-	mat4 u_LightSpaceMatricesDirSpot[MAX_DIR_LIGHTS * MAX_CASCADE_SIZE + MAX_SPOT_LIGHTS];
+	LightSpaceMat u_LightSpaceMatricesDirSpot[MAX_DIR_LIGHTS * MAX_CASCADE_SIZE + MAX_SPOT_LIGHTS];
+};
+
+struct CascadePlane
+{
+	float dist;
+	float _align1;
+	float _align2;
+	float _align3;
 };
 
 layout(std140, binding = 4) uniform CascadePlaneDistancesData
 {
-	float u_CascadePlaneDistances[(MAX_CASCADE_SIZE - 1) * MAX_DIR_LIGHTS];
+	CascadePlane u_CascadePlanes[(MAX_CASCADE_SIZE - 1) * MAX_DIR_LIGHTS];
 };
 
 layout(std140, binding = 5) uniform MaterialData
@@ -125,6 +143,30 @@ layout(std140, binding = 5) uniform MaterialData
 	vec3 u_Color;
 };
 
+float DebugLayer(vec3 fragPosWorldSpace, int cascadeSize, int dirLightIndex)
+{
+	// get cascade plane
+	vec4 fragPosViewSpace = fs_in.FragPosViewSpace;
+
+	float depthVal = abs(fragPosViewSpace.z);
+
+	int layer = -1;
+	for(int i=0; i<cascadeSize-1; i++)
+	{
+		if (depthVal < u_CascadePlanes[(MAX_CASCADE_SIZE - 1) * dirLightIndex + i].dist)
+		{
+			layer = i;
+			break;
+		}
+	}
+
+	if(layer == -1)
+	{
+		layer = cascadeSize - 1;
+	}
+
+	return layer * 0.02;
+}
 
 float ShadowCalculationDir(vec3 fragPosWorldSpace, vec3 lightDir, vec3 normal,  int cascadeSize, int dirLightIndex)
 {
@@ -134,9 +176,9 @@ float ShadowCalculationDir(vec3 fragPosWorldSpace, vec3 lightDir, vec3 normal,  
 	float depthVal = abs(fragPosViewSpace.z);
 
 	int layer = -1;
-	for(int i=0; i<cascadeSize; i++)
+	for(int i=0; i<cascadeSize-1; i++)
 	{
-		if (depthVal < u_CascadePlaneDistances[(MAX_CASCADE_SIZE - 1) * dirLightIndex + i])
+		if (depthVal < u_CascadePlanes[(MAX_CASCADE_SIZE - 1) * dirLightIndex + i].dist)
 		{
 			layer = i;
 			break;
@@ -149,7 +191,7 @@ float ShadowCalculationDir(vec3 fragPosWorldSpace, vec3 lightDir, vec3 normal,  
 	}
 
 
-	vec4 fragPosLightSpace = u_LightSpaceMatricesDirSpot[(MAX_CASCADE_SIZE - 1) * dirLightIndex + layer] *
+	vec4 fragPosLightSpace = u_LightSpaceMatricesDirSpot[(MAX_CASCADE_SIZE) * dirLightIndex + layer].mat *
 	                         vec4(fragPosWorldSpace, 1.0);
 	vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
 
@@ -166,18 +208,18 @@ float ShadowCalculationDir(vec3 fragPosWorldSpace, vec3 lightDir, vec3 normal,  
 	// calculate bias
 	float bias = max(0.05 * (1.0 - dot(normal, lightDir)), 0.005);
 	const float biasModifier = 0.5;
-	if (layer == cascadeSize)
+	if (layer == cascadeSize - 1)
 	{
-		bias *= 1.0 / (u_CascadePlaneDistances[(MAX_CASCADE_SIZE - 1) * dirLightIndex + layer] * biasModifier);
+		bias *= 1.0 / (1000.0 * biasModifier);
 	}
 	else
 	{
-		bias *= 1.0 / (u_CascadePlaneDistances[(MAX_CASCADE_SIZE - 1) * dirLightIndex + layer] * biasModifier);
+		bias *= 1.0 / (u_CascadePlanes[(MAX_CASCADE_SIZE - 1) * dirLightIndex + layer].dist * biasModifier);
 	}
 
 	// PCF
 	float shadow  = 0.0;
-	vec2 texelSize = 1.0 / vec2(10000, 10000);
+	vec2 texelSize = 1.0 / vec2(1024, 1024);
 	for (int x=-1; x<=1; x++)
 	{
 		for (int y=-1; y<=1; y++)
@@ -328,7 +370,7 @@ void main()
 		// calculate shadow
 		// float visibility = CalculateVisibility(fs_in.FragPosLightSpace[i], lightDir, normal, i);
 		float shadow     = ShadowCalculationDir(fs_in.FragPos, lightDir, normal, u_DirLights[i].CascadeSize,i);
-		vec3 lighting    =  (ambient + (1 - shadow) * (diffuse + specular)) * color;
+		vec3 lighting    =  (ambient + (1 - shadow) * (diffuse + specular) + DebugLayer(fs_in.FragPos, u_DirLights[i].CascadeSize, i)) * color ;
 		result += lighting;
 	}
 

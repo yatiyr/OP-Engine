@@ -27,7 +27,7 @@
 
 #define MAX_DIR_LIGHTS 4
 #define MAX_SPOT_LIGHTS 4
-#define MAX_CASCADE_SIZE 20
+#define MAX_CASCADE_SIZE 5
 
 namespace OP
 {
@@ -492,12 +492,12 @@ namespace OP
 			glm::mat4 cameraProjection = camera.GetProjection();
 			glm::vec3 dirLightPos(s_SceneRendererData.Epsilon, s_SceneRendererData.Epsilon, s_SceneRendererData.Epsilon);
 			// THIS WILL BE REPLACED WITH ENTITY COMPONENT SYSTEM !!!!!
-			s_SceneRendererData.DirLightsBuffer.Size = 3;
+			s_SceneRendererData.DirLightsBuffer.Size = 1;
 			// light1 props
 			glm::vec3 light1_color(0.2f, 0.26f, 0.2f);
 			glm::vec3 light1_dir(0.0f, -1.1f, 0.0f);
-			int light1CascadeSize = 20;
-			float light1FrustaDistFactor = 1.5;
+			int light1CascadeSize = 5;
+			float light1FrustaDistFactor = 4;
 			s_SceneRendererData.DirLightsBuffer.DirLights[0].Color = light1_color;
 			s_SceneRendererData.DirLightsBuffer.DirLights[0].LightDir = glm::normalize(light1_dir);
 			s_SceneRendererData.DirLightsBuffer.DirLights[0].CascadeSize = light1CascadeSize;
@@ -537,27 +537,7 @@ namespace OP
 			{
 				s_SceneRendererData.CascadePlaneDistancesBuffer.cascadePlaneDistances[(MAX_CASCADE_SIZE - 1) * 1 + i] = cascadeLevels2[i];
 			}*/
-			// THIS WILL BE REPLACED WITH ENTITY COMPONENT SYSTEM !!!!!
-			// light2 props
-			glm::vec3 light2_color(0.2f, 0.2f, 0.6f);
-			glm::vec3 light2_dir(-1.0f, -1.0f, -0.0f);
-			int light2CascadeSize = 20;
-			float light2FrustaDistFactor = 1.5;
-			s_SceneRendererData.DirLightsBuffer.DirLights[1].Color = light2_color;
-			s_SceneRendererData.DirLightsBuffer.DirLights[1].LightDir = glm::normalize(light2_dir);
-			s_SceneRendererData.DirLightsBuffer.DirLights[1].CascadeSize = light2CascadeSize;
-			s_SceneRendererData.DirLightsBuffer.DirLights[1].FrustaDistFactor = light2FrustaDistFactor;
-			std::vector<float> cascadeLevels2 = DistributeShadowCascadeLevels(light2CascadeSize, light2FrustaDistFactor, camera.GetFarClip());
-			OP_ENGINE_ASSERT(cascadeLevels2 <= MAX_CASCADE_SIZE);
-			std::vector<glm::mat4> matrices2 = getLightSpaceMatrices(cameraProjection, camera.GetViewMatrix(), cascadeLevels2, camera.GetNearClip(), camera.GetFarClip(), light2_dir, s_SceneRendererData.zMult);
-			for (uint32_t i = 0; i < matrices2.size(); i++)
-			{
-				s_SceneRendererData.LightSpaceMatricesDSBuffer.LightSpaceMatricesDirSpot[MAX_CASCADE_SIZE * 1 + i].mat = matrices2[i];
-			}
-			for (uint32_t i = 0; i < cascadeLevels2.size(); i++)
-			{
-				s_SceneRendererData.CascadePlaneDistancesBuffer.cascadePlanes[(MAX_CASCADE_SIZE - 1) * 1 + i].dist = cascadeLevels2[i];
-			}
+
 			// light3 props
 			/*
 			glm::vec3 light3_color(0.5f, 0.1f, 0.6f);
@@ -580,26 +560,6 @@ namespace OP
 			{
 				s_SceneRendererData.CascadePlaneDistancesBuffer.cascadePlaneDistances[(MAX_CASCADE_SIZE - 1) * 2 + i] = cascadeLevels3[i];
 			}*/
-			// light3 props
-			glm::vec3 light3_color(0.5f, 0.1f, 0.6f);
-			glm::vec3 light3_dir(1.0f, -1.0f, -1.0f);
-			int light3CascadeSize = 20;
-			float light3FrustaDistFactor = 1.5;
-			s_SceneRendererData.DirLightsBuffer.DirLights[2].Color = light3_color;
-			s_SceneRendererData.DirLightsBuffer.DirLights[2].LightDir = glm::normalize(light3_dir);
-			s_SceneRendererData.DirLightsBuffer.DirLights[2].CascadeSize = light3CascadeSize;
-			s_SceneRendererData.DirLightsBuffer.DirLights[2].FrustaDistFactor = light3FrustaDistFactor;
-			std::vector<float> cascadeLevels3 = DistributeShadowCascadeLevels(light3CascadeSize, light3FrustaDistFactor, camera.GetFarClip());
-			OP_ENGINE_ASSERT(cascadeLevels3 <= MAX_CASCADE_SIZE);
-			std::vector<glm::mat4> matrices3 = getLightSpaceMatrices(cameraProjection, camera.GetViewMatrix(), cascadeLevels3, camera.GetNearClip(), camera.GetFarClip(), light3_dir, s_SceneRendererData.zMult);
-			for (uint32_t i = 0; i < matrices3.size(); i++)
-			{
-				s_SceneRendererData.LightSpaceMatricesDSBuffer.LightSpaceMatricesDirSpot[MAX_CASCADE_SIZE * 2 + i].mat = matrices3[i];
-			}
-			for (uint32_t i = 0; i < cascadeLevels3.size(); i++)
-			{
-				s_SceneRendererData.CascadePlaneDistancesBuffer.cascadePlanes[(MAX_CASCADE_SIZE - 1) * 2 + i].dist = cascadeLevels3[i];
-			}
 		// ------------------- END FILL IN DIR LIGHT UNIFORMS --------------------- //
 
 
