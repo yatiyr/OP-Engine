@@ -13,6 +13,7 @@ namespace OP
 		void Invalidate();
 
 		virtual void Bind() override;
+		virtual void BindNoResize() override;
 		virtual void Unbind() override;
 
 		virtual void Resize(uint32_t width, uint32_t height) override;
@@ -24,6 +25,8 @@ namespace OP
 		virtual uint32_t GetColorAttachmentRendererID(uint32_t index = 0) const override { return m_ColorAttachments[index]; }
 		virtual uint32_t GetDepthAttachmentRendererID(uint32_t index = 0) const override { return m_DepthAttachment; }
 		virtual const FramebufferSpecification& GetSpecification() const override { return m_Specification; }
+
+		virtual void GetSize(float& x, float &y) override;
 	private:
 		uint32_t m_RendererID = 0;
 		FramebufferSpecification m_Specification;

@@ -19,7 +19,7 @@ void main()
 
 #define MAX_DIR_LIGHTS 4
 #define MAX_SPOT_LIGHTS 4
-#define MAX_CASCADE_SIZE 20
+#define MAX_CASCADE_SIZE 10
 
 layout (triangles, invocations=MAX_DIR_LIGHTS + MAX_SPOT_LIGHTS) in;
 layout (triangle_strip, max_vertices = 3 * MAX_CASCADE_SIZE) out;
@@ -33,7 +33,7 @@ struct DirLight
 	vec3 Color;
 };
 
-layout(std140, binding = 2) uniform DirLightData
+layout(std140, binding = 3) uniform DirLightData
 {
 	int u_DirLightSize;
 	DirLight u_DirLights[MAX_DIR_LIGHTS];
@@ -44,7 +44,7 @@ struct LightSpaceMat
 	mat4 mat;
 };
 
-layout(std140, binding = 3) uniform LightSpaceMatricesDSData
+layout(std140, binding = 4) uniform LightSpaceMatricesDSData
 {
 	LightSpaceMat u_LightSpaceMatricesDirSpot[MAX_DIR_LIGHTS * MAX_CASCADE_SIZE + MAX_SPOT_LIGHTS];
 };
@@ -95,7 +95,14 @@ void main()
 #type fragment
 #version 450 core
 
+layout(location = 0) out vec4 FragColor;
+
 void main()
 {
- // pass through shader, we do not need to do anything.
+	float depth = gl_FragCoord.z;
+	float dx = dFdx(depth);
+	float dy = dFdy(depth);
+	float moment2 = depth * depth + 0.25 * (dx*dx + dy*dy);
+
+	FragColor = vec4(depth, moment2, 1.0, 1.0);
 }

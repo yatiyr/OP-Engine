@@ -576,6 +576,7 @@
     <ClInclude Include="src\Geometry\Mesh.h" />
     <ClInclude Include="src\Geometry\Icosphere.h" />
     <ClInclude Include="src\Geometry\Plane.h" />
+    <ClInclude Include="src\Geometry\Quad.h" />
     <ClInclude Include="src\Geometry\RadialSphere.h" />
     <ClInclude Include="src\Gui\Font\Font.h" />
     <ClInclude Include="src\Gui\ImGuiLayer.h" />
@@ -611,12 +612,13 @@
     <ClInclude Include="src\Renderer\GraphicsContext.h" />
     <ClInclude Include="src\Renderer\OrthographicCamera.h" />
     <ClInclude Include="src\Renderer\OrthographicCameraController.h" />
+    <ClInclude Include="src\Renderer\PingPongRenderPass.h" />
     <ClInclude Include="src\Renderer\RenderCommand.h" />
     <ClInclude Include="src\Renderer\Renderer.h" />
     <ClInclude Include="src\Renderer\Renderer2D.h" />
     <ClInclude Include="src\Renderer\RendererAPI.h" />
     <ClInclude Include="src\Renderer\Shader.h" />
-    <ClInclude Include="src\Renderer\ShaderPass.h" />
+    <ClInclude Include="src\Renderer\RenderPass.h" />
     <ClInclude Include="src\Renderer\SubTexture2D.h" />
     <ClInclude Include="src\Renderer\Texture.h" />
     <ClInclude Include="src\Renderer\UniformBuffer.h" />
@@ -658,6 +660,7 @@
     <ClCompile Include="src\Geometry\Icosphere.cpp" />
     <ClCompile Include="src\Geometry\Mesh.cpp" />
     <ClCompile Include="src\Geometry\Plane.cpp" />
+    <ClCompile Include="src\Geometry\Quad.cpp" />
     <ClCompile Include="src\Geometry\RadialSphere.cpp" />
     <ClCompile Include="src\Gui\ImGuiBuild.cpp" />
     <ClCompile Include="src\Gui\ImGuiLayer.cpp" />
@@ -684,12 +687,13 @@
     <ClCompile Include="src\Renderer\Framebuffer.cpp" />
     <ClCompile Include="src\Renderer\OrthographicCamera.cpp" />
     <ClCompile Include="src\Renderer\OrthographicCameraController.cpp" />
+    <ClCompile Include="src\Renderer\PingPongRenderPass.cpp" />
     <ClCompile Include="src\Renderer\RenderCommand.cpp" />
     <ClCompile Include="src\Renderer\Renderer.cpp" />
     <ClCompile Include="src\Renderer\Renderer2D.cpp" />
     <ClCompile Include="src\Renderer\RendererAPI.cpp" />
     <ClCompile Include="src\Renderer\Shader.cpp" />
-    <ClCompile Include="src\Renderer\ShaderPass.cpp" />
+    <ClCompile Include="src\Renderer\RenderPass.cpp" />
     <ClCompile Include="src\Renderer\SubTexture2D.cpp" />
     <ClCompile Include="src\Renderer\Texture.cpp" />
     <ClCompile Include="src\Renderer\UniformBuffer.cpp" />

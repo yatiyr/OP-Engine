@@ -110,16 +110,34 @@ namespace OP
 		{
 			//glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, GL_DEPTH_COMPONENT, width, height, layerCount, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
 			glTexStorage3D (GL_TEXTURE_2D_ARRAY, 1, GL_DEPTH_COMPONENT32F, width, height, layerCount);
-			glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-			glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-			glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-			glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+			glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+			glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+			glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+			glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
 			//glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
 			//glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
 			float borderColor[] = { 1.0, 1.0, 1.0, 1.0 };
 			glTexParameterfv(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_BORDER_COLOR, borderColor);
 			glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, id, 0);
+		}
+
+		static void AttachArrayShadowMapVariance_Dir_Spot(uint32_t id, uint32_t width, uint32_t height, uint32_t layerCount)
+		{
+			// glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, GL_RG32F, width, height, layerCount, 0, GL_RGBA, GL_FLOAT, nullptr);
+			glTexStorage3D(GL_TEXTURE_2D_ARRAY, 1, GL_RGBA32F, width, height, layerCount);
+			glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+			glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+			//glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
+			//glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
+			//float borderColor[] = { 1.0, 1.0, 1.0, 1.0 };
+			//glTexParameterfv(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_BORDER_COLOR, borderColor);
+			float borderColor[] = { 1.0, 1.0, 1.0, 1.0 };
+			glTexParameterfv(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_BORDER_COLOR, borderColor);
+			glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, id, 0);
 		}
 
 		static void AttachColorShadowMap_Dir_Spot(uint32_t id, GLenum flormat, uint32_t width, uint32_t height, uint32_t layerCount)
@@ -209,20 +227,31 @@ namespace OP
 		if (m_ColorAttachmentSpecifications.size())
 		{
 			m_ColorAttachments.resize(m_ColorAttachmentSpecifications.size());
-			Utils::CreateTextures(multisample, m_ColorAttachments.data(), m_ColorAttachments.size());
 
-			for (size_t i = 0; i < m_ColorAttachments.size(); i++)
+			if (m_ColorAttachmentSpecifications.size() == 1 && m_ColorAttachmentSpecifications[0].TextureFormat == FramebufferTextureFormat::SM_VARIANCE32F)
 			{
-				Utils::BindTexture(multisample, m_ColorAttachments[i]);
+				Utils::CreateTextureArray(&m_ColorAttachments[0], 1);
+				Utils::BindTextureArray(m_ColorAttachments[0]);
+				Utils::AttachArrayShadowMapVariance_Dir_Spot(m_ColorAttachments[0], m_Specification.Width, m_Specification.Height, m_ColorAttachmentSpecifications[0].layerCount);
 
-				switch (m_ColorAttachmentSpecifications[i].TextureFormat)
+			}
+			else
+			{
+				Utils::CreateTextures(multisample, m_ColorAttachments.data(), m_ColorAttachments.size());
+
+				for (size_t i = 0; i < m_ColorAttachments.size(); i++)
 				{
+					Utils::BindTexture(multisample, m_ColorAttachments[i]);
+
+					switch (m_ColorAttachmentSpecifications[i].TextureFormat)
+					{
 					case FramebufferTextureFormat::RGBA8:
 						Utils::AttachColorTexture(m_ColorAttachments[i], m_Specification.Samples, GL_RGBA8, GL_RGBA, m_Specification.Width, m_Specification.Height, i);
 						break;
 					case FramebufferTextureFormat::RED_INTEGER:
 						Utils::AttachColorTexture(m_ColorAttachments[i], m_Specification.Samples, GL_R32I, GL_RED_INTEGER, m_Specification.Width, m_Specification.Height, i);
 						break;
+					}
 				}
 			}
 		}
@@ -256,7 +285,7 @@ namespace OP
 		}
 
 
-		if (m_ColorAttachments.size() > 1)
+		if (m_ColorAttachments.size() >= 1)
 		{
 			OP_ENGINE_ASSERT(m_ColorAttachments.size() <= 4);
 			GLenum buffers[4] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3 };
@@ -284,6 +313,11 @@ namespace OP
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
 		glViewport(0, 0, m_Specification.Width, m_Specification.Height);
+	}
+
+	void OpenGLFramebuffer::BindNoResize()
+	{
+		glBindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
 	}
 
 	void OpenGLFramebuffer::Unbind()
@@ -323,6 +357,12 @@ namespace OP
 		glClearTexImage(m_ColorAttachments[attachmentIndex], 0,
 			Utils::OpiumFBTextureFormatToGL(spec.TextureFormat), GL_INT, &value);
 
+	}
+
+	void OpenGLFramebuffer::GetSize(float& x, float& y)
+	{
+		x = m_Specification.Width;
+		y = m_Specification.Height;
 	}
 
 }

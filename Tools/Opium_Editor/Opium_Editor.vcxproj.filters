@@ -73,5 +73,7 @@
     <None Include="assets\shaders\Pbr\Test.glsl" />
     <None Include="assets\shaders\Pbr\OmnidirectionalDepthMap.glsl" />
     <None Include="assets\shaders\Pbr\DirSpotShadowMapping.glsl" />
+    <None Include="assets\shaders\Pbr\SoftShadowExample.glsl" />
+    <None Include="assets\shaders\Pbr\DirSpotShadowMappingBlur.glsl" />
   </ItemGroup>
 </Project>

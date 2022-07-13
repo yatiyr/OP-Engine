@@ -3,7 +3,7 @@
 
 #define MAX_DIR_LIGHTS 4
 #define MAX_SPOT_LIGHTS 4
-#define MAX_CASCADE_SIZE 20
+#define MAX_CASCADE_SIZE 10
 
 layout (location = 0) in vec3 a_Position;
 layout (location = 1) in vec3 a_Normal;
@@ -41,7 +41,7 @@ struct DirLight
 	vec3 Color;
 };
 
-layout(std140, binding = 2) uniform DirLightData
+layout(std140, binding = 3) uniform DirLightData
 {
 	int u_DirLightSize;
 	DirLight u_DirLights[MAX_DIR_LIGHTS];
@@ -52,7 +52,7 @@ struct LightSpaceMat
 	mat4 mat;
 };
 
-layout(std140, binding = 3) uniform LightSpaceMatricesDSData
+layout(std140, binding = 4) uniform LightSpaceMatricesDSData
 {
 	LightSpaceMat u_LightSpaceMatricesDirSpot[MAX_DIR_LIGHTS * MAX_CASCADE_SIZE + MAX_SPOT_LIGHTS];
 };
@@ -72,7 +72,7 @@ void main()
 
 #define MAX_DIR_LIGHTS 4
 #define MAX_SPOT_LIGHTS 4
-#define MAX_CASCADE_SIZE 20
+#define MAX_CASCADE_SIZE 10
 
 layout(location = 0) out vec4 FragColor;
 
@@ -101,6 +101,12 @@ layout(std140, binding = 1)  uniform Transform
 	mat4 u_Model;
 };
 
+layout(std140, binding = 2) uniform ShadowMapSettings
+{
+	vec2 u_BlurScale;
+	float u_ShadowMapResX;
+	float u_ShadowMapResY;
+};
 struct DirLight
 {
 	int CascadeSize;
@@ -109,7 +115,7 @@ struct DirLight
 	vec3 Color;
 };
 
-layout(std140, binding = 2) uniform DirLightData
+layout(std140, binding = 3) uniform DirLightData
 {
 	int u_DirLightSize;
 	DirLight u_DirLights[MAX_DIR_LIGHTS];
@@ -120,7 +126,7 @@ struct LightSpaceMat
 	mat4 mat;
 };
 
-layout(std140, binding = 3) uniform LightSpaceMatricesDSData
+layout(std140, binding = 4) uniform LightSpaceMatricesDSData
 {
 	LightSpaceMat u_LightSpaceMatricesDirSpot[MAX_DIR_LIGHTS * MAX_CASCADE_SIZE + MAX_SPOT_LIGHTS];
 };
@@ -133,12 +139,12 @@ struct CascadePlane
 	float _align3;
 };
 
-layout(std140, binding = 4) uniform CascadePlaneDistancesData
+layout(std140, binding = 5) uniform CascadePlaneDistancesData
 {
 	CascadePlane u_CascadePlanes[(MAX_CASCADE_SIZE - 1) * MAX_DIR_LIGHTS];
 };
 
-layout(std140, binding = 5) uniform MaterialData
+layout(std140, binding = 6) uniform MaterialData
 {
 	vec3 u_Color;
 };
@@ -165,7 +171,25 @@ float DebugLayer(vec3 fragPosWorldSpace, int cascadeSize, int dirLightIndex)
 		layer = cascadeSize - 1;
 	}
 
-	return layer * 0.02;
+	return layer * 0.01;
+}
+
+float linstep(float low, float high, float v)
+{
+	return clamp((v-low) / (high - low), 0.0, 1.0);
+}
+float SamplaVarianceShadowMap(sampler2DArray shadowMap, vec3 coords, float compare)
+{
+
+	vec2 moments = texture(shadowMap, coords.xyz).xy;
+
+	float p = step(compare, moments.x);
+	float variance = max(moments.y - moments.x * moments.x, 0.0000000002);
+
+	float d = compare - moments.x;
+	float pMax = linstep(0.6, 1.0,variance / (variance + d*d));
+
+	return min(max(p, pMax), 1.0);
 }
 
 float ShadowCalculationDir(vec3 fragPosWorldSpace, vec3 lightDir, vec3 normal,  int cascadeSize, int dirLightIndex)
@@ -206,7 +230,7 @@ float ShadowCalculationDir(vec3 fragPosWorldSpace, vec3 lightDir, vec3 normal,  
 	}
 
 	// calculate bias
-	float bias = max(0.05 * (1.0 - dot(normal, lightDir)), 0.005);
+	/*float bias = max(0.1 * (1.0 - dot(normal, lightDir)), 0.05);
 	const float biasModifier = 0.5;
 	if (layer == cascadeSize - 1)
 	{
@@ -219,7 +243,7 @@ float ShadowCalculationDir(vec3 fragPosWorldSpace, vec3 lightDir, vec3 normal,  
 
 	// PCF
 	float shadow  = 0.0;
-	vec2 texelSize = 1.0 / vec2(1024, 1024);
+	vec2 texelSize = 1.0 / vec2(u_ShadowMapResX, u_ShadowMapResY);
 	for (int x=-1; x<=1; x++)
 	{
 		for (int y=-1; y<=1; y++)
@@ -229,9 +253,11 @@ float ShadowCalculationDir(vec3 fragPosWorldSpace, vec3 lightDir, vec3 normal,  
 		}
 	}
 
-	shadow /= 9.0;
+	shadow /= 9.0;*/
+	float shadow = 0.0;
+	shadow = SamplaVarianceShadowMap(u_ShadowMapDirSpot, vec3(projCoords.x, projCoords.y, (MAX_CASCADE_SIZE) * dirLightIndex + layer ), currentDepth);
 
-	return shadow;
+	return 1 - shadow;
 
 }
 
@@ -342,6 +368,7 @@ vec2 poissonDisk[16] = vec2[]
 
 void main()
 {
+	vec3 fragPos = fs_in.FragPos;
 	vec3 color = u_Color;//texture(u_DiffuseTexture, fs_in.TexCoords).rgb;
 	vec3 normal = normalize(fs_in.Normal);
 
@@ -350,6 +377,7 @@ void main()
 	// Iterate directional lights
 	for(int i=0; i<u_DirLightSize; i++)
 	{
+		int cascadeSize = u_DirLights[i].CascadeSize;
 		vec3 lightColor = u_DirLights[i].Color;
 
 		// ambient
@@ -369,8 +397,9 @@ void main()
 
 		// calculate shadow
 		// float visibility = CalculateVisibility(fs_in.FragPosLightSpace[i], lightDir, normal, i);
-		float shadow     = ShadowCalculationDir(fs_in.FragPos, lightDir, normal, u_DirLights[i].CascadeSize,i);
-		vec3 lighting    =  (ambient + (1 - shadow) * (diffuse + specular) + DebugLayer(fs_in.FragPos, u_DirLights[i].CascadeSize, i)) * color ;
+		float shadow     = ShadowCalculationDir(fragPos, lightDir, normal, cascadeSize,i);
+		//float debugColor = DebugLayer(fragPos, cascadeSize, i);
+		vec3 lighting    =  (ambient + (1 - shadow) * (diffuse + specular)) * color ;
 		result += lighting;
 	}
 

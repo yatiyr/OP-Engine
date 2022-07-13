@@ -12,6 +12,7 @@ namespace OP
 		// Color
 		RGBA8,
 		RED_INTEGER,
+		SM_VARIANCE32F,
 
 		// Depth/stencil
 		DEPTH24STENCIL8,
@@ -67,7 +68,10 @@ namespace OP
 	public:
 		virtual ~Framebuffer() {}
 		virtual void Bind() = 0;
+		virtual void BindNoResize() = 0;
 		virtual void Unbind() = 0;
+
+		virtual void GetSize(float& x, float& y) = 0;
 
 		virtual void Resize(uint32_t width, uint32_t height) = 0;
 		virtual int ReadPixel(uint32_t attachmentIndex, int x, int y) = 0;

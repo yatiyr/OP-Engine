@@ -9,7 +9,7 @@
 #include <Renderer/Shader.h>
 #include <Renderer/UniformBuffer.h>
 #include <Renderer/RenderCommand.h>
-#include <Renderer/ShaderPass.h>
+#include <Renderer/PingPongRenderPass.h>
 
 #include <Renderer/Texture.h>
 
@@ -23,11 +23,11 @@
 #include <Geometry/Icosphere.h>
 #include <Geometry/Cube.h>
 #include <Geometry/Plane.h>
-
+#include <Geometry/Quad.h>
 
 #define MAX_DIR_LIGHTS 4
 #define MAX_SPOT_LIGHTS 4
-#define MAX_CASCADE_SIZE 20
+#define MAX_CASCADE_SIZE 10
 
 namespace OP
 {
@@ -98,7 +98,7 @@ namespace OP
 				glm::vec3 controlledLightDir = lightDir;
 				if (controlledLightDir.x == 0.0 && controlledLightDir.z == 0.0)
 				{
-					controlledLightDir += glm::vec3(0.001f, 0.0f, -0.001f);
+					controlledLightDir += glm::vec3(0.00001f, 0.0f, -0.00001f);
 				}
 				glm::mat4 lightView = glm::lookAt(center, center + controlledLightDir, glm::vec3(0.0f, 1.0f, 0.0f));
 
@@ -232,9 +232,16 @@ namespace OP
 
 
 		// -------- CASCADED SHADOW MAPPING SETTINGS ------- //
-			float zMult = 10;
-			float shadowMapResX = 1024;
-			float shadowMapResY = 1024;
+			float zMult = 30;
+			float blurAmount = 1;
+			struct ShadowMapSettings
+			{
+				float shadowMapResX = 1024;
+				float shadowMapResY = 1024;
+				glm::vec2 blurScale = glm::vec2(0.0f);
+			} ShadowMapSettingsBuffer;
+
+			Ref<UniformBuffer> ShadowMapSettingsUniformBuffer;
 
 		// ----- END CASCADED SHADOW MAPPING SETTINGS ------ //
 
@@ -264,6 +271,7 @@ namespace OP
 				CascadePlane cascadePlanes[(MAX_CASCADE_SIZE - 1) * MAX_DIR_LIGHTS];
 			} CascadePlaneDistancesBuffer;
 			
+
 			Ref<UniformBuffer> LightSpaceMatricesDSUniformBuffer;
 			Ref<UniformBuffer> CascadePlaneDistancesUniformBuffer;
 
@@ -338,6 +346,7 @@ namespace OP
 		Ref<Shader> mainShader;
 		Ref<Shader> depthShader;
 		Ref<Shader> depthDebugShader;
+		Ref<Shader> shadowMapDirSpotBlur;
 
 		// Ref<Texture2D> woodTexture;
 		Ref<Texture2D> WhiteTexture;
@@ -365,11 +374,14 @@ namespace OP
 		unsigned int cubeVAO = 0;
 		unsigned int cubeVBO = 0;
 
-		Ref<ShaderPass> depthShaderPass;
-		Ref<ShaderPass> finalShaderPass;
+		Ref<RenderPass> depthRenderPass;
+		Ref<PingPongRenderPass> depthBlurDSLRenderPass;
+		Ref<RenderPass> finalRenderPass;
 
 		// Temp
 		glm::mat4 spinningModel;
+
+		glm::vec3 spinningDir;
 
 	};
 
@@ -384,6 +396,8 @@ namespace OP
 		s_SceneRendererData.spinningModel = glm::translate(s_SceneRendererData.spinningModel, glm::vec3(-4.0f, 6.0f, 5.0f));
 		s_SceneRendererData.spinningModel = glm::scale(s_SceneRendererData.spinningModel, glm::vec3(1.0f, 1.0f, 1.0f));
 		s_SceneRendererData.LightBuffer.LightDir = glm::vec3(0.0f, -1.0f, 0.0f);
+
+		s_SceneRendererData.spinningDir = glm::normalize(glm::vec3(-1.0f, -1.0f, -0.0f));
 		// ---------------
 
 		glEnable(GL_DEPTH_TEST);
@@ -391,26 +405,27 @@ namespace OP
 		glCullFace(GL_BACK);
 
 		s_SceneRendererData.icosphere = Icosphere::Create(1.0f, 4, true);
-		s_SceneRendererData.icosphere2 = Icosphere::Create(3.0f, 0, false);
+		s_SceneRendererData.icosphere2 = Icosphere::Create(1.0f, 0, false);
 		s_SceneRendererData.icosphere3 = Icosphere::Create(1.5f, 1, false);
 		s_SceneRendererData.cube = Cube::Create();
 		s_SceneRendererData.plane = Plane::Create();
 
 		s_SceneRendererData.mainShader = Shader::Create("assets/shaders/Pbr/Main.glsl");
 		s_SceneRendererData.depthShader = Shader::Create("assets/shaders/Pbr/DirSpotShadowMapping.glsl");
+		s_SceneRendererData.shadowMapDirSpotBlur = Shader::Create("assets/shaders/Pbr/DirSpotShadowMappingBlur.glsl");
 		s_SceneRendererData.depthDebugShader = Shader::Create("assets/shaders/Pbr/DepthDebug.glsl");
 
 
 		// Deal with uniform buffers
-		s_SceneRendererData.CameraUniformBuffer    = UniformBuffer::Create(sizeof(SceneRendererData::CameraData), 0);
-		s_SceneRendererData.TransformUniformBuffer = UniformBuffer::Create(sizeof(SceneRendererData::TransformData), 1);
+		s_SceneRendererData.CameraUniformBuffer            = UniformBuffer::Create(sizeof(SceneRendererData::CameraData), 0);
+		s_SceneRendererData.TransformUniformBuffer         = UniformBuffer::Create(sizeof(SceneRendererData::TransformData), 1);
+		s_SceneRendererData.ShadowMapSettingsUniformBuffer = UniformBuffer::Create(sizeof(SceneRendererData::ShadowMapSettings), 2);
 
-		s_SceneRendererData.DirLightUniformBuffer  = UniformBuffer::Create(sizeof(SceneRendererData::DirLightData), 2);
-		s_SceneRendererData.LightSpaceMatricesDSUniformBuffer = UniformBuffer::Create(sizeof(SceneRendererData::LightSpaceMatricesDSData), 3);
-		s_SceneRendererData.CascadePlaneDistancesUniformBuffer = UniformBuffer::Create(sizeof(SceneRendererData::CascadePlaneDistancesData), 4);
+		s_SceneRendererData.DirLightUniformBuffer  = UniformBuffer::Create(sizeof(SceneRendererData::DirLightData), 3);
+		s_SceneRendererData.LightSpaceMatricesDSUniformBuffer = UniformBuffer::Create(sizeof(SceneRendererData::LightSpaceMatricesDSData), 4);
+		s_SceneRendererData.CascadePlaneDistancesUniformBuffer = UniformBuffer::Create(sizeof(SceneRendererData::CascadePlaneDistancesData), 5);
 
-		s_SceneRendererData.MaterialUniformBuffer  = UniformBuffer::Create(sizeof(SceneRendererData::MaterialData), 5);
-	
+		s_SceneRendererData.MaterialUniformBuffer  = UniformBuffer::Create(sizeof(SceneRendererData::MaterialData), 6);
 
 		s_SceneRendererData.ViewportSize.x = width;
 		s_SceneRendererData.ViewportSize.y = height;
@@ -425,13 +440,19 @@ namespace OP
 
 		// Depth framebuffer for Spot and Directional Lights
 		FramebufferSpecification depthFBSpec;
-		depthFBSpec.Attachments = { FramebufferTextureFormat::SHADOWMAP_ARRAY_DEPTH };
-		depthFBSpec.Width = s_SceneRendererData.shadowMapResX;
-		depthFBSpec.Height = s_SceneRendererData.shadowMapResY;
+		depthFBSpec.Attachments = { FramebufferTextureFormat::SM_VARIANCE32F, FramebufferTextureFormat::SHADOWMAP_ARRAY_DEPTH };
+		depthFBSpec.Width = s_SceneRendererData.ShadowMapSettingsBuffer.shadowMapResX;
+		depthFBSpec.Height = s_SceneRendererData.ShadowMapSettingsBuffer.shadowMapResY;
 		// s_SceneRendererData.depthFramebuffer = Framebuffer::Create(depthFBSpec);
-		s_SceneRendererData.depthShaderPass = ShaderPass::Create(std::string("Depth Pass"), depthFBSpec, s_SceneRendererData.depthShader);
+		s_SceneRendererData.depthRenderPass = RenderPass::Create(std::string("Depth Pass"), depthFBSpec, s_SceneRendererData.depthShader);
+
+		// Also set shadow map size in shadow map settings uniform buffer
+		s_SceneRendererData.ShadowMapSettingsUniformBuffer->SetData(&s_SceneRendererData.ShadowMapSettingsBuffer, sizeof(SceneRendererData::ShadowMapSettings));
 
 
+		s_SceneRendererData.depthBlurDSLRenderPass = PingPongRenderPass::Create(std::string("DSL Blur Pass"), depthFBSpec, s_SceneRendererData.shadowMapDirSpotBlur);
+
+		
 		
 
 		// Final Framebuffer
@@ -441,7 +462,7 @@ namespace OP
 		finalFBSpec.Height = s_SceneRendererData.ViewportSize.y;
 		s_SceneRendererData.finalFramebuffer = Framebuffer::Create(finalFBSpec);
 
-		s_SceneRendererData.finalShaderPass = ShaderPass::Create(std::string("Final Pass"), fB);
+		s_SceneRendererData.finalRenderPass = RenderPass::Create(std::string("Final Pass"), fB);
 
 
 
@@ -471,7 +492,7 @@ namespace OP
 			// s_SceneRendererData.depthFramebuffer->Resize(width, height);
 			s_SceneRendererData.finalFramebuffer->Resize(width, height);
 
-			// s_SceneRendererData.depthShaderPass->ResizeFramebuffer(width, height);
+			// s_SceneRendererData.depthRenderPass->ResizeFramebuffer(width, height);
 		}
 	}
 
@@ -480,7 +501,8 @@ namespace OP
 
 		float time = (float)Application::Get().GetWindow().GetTime();
 		glm::mat3 rotationMatrix = glm::mat3(cos(0.001), sin(0.001), 0, -sin(0.001), cos(0.001f), 0, 0, 0, 1);
-
+		s_SceneRendererData.spinningDir = rotationMatrix * s_SceneRendererData.spinningDir;
+		s_SceneRendererData.spinningDir = glm::normalize(s_SceneRendererData.spinningDir);
 		// -------------------- CALCULATE CAMERA DATA -------------------------------- //
 			s_SceneRendererData.CameraBuffer.ViewProjection = camera.GetViewProjection();
 			s_SceneRendererData.CameraBuffer.ViewPos = camera.GetPosition();
@@ -494,17 +516,17 @@ namespace OP
 			// THIS WILL BE REPLACED WITH ENTITY COMPONENT SYSTEM !!!!!
 			s_SceneRendererData.DirLightsBuffer.Size = 3;
 			// light1 props
-			glm::vec3 light1_color(0.2f, 0.26f, 0.2f);
-			glm::vec3 light1_dir(0.0f, -1.1f, 0.0f);
-			int light1CascadeSize = 20;
-			float light1FrustaDistFactor = 1.5;
+			glm::vec3 light1_color(0.4f, 0.1f, 0.8f);
+			glm::vec3 light1_dir(4.0f, -1.1f, -5.0f);
+			int light1CascadeSize = 5;
+			float light1FrustaDistFactor = 2;
 			s_SceneRendererData.DirLightsBuffer.DirLights[0].Color = light1_color;
 			s_SceneRendererData.DirLightsBuffer.DirLights[0].LightDir = glm::normalize(light1_dir);
 			s_SceneRendererData.DirLightsBuffer.DirLights[0].CascadeSize = light1CascadeSize;
 			s_SceneRendererData.DirLightsBuffer.DirLights[0].FrustaDistFactor = light1FrustaDistFactor;
 			std::vector<float> cascadeLevels = DistributeShadowCascadeLevels(light1CascadeSize, light1FrustaDistFactor, camera.GetFarClip());
 			OP_ENGINE_ASSERT(cascadeLevels <= MAX_CASCADE_SIZE);
-			std::vector<glm::mat4> matrices = getLightSpaceMatrices(cameraProjection, camera.GetViewMatrix(), cascadeLevels, camera.GetNearClip(), camera.GetFarClip(), light1_dir, s_SceneRendererData.zMult);
+			std::vector<glm::mat4> matrices = getLightSpaceMatrices(cameraProjection, camera.GetViewMatrix(), cascadeLevels, camera.GetNearClip(), camera.GetFarClip(), glm::normalize(light1_dir), s_SceneRendererData.zMult);
 			for (uint32_t i = 0; i < matrices.size(); i++)
 			{
 				s_SceneRendererData.LightSpaceMatricesDSBuffer.LightSpaceMatricesDirSpot[MAX_CASCADE_SIZE * 0 + i].mat = matrices[i];
@@ -539,17 +561,20 @@ namespace OP
 			}*/
 			// THIS WILL BE REPLACED WITH ENTITY COMPONENT SYSTEM !!!!!
 			// light2 props
-			glm::vec3 light2_color(0.2f, 0.2f, 0.6f);
-			glm::vec3 light2_dir(-1.0f, -1.0f, -0.0f);
-			int light2CascadeSize = 20;
-			float light2FrustaDistFactor = 1.5;
+			glm::vec3 light2_color(0.8f, 0.8f, 0.8f);
+			glm::vec3 light2_dir(-1.0f, -5.0f, -1.0f);
+			glm::vec3 test(0.0f, 1.0f, 0.0f);
+			glm::vec3 normalizedlight2 = glm::normalize(s_SceneRendererData.spinningDir);
+
+			int light2CascadeSize = 5;
+			float light2FrustaDistFactor = 2;
 			s_SceneRendererData.DirLightsBuffer.DirLights[1].Color = light2_color;
-			s_SceneRendererData.DirLightsBuffer.DirLights[1].LightDir = glm::normalize(light2_dir);
+			s_SceneRendererData.DirLightsBuffer.DirLights[1].LightDir = glm::normalize(s_SceneRendererData.spinningDir);
 			s_SceneRendererData.DirLightsBuffer.DirLights[1].CascadeSize = light2CascadeSize;
 			s_SceneRendererData.DirLightsBuffer.DirLights[1].FrustaDistFactor = light2FrustaDistFactor;
 			std::vector<float> cascadeLevels2 = DistributeShadowCascadeLevels(light2CascadeSize, light2FrustaDistFactor, camera.GetFarClip());
 			OP_ENGINE_ASSERT(cascadeLevels2 <= MAX_CASCADE_SIZE);
-			std::vector<glm::mat4> matrices2 = getLightSpaceMatrices(cameraProjection, camera.GetViewMatrix(), cascadeLevels2, camera.GetNearClip(), camera.GetFarClip(), light2_dir, s_SceneRendererData.zMult);
+			std::vector<glm::mat4> matrices2 = getLightSpaceMatrices(cameraProjection, camera.GetViewMatrix(), cascadeLevels2, camera.GetNearClip(), camera.GetFarClip(), s_SceneRendererData.spinningDir, s_SceneRendererData.zMult);
 			for (uint32_t i = 0; i < matrices2.size(); i++)
 			{
 				s_SceneRendererData.LightSpaceMatricesDSBuffer.LightSpaceMatricesDirSpot[MAX_CASCADE_SIZE * 1 + i].mat = matrices2[i];
@@ -581,17 +606,17 @@ namespace OP
 				s_SceneRendererData.CascadePlaneDistancesBuffer.cascadePlaneDistances[(MAX_CASCADE_SIZE - 1) * 2 + i] = cascadeLevels3[i];
 			}*/
 			// light3 props
-			glm::vec3 light3_color(0.5f, 0.1f, 0.6f);
-			glm::vec3 light3_dir(1.0f, -1.0f, -1.0f);
-			int light3CascadeSize = 20;
-			float light3FrustaDistFactor = 1.5;
+			glm::vec3 light3_color(0.5f, 0.1f, 0.3f);
+			glm::vec3 light3_dir(3.0f, -1.0f, -1.0f);
+			int light3CascadeSize = 5;
+			float light3FrustaDistFactor = 2;
 			s_SceneRendererData.DirLightsBuffer.DirLights[2].Color = light3_color;
 			s_SceneRendererData.DirLightsBuffer.DirLights[2].LightDir = glm::normalize(light3_dir);
 			s_SceneRendererData.DirLightsBuffer.DirLights[2].CascadeSize = light3CascadeSize;
 			s_SceneRendererData.DirLightsBuffer.DirLights[2].FrustaDistFactor = light3FrustaDistFactor;
 			std::vector<float> cascadeLevels3 = DistributeShadowCascadeLevels(light3CascadeSize, light3FrustaDistFactor, camera.GetFarClip());
 			OP_ENGINE_ASSERT(cascadeLevels3 <= MAX_CASCADE_SIZE);
-			std::vector<glm::mat4> matrices3 = getLightSpaceMatrices(cameraProjection, camera.GetViewMatrix(), cascadeLevels3, camera.GetNearClip(), camera.GetFarClip(), light3_dir, s_SceneRendererData.zMult);
+			std::vector<glm::mat4> matrices3 = getLightSpaceMatrices(cameraProjection, camera.GetViewMatrix(), cascadeLevels3, camera.GetNearClip(), camera.GetFarClip(), glm::normalize(light3_dir), s_SceneRendererData.zMult);
 			for (uint32_t i = 0; i < matrices3.size(); i++)
 			{
 				s_SceneRendererData.LightSpaceMatricesDSBuffer.LightSpaceMatricesDirSpot[MAX_CASCADE_SIZE * 2 + i].mat = matrices3[i];
@@ -616,11 +641,10 @@ namespace OP
 		s_SceneRendererData.CascadePlaneDistancesUniformBuffer->SetData(&s_SceneRendererData.CascadePlaneDistancesBuffer,
 			sizeof(s_SceneRendererData.CascadePlaneDistancesBuffer));
 
-		s_SceneRendererData.depthShaderPass->InvokeCommands(
+		s_SceneRendererData.depthRenderPass->InvokeCommands(
 			[&] () -> void {
 
 				s_SceneRendererData.depthShader->Bind();
-				glViewport(0, 0, s_SceneRendererData.shadowMapResX, s_SceneRendererData.shadowMapResY);
 
 				glClear(GL_DEPTH_BUFFER_BIT);
 				glCullFace(GL_FRONT);
@@ -628,37 +652,38 @@ namespace OP
 
 
 				model = glm::mat4(1.0f);
-				model = glm::translate(model, glm::vec3(0.0f, 0.0f, -10.0f));
+				model = glm::translate(model, glm::vec3(-100.0f, 100.0f, -40.0f));
+				model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
 				s_SceneRendererData.TransformBuffer.Model = model;
 				s_SceneRendererData.TransformUniformBuffer->SetData(&s_SceneRendererData.TransformBuffer, sizeof(SceneRendererData::TransformData));
 				s_SceneRendererData.icosphere->Draw();
 
 				model = glm::mat4(1.0f);
 				model = glm::translate(model, glm::vec3(0.0f, -3.0f, 0.0f));
-				model = glm::scale(model, glm::vec3(60.0f, 0.5f, 60.0f));
-				model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));;
+				model = glm::scale(model, glm::vec3(500.0f, 1.0f, 500.0f));
+				model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 				s_SceneRendererData.TransformBuffer.Model = model;
 				s_SceneRendererData.TransformUniformBuffer->SetData(&s_SceneRendererData.TransformBuffer, sizeof(SceneRendererData::TransformData));
 				s_SceneRendererData.cube->Draw();
 
 				model = glm::mat4(1.0f);
-				model = glm::translate(model, glm::vec3(-5.0f, 5.0f, 2.0f));
-				model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
+				model = glm::translate(model, glm::vec3(-50.0f, 50.0f, 2.0f));
+				model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
 				s_SceneRendererData.TransformBuffer.Model = model;
 				s_SceneRendererData.TransformUniformBuffer->SetData(&s_SceneRendererData.TransformBuffer, sizeof(SceneRendererData::TransformData));
 				s_SceneRendererData.cube->Draw();
 
 
 				model = glm::mat4(1.0f);
-				model = glm::translate(model, glm::vec3(5.0f, 3.0f, -2.0f));
-				model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+				model = glm::translate(model, glm::vec3(75.0f, 20.0f, -2.0f));
+				model = glm::scale(model, glm::vec3(15.0f, 15.0f, 15.0f));
 				s_SceneRendererData.TransformBuffer.Model = model;
 				s_SceneRendererData.TransformUniformBuffer->SetData(&s_SceneRendererData.TransformBuffer, sizeof(SceneRendererData::TransformData));
 				s_SceneRendererData.icosphere2->Draw();
 
 
 
-				s_SceneRendererData.spinningModel = glm::rotate(s_SceneRendererData.spinningModel, glm::radians((float)ts * time * 15.0f), glm::normalize(glm::vec3(1.0, 0.0, 1.0)));
+				s_SceneRendererData.spinningModel = glm::rotate(s_SceneRendererData.spinningModel, glm::radians((float)ts * time * 1.0f), glm::normalize(glm::vec3(1.0, 0.0, 1.0)));
 				s_SceneRendererData.TransformBuffer.Model = s_SceneRendererData.spinningModel;
 				s_SceneRendererData.TransformUniformBuffer->SetData(&s_SceneRendererData.TransformBuffer, sizeof(SceneRendererData::TransformData));
 				s_SceneRendererData.icosphere3->Draw();
@@ -671,19 +696,69 @@ namespace OP
 		);
 
 
+		/*s_SceneRendererData.depthBlurDSLRenderPass->GetPingPongFramebuffer()->Bind();
+		glClear(GL_DEPTH_BUFFER_BIT);
+		s_SceneRendererData.shadowMapDirSpotBlur->Bind();
+		uint32_t depthMap2 = s_SceneRendererData.depthBlurDSLRenderPass->GetColorAttachmentPP(0);
+		glBindTextureUnit(0, depthMap2);
+		s_SceneRendererData.plane->Draw();
+		s_SceneRendererData.depthBlurDSLRenderPass->GetPingPongFramebuffer()->Unbind();*/
+
+		// RENDER PASS FOR BLURING directional and spot light shadow maps altogether
+		float sW = s_SceneRendererData.ShadowMapSettingsBuffer.shadowMapResX;
+		float sH = s_SceneRendererData.ShadowMapSettingsBuffer.shadowMapResY;
+		glm::vec2 blurScale = s_SceneRendererData.ShadowMapSettingsBuffer.blurScale;
+		float firstTime = true;
+		glDisable(GL_DEPTH_TEST);
+		for (int i = 0; i < 1; i++)
+		{
+			s_SceneRendererData.depthBlurDSLRenderPass->InvokeCommandsPP(
+				[&]()-> void {
+					//glClear(GL_DEPTH_BUFFER_BIT);
+					s_SceneRendererData.shadowMapDirSpotBlur->Bind();
+					s_SceneRendererData.ShadowMapSettingsBuffer.blurScale = glm::vec2((1 / sW) * 1.0, 0.0);
+					s_SceneRendererData.ShadowMapSettingsUniformBuffer->SetData(&s_SceneRendererData.ShadowMapSettingsBuffer, sizeof(SceneRendererData::ShadowMapSettings));
+					// reset viewport
+					uint32_t depthMap = 0;
+					if(firstTime)
+						depthMap = RenderPass::GetColorInput(s_SceneRendererData.depthRenderPass, 0);
+					else
+						depthMap = PingPongRenderPass::GetColorInputPP(s_SceneRendererData.depthBlurDSLRenderPass, 0);
+					glBindTextureUnit(0, depthMap);
+					// ------------ DRAW SCENE ------------
+					s_SceneRendererData.plane->Draw();
+					// ---------- DRAW SCENE END ----------
+				},
+				[&]()-> void {
+					glDisable(GL_DEPTH_TEST);
+					//glClear(GL_DEPTH_BUFFER_BIT);
+					s_SceneRendererData.shadowMapDirSpotBlur->Bind();
+					s_SceneRendererData.ShadowMapSettingsBuffer.blurScale = glm::vec2(0.0, (1 / sH) * 1.0);
+					s_SceneRendererData.ShadowMapSettingsUniformBuffer->SetData(&s_SceneRendererData.ShadowMapSettingsBuffer, sizeof(SceneRendererData::ShadowMapSettings));
+					uint32_t depthMap = PingPongRenderPass::GetColorInput(s_SceneRendererData.depthBlurDSLRenderPass, 0);
+					glBindTextureUnit(0, depthMap);
+					// ------------ DRAW SCENE ------------
+					s_SceneRendererData.plane->Draw();
+					// ----------- DRAW SCENE END ---------
+				}
+				);
+
+			glEnable(GL_DEPTH_TEST);
+		}
+
+
+
 		// FINAL RENDERING - (FOR NOW!)
 
-		s_SceneRendererData.finalShaderPass->InvokeCommands(
+		s_SceneRendererData.finalRenderPass->InvokeCommands(
 			[&]()-> void {
-				// reset viewport
-				glViewport(0, 0, s_SceneRendererData.ViewportSize.x, s_SceneRendererData.ViewportSize.y);
 
-				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+				glClear(GL_DEPTH_BUFFER_BIT);
 				s_SceneRendererData.mainShader->Bind();
 
 				s_SceneRendererData.WhiteTexture->Bind(0);
 
-				uint32_t depthMap = ShaderPass::GetDepthInput(s_SceneRendererData.depthShaderPass);
+				uint32_t depthMap = s_SceneRendererData.depthBlurDSLRenderPass->GetColorAttachmentPP(0);
 				glBindTextureUnit(1, depthMap);
 				
 			
@@ -691,7 +766,8 @@ namespace OP
 
 
 				model = glm::mat4(1.0f);
-				model = glm::translate(model, glm::vec3(0.0f, 0.0f, -10.0f));
+				model = glm::translate(model, glm::vec3(-100.0f, 100.0f, -40.0f));
+				model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
 				s_SceneRendererData.TransformBuffer.Model = model;
 				// yellowish
 				s_SceneRendererData.MaterialBuffer.Color = glm::vec3(0.7f, 0.6f, 0.2f);
@@ -701,8 +777,8 @@ namespace OP
 
 				model = glm::mat4(1.0f);
 				model = glm::translate(model, glm::vec3(0.0f, -3.0f, 0.0f));
-				model = glm::scale(model, glm::vec3(60.0f, 0.5f, 60.0f));
-				model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));;
+				model = glm::scale(model, glm::vec3(500.0f, 1.0f, 500.0f));
+				model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 				s_SceneRendererData.TransformBuffer.Model = model;
 				// bright grey
 				s_SceneRendererData.MaterialBuffer.Color = glm::vec3(0.9f, 0.9f, 0.9f);
@@ -711,8 +787,8 @@ namespace OP
 				s_SceneRendererData.cube->Draw();
 
 				model = glm::mat4(1.0f);
-				model = glm::translate(model, glm::vec3(-5.0f, 5.0f, 2.0f));
-				model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
+				model = glm::translate(model, glm::vec3(-50.0f, 50.0f, 2.0f));
+				model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
 				s_SceneRendererData.TransformBuffer.Model = model;
 				// dark orange
 				s_SceneRendererData.MaterialBuffer.Color = glm::vec3(0.8f, 0.2f, 0.4f);
@@ -721,8 +797,8 @@ namespace OP
 				s_SceneRendererData.cube->Draw();
 
 				model = glm::mat4(1.0f);
-				model = glm::translate(model, glm::vec3(5.0f, 3.0f, -2.0f));
-				model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+				model = glm::translate(model, glm::vec3(75.0f, 20.0f, -2.0f));
+				model = glm::scale(model, glm::vec3(15.0f, 15.0f, 15.0f));
 				s_SceneRendererData.TransformBuffer.Model = model;
 				// dark orange
 				s_SceneRendererData.MaterialBuffer.Color = glm::vec3(0.1f, 0.8f, 0.4f);
