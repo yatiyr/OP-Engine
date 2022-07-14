@@ -47,5 +47,6 @@ namespace OP
 		friend class Entity;
 		friend class SceneSerializer;
 		friend class SceneHierarchyComponent;
+		friend class SceneRenderer;
 	};
 }

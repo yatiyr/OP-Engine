@@ -36,7 +36,7 @@ layout(std140, binding = 1)  uniform Transform
 struct DirLight
 {
 	int CascadeSize;
-	int FrustaDistFactor;
+	float FrustaDistFactor;
 	vec3 LightDir;
 	vec3 Color;
 };
@@ -110,7 +110,7 @@ layout(std140, binding = 2) uniform ShadowMapSettings
 struct DirLight
 {
 	int CascadeSize;
-	int FrustaDistFactor;
+	float FrustaDistFactor;
 	vec3 LightDir;
 	vec3 Color;
 };
@@ -184,7 +184,7 @@ float SamplaVarianceShadowMap(sampler2DArray shadowMap, vec3 coords, float compa
 	vec2 moments = texture(shadowMap, coords.xyz).xy;
 
 	float p = step(compare, moments.x);
-	float variance = max(moments.y - moments.x * moments.x, 0.0000000002);
+	float variance = max(moments.y - moments.x * moments.x, 0.000000002);
 
 	float d = compare - moments.x;
 	float pMax = linstep(0.6, 1.0,variance / (variance + d*d));

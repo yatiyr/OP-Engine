@@ -28,7 +28,7 @@ layout (triangle_strip, max_vertices = 3 * MAX_CASCADE_SIZE) out;
 struct DirLight
 { 
 	int CascadeSize;
-	int FrustaDistFactor;
+	float FrustaDistFactor;
 	vec3 LightDir;
 	vec3 Color;
 };

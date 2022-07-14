@@ -3,6 +3,8 @@
 #include <cstdint>
 #include <Renderer/EditorCamera.h>
 #include <Renderer/Framebuffer.h>
+#include <Scene/Scene.h>
+#include <Scene/Components.h>
 
 namespace OP
 {
@@ -17,7 +19,7 @@ namespace OP
 	public:
 		static void Init(float width, float height, Ref<Framebuffer> fB);
 
-		static void Render(EditorCamera& camera, Timestep ts);
+		static void Render(EditorCamera& camera, Ref<Scene> scene, Timestep ts);
 
 		static SceneRendererStats GetStats();
 

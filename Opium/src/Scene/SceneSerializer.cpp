@@ -236,6 +236,31 @@ namespace OP
 			out << YAML::EndMap;
 		}
 
+		if (entity.HasComponent<DirLightComponent>())
+		{
+			out << YAML::Key << "DirLightComponent";
+			out << YAML::BeginMap;
+
+			auto& dirLightComponent = entity.GetComponent<DirLightComponent>();
+			out << YAML::Key << "Color" << YAML::Value << dirLightComponent.Color;
+			out << YAML::Key << "CascadeSize" << YAML::Value << dirLightComponent.CascadeSize;
+			out << YAML::Key << "FrustaDistFactor" << YAML::Value << dirLightComponent.FrustaDistFactor;
+			out << YAML::Key << "CastShadows" << YAML::Value << dirLightComponent.CastShadows;
+			out << YAML::EndMap;
+		}
+
+		if (entity.HasComponent<SpotLightComponent>())
+		{
+			out << YAML::Key << "SpotLightComponent";
+			out << YAML::BeginMap;
+
+			auto& spotLightComponent = entity.GetComponent<SpotLightComponent>();
+			out << YAML::Key << "Color" << YAML::Value << spotLightComponent.Color;
+			out << YAML::Key << "Phi" << YAML::Value << spotLightComponent.Phi;
+			out << YAML::Key << "Theta" << YAML::Value << spotLightComponent.Theta;
+			out << YAML::Key << "CastShadows" << YAML::Value << spotLightComponent.CastShadows;
+		}
+
 		out << YAML::EndMap; // Entity
 	}
 
@@ -349,6 +374,26 @@ namespace OP
 					bc2d.Restitution = boxCollider2DComponent["Restitution"].as<float>();
 					bc2d.RestitutionThreshold = boxCollider2DComponent["RestitutionThreshold"].as<float>();
 					
+				}
+
+				auto dirLightComponent = entity["DirLightComponent"];
+				if (dirLightComponent)
+				{
+					auto& dLC = deserializedEntity.AddComponent<DirLightComponent>();
+					dLC.Color = dirLightComponent["Color"].as<glm::vec3>();
+					dLC.CascadeSize = dirLightComponent["CascadeSize"].as<int>();
+					dLC.FrustaDistFactor = dirLightComponent["FrustaDistFactor"].as<float>();
+					dLC.CastShadows = dirLightComponent["CastShadows"].as<bool>();
+				}
+
+				auto spotLightComponent = entity["SpotLightComponent"];
+				if (spotLightComponent)
+				{
+					auto& sLC = deserializedEntity.AddComponent<SpotLightComponent>();
+					sLC.Color = spotLightComponent["Color"].as<glm::vec3>();
+					sLC.Phi = spotLightComponent["Phi"].as<float>();
+					sLC.Theta = spotLightComponent["Theta"].as<float>();
+					sLC.CastShadows = spotLightComponent["CastShadows"].as<float>();
 				}
 			}
 		}

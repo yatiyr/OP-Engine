@@ -232,7 +232,7 @@ namespace OP
 
 
 		// -------- CASCADED SHADOW MAPPING SETTINGS ------- //
-			float zMult = 30;
+			float zMult = 10;
 			float blurAmount = 1;
 			struct ShadowMapSettings
 			{
@@ -282,7 +282,7 @@ namespace OP
 		struct DirLight
 		{
 			int CascadeSize;
-			int FrustaDistFactor;
+			float FrustaDistFactor;
 			alignas(16) glm::vec3 LightDir;
 			alignas(16) glm::vec3 Color;
 		};
@@ -464,18 +464,8 @@ namespace OP
 
 		s_SceneRendererData.finalRenderPass = RenderPass::Create(std::string("Final Pass"), fB);
 
-
-
 		s_SceneRendererData.finalFramebuffer = fB;
 
-		
-		// Configure Shaders
-		s_SceneRendererData.mainShader->Bind();
-		s_SceneRendererData.mainShader->SetInt("u_DiffuseTexture", 0);
-		s_SceneRendererData.mainShader->SetInt("u_ShadowMap", 0);
-
-		s_SceneRendererData.depthDebugShader->Bind();
-		s_SceneRendererData.depthDebugShader->SetInt("u_DepthMap", 0);
 
 
 	}
@@ -496,7 +486,7 @@ namespace OP
 		}
 	}
 
-	void SceneRenderer::Render(EditorCamera& camera, Timestep ts)
+	void SceneRenderer::Render(EditorCamera& camera, Ref<Scene> scene, Timestep ts)
 	{
 
 		float time = (float)Application::Get().GetWindow().GetTime();
@@ -512,14 +502,50 @@ namespace OP
 
 		// ------------------ FILL IN DIR LIGHT UNIFORMS -------------------------- //
 			glm::mat4 cameraProjection = camera.GetProjection();
-			glm::vec3 dirLightPos(s_SceneRendererData.Epsilon, s_SceneRendererData.Epsilon, s_SceneRendererData.Epsilon);
-			// THIS WILL BE REPLACED WITH ENTITY COMPONENT SYSTEM !!!!!
+
+
+			auto group = scene->m_Registry.group<TransformComponent>(entt::get<DirLightComponent>);
+			s_SceneRendererData.DirLightsBuffer.Size = group.size() < MAX_DIR_LIGHTS ? group.size() : MAX_DIR_LIGHTS;
+			int dirLightCounter = 0;
+			for (auto entity : group)
+			{
+				auto [transform, dirLight] = group.get<TransformComponent, DirLightComponent>(entity);
+
+				glm::vec3 lightDirection = transform.GetDirection();
+				s_SceneRendererData.DirLightsBuffer.DirLights[dirLightCounter].LightDir = lightDirection;
+				s_SceneRendererData.DirLightsBuffer.DirLights[dirLightCounter].Color = dirLight.Color;
+				s_SceneRendererData.DirLightsBuffer.DirLights[dirLightCounter].CascadeSize = dirLight.CascadeSize;
+				s_SceneRendererData.DirLightsBuffer.DirLights[dirLightCounter].FrustaDistFactor = dirLight.FrustaDistFactor;
+				
+				std::vector<float> cascadeLevels = DistributeShadowCascadeLevels(dirLight.CascadeSize, dirLight.FrustaDistFactor, camera.GetFarClip());
+				OP_ENGINE_ASSERT(cascadeLevels <= MAX_CASCADE_SIZE);
+				std::vector<glm::mat4> matrices = getLightSpaceMatrices(cameraProjection, camera.GetViewMatrix(),
+					                                                    cascadeLevels, camera.GetNearClip(), camera.GetFarClip(),
+					                                                    lightDirection, s_SceneRendererData.zMult);
+
+
+				for (uint32_t i = 0; i < matrices.size(); i++)
+				{
+					s_SceneRendererData.LightSpaceMatricesDSBuffer.LightSpaceMatricesDirSpot[MAX_CASCADE_SIZE * dirLightCounter + i].mat = matrices[i];
+				}
+
+				for (uint32_t i = 0; i < cascadeLevels.size(); i++)
+				{
+					s_SceneRendererData.CascadePlaneDistancesBuffer.cascadePlanes[(MAX_CASCADE_SIZE - 1) * dirLightCounter + i].dist = cascadeLevels[i];
+				}
+				
+				dirLightCounter++;
+			}
+
+
+
+			/*// THIS WILL BE REPLACED WITH ENTITY COMPONENT SYSTEM !!!!!
 			s_SceneRendererData.DirLightsBuffer.Size = 3;
 			// light1 props
 			glm::vec3 light1_color(0.4f, 0.1f, 0.8f);
 			glm::vec3 light1_dir(4.0f, -1.1f, -5.0f);
 			int light1CascadeSize = 5;
-			float light1FrustaDistFactor = 2;
+			float light1FrustaDistFactor = 1;
 			s_SceneRendererData.DirLightsBuffer.DirLights[0].Color = light1_color;
 			s_SceneRendererData.DirLightsBuffer.DirLights[0].LightDir = glm::normalize(light1_dir);
 			s_SceneRendererData.DirLightsBuffer.DirLights[0].CascadeSize = light1CascadeSize;
@@ -535,30 +561,7 @@ namespace OP
 			{
 				s_SceneRendererData.CascadePlaneDistancesBuffer.cascadePlanes[(MAX_CASCADE_SIZE - 1) * 0 + i].dist = cascadeLevels[i];
 			}
-			// !!!!!!!!!!!!!!!!!!!!!!!!!!!
-			// Sonraki isiklardan devam et
-			// !!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-			// light2 props
-			/*glm::vec3 light2_color(0.2f, 0.2f, 0.6f);
-			glm::vec3 light2_dir(-1.0f, -1.0f, -0.0f);
-			int light2CascadeSize = 4;
-			float light2FrustaDistFactor = 1;
-			s_SceneRendererData.DirLightsBuffer.DirLights[1].Color = light2_color;
-			s_SceneRendererData.DirLightsBuffer.DirLights[1].LightDir = glm::normalize(light2_dir);
-			s_SceneRendererData.DirLightsBuffer.DirLights[1].CascadeSize = light2CascadeSize;
-			s_SceneRendererData.DirLightsBuffer.DirLights[1].FrustaDistFactor = light2FrustaDistFactor;
-			std::vector<float> cascadeLevels2 = DistributeShadowCascadeLevels(light2CascadeSize, light2FrustaDistFactor, camera.GetFarClip());
-			OP_ENGINE_ASSERT(cascadeLevels2 <= MAX_CASCADE_SIZE);
-			std::vector<glm::mat4> matrices2 = getLightSpaceMatrices(cameraProjection, camera.GetViewMatrix(), cascadeLevels2, camera.GetNearClip(), camera.GetFarClip(), light2_dir, s_SceneRendererData.zMult);
-			for (uint32_t i = 0; i < matrices2.size(); i++)
-			{
-				s_SceneRendererData.LightSpaceMatricesDSBuffer.LightSpaceMatricesDirSpot[MAX_CASCADE_SIZE * 1 + i] = matrices[i];
-			}
-			for (uint32_t i = 0; i < cascadeLevels2.size(); i++)
-			{
-				s_SceneRendererData.CascadePlaneDistancesBuffer.cascadePlaneDistances[(MAX_CASCADE_SIZE - 1) * 1 + i] = cascadeLevels2[i];
-			}*/
 			// THIS WILL BE REPLACED WITH ENTITY COMPONENT SYSTEM !!!!!
 			// light2 props
 			glm::vec3 light2_color(0.8f, 0.8f, 0.8f);
@@ -567,7 +570,7 @@ namespace OP
 			glm::vec3 normalizedlight2 = glm::normalize(s_SceneRendererData.spinningDir);
 
 			int light2CascadeSize = 5;
-			float light2FrustaDistFactor = 2;
+			float light2FrustaDistFactor = 1;
 			s_SceneRendererData.DirLightsBuffer.DirLights[1].Color = light2_color;
 			s_SceneRendererData.DirLightsBuffer.DirLights[1].LightDir = glm::normalize(s_SceneRendererData.spinningDir);
 			s_SceneRendererData.DirLightsBuffer.DirLights[1].CascadeSize = light2CascadeSize;
@@ -583,33 +586,12 @@ namespace OP
 			{
 				s_SceneRendererData.CascadePlaneDistancesBuffer.cascadePlanes[(MAX_CASCADE_SIZE - 1) * 1 + i].dist = cascadeLevels2[i];
 			}
-			// light3 props
-			/*
-			glm::vec3 light3_color(0.5f, 0.1f, 0.6f);
-			glm::vec3 light3_dir(1.0f, -1.0f, -1.0f);
-			int light3CascadeSize = 4;
-			float light3FrustaDistFactor = 2;
-			s_SceneRendererData.DirLightsBuffer.DirLights[2].Color = light3_color;
-			s_SceneRendererData.DirLightsBuffer.DirLights[2].LightDir = glm::normalize(light3_dir);
-			s_SceneRendererData.DirLightsBuffer.DirLights[2].CascadeSize = light3CascadeSize;
-			s_SceneRendererData.DirLightsBuffer.DirLights[2].FrustaDistFactor = light3FrustaDistFactor;
-			std::vector<float> cascadeLevels3 = DistributeShadowCascadeLevels(light3CascadeSize, light3FrustaDistFactor, camera.GetFarClip());
-			OP_ENGINE_ASSERT(cascadeLevels3 <= MAX_CASCADE_SIZE);
-			std::vector<glm::mat4> matrices3 = getLightSpaceMatrices(cameraProjection, camera.GetViewMatrix(), cascadeLevels3, camera.GetNearClip(), camera.GetFarClip(), light3_dir, s_SceneRendererData.zMult);
-			for (uint32_t i = 0; i < matrices3.size(); i++)
-			{
-				s_SceneRendererData.LightSpaceMatricesDSBuffer.LightSpaceMatricesDirSpot[MAX_CASCADE_SIZE * 2 + i] = matrices[i];
-			}
 
-			for (uint32_t i = 0; i < cascadeLevels3.size(); i++)
-			{
-				s_SceneRendererData.CascadePlaneDistancesBuffer.cascadePlaneDistances[(MAX_CASCADE_SIZE - 1) * 2 + i] = cascadeLevels3[i];
-			}*/
 			// light3 props
 			glm::vec3 light3_color(0.5f, 0.1f, 0.3f);
 			glm::vec3 light3_dir(3.0f, -1.0f, -1.0f);
 			int light3CascadeSize = 5;
-			float light3FrustaDistFactor = 2;
+			float light3FrustaDistFactor = 1;
 			s_SceneRendererData.DirLightsBuffer.DirLights[2].Color = light3_color;
 			s_SceneRendererData.DirLightsBuffer.DirLights[2].LightDir = glm::normalize(light3_dir);
 			s_SceneRendererData.DirLightsBuffer.DirLights[2].CascadeSize = light3CascadeSize;
@@ -623,8 +605,8 @@ namespace OP
 			}
 			for (uint32_t i = 0; i < cascadeLevels3.size(); i++)
 			{
-				s_SceneRendererData.CascadePlaneDistancesBuffer.cascadePlanes[(MAX_CASCADE_SIZE - 1) * 2 + i].dist = cascadeLevels3[i];
-			}
+				s_SceneRendererData.CascadePlaneDistancesBuffer.cascadePlanes[(MAX_CASCADE_SIZE - 1) * 2 + i].dist = cascadeLevels3[i]; 
+			}*/
 		// ------------------- END FILL IN DIR LIGHT UNIFORMS --------------------- //
 
 
@@ -710,7 +692,7 @@ namespace OP
 		glm::vec2 blurScale = s_SceneRendererData.ShadowMapSettingsBuffer.blurScale;
 		float firstTime = true;
 		glDisable(GL_DEPTH_TEST);
-		for (int i = 0; i < 1; i++)
+		for (int i = 0; i < 2; i++)
 		{
 			s_SceneRendererData.depthBlurDSLRenderPass->InvokeCommandsPP(
 				[&]()-> void {

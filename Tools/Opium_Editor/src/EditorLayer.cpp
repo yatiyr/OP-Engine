@@ -76,13 +76,21 @@ namespace OP
 
 		s_ActiveScene = m_ActiveScene.get();
 
-		m_EditorCamera = EditorCamera(30.0f, 1280.0f / 720.0f, 0.1, 1000.0f);
+		m_EditorCamera = EditorCamera(30.0f, 1280.0f / 720.0f, 0.1, 5000.0f);
 
 		// For testing C# integration
 		auto scriptedEntity = m_ActiveScene->CreateEntity("ScriptedEntity");
 		scriptedEntity.AddComponent<ScriptComponent>("Example.Script");
 		bool x = scriptedEntity.HasComponent<ScriptComponent>();
 
+
+
+		auto directionalLightEntity = m_ActiveScene->CreateEntity("DirLight1");
+		auto& comp = directionalLightEntity.AddComponent<DirLightComponent>();
+		comp.CascadeSize = 10;
+		comp.CastShadows = true;
+		comp.Color = glm::vec3(1.0f, 1.0f, 1.0f);
+		comp.FrustaDistFactor = 2.0f;
 
 		m_SceneGraph.SetContext(m_ActiveScene);
 
@@ -127,7 +135,7 @@ namespace OP
 		// any change of dockspace/settings would lead to windows being stuck in limbo and never being visible.
 		if (!opt_padding)
 			ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
-		ImGui::Begin("##Opium_EditorDockspace", &dockspaceOpen, window_flags);
+		ImGui::Begin("##OP_EditorDockspace", &dockspaceOpen, window_flags);
 		if (!opt_padding)
 			ImGui::PopStyleVar();
 
@@ -182,7 +190,7 @@ namespace OP
 		glm::vec2 viewportSize = m_ViewportComponent.GetViewportSize();
 
 		SceneRenderer::ResizeViewport(viewportSize.x, viewportSize.y);
-		SceneRenderer::Render(m_EditorCamera, ts);
+		SceneRenderer::Render(m_EditorCamera, m_ActiveScene, ts);
 
 
 		// End Playground Code

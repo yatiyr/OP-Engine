@@ -46,7 +46,7 @@ layout (location = 1) out GS_OUT gs_out;
 struct DirLight
 { 
 	int CascadeSize;
-	int FrustaDistFactor;
+	float FrustaDistFactor;
 	vec3 LightDir;
 	vec3 Color;
 };

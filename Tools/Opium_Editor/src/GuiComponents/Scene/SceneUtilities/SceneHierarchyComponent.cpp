@@ -357,6 +357,24 @@ namespace OP
 				}
 			}
 
+			if (!m_SelectionContext.HasComponent<DirLightComponent>() && !m_SelectionContext.HasComponent<SpotLightComponent>())
+			{
+				if (ImGui::MenuItem("Directional Light"))
+				{
+					m_SelectionContext.AddComponent<DirLightComponent>();
+					ImGui::CloseCurrentPopup();
+				}
+			}
+
+			if (!m_SelectionContext.HasComponent<SpotLightComponent>() && !m_SelectionContext.HasComponent<DirLightComponent>())
+			{
+				if (ImGui::MenuItem("Spot Light"))
+				{
+					m_SelectionContext.AddComponent<SpotLightComponent>();
+					ImGui::CloseCurrentPopup();
+				}
+			}
+
 			ImGui::EndPopup();
 		}
 
@@ -512,6 +530,24 @@ namespace OP
 				ImGui::DragFloat("Restitution", &component.Restitution, 0.01f, 0.0f, 1.0f);
 				ImGui::DragFloat("RestitutionThreshold", &component.RestitutionThreshold, 0.01f, 0.0f);
 
+			});
+
+
+		DrawComponent<DirLightComponent>("Directional Light", entity, [](auto& component)
+			{
+				ImGui::DragInt("Cascades", &component.CascadeSize, 1.0, 1, 10);
+				ImGui::DragFloat("Dist Factor", &component.FrustaDistFactor, 0.01f, 0.0f, 10.0f);
+				ImGui::ColorEdit3("Color", glm::value_ptr(component.Color));
+				ImGui::Checkbox("Cast Shadows", &component.CastShadows);
+			});
+
+
+		DrawComponent<SpotLightComponent>("Spot Light", entity, [](auto& component)
+			{
+				ImGui::DragFloat("Phi", &component.Phi, 0.01f, 0.0f, 90.0f);
+				ImGui::DragFloat("Theta", &component.Theta, 0.01f, 0.0f, 90.0f);
+				ImGui::ColorEdit3("Color", glm::value_ptr(component.Color));
+				ImGui::Checkbox("Cast Shadows", &component.CastShadows);
 			});
 
 	}

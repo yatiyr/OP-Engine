@@ -53,6 +53,11 @@ namespace OP
 				* rotation
 				* glm::scale(glm::mat4(1.0f), Scale);
 		}
+
+		glm::vec3 GetDirection() const
+		{
+			return glm::normalize(glm::quat(Rotation) * glm::vec3(0.0, 0.0, -1.0));
+		}
 	};
 
 	struct SpriteRendererComponent
@@ -134,5 +139,28 @@ namespace OP
 
 		BoxCollider2DComponent() = default;
 		BoxCollider2DComponent(const BoxCollider2DComponent&) = default;
+	};
+
+	// Directional Light Component
+	struct DirLightComponent
+	{
+		int CascadeSize;
+		float FrustaDistFactor;
+		glm::vec3 Color;
+		bool CastShadows;
+
+		DirLightComponent() = default;
+		DirLightComponent(const DirLightComponent&) = default;
+	};
+
+	struct SpotLightComponent
+	{
+		float Phi;
+		float Theta;
+		glm::vec3 Color;
+		bool CastShadows;
+
+		SpotLightComponent() = default;
+		SpotLightComponent(const SpotLightComponent&) = default;
 	};
 }

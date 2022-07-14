@@ -97,6 +97,9 @@ namespace OP
 		CopyComponent<ScriptComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
 		CopyComponent<NativeScriptComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
 
+		CopyComponent<DirLightComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
+		CopyComponent<SpotLightComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
+
 		return newScene;
 	}
 
@@ -301,6 +304,9 @@ namespace OP
 		CopyComponentIfExists<BoxCollider2DComponent>(newEntity, entity);
 		CopyComponentIfExists<ScriptComponent>(newEntity, entity);
 		CopyComponentIfExists<NativeScriptComponent>(newEntity, entity);
+
+		CopyComponentIfExists<DirLightComponent>(newEntity, entity);
+		CopyComponentIfExists<SpotLightComponent>(newEntity, entity);
 	}
 
 	Entity Scene::GetPrimaryCameraEntity()
@@ -376,6 +382,18 @@ namespace OP
 
 	template<>
 	void Scene::OnComponentAdded<BoxCollider2DComponent>(Entity entity, BoxCollider2DComponent& component)
+	{
+
+	}
+
+	template<>
+	void Scene::OnComponentAdded<DirLightComponent>(Entity entity, DirLightComponent& component)
+	{
+
+	}
+
+	template<>
+	void Scene::OnComponentAdded<SpotLightComponent>(Entity entity, SpotLightComponent& component)
 	{
 
 	}
