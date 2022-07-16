@@ -5,8 +5,8 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include <shaderc/shaderc.hpp>
-#include <spirv_cross/spirv_cross.hpp>
-#include <spirv_cross/spirv_glsl.hpp>
+#include <SpirV_Cross/spirv_cross.hpp>
+#include <SpirV_Cross/spirv_glsl.hpp>
 
 #include <Profiling/Timer.h>
 
@@ -107,7 +107,7 @@ namespace OP
 		{
 			Timer timer;
 			CompileOrGetVulkanBinaries(shaderSources);
-			CompileOrGetOpenGLBinaries();
+			CompileOrGetOpenGLBinaries(shaderSources);
 			CreateProgram();
 			OP_ENGINE_WARN("Shader creation took {0} ms", timer.ElapsedMilliseconds());
 		}
@@ -130,7 +130,7 @@ namespace OP
 		sources[GL_FRAGMENT_SHADER] = fragmentSrc;
 
 		CompileOrGetVulkanBinaries(sources);
-		CompileOrGetOpenGLBinaries();
+		CompileOrGetOpenGLBinaries(sources);
 		CreateProgram();
 	}
 
@@ -142,7 +142,7 @@ namespace OP
 		sources[GL_GEOMETRY_SHADER] = geomSrc;
 
 		CompileOrGetVulkanBinaries(sources);
-		CompileOrGetOpenGLBinaries();
+		CompileOrGetOpenGLBinaries(sources);
 		CreateProgram();
 	}
 
@@ -205,6 +205,61 @@ namespace OP
 		return shaderSources;
 	}
 
+	void OpenGLShader::CompileOrGetOpenGLBinaries(const std::unordered_map<GLenum, std::string>& shaderSources)
+	{
+		shaderc::Compiler compiler;
+		shaderc::CompileOptions options;
+		options.SetTargetEnvironment(shaderc_target_env_opengl, shaderc_env_version_opengl_4_5);
+		const bool optimize = true;
+		if (optimize)
+			options.SetOptimizationLevel(shaderc_optimization_level_performance);
+
+		std::filesystem::path cacheDirectory = Utils::GetCacheDirectory();
+
+		auto& shaderData = m_OpenGLSPIRV;
+		shaderData.clear();
+
+		for (auto&& [stage, source] : shaderSources)
+		{
+			std::filesystem::path shaderFilePath = m_FilePath;
+			std::filesystem::path cachedPath = cacheDirectory / (shaderFilePath.filename().string() + Utils::GLShaderStageCachedOpenGLFileExtension(stage));
+
+			std::ifstream in(cachedPath, std::ios::in | std::ios::binary);
+
+			if (in.is_open())
+			{
+				in.seekg(0, std::ios::end);
+				auto size = in.tellg();
+				in.seekg(0, std::ios::beg);
+
+				auto& data = shaderData[stage];
+				data.resize(size / sizeof(uint32_t));
+				in.read((char*)data.data(), size);
+			}
+			else
+			{
+				shaderc::SpvCompilationResult module = compiler.CompileGlslToSpv(source, Utils::GLShaderStageToShaderC(stage), m_FilePath.c_str(), options);
+				if (module.GetCompilationStatus() != shaderc_compilation_status_success)
+				{
+					OP_ENGINE_ERROR(module.GetErrorMessage());
+					OP_ENGINE_ASSERT(false);
+				}
+
+				shaderData[stage] = std::vector<uint32_t>(module.cbegin(), module.cend());
+
+				std::ofstream out(cachedPath, std::ios::out | std::ios::binary);
+				if (out.is_open())
+				{
+					auto& data = shaderData[stage];
+					out.write((char*)data.data(), data.size() * sizeof(uint32_t));
+					out.flush();
+					out.close();
+				}
+			}
+
+		}
+	}
+
 	void OpenGLShader::CompileOrGetVulkanBinaries(const std::unordered_map<GLenum, std::string>& shaderSources)
 	{
 		GLuint program = glCreateProgram();
@@ -264,7 +319,7 @@ namespace OP
 	}
 
 
-	void OpenGLShader::CompileOrGetOpenGLBinaries()
+	/*void OpenGLShader::CompileOrGetOpenGLBinaries()
 	{
 		auto& shaderData = m_OpenGLSPIRV;
 
@@ -300,8 +355,28 @@ namespace OP
 			else
 			{
 				spirv_cross::CompilerGLSL glslCompiler(spirv);
+
+				spirv_cross::ShaderResources resources = glslCompiler.get_shader_resources();
+				
+				// Get all sampled images in the shader.
+				for (auto& resource : resources.sampled_images)
+				{
+					unsigned set = glslCompiler.get_decoration(resource.id, spv::DecorationDescriptorSet);
+					unsigned binding = glslCompiler.get_decoration(resource.id, spv::DecorationBinding);
+					printf("Image %s at set = %u, binding = %u\n", resource.name.c_str(), set, binding);
+
+					// Modify the decoration to prepare it for GLSL.
+					glslCompiler.unset_decoration(resource.id, spv::DecorationDescriptorSet);
+
+				}
+
+				spirv_cross::CompilerGLSL::Options opts;
+				opts.version = 450;
+				opts.es = false;
+				glslCompiler.set_common_options(opts);
+
 				m_OpenGLSourceCode[stage] = glslCompiler.compile();
-				auto& source = m_OpenGLSourceCode[stage];
+				auto& source = m_OpenGLSourceCode[stage]; 
 
 				shaderc::SpvCompilationResult module = compiler.CompileGlslToSpv(source, Utils::GLShaderStageToShaderC(stage), m_FilePath.c_str(), options);
 				if (module.GetCompilationStatus() != shaderc_compilation_status_success)
@@ -309,7 +384,7 @@ namespace OP
 					OP_ENGINE_ERROR(module.GetErrorMessage());
 					OP_ENGINE_ASSERT(false);
 				}
-
+				 
 				shaderData[stage] = std::vector<uint32_t>(module.cbegin(), module.cend());
 
 				std::ofstream out(cachedPath, std::ios::out | std::ios::binary);
@@ -322,7 +397,7 @@ namespace OP
 				}
 			}
 		}
-	}
+	} */
 
 	void OpenGLShader::CreateProgram()
 	{

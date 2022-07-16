@@ -43,6 +43,9 @@
     <Filter Include="src\EventSystem">
       <UniqueIdentifier>{631C50F7-CFA7-BDBB-D8B8-40B044C319BC}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Geometry">
+      <UniqueIdentifier>{28BB039C-141E-9340-BDA3-CBF6A9E55EC3}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\Gui">
       <UniqueIdentifier>{017D2FA9-6D5C-AE44-7674-391BE2D214A6}</UniqueIdentifier>
     </Filter>
@@ -1359,6 +1362,9 @@
     <ClInclude Include="src\Config\Precomp.h">
       <Filter>src\Config</Filter>
     </ClInclude>
+    <ClInclude Include="src\EntryPoint.h">
+      <Filter>src</Filter>
+    </ClInclude>
     <ClInclude Include="src\EventSystem\AppEvent.h">
       <Filter>src\EventSystem</Filter>
     </ClInclude>
@@ -1370,6 +1376,24 @@
     </ClInclude>
     <ClInclude Include="src\EventSystem\MouseEvent.h">
       <Filter>src\EventSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Geometry\Cube.h">
+      <Filter>src\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Geometry\Icosphere.h">
+      <Filter>src\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Geometry\Mesh.h">
+      <Filter>src\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Geometry\Plane.h">
+      <Filter>src\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Geometry\Quad.h">
+      <Filter>src\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Geometry\RadialSphere.h">
+      <Filter>src\Geometry</Filter>
     </ClInclude>
     <ClInclude Include="src\Gui\Font\Font.h">
       <Filter>src\Gui\Font</Filter>
@@ -1398,9 +1422,6 @@
     <ClInclude Include="src\Opium\Core.h">
       <Filter>src\Opium</Filter>
     </ClInclude>
-    <ClInclude Include="src\EntryPoint.h">
-      <Filter>src\Opium</Filter>
-    </ClInclude>
     <ClInclude Include="src\Opium\Layer.h">
       <Filter>src\Opium</Filter>
     </ClInclude>
@@ -1410,7 +1431,13 @@
     <ClInclude Include="src\Opium\Logging.h">
       <Filter>src\Opium</Filter>
     </ClInclude>
+    <ClInclude Include="src\Opium\ResourceManager.h">
+      <Filter>src\Opium</Filter>
+    </ClInclude>
     <ClInclude Include="src\Opium\Timestep.h">
+      <Filter>src\Opium</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Opium\UUID.h">
       <Filter>src\Opium</Filter>
     </ClInclude>
     <ClInclude Include="src\Platform\OpenGL\OpenGLBuffer.h">
@@ -1467,7 +1494,13 @@
     <ClInclude Include="src\Renderer\OrthographicCameraController.h">
       <Filter>src\Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="src\Renderer\PingPongRenderPass.h">
+      <Filter>src\Renderer</Filter>
+    </ClInclude>
     <ClInclude Include="src\Renderer\RenderCommand.h">
+      <Filter>src\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Renderer\RenderPass.h">
       <Filter>src\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Renderer\Renderer.h">
@@ -1506,6 +1539,9 @@
     <ClInclude Include="src\Scene\SceneCamera.h">
       <Filter>src\Scene</Filter>
     </ClInclude>
+    <ClInclude Include="src\Scene\SceneRenderer.h">
+      <Filter>src\Scene</Filter>
+    </ClInclude>
     <ClInclude Include="src\Scene\SceneSerializer.h">
       <Filter>src\Scene</Filter>
     </ClInclude>
@@ -1527,17 +1563,6 @@
     <ClInclude Include="src\Window\Window.h">
       <Filter>src\Window</Filter>
     </ClInclude>
-    <ClInclude Include="src\Opium\UUID.h" />
-    <ClInclude Include="src\Scene\SceneRenderer.h" />
-    <ClInclude Include="src\Geometry\Mesh.h" />
-    <ClInclude Include="src\Geometry\Icosphere.h" />
-    <ClInclude Include="src\Geometry\RadialSphere.h" />
-    <ClInclude Include="src\Geometry\Plane.h" />
-    <ClInclude Include="src\Geometry\Cube.h" />
-    <ClInclude Include="src\Renderer\RenderPass.h" />
-    <ClInclude Include="src\Opium\ResourceManager.h" />
-    <ClInclude Include="src\Geometry\Quad.h" />
-    <ClInclude Include="src\Renderer\PingPongRenderPass.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="external\ImGuizmo\GraphEditor.cpp">
@@ -1561,6 +1586,24 @@
     <ClCompile Include="src\Config\Precomp.cpp">
       <Filter>src\Config</Filter>
     </ClCompile>
+    <ClCompile Include="src\Geometry\Cube.cpp">
+      <Filter>src\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Geometry\Icosphere.cpp">
+      <Filter>src\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Geometry\Mesh.cpp">
+      <Filter>src\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Geometry\Plane.cpp">
+      <Filter>src\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Geometry\Quad.cpp">
+      <Filter>src\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Geometry\RadialSphere.cpp">
+      <Filter>src\Geometry</Filter>
+    </ClCompile>
     <ClCompile Include="src\Gui\ImGuiBuild.cpp">
       <Filter>src\Gui</Filter>
     </ClCompile>
@@ -1580,6 +1623,12 @@
       <Filter>src\Opium</Filter>
     </ClCompile>
     <ClCompile Include="src\Opium\Logging.cpp">
+      <Filter>src\Opium</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Opium\ResourceManager.cpp">
+      <Filter>src\Opium</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Opium\UUID.cpp">
       <Filter>src\Opium</Filter>
     </ClCompile>
     <ClCompile Include="src\Platform\OpenGL\OpenGLBuffer.cpp">
@@ -1630,7 +1679,13 @@
     <ClCompile Include="src\Renderer\OrthographicCameraController.cpp">
       <Filter>src\Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="src\Renderer\PingPongRenderPass.cpp">
+      <Filter>src\Renderer</Filter>
+    </ClCompile>
     <ClCompile Include="src\Renderer\RenderCommand.cpp">
+      <Filter>src\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Renderer\RenderPass.cpp">
       <Filter>src\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\Renderer\Renderer.cpp">
@@ -1666,6 +1721,9 @@
     <ClCompile Include="src\Scene\SceneCamera.cpp">
       <Filter>src\Scene</Filter>
     </ClCompile>
+    <ClCompile Include="src\Scene\SceneRenderer.cpp">
+      <Filter>src\Scene</Filter>
+    </ClCompile>
     <ClCompile Include="src\Scene\SceneSerializer.cpp">
       <Filter>src\Scene</Filter>
     </ClCompile>
@@ -1678,16 +1736,5 @@
     <ClCompile Include="src\ScriptManager\Wrappers.cpp">
       <Filter>src\ScriptManager</Filter>
     </ClCompile>
-    <ClCompile Include="src\Opium\UUID.cpp" />
-    <ClCompile Include="src\Scene\SceneRenderer.cpp" />
-    <ClCompile Include="src\Geometry\Mesh.cpp" />
-    <ClCompile Include="src\Geometry\Icosphere.cpp" />
-    <ClCompile Include="src\Geometry\RadialSphere.cpp" />
-    <ClCompile Include="src\Geometry\Plane.cpp" />
-    <ClCompile Include="src\Geometry\Cube.cpp" />
-    <ClCompile Include="src\Renderer\RenderPass.cpp" />
-    <ClCompile Include="src\Opium\ResourceManager.cpp" />
-    <ClCompile Include="src\Geometry\Quad.cpp" />
-    <ClCompile Include="src\Renderer\PingPongRenderPass.cpp" />
   </ItemGroup>
 </Project>

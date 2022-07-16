@@ -54,6 +54,11 @@ namespace OP
 				* glm::scale(glm::mat4(1.0f), Scale);
 		}
 
+		glm::mat4 GetView() const
+		{
+			return glm::inverse(glm::translate(glm::mat4(1.0f), Translation) * glm::toMat4(glm::quat(Rotation)));
+		}
+
 		glm::vec3 GetDirection() const
 		{
 			return glm::normalize(glm::quat(Rotation) * glm::vec3(0.0, 0.0, -1.0));
@@ -155,8 +160,10 @@ namespace OP
 
 	struct SpotLightComponent
 	{
-		float Phi;
-		float Theta;
+		float Cutoff;
+		float OuterCutoff;
+		float FarDist;
+		float NearDist;
 		glm::vec3 Color;
 		bool CastShadows;
 

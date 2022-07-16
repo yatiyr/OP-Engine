@@ -256,8 +256,10 @@ namespace OP
 
 			auto& spotLightComponent = entity.GetComponent<SpotLightComponent>();
 			out << YAML::Key << "Color" << YAML::Value << spotLightComponent.Color;
-			out << YAML::Key << "Phi" << YAML::Value << spotLightComponent.Phi;
-			out << YAML::Key << "Theta" << YAML::Value << spotLightComponent.Theta;
+			out << YAML::Key << "Cutoff" << YAML::Value << spotLightComponent.Cutoff;
+			out << YAML::Key << "FarDist" << YAML::Value << spotLightComponent.FarDist;
+			out << YAML::Key << "NearDist" << YAML::Value << spotLightComponent.NearDist;
+			out << YAML::Key << "OuterCutoff" << YAML::Value << spotLightComponent.OuterCutoff;
 			out << YAML::Key << "CastShadows" << YAML::Value << spotLightComponent.CastShadows;
 		}
 
@@ -391,9 +393,11 @@ namespace OP
 				{
 					auto& sLC = deserializedEntity.AddComponent<SpotLightComponent>();
 					sLC.Color = spotLightComponent["Color"].as<glm::vec3>();
-					sLC.Phi = spotLightComponent["Phi"].as<float>();
-					sLC.Theta = spotLightComponent["Theta"].as<float>();
+					sLC.Cutoff = spotLightComponent["Cutoff"].as<float>();
+					sLC.OuterCutoff = spotLightComponent["OuterCutoff"].as<float>();
 					sLC.CastShadows = spotLightComponent["CastShadows"].as<float>();
+					sLC.FarDist = spotLightComponent["FarDist"].as<float>();
+					sLC.NearDist = spotLightComponent["NearDist"].as<float>();
 				}
 			}
 		}

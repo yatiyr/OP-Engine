@@ -48,7 +48,8 @@ project "Opium"
         "%{IncludeDir.ImGuizmo}",
 	    "%{IncludeDir.Mono}",
         "%{IncludeDir.VK_SDK}",
-	"%{IncludeDir.FontAwesome}"
+	"%{IncludeDir.FontAwesome}",
+	"%{IncludeDir.SPIRV_Cross}"
     }
 
     links
@@ -108,4 +109,4 @@ project "Opium"
             "%{Library.ShaderC_REL}",
 			"%{Library.SPIRV_CROSS_REL}",
 			"%{Library.SPIRV_CROSS_GLSL_REL}"
-        }           
+        }                 

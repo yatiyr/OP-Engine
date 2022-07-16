@@ -46,7 +46,9 @@ namespace OP
 		std::unordered_map<GLenum, std::string> PreProcess(const std::string& source);
 
 		void CompileOrGetVulkanBinaries(const std::unordered_map<GLenum, std::string>& shaderSources);
-		void CompileOrGetOpenGLBinaries();
+		//void CompileOrGetOpenGLBinaries(); // does not work!!!!!!
+		void CompileOrGetOpenGLBinaries(const std::unordered_map<GLenum, std::string>& shaderSources);
+
 		void CreateProgram();
 		void Reflect(GLenum stage, const std::vector<uint32_t>& shaderData);
 	private:
