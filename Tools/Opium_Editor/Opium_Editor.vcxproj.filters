@@ -66,14 +66,4 @@
     </ClCompile>
     <ClCompile Include="src\Opium_EditorApp.cpp" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="assets\shaders\Pbr\Main.glsl" />
-    <None Include="assets\shaders\Pbr\Depth.glsl" />
-    <None Include="assets\shaders\Pbr\DepthDebug.glsl" />
-    <None Include="assets\shaders\Pbr\Test.glsl" />
-    <None Include="assets\shaders\Pbr\OmnidirectionalDepthMap.glsl" />
-    <None Include="assets\shaders\Pbr\DirSpotShadowMapping.glsl" />
-    <None Include="assets\shaders\Pbr\SoftShadowExample.glsl" />
-    <None Include="assets\shaders\Pbr\DirSpotShadowMappingBlur.glsl" />
-  </ItemGroup>
 </Project>

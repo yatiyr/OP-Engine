@@ -544,10 +544,13 @@ namespace OP
 
 		DrawComponent<SpotLightComponent>("Spot Light", entity, [](auto& component)
 			{
-				ImGui::DragFloat("Phi", &component.Phi, 0.01f, 0.0f, 90.0f);
-				ImGui::DragFloat("Theta", &component.Theta, 0.01f, 0.0f, 90.0f);
+				ImGui::DragFloat("Cutoff", &component.Cutoff, 0.01f, 0.0f, 80.0f);
+				ImGui::DragFloat("OuterCutoff", &component.OuterCutoff, 0.01f, 0.0f, 85.0f);
 				ImGui::ColorEdit3("Color", glm::value_ptr(component.Color));
+				ImGui::DragFloat("Near", &component.NearDist, 0.01f, 0.01f, 5.0f);
+				ImGui::DragFloat("Far", &component.FarDist, 0.01f, 0.02f, 5000.0f);
 				ImGui::Checkbox("Cast Shadows", &component.CastShadows);
+				
 			});
 
 	}

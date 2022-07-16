@@ -63,7 +63,7 @@ void main()
 	int invocationID = gl_InvocationID;
 
 	// This means that we are processing directional lights
-	if(invocationID < u_DirLightSize)
+	if(invocationID < MAX_DIR_LIGHTS)
 	{
 		for(int i=0; i<u_DirLights[invocationID].CascadeSize; i++)
 		{
@@ -79,9 +79,18 @@ void main()
 
 	}
 	// We are processing spot lights
-	else if(invocationID >= MAX_DIR_LIGHTS * MAX_CASCADE_SIZE)
+	
+	else if(invocationID >= MAX_DIR_LIGHTS)
 	{
-		// TODO: WILL BE IMPLEMENTED SOON
+		int index = invocationID - MAX_DIR_LIGHTS;
+		gl_Layer = MAX_DIR_LIGHTS * MAX_CASCADE_SIZE + index;
+		for(int k=0; k<3; k++)
+		{
+			gl_Position = gl_in[k].gl_Position;
+			gs_out.TexCoords = fs_in[k].TexCoords;
+			EmitVertex();
+		}
+		EndPrimitive();
 	}
 }
 

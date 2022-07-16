@@ -33,26 +33,12 @@ layout(std140, binding = 1)  uniform Transform
 	mat4 u_Model;
 };
 
-struct DirLight
-{
-	int CascadeSize;
-	float FrustaDistFactor;
-	vec3 LightDir;
-	vec3 Color;
-};
-
-layout(std140, binding = 3) uniform DirLightData
-{
-	int u_DirLightSize;
-	DirLight u_DirLights[MAX_DIR_LIGHTS];
-};
-
 struct LightSpaceMat
 {
 	mat4 mat;
 };
 
-layout(std140, binding = 4) uniform LightSpaceMatricesDSData
+layout(std140, binding = 5) uniform LightSpaceMatricesDSData
 {
 	LightSpaceMat u_LightSpaceMatricesDirSpot[MAX_DIR_LIGHTS * MAX_CASCADE_SIZE + MAX_SPOT_LIGHTS];
 };
@@ -107,6 +93,7 @@ layout(std140, binding = 2) uniform ShadowMapSettings
 	float u_ShadowMapResX;
 	float u_ShadowMapResY;
 };
+
 struct DirLight
 {
 	int CascadeSize;
@@ -121,12 +108,29 @@ layout(std140, binding = 3) uniform DirLightData
 	DirLight u_DirLights[MAX_DIR_LIGHTS];
 };
 
+struct SpotLight
+{
+	float Cutoff;
+	float OuterCutoff;
+	float NearDist;
+	float FarDist;
+	vec3 LightDir;
+	vec3 Color;
+	vec3 Position;
+};
+
+layout(std140, binding = 4) uniform SpotLightData
+{
+	int u_SpotLightSize;
+	SpotLight u_SpotLights[MAX_SPOT_LIGHTS];
+};
+
 struct LightSpaceMat
 {
 	mat4 mat;
 };
 
-layout(std140, binding = 4) uniform LightSpaceMatricesDSData
+layout(std140, binding = 5) uniform LightSpaceMatricesDSData
 {
 	LightSpaceMat u_LightSpaceMatricesDirSpot[MAX_DIR_LIGHTS * MAX_CASCADE_SIZE + MAX_SPOT_LIGHTS];
 };
@@ -139,12 +143,12 @@ struct CascadePlane
 	float _align3;
 };
 
-layout(std140, binding = 5) uniform CascadePlaneDistancesData
+layout(std140, binding = 6) uniform CascadePlaneDistancesData
 {
 	CascadePlane u_CascadePlanes[(MAX_CASCADE_SIZE - 1) * MAX_DIR_LIGHTS];
 };
 
-layout(std140, binding = 6) uniform MaterialData
+layout(std140, binding = 7) uniform MaterialData
 {
 	vec3 u_Color;
 };
@@ -178,7 +182,8 @@ float linstep(float low, float high, float v)
 {
 	return clamp((v-low) / (high - low), 0.0, 1.0);
 }
-float SamplaVarianceShadowMap(sampler2DArray shadowMap, vec3 coords, float compare)
+
+float SampleVarianceShadowMap(sampler2DArray shadowMap, vec3 coords, float compare)
 {
 
 	vec2 moments = texture(shadowMap, coords.xyz).xy;
@@ -190,6 +195,57 @@ float SamplaVarianceShadowMap(sampler2DArray shadowMap, vec3 coords, float compa
 	float pMax = linstep(0.6, 1.0,variance / (variance + d*d));
 
 	return min(max(p, pMax), 1.0);
+}
+
+float ShadowCalculationSpot(vec3 fragPosWorldSpace, vec3 lightDir, vec3 normal, int spotLightIndex)
+{
+
+	vec4 fragPosLightSpace = u_LightSpaceMatricesDirSpot[(MAX_CASCADE_SIZE * MAX_DIR_LIGHTS)  + spotLightIndex].mat *
+		vec4(fragPosWorldSpace, 1.0);
+
+	vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
+	projCoords = projCoords * 0.5 + 0.5;
+
+	float fragPosDist = fragPosLightSpace.z;
+
+	float currentDistance = length(fragPosWorldSpace - u_SpotLights[spotLightIndex].Position);
+	float compareDistance = texture(u_ShadowMapDirSpot, vec3(projCoords.xy,  (MAX_CASCADE_SIZE * MAX_DIR_LIGHTS)  + spotLightIndex)).r;
+
+	//float closestDepth = texture(u_ShadowMapDirSpot, vec3(projCoords.xy,  (MAX_CASCADE_SIZE * MAX_DIR_LIGHTS)  + spotLightIndex)).r;
+	float currentDepth =  projCoords.z * u_SpotLights[spotLightIndex].FarDist;//projCoords.z * u_SpotLights[spotLightIndex].FarDist;
+
+	if(currentDepth > u_SpotLights[spotLightIndex].FarDist)
+		return 0.5;
+
+	if(compareDistance > 20.0)
+		return 0.8;
+
+	float bias = max(1.5 * (1.0 - dot(normal, lightDir)), 1.5);
+	float shadow = 0.0;
+	//shadow = (currentDepth - bias) > compareDistance ? 0.0 : 1.0;
+
+	/*
+	// PCF
+	float shadow  = 0.0;
+	vec2 texelSize = 1.0 / vec2(u_ShadowMapResX, u_ShadowMapResY);
+	for (int x=-1; x<=1; x++)
+	{
+		for (int y=-1; y<=1; y++)
+		{
+			float pcfDepth = texture(u_ShadowMapDirSpot, vec3(projCoords.xy + vec2(x,y) * texelSize,  (MAX_CASCADE_SIZE * MAX_DIR_LIGHTS)  + spotLightIndex)).r;
+			//pcfDepth *= u_SpotLights[spotLightIndex].FarDist;
+			shadow += (currentDepth - bias) > pcfDepth ? 0.0 : 1.0;
+		}
+	}
+
+	shadow /= 9.0;
+
+	//shadow = (currentDepth - bias) > closestDepth ? 0.0 : 1.0;
+
+	//shadow = SampleVarianceShadowMap(u_ShadowMapDirSpot, vec3(projCoords.x, projCoords.y, (MAX_CASCADE_SIZE * MAX_DIR_LIGHTS)  + spotLightIndex), currentDepth);*/
+
+	return 1 - shadow;
+
 }
 
 float ShadowCalculationDir(vec3 fragPosWorldSpace, vec3 lightDir, vec3 normal,  int cascadeSize, int dirLightIndex)
@@ -255,7 +311,7 @@ float ShadowCalculationDir(vec3 fragPosWorldSpace, vec3 lightDir, vec3 normal,  
 
 	shadow /= 9.0;*/
 	float shadow = 0.0;
-	shadow = SamplaVarianceShadowMap(u_ShadowMapDirSpot, vec3(projCoords.x, projCoords.y, (MAX_CASCADE_SIZE) * dirLightIndex + layer ), currentDepth);
+	shadow = SampleVarianceShadowMap(u_ShadowMapDirSpot, vec3(projCoords.x, projCoords.y, (MAX_CASCADE_SIZE) * dirLightIndex + layer ), currentDepth);
 
 	return 1 - shadow;
 
@@ -374,34 +430,81 @@ void main()
 
 	vec3 result = vec3(0.0);
 
+	vec3 ambient = vec3(0.1);
+	vec3 diffuse = vec3(0.0);
+	vec3 specular = vec3(0.0);
+
+
+	float shadow = 0.0;
+
+
+
 	// Iterate directional lights
 	for(int i=0; i<u_DirLightSize; i++)
 	{
+		
 		int cascadeSize = u_DirLights[i].CascadeSize;
 		vec3 lightColor = u_DirLights[i].Color;
+		vec3 lightDir = -u_DirLights[i].LightDir;
+
+		shadow     = ShadowCalculationDir(fragPos, lightDir, normal, cascadeSize,i);
 
 		// ambient
-		vec3 ambient = 0.1 * lightColor;
+		ambient += 0.1 * lightColor;
 
 		// diffuse
-		vec3 lightDir = -u_DirLights[i].LightDir;
 		float diff    = max(dot(lightDir, normal), 0.0);
-		vec3 diffuse  = diff * lightColor;
+		diffuse  += diff * lightColor * (1 - shadow);
 
 		// specular
 		vec3 viewDir    = normalize(u_ViewPos - fs_in.FragPos);
 		float spec      = 0.1;
 		vec3 halfwayDir = normalize(lightDir + viewDir);
 		spec            = pow(max(dot(normal, halfwayDir), 0.0), 64);
-		vec3 specular   = spec * lightColor;
+		specular   += spec * lightColor * (1 - shadow);
 
 		// calculate shadow
 		// float visibility = CalculateVisibility(fs_in.FragPosLightSpace[i], lightDir, normal, i);
-		float shadow     = ShadowCalculationDir(fragPos, lightDir, normal, cascadeSize,i);
 		//float debugColor = DebugLayer(fragPos, cascadeSize, i);
-		vec3 lighting    =  (ambient + (1 - shadow) * (diffuse + specular)) * color ;
-		result += lighting;
 	}
 
-	FragColor = vec4(result, 1.0);
+	for(int i=0; i<u_SpotLightSize; i++)
+	{
+		SpotLight sL = u_SpotLights[i];
+
+		vec3 lightColor = sL.Color;
+		vec3 lightPos = sL.Position;
+		vec3 lightDir = normalize(sL.LightDir);
+
+		float cutoff = sL.Cutoff;
+		float outerCutoff = sL.OuterCutoff;
+		float epsilon = sL.Cutoff - sL.OuterCutoff;
+
+		vec3 fragToLight = normalize(lightPos - fragPos);
+
+		float theta = dot(fragToLight, -lightDir);
+		float intensity = clamp((theta - outerCutoff) / epsilon, 0.0, 1.0);
+
+
+		shadow = ShadowCalculationSpot(fragPos, lightDir, normal, i);
+
+		// ambient
+		//ambient += 0.1 * lightColor * intensity;
+
+		float diff    = max(dot(fragToLight, normal), 0.0);
+		diffuse  += diff * intensity * lightColor * (1 - shadow);
+
+		// specular
+		vec3 viewDir    = normalize(u_ViewPos - fs_in.FragPos);
+		float spec      = 0.1;
+		vec3 halfwayDir = normalize(-lightDir + viewDir);
+		spec            = pow(max(dot(normal, halfwayDir), 0.0), 64);
+		specular   += spec * lightColor * intensity * (1 - shadow);
+
+
+	}
+
+	vec3 lighting    =  (ambient + (diffuse + specular)) * color ;
+
+	FragColor = vec4(lighting, 1.0);
 }

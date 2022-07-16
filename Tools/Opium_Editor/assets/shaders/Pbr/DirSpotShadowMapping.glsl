@@ -39,22 +39,47 @@ layout(std140, binding = 3) uniform DirLightData
 	DirLight u_DirLights[MAX_DIR_LIGHTS];
 };
 
+// Spot Light Data
+struct SpotLight
+{
+	float Cutoff;
+	float OuterCutoff;
+	float NearDist;
+	float FarDist;
+	vec3 LightDir;
+	vec3 Color;
+	vec3 Position;
+};
+
+layout(std140, binding = 4) uniform SpotLightData
+{
+	int u_SpotLightSize;
+	SpotLight u_SpotLights[MAX_SPOT_LIGHTS];
+};
+
 struct LightSpaceMat
 {
 	mat4 mat;
 };
 
-layout(std140, binding = 4) uniform LightSpaceMatricesDSData
+layout(std140, binding = 5) uniform LightSpaceMatricesDSData
 {
 	LightSpaceMat u_LightSpaceMatricesDirSpot[MAX_DIR_LIGHTS * MAX_CASCADE_SIZE + MAX_SPOT_LIGHTS];
 };
+
+struct GS_OUT
+{
+	vec4 FragPos;
+};
+
+layout (location = 1) out GS_OUT gs_out;
 
 void main()
 {
 	int invocationID = gl_InvocationID;
 
 	// This means that we are processing directional lights
-	if(invocationID < u_DirLightSize)
+	if(invocationID < MAX_DIR_LIGHTS)
 	{
 		for(int i=0; i<u_DirLights[invocationID].CascadeSize; i++)
 		{
@@ -84,10 +109,20 @@ void main()
 		}*/
 
 	}
+
 	// We are processing spot lights
-	else if(invocationID >= MAX_DIR_LIGHTS * MAX_CASCADE_SIZE)
+	else if(invocationID >= MAX_DIR_LIGHTS)
 	{
-		// TODO: WILL BE IMPLEMENTED SOON
+		int index = invocationID - MAX_DIR_LIGHTS;
+		gl_Layer = MAX_DIR_LIGHTS * MAX_CASCADE_SIZE + index;
+		mat4 lightSpaceMatrix = u_LightSpaceMatricesDirSpot[gl_Layer].mat;
+		for (int k=0; k<3; k++)
+		{
+			gs_out.FragPos = gl_in[k].gl_Position;
+		    gl_Position = lightSpaceMatrix * gs_out.FragPos;
+			EmitVertex();
+		}
+		EndPrimitive();
 	}
 }
 
@@ -95,14 +130,70 @@ void main()
 #type fragment
 #version 450 core
 
+#define MAX_DIR_LIGHTS 4
+#define MAX_SPOT_LIGHTS 4
+#define MAX_CASCADE_SIZE 10
+
 layout(location = 0) out vec4 FragColor;
+
+struct GS_OUT
+{
+	vec4 FragPos;
+};
+
+layout (location = 1) in GS_OUT fs_in;
+
+
+// Spot Light Data
+struct SpotLight
+{
+	float Cutoff;
+	float OuterCutoff;
+	float NearDist;
+	float FarDist;
+	vec3 LightDir;
+	vec3 Color;
+	vec3 Position;
+};
+
+layout(std140, binding = 4) uniform SpotLightData
+{
+	int u_SpotLightSize;
+	SpotLight u_SpotLights[MAX_SPOT_LIGHTS];
+};
+
+float PerspectiveProjDepthLinearize(float depth, float near, float far)
+{
+	float z = depth * 2.0 - 1.0;
+	return (2.0 * near * far) / (far + near - z * (far - near));
+}
 
 void main()
 {
-	float depth = gl_FragCoord.z;
-	float dx = dFdx(depth);
-	float dy = dFdy(depth);
-	float moment2 = depth * depth + 0.25 * (dx*dx + dy*dy);
 
-	FragColor = vec4(depth, moment2, 1.0, 1.0);
+	if(gl_Layer < MAX_CASCADE_SIZE * MAX_DIR_LIGHTS)
+	{
+		float depth = gl_FragCoord.z;
+		float dx = dFdx(depth);
+		float dy = dFdy(depth);
+		float moment2 = depth * depth + 0.25 * (dx*dx + dy*dy);
+
+		FragColor = vec4(depth, moment2, 1.0, 1.0);
+	}
+	else
+	{
+		int index = gl_Layer - MAX_CASCADE_SIZE * MAX_DIR_LIGHTS;
+		float dist = length(fs_in.FragPos.xyz - u_SpotLights[index].Position); 
+
+		dist = dist / u_SpotLights[index].FarDist;
+
+		float depth = dist;
+		float dx = dFdx(depth);
+		float dy = dFdy(depth);
+		float moment2 = depth * depth + 0.25 * (dx*dx + dy*dy);
+
+		FragColor = vec4(depth, moment2, 1.0, 1.0);
+	}
+	
+
 }
