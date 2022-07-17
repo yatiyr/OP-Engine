@@ -549,6 +549,8 @@ namespace OP
 				ImGui::ColorEdit3("Color", glm::value_ptr(component.Color));
 				ImGui::DragFloat("Near", &component.NearDist, 0.01f, 0.01f, 5.0f);
 				ImGui::DragFloat("Far", &component.FarDist, 0.01f, 0.02f, 5000.0f);
+				ImGui::DragFloat("Kq", &component.Kq, 0.000001f, 0.000002f, 2.0f);
+				ImGui::DragFloat("Kl", &component.Kl, 0.000001f, 0.000002f, 2.0f);
 				ImGui::DragFloat("Bias", &component.Bias, 0.001f, 0.0f);
 				ImGui::Checkbox("Cast Shadows", &component.CastShadows);
 				

@@ -201,6 +201,18 @@ namespace OP
 		// -------- END CASCADED SHADOW MAPPING ----------- //
 
 
+		// -------- LIGHT ATTENUATION COEFF CALCULATION --------- //
+
+			// Gives attenuation coefficients for point and spot lights
+			static void GiveCoeff(float& kq, float& kl, float mult, float range)
+			{
+				kq = 0.001f / (range * range + mult * range);
+				kl = mult * kq;
+			}
+				
+
+
+		// ---- END LIGHT ATTENUATION COEFF CALCULATION --------- //
 
 
 	struct SceneRendererData
@@ -305,6 +317,8 @@ namespace OP
 			float NearDist;
 			float FarDist;
 			float Bias;
+			float Kq;
+			float Kl;
 			alignas(16) glm::vec3 LightDir;
 			alignas(16) glm::vec3 Color;
 			alignas(16) glm::vec3 Position;
@@ -560,13 +574,18 @@ namespace OP
 				s_SceneRendererData.SpotLightsBuffer.SpotLights[spotLightCounter].Position = pos;
 				s_SceneRendererData.SpotLightsBuffer.SpotLights[spotLightCounter].NearDist = spotLight.NearDist;
 				s_SceneRendererData.SpotLightsBuffer.SpotLights[spotLightCounter].FarDist = spotLight.FarDist;
+				s_SceneRendererData.SpotLightsBuffer.SpotLights[spotLightCounter].Kq = spotLight.Kq;
+				s_SceneRendererData.SpotLightsBuffer.SpotLights[spotLightCounter].Kl = spotLight.Kl;
+				s_SceneRendererData.SpotLightsBuffer.SpotLights[spotLightCounter].FarDist = spotLight.FarDist;
 				s_SceneRendererData.SpotLightsBuffer.SpotLights[spotLightCounter].Bias = spotLight.Bias;
+
+
 
 				glm::mat4 projection = glm::perspective(glm::radians(spotLight.OuterCutoff * 2), 1.0f, spotLight.NearDist, spotLight.FarDist);
 				glm::mat4 view = glm::lookAt(pos, pos + lightDirection, glm::vec3(0.0f, 1.0f, 0.0f));
 
 				s_SceneRendererData.LightSpaceMatricesDSBuffer.LightSpaceMatricesDirSpot[MAX_CASCADE_SIZE * MAX_DIR_LIGHTS + spotLightCounter].mat = projection * view;
-
+			
 				spotLightCounter++;
 			}
 

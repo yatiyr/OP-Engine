@@ -37,6 +37,8 @@ struct SpotLight
 	float NearDist;
 	float FarDist;
 	float Bias;
+	float Kq;
+	float Kl;
 	vec3 LightDir;
 	vec3 Color;
 	vec3 Position;

@@ -115,6 +115,8 @@ struct SpotLight
 	float NearDist;
 	float FarDist;
 	float Bias;
+	float Kq;
+	float Kl;
 	vec3 LightDir;
 	vec3 Color;
 	vec3 Position;
@@ -467,7 +469,7 @@ void main()
 	}
 
 	for(int i=0; i<u_SpotLightSize; i++)
-	{
+	{		
 		SpotLight sL = u_SpotLights[i];
 
 		vec3 lightColor = sL.Color;
@@ -478,7 +480,15 @@ void main()
 		float outerCutoff = sL.OuterCutoff;
 		float epsilon = sL.Cutoff - sL.OuterCutoff;
 
+		float dist = length(lightPos - fragPos);
+		float Kq = u_SpotLights[i].Kq;
+		float Kl = u_SpotLights[i].Kl;
+
 		vec3 fragToLight = normalize(lightPos - fragPos);
+
+		// Calculate attenuation
+		float attenuation = 1 / (1 + Kq * dist * dist + Kl * dist);
+
 
 		float theta = dot(fragToLight, -lightDir);
 		float intensity = clamp((theta - outerCutoff) / epsilon, 0.0, 1.0);
@@ -490,14 +500,14 @@ void main()
 		//ambient += 0.1 * lightColor * intensity;
 
 		float diff    = max(dot(fragToLight, normal), 0.0);
-		diffuse  += diff * intensity * lightColor * (1 - shadow);
+		diffuse  += diff * intensity * lightColor * (1 - shadow) * attenuation;
 
 		// specular
 		vec3 viewDir    = normalize(u_ViewPos - fs_in.FragPos);
 		float spec      = 0.1;
 		vec3 halfwayDir = normalize(-lightDir + viewDir);
 		spec            = pow(max(dot(normal, halfwayDir), 0.0), 64);
-		specular   += spec * lightColor * intensity * (1 - shadow);
+		specular   += spec * lightColor * intensity * (1 - shadow) * attenuation;
 
 
 	}

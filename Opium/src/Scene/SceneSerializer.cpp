@@ -259,6 +259,8 @@ namespace OP
 			out << YAML::Key << "Cutoff" << YAML::Value << spotLightComponent.Cutoff;
 			out << YAML::Key << "FarDist" << YAML::Value << spotLightComponent.FarDist;
 			out << YAML::Key << "NearDist" << YAML::Value << spotLightComponent.NearDist;
+			out << YAML::Key << "Kq" << YAML::Value << spotLightComponent.Kq;
+			out << YAML::Key << "Kl" << YAML::Value << spotLightComponent.Kl;
 			out << YAML::Key << "OuterCutoff" << YAML::Value << spotLightComponent.OuterCutoff;
 			out << YAML::Key << "CastShadows" << YAML::Value << spotLightComponent.CastShadows;
 		}
@@ -398,6 +400,8 @@ namespace OP
 					sLC.CastShadows = spotLightComponent["CastShadows"].as<float>();
 					sLC.FarDist = spotLightComponent["FarDist"].as<float>();
 					sLC.NearDist = spotLightComponent["NearDist"].as<float>();
+					sLC.Kq = spotLightComponent["Kq"].as<float>();
+					sLC.Kl = spotLightComponent["Kl"].as<float>();
 				}
 			}
 		}

@@ -160,12 +160,14 @@ namespace OP
 
 	struct SpotLightComponent
 	{
-		float Cutoff;
-		float OuterCutoff;
-		float FarDist;
-		float NearDist;
+		float Cutoff = 10.0f;
+		float OuterCutoff = 20.0f;
+		float FarDist = 100.0f;
+		float NearDist = 0.01f;
+		float Kq = 0.0075f;
+		float Kl = 0.045f;
 		float Bias;
-		glm::vec3 Color;
+		glm::vec3 Color = glm::vec3(0.5f, 0.5f, 0.5f);
 		bool CastShadows;
 
 		SpotLightComponent() = default;
