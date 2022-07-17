@@ -46,6 +46,7 @@ struct SpotLight
 	float OuterCutoff;
 	float NearDist;
 	float FarDist;
+	float Bias;
 	vec3 LightDir;
 	vec3 Color;
 	vec3 Position;
@@ -151,6 +152,7 @@ struct SpotLight
 	float OuterCutoff;
 	float NearDist;
 	float FarDist;
+	float Bias;
 	vec3 LightDir;
 	vec3 Color;
 	vec3 Position;
@@ -182,17 +184,27 @@ void main()
 	}
 	else
 	{
+		/*float depth = gl_FragCoord.z;
+		int index = gl_Layer - MAX_CASCADE_SIZE * MAX_DIR_LIGHTS;
+		float near = u_SpotLights[index].NearDist;
+		float far = u_SpotLights[index].FarDist;
+
+		depth = PerspectiveProjDepthLinearize(depth, near, far) / far;
+		float dx = dFdx(depth);
+		float dy = dFdy(depth);
+		float moment2 = depth * depth + 0.25 * (dx*dx + dy*dy); */
+
 		int index = gl_Layer - MAX_CASCADE_SIZE * MAX_DIR_LIGHTS;
 		float dist = length(fs_in.FragPos.xyz - u_SpotLights[index].Position); 
 
-		dist = dist / u_SpotLights[index].FarDist;
+		float dist2 = dist / u_SpotLights[index].FarDist;
 
-		float depth = dist;
+		float depth = dist2;
 		float dx = dFdx(depth);
 		float dy = dFdy(depth);
 		float moment2 = depth * depth + 0.25 * (dx*dx + dy*dy);
-
-		FragColor = vec4(depth, moment2, 1.0, 1.0);
+		
+		FragColor = vec4(depth, moment2, 1.0, 1.0); 
 	}
 	
 

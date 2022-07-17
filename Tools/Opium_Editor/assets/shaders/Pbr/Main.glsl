@@ -114,6 +114,7 @@ struct SpotLight
 	float OuterCutoff;
 	float NearDist;
 	float FarDist;
+	float Bias;
 	vec3 LightDir;
 	vec3 Color;
 	vec3 Position;
@@ -209,36 +210,33 @@ float ShadowCalculationSpot(vec3 fragPosWorldSpace, vec3 lightDir, vec3 normal, 
 	float fragPosDist = fragPosLightSpace.z;
 
 	float currentDistance = length(fragPosWorldSpace - u_SpotLights[spotLightIndex].Position);
-	float compareDistance = texture(u_ShadowMapDirSpot, vec3(projCoords.xy,  (MAX_CASCADE_SIZE * MAX_DIR_LIGHTS)  + spotLightIndex)).r;
+	float compareDistance = texture(u_ShadowMapDirSpot, vec3(projCoords.xy,  (MAX_CASCADE_SIZE * MAX_DIR_LIGHTS)  + spotLightIndex)).r * u_SpotLights[spotLightIndex].FarDist;
 
 	//float closestDepth = texture(u_ShadowMapDirSpot, vec3(projCoords.xy,  (MAX_CASCADE_SIZE * MAX_DIR_LIGHTS)  + spotLightIndex)).r;
 	float currentDepth =  projCoords.z * u_SpotLights[spotLightIndex].FarDist;//projCoords.z * u_SpotLights[spotLightIndex].FarDist;
 
-	if(currentDepth > u_SpotLights[spotLightIndex].FarDist)
-		return 0.5;
+	if(currentDepth >= u_SpotLights[spotLightIndex].FarDist)
+		return 1.0;
 
-	if(compareDistance > 20.0)
-		return 0.8;
-
-	float bias = max(1.5 * (1.0 - dot(normal, lightDir)), 1.5);
+	float bias = max(20 * (1.0 - dot(normal, lightDir)), 20);
 	float shadow = 0.0;
-	//shadow = (currentDepth - bias) > compareDistance ? 0.0 : 1.0;
+	shadow = (compareDistance + 0.15) < fragPosDist ? 0.0 : 1.0;
 
-	/*
+	
 	// PCF
-	float shadow  = 0.0;
+	//float shadow  = 0.0;
 	vec2 texelSize = 1.0 / vec2(u_ShadowMapResX, u_ShadowMapResY);
 	for (int x=-1; x<=1; x++)
 	{
 		for (int y=-1; y<=1; y++)
 		{
-			float pcfDepth = texture(u_ShadowMapDirSpot, vec3(projCoords.xy + vec2(x,y) * texelSize,  (MAX_CASCADE_SIZE * MAX_DIR_LIGHTS)  + spotLightIndex)).r;
+			float pcfDepth = texture(u_ShadowMapDirSpot, vec3(projCoords.xy + vec2(x,y) / vec2(1024,1024),  (MAX_CASCADE_SIZE * MAX_DIR_LIGHTS)  + spotLightIndex)).r * u_SpotLights[spotLightIndex].FarDist;
 			//pcfDepth *= u_SpotLights[spotLightIndex].FarDist;
-			shadow += (currentDepth - bias) > pcfDepth ? 0.0 : 1.0;
+			shadow += (pcfDepth + 0.15) < fragPosDist ? 0.0 : 1.0;
 		}
 	}
 
-	shadow /= 9.0;
+	shadow /= 9.0; 
 
 	//shadow = (currentDepth - bias) > closestDepth ? 0.0 : 1.0;
 

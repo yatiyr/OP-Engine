@@ -79,7 +79,6 @@ void main()
 
 	}
 	// We are processing spot lights
-	
 	else if(invocationID >= MAX_DIR_LIGHTS)
 	{
 		int index = invocationID - MAX_DIR_LIGHTS;

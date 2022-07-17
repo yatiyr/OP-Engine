@@ -236,8 +236,8 @@ namespace OP
 			float blurAmount = 1;
 			struct ShadowMapSettings
 			{
-				float shadowMapResX = 1024;
-				float shadowMapResY = 1024;
+				float shadowMapResX = 512.0f;
+				float shadowMapResY = 512.0f;
 				glm::vec2 blurScale = glm::vec2(0.0f);
 			} ShadowMapSettingsBuffer;
 
@@ -304,6 +304,7 @@ namespace OP
 			float OuterCutoff;
 			float NearDist;
 			float FarDist;
+			float Bias;
 			alignas(16) glm::vec3 LightDir;
 			alignas(16) glm::vec3 Color;
 			alignas(16) glm::vec3 Position;
@@ -358,6 +359,7 @@ namespace OP
 		Ref<Icosphere> icosphere3;
 		Ref<Cube> cube;
 		Ref<Plane> plane;
+		Ref<Quad> quad;
 
 		// Ref<Icosphere> icosphere2;
 
@@ -411,6 +413,7 @@ namespace OP
 		s_SceneRendererData.icosphere3 = Icosphere::Create(1.5f, 1, false);
 		s_SceneRendererData.cube = Cube::Create();
 		s_SceneRendererData.plane = Plane::Create();
+		s_SceneRendererData.quad = Quad::Create();
 
 		s_SceneRendererData.shadowMapDirSpotBlur = Shader::Create("assets/shaders/Pbr/DirSpotShadowMappingBlur.glsl");
 		s_SceneRendererData.mainShader = Shader::Create("assets/shaders/Pbr/Main.glsl"); 
@@ -556,7 +559,8 @@ namespace OP
 				s_SceneRendererData.SpotLightsBuffer.SpotLights[spotLightCounter].OuterCutoff = cos(glm::radians(spotLight.OuterCutoff));
 				s_SceneRendererData.SpotLightsBuffer.SpotLights[spotLightCounter].Position = pos;
 				s_SceneRendererData.SpotLightsBuffer.SpotLights[spotLightCounter].NearDist = spotLight.NearDist;
-				s_SceneRendererData.SpotLightsBuffer.SpotLights[spotLightCounter].FarDist = spotLight.NearDist;
+				s_SceneRendererData.SpotLightsBuffer.SpotLights[spotLightCounter].FarDist = spotLight.FarDist;
+				s_SceneRendererData.SpotLightsBuffer.SpotLights[spotLightCounter].Bias = spotLight.Bias;
 
 				glm::mat4 projection = glm::perspective(glm::radians(spotLight.OuterCutoff * 2), 1.0f, spotLight.NearDist, spotLight.FarDist);
 				glm::mat4 view = glm::lookAt(pos, pos + lightDirection, glm::vec3(0.0f, 1.0f, 0.0f));
@@ -680,7 +684,7 @@ namespace OP
 
 
 		// FINAL RENDERING - (FOR NOW!)
-
+		
 		s_SceneRendererData.finalRenderPass->InvokeCommands(
 			[&]()-> void {
 
@@ -745,6 +749,21 @@ namespace OP
 				s_SceneRendererData.TransformUniformBuffer->SetData(&s_SceneRendererData.TransformBuffer, sizeof(SceneRendererData::TransformData));
 				s_SceneRendererData.MaterialUniformBuffer->SetData(&s_SceneRendererData.MaterialBuffer, sizeof(SceneRendererData::MaterialData));
 				s_SceneRendererData.icosphere3->Draw();
+				// ---------- DRAW SCENE END ----------
+
+				s_SceneRendererData.depthDebugShader->Bind();
+
+				uint32_t depthMap2 = s_SceneRendererData.depthRenderPass->GetColorAttachment(0);
+				glBindTextureUnit(1, depthMap);
+
+				glDisable(GL_DEPTH_TEST);
+				model = glm::mat4(1.0f);
+				model = glm::translate(model, glm::vec3(0.75f, 0.75f, 0.0f));
+				model = glm::scale(model, glm::vec3(0.25f, 0.25f, 1.0f));
+				s_SceneRendererData.TransformBuffer.Model = model;
+				s_SceneRendererData.TransformUniformBuffer->SetData(&s_SceneRendererData.TransformBuffer, sizeof(SceneRendererData::TransformData));
+				s_SceneRendererData.plane->Draw();
+				glEnable(GL_DEPTH_TEST);
 				// ---------- DRAW SCENE END ----------
 			}
 		);

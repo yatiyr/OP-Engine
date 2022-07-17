@@ -164,6 +164,7 @@ namespace OP
 		float OuterCutoff;
 		float FarDist;
 		float NearDist;
+		float Bias;
 		glm::vec3 Color;
 		bool CastShadows;
 
