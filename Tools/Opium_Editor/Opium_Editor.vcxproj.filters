@@ -66,4 +66,9 @@
     </ClCompile>
     <ClCompile Include="src\Opium_EditorApp.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="assets\shaders\include\uniforms.glsl" />
+    <None Include="assets\shaders\include\includesubdir1\include2.glsl" />
+    <None Include="assets\shaders\include\includesubdir2\includesubdir3\include3.glsl" />
+  </ItemGroup>
 </Project>

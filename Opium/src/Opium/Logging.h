@@ -26,7 +26,7 @@
 
 namespace OP
 {
-	class OPIUM_API Logging
+	class Logging
 	{
 	public:
 		static void Init();

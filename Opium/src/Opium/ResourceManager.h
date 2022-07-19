@@ -1,5 +1,7 @@
 #include <string>
 #include <Scene/Scene.h>
+#include <filesystem>
+#include <Renderer/Shader.h>
 
 namespace OP
 {
@@ -20,8 +22,16 @@ namespace OP
 	class ResourceManager
 	{
 	public:
-		static int Init(std::string rootPath);
+		static std::filesystem::path GetShaderCacheDirectory();
 
+		static int Init(std::filesystem::path rootPath);
+
+		static int LoadIncludeShaders(std::filesystem::path shaderIncludeFilePath);
+		static int LoadShaderSources(std::filesystem::path shaderIncludeFilePath);
+		static int CompileShaders();
+		static Ref<Shader> GetShader(std::string name);
+
+		static std::string ResolveIncludes(const std::string& shaderSource, const std::string& fileName, std::unordered_map<std::string, bool>& includeMap, bool firstTime);
 		// Mesh Related functions
 		static int AddMesh();
 
@@ -44,7 +54,6 @@ namespace OP
 		// Load scene related objects
 		static int LoadSceneResources(Ref<Scene> scene);
 	private:
-		std::string m_RootPath;
 	};
 
 

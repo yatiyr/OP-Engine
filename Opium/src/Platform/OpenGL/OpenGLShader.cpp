@@ -10,6 +10,8 @@
 
 #include <Profiling/Timer.h>
 
+#include <Opium/ResourceManager.h>
+
 namespace OP
 {
 	namespace Utils
@@ -180,6 +182,7 @@ namespace OP
 		return result;
 	}
 
+
 	std::unordered_map<GLenum, std::string> OpenGLShader::PreProcess(const std::string& source)
 	{
 		std::unordered_map<GLenum, std::string> shaderSources;
@@ -199,6 +202,7 @@ namespace OP
 			OP_ENGINE_ASSERT(nextLinePos != std::string::npos, "Syntax error");
 			pos = source.find(typeToken, nextLinePos);
 
+
 			shaderSources[Utils::ShaderTypeFromString(type)] = source.substr(nextLinePos, pos - (nextLinePos == std::string::npos ? source.size() - 1 : nextLinePos));
 		}
 
@@ -214,15 +218,15 @@ namespace OP
 		if (optimize)
 			options.SetOptimizationLevel(shaderc_optimization_level_performance);
 
-		std::filesystem::path cacheDirectory = Utils::GetCacheDirectory();
+		std::filesystem::path cacheDirectory = ResourceManager::GetShaderCacheDirectory() / "opengl";
 
 		auto& shaderData = m_OpenGLSPIRV;
 		shaderData.clear();
 
 		for (auto&& [stage, source] : shaderSources)
 		{
-			std::filesystem::path shaderFilePath = m_FilePath;
-			std::filesystem::path cachedPath = cacheDirectory / (shaderFilePath.filename().string() + Utils::GLShaderStageCachedOpenGLFileExtension(stage));
+			//std::filesystem::path shaderFilePath = m_Name;
+			std::filesystem::path cachedPath = cacheDirectory / (m_Name + Utils::GLShaderStageCachedOpenGLFileExtension(stage));
 
 			std::ifstream in(cachedPath, std::ios::in | std::ios::binary);
 
@@ -238,7 +242,7 @@ namespace OP
 			}
 			else
 			{
-				shaderc::SpvCompilationResult module = compiler.CompileGlslToSpv(source, Utils::GLShaderStageToShaderC(stage), m_FilePath.c_str(), options);
+				shaderc::SpvCompilationResult module = compiler.CompileGlslToSpv(source, Utils::GLShaderStageToShaderC(stage), m_Name.c_str(), options);
 				if (module.GetCompilationStatus() != shaderc_compilation_status_success)
 				{
 					OP_ENGINE_ERROR(module.GetErrorMessage());
@@ -271,15 +275,15 @@ namespace OP
 		if (optimize)
 			options.SetOptimizationLevel(shaderc_optimization_level_performance);
 
-		std::filesystem::path cacheDirectory = Utils::GetCacheDirectory();
+		std::filesystem::path cacheDirectory = ResourceManager::GetShaderCacheDirectory() / "opengl";
 
 		auto& shaderData = m_VulkanSPIRV;
 		shaderData.clear();
 
 		for (auto&& [stage, source] : shaderSources)
 		{
-			std::filesystem::path shaderFilePath = m_FilePath;
-			std::filesystem::path cachedPath = cacheDirectory / (shaderFilePath.filename().string() + Utils::GLShaderStageCachedVulkanFileExtension(stage));
+			//std::filesystem::path shaderFilePath = m_Name;
+			std::filesystem::path cachedPath = cacheDirectory / (m_Name + Utils::GLShaderStageCachedVulkanFileExtension(stage));
 
 			std::ifstream in(cachedPath, std::ios::in | std::ios::binary);
 			if (in.is_open())
@@ -294,7 +298,7 @@ namespace OP
 			}
 			else
 			{
-				shaderc::SpvCompilationResult module = compiler.CompileGlslToSpv(source, Utils::GLShaderStageToShaderC(stage), m_FilePath.c_str(), options);
+				shaderc::SpvCompilationResult module = compiler.CompileGlslToSpv(source, Utils::GLShaderStageToShaderC(stage), m_Name.c_str(), options);
 				if (module.GetCompilationStatus() != shaderc_compilation_status_success)
 				{
 					OP_ENGINE_ERROR(module.GetErrorMessage());

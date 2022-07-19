@@ -1560,6 +1560,9 @@
     <ClInclude Include="src\Utils\PlatformUtils.h">
       <Filter>src\Utils</Filter>
     </ClInclude>
+    <ClInclude Include="src\Utils\ShaderIncludeUtils.h">
+      <Filter>src\Utils</Filter>
+    </ClInclude>
     <ClInclude Include="src\Window\Window.h">
       <Filter>src\Window</Filter>
     </ClInclude>
@@ -1735,6 +1738,9 @@
     </ClCompile>
     <ClCompile Include="src\ScriptManager\Wrappers.cpp">
       <Filter>src\ScriptManager</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utils\ShaderIncludeUtils.cpp">
+      <Filter>src\Utils</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

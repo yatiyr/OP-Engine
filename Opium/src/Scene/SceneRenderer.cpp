@@ -4,6 +4,7 @@
 #include <Math/Math.h>
 
 #include <Opium/Application.h>
+#include <Opium/ResourceManager.h>
 
 #include <Renderer/VertexArray.h>
 #include <Renderer/Shader.h>
@@ -429,10 +430,15 @@ namespace OP
 		s_SceneRendererData.plane = Plane::Create();
 		s_SceneRendererData.quad = Quad::Create();
 
-		s_SceneRendererData.shadowMapDirSpotBlur = Shader::Create("assets/shaders/Pbr/DirSpotShadowMappingBlur.glsl");
-		s_SceneRendererData.mainShader = Shader::Create("assets/shaders/Pbr/Main.glsl"); 
+		/*s_SceneRendererData.shadowMapDirSpotBlur = Shader::Create("assets/shaders/Pbr/DirSpotShadowMappingBlur.glsl");
+		s_SceneRendererData.mainShader = Shader::Create("assets/shaders/Pbr/Main.glsl");
 		s_SceneRendererData.depthShader = Shader::Create("assets/shaders/Pbr/DirSpotShadowMapping.glsl");
-		s_SceneRendererData.depthDebugShader = Shader::Create("assets/shaders/Pbr/DepthDebug.glsl");
+		s_SceneRendererData.depthDebugShader = Shader::Create("assets/shaders/Pbr/DepthDebug.glsl");*/
+
+		s_SceneRendererData.shadowMapDirSpotBlur = ResourceManager::GetShader("DirSpotShadowMappingBlur.glsl");
+		s_SceneRendererData.mainShader = ResourceManager::GetShader("Main.glsl");
+		s_SceneRendererData.depthShader = ResourceManager::GetShader("DirSpotShadowMapping.glsl");
+		s_SceneRendererData.depthDebugShader = ResourceManager::GetShader("DepthDebug.glsl");
 
 
 		// Deal with uniform buffers

@@ -1,5 +1,6 @@
 #include <Precomp.h> 
 #include <Opium/Application.h>
+#include <Opium/ResourceManager.h>
 
 #include <Input/Input.h>
 
@@ -25,6 +26,8 @@ namespace OP
 
 		m_DpiScale = m_Window->GetDpiScale();
 
+
+		ResourceManager::Init(std::filesystem::current_path());
 		Renderer::Init();
 		ScriptManager::InitializeManager("assets/scripts/ExampleOpiumApp.dll");
 

@@ -21,9 +21,11 @@ struct VS_OUT
 
 layout (location = 0) out VS_OUT vs_out;
 
+
 // We include uniforms using custom include system
 // of OP Engine
 #include uniforms.glsl
+
 
 void main()
 {

@@ -634,6 +634,7 @@
     <ClInclude Include="src\ScriptManager\ScriptManager.h" />
     <ClInclude Include="src\ScriptManager\Wrappers.h" />
     <ClInclude Include="src\Utils\PlatformUtils.h" />
+    <ClInclude Include="src\Utils\ShaderIncludeUtils.h" />
     <ClInclude Include="src\Window\Window.h" />
   </ItemGroup>
   <ItemGroup>
@@ -706,6 +707,7 @@
     <ClCompile Include="src\ScriptManager\InternalCallArranger.cpp" />
     <ClCompile Include="src\ScriptManager\ScriptManager.cpp" />
     <ClCompile Include="src\ScriptManager\Wrappers.cpp" />
+    <ClCompile Include="src\Utils\ShaderIncludeUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="external\Box2D\Box2D.vcxproj">
