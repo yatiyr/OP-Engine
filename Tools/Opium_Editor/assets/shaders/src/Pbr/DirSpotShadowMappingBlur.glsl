@@ -1,6 +1,10 @@
 #type vertex
 #version 450 core
 
+// ------------------ DEFINES ----------------- //
+#include Defines.glsl
+// -------------------------------------------- //
+
 layout(location = 0) in vec3 a_Position;
 layout(location = 2) in vec2 a_TexCoords;
 
@@ -21,9 +25,9 @@ void main()
 #version 450 core
 
 
-#define MAX_DIR_LIGHTS 4
-#define MAX_SPOT_LIGHTS 4
-#define MAX_CASCADE_SIZE 10
+// ------------------ DEFINES ----------------- //
+#include Defines.glsl
+// -------------------------------------------- //
 
 layout (triangles, invocations=MAX_DIR_LIGHTS + MAX_SPOT_LIGHTS) in;
 layout (triangle_strip, max_vertices = 3 * MAX_CASCADE_SIZE) out;
@@ -42,20 +46,9 @@ struct GS_OUT
 
 layout (location = 1) out GS_OUT gs_out;
 
-// Directional Light Data
-struct DirLight
-{ 
-	int CascadeSize;
-	float FrustaDistFactor;
-	vec3 LightDir;
-	vec3 Color;
-};
-
-layout(std140, binding = 3) uniform DirLightData
-{
-	int u_DirLightSize;
-	DirLight u_DirLights[MAX_DIR_LIGHTS];
-};
+// -------------- UNIFORM BUFFERS ------------- //
+#include UniformBuffers.glsl
+// -------------------------------------------- //
 
 
 void main()
@@ -108,12 +101,13 @@ layout (location = 1) in GS_OUT gs_in;
 
 layout (binding = 0) uniform sampler2DArray u_ShadowMapDirSpot;
 
-layout(std140, binding = 2) uniform ShadowMapSettings
-{
-	float u_ShadowMapResX;
-	float u_ShadowMapResY;
-	vec2 u_BlurScale;
-};
+// ------------------ DEFINES ----------------- //
+#include Defines.glsl
+// -------------------------------------------- //
+
+// -------------- UNIFORM BUFFERS ------------- //
+#include UniformBuffers.glsl
+// -------------------------------------------- //
 
 void main()
 {

@@ -178,9 +178,11 @@ IF EXIST "$(SolutionDir)\Tools\Opium_Editor\EditorResources"\ (xcopy /Q /E /Y /I
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="assets\shaders\include\uniforms.glsl" />
-    <None Include="assets\shaders\include\includesubdir1\include2.glsl" />
-    <None Include="assets\shaders\include\includesubdir2\includesubdir3\include3.glsl" />
+    <None Include="assets\shaders\include\Defines.glsl" />
+    <None Include="assets\shaders\include\GlobalVariables.glsl" />
+    <None Include="assets\shaders\include\MainShadowFunctions.glsl" />
+    <None Include="assets\shaders\include\UniformBuffers.glsl" />
+    <None Include="assets\shaders\include\Utils.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
