@@ -183,6 +183,7 @@ IF EXIST "$(SolutionDir)\Tools\Opium_Editor\EditorResources"\ (xcopy /Q /E /Y /I
     <None Include="assets\shaders\include\MainShadowFunctions.glsl" />
     <None Include="assets\shaders\include\UniformBuffers.glsl" />
     <None Include="assets\shaders\include\Utils.glsl" />
+    <None Include="assets\shaders\src\Pbr\PointShadowMapping.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

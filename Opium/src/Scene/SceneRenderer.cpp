@@ -29,6 +29,7 @@
 #define MAX_DIR_LIGHTS 4
 #define MAX_SPOT_LIGHTS 4
 #define MAX_CASCADE_SIZE 10
+#define MAX_POINT_LIGHTS 10
 
 namespace OP
 {
@@ -251,6 +252,8 @@ namespace OP
 			{
 				float shadowMapResX = 512.0f;
 				float shadowMapResY = 512.0f;
+				float pointLightSMResX = 256.0f;
+				float pointLightSMResY = 256.0f;
 				glm::vec2 blurScale = glm::vec2(0.0f);
 			} ShadowMapSettingsBuffer;
 
@@ -270,6 +273,11 @@ namespace OP
 
 			} LightSpaceMatricesDSBuffer;
 
+			// LightSpace Matrices obtained from point lights
+			struct LightSpaceMatricesPointData
+			{
+				LightSpaceMatrix LightSpaceMatricesPoint[MAX_POINT_LIGHTS * 6];
+			} LightSpaceMatricesPointBuffer;
 
 			struct CascadePlane
 			{
@@ -286,6 +294,7 @@ namespace OP
 			
 
 			Ref<UniformBuffer> LightSpaceMatricesDSUniformBuffer;
+			Ref<UniformBuffer> LightSpaceMatricesPointUniformBuffer;
 			Ref<UniformBuffer> CascadePlaneDistancesUniformBuffer;
 
 		// --------
@@ -308,7 +317,6 @@ namespace OP
 
 		Ref<UniformBuffer> DirLightUniformBuffer;
 		// ------- END DIRECTIONAL LIGHT --------- //
-
 
 		// ----------- SPOT LIGHT --------------- //
 		struct SpotLight
@@ -334,7 +342,25 @@ namespace OP
 		Ref<UniformBuffer> SpotLightUniformBuffer;
 		// --------- END SPOT LIGHT ------------ //
 
+		// ----------- POINT LIGHT ------------- //
+		struct PointLight
+		{
+			float NearDist;
+			float FarDist;
+			float Kq;
+			float Kl;
+			alignas(16) glm::vec3 Color;
+			alignas(16) glm::vec3 Position;
+		};
 
+		struct PointLightData
+		{
+			int Size;
+			PointLight PointLights[MAX_POINT_LIGHTS];
+		} PointLightsBuffer;
+
+		Ref<UniformBuffer> PointLightUniformBuffer;
+		// ------------------------------------- //
 
 
 
@@ -363,8 +389,10 @@ namespace OP
 		// Shaders
 		Ref<Shader> mainShader;
 		Ref<Shader> depthShader;
+		Ref<Shader> pointLightDepthShader;
 		Ref<Shader> depthDebugShader;
 		Ref<Shader> shadowMapDirSpotBlur;
+		Ref<Shader> pointLightSMBlurShader;
 
 		// Ref<Texture2D> woodTexture;
 		Ref<Texture2D> WhiteTexture;
@@ -394,7 +422,9 @@ namespace OP
 		unsigned int cubeVBO = 0;
 
 		Ref<RenderPass> depthRenderPass;
+		Ref<RenderPass> pointLightDepthRenderPass;
 		Ref<PingPongRenderPass> depthBlurDSLRenderPass;
+		Ref<PingPongRenderPass> pointLightBlurRenderPass;
 		Ref<RenderPass> finalRenderPass;
 
 		// Temp
@@ -446,13 +476,15 @@ namespace OP
 		s_SceneRendererData.TransformUniformBuffer         = UniformBuffer::Create(sizeof(SceneRendererData::TransformData), 1);
 		s_SceneRendererData.ShadowMapSettingsUniformBuffer = UniformBuffer::Create(sizeof(SceneRendererData::ShadowMapSettings), 2);
 
-		s_SceneRendererData.DirLightUniformBuffer  = UniformBuffer::Create(sizeof(SceneRendererData::DirLightData), 3);
-		s_SceneRendererData.SpotLightUniformBuffer = UniformBuffer::Create(sizeof(SceneRendererData::SpotLightData), 4);
+		s_SceneRendererData.DirLightUniformBuffer   = UniformBuffer::Create(sizeof(SceneRendererData::DirLightData), 3);
+		s_SceneRendererData.SpotLightUniformBuffer  = UniformBuffer::Create(sizeof(SceneRendererData::SpotLightData), 4);
+		s_SceneRendererData.PointLightUniformBuffer = UniformBuffer::Create(sizeof(SceneRendererData::PointLightData), 5);
 
-		s_SceneRendererData.LightSpaceMatricesDSUniformBuffer = UniformBuffer::Create(sizeof(SceneRendererData::LightSpaceMatricesDSData), 5);
-		s_SceneRendererData.CascadePlaneDistancesUniformBuffer = UniformBuffer::Create(sizeof(SceneRendererData::CascadePlaneDistancesData), 6);
+		s_SceneRendererData.LightSpaceMatricesDSUniformBuffer  = UniformBuffer::Create(sizeof(SceneRendererData::LightSpaceMatricesDSData), 6);
+		s_SceneRendererData.LightSpaceMatricesPointUniformBuffer = UniformBuffer::Create(sizeof(SceneRendererData::LightSpaceMatricesPointData), 7);
+		s_SceneRendererData.CascadePlaneDistancesUniformBuffer = UniformBuffer::Create(sizeof(SceneRendererData::CascadePlaneDistancesData), 8);
 
-		s_SceneRendererData.MaterialUniformBuffer  = UniformBuffer::Create(sizeof(SceneRendererData::MaterialData), 7);
+		s_SceneRendererData.MaterialUniformBuffer  = UniformBuffer::Create(sizeof(SceneRendererData::MaterialData), 9);
 
 		s_SceneRendererData.ViewportSize.x = width;
 		s_SceneRendererData.ViewportSize.y = height;
@@ -479,8 +511,21 @@ namespace OP
 
 		s_SceneRendererData.depthBlurDSLRenderPass = PingPongRenderPass::Create(std::string("DSL Blur Pass"), depthFBSpec, s_SceneRendererData.shadowMapDirSpotBlur);
 
+		// Depth framebuffer for Point Lights
+		FramebufferSpecification depthFBPointLight;
+		depthFBPointLight.Attachments = { FramebufferTextureFormat::CUBEMAP_ARRAY_DEPTH };
+		depthFBPointLight.Width = s_SceneRendererData.ShadowMapSettingsBuffer.pointLightSMResX;
+		depthFBPointLight.Height = s_SceneRendererData.ShadowMapSettingsBuffer.pointLightSMResY;
+
+		s_SceneRendererData.pointLightDepthRenderPass = RenderPass::Create(std::string("Point Light Depth Pass"), depthFBPointLight, s_SceneRendererData.depthShader);
 		
-		
+		// Depth blur framebuffer for Point Light Shadowmap blur
+		FramebufferSpecification depthFBPointLightBlur;
+		depthFBPointLightBlur.Attachments = { FramebufferTextureFormat::SM_POINT_LIGHT_BLUR };
+		depthFBPointLightBlur.Width = s_SceneRendererData.ShadowMapSettingsBuffer.pointLightSMResX;
+		depthFBPointLightBlur.Height = s_SceneRendererData.ShadowMapSettingsBuffer.pointLightSMResY;
+
+		s_SceneRendererData.pointLightBlurRenderPass = RenderPass::Create(std::string("Point Light Blur Render Pass"), depthFBPointLightBlur, s_SceneRendererData.pointLightSMBlurShader);
 
 		// Final Framebuffer
 		FramebufferSpecification finalFBSpec;
@@ -595,6 +640,45 @@ namespace OP
 				spotLightCounter++;
 			}
 
+			auto group3 = scene->m_Registry.group<PointLightComponent>(entt::get<TransformComponent>);
+			s_SceneRendererData.PointLightsBuffer.Size = group3.size() <  MAX_POINT_LIGHTS ? group3.size() : MAX_POINT_LIGHTS;
+			int pointLightCounter = 0;
+			for (auto entity : group3)
+			{
+				auto [transform, pointLight] = group3.get<TransformComponent, PointLightComponent>(entity);
+
+				glm::vec3 pos = transform.Translation;
+				s_SceneRendererData.PointLightsBuffer.PointLights[pointLightCounter].Position = pos;
+				s_SceneRendererData.PointLightsBuffer.PointLights[pointLightCounter].Color = pointLight.Color;
+				s_SceneRendererData.PointLightsBuffer.PointLights[pointLightCounter].NearDist = pointLight.NearDist;
+				s_SceneRendererData.PointLightsBuffer.PointLights[pointLightCounter].FarDist = pointLight.FarDist;
+				s_SceneRendererData.PointLightsBuffer.PointLights[pointLightCounter].Kl = pointLight.Kl;
+				s_SceneRendererData.PointLightsBuffer.PointLights[pointLightCounter].Kq = pointLight.Kq;
+
+				glm::mat4 projection = glm::perspective(glm::radians(90.0f), 1.0f, pointLight.NearDist, pointLight.FarDist);
+
+				s_SceneRendererData.LightSpaceMatricesPointBuffer.LightSpaceMatricesPoint[pointLightCounter * 6 + 0].mat = projection *
+					glm::lookAt(pos, pos + glm::vec3(1.0, 0.0, 0.0), glm::vec3(0.0, -1.0, 0.0));
+
+				s_SceneRendererData.LightSpaceMatricesPointBuffer.LightSpaceMatricesPoint[pointLightCounter * 6 + 1].mat = projection *
+					glm::lookAt(pos, pos + glm::vec3(-1.0, 0.0, 0.0), glm::vec3(0.0, -1.0, 0.0));
+
+				s_SceneRendererData.LightSpaceMatricesPointBuffer.LightSpaceMatricesPoint[pointLightCounter * 6 + 2].mat = projection *
+					glm::lookAt(pos, pos + glm::vec3(0.0, 1.0, 0.0), glm::vec3(0.0, 0.0, 1.0));
+
+				s_SceneRendererData.LightSpaceMatricesPointBuffer.LightSpaceMatricesPoint[pointLightCounter * 6 + 3].mat = projection *
+					glm::lookAt(pos, pos + glm::vec3(0.0, -1.0, 0.0), glm::vec3(0.0, 0.0, -1.0));
+
+				s_SceneRendererData.LightSpaceMatricesPointBuffer.LightSpaceMatricesPoint[pointLightCounter * 6 + 4].mat = projection *
+					glm::lookAt(pos, pos + glm::vec3(0.0, 0.0, 1.0), glm::vec3(0.0, -1.0, 0.0));
+
+				s_SceneRendererData.LightSpaceMatricesPointBuffer.LightSpaceMatricesPoint[pointLightCounter * 6 + 5].mat = projection *
+					glm::lookAt(pos, pos + glm::vec3(0.0, 0.0, -1.0), glm::vec3(0.0, -1.0, 0.0));
+
+
+				pointLightCounter++;
+			}
+
 		// ------------------- END FILL IN DIR LIGHT UNIFORMS --------------------- //
 
 
@@ -608,8 +692,14 @@ namespace OP
 		s_SceneRendererData.SpotLightUniformBuffer->SetData(&s_SceneRendererData.SpotLightsBuffer,
 			sizeof(s_SceneRendererData.SpotLightsBuffer));
 
+		s_SceneRendererData.PointLightUniformBuffer->SetData(&s_SceneRendererData.PointLightsBuffer,
+			sizeof(s_SceneRendererData.PointLightsBuffer));
+
 		s_SceneRendererData.LightSpaceMatricesDSUniformBuffer->SetData(&s_SceneRendererData.LightSpaceMatricesDSBuffer,
 			sizeof(s_SceneRendererData.LightSpaceMatricesDSBuffer));
+
+		s_SceneRendererData.LightSpaceMatricesPointUniformBuffer->SetData(&s_SceneRendererData.LightSpaceMatricesPointBuffer,
+			sizeof(s_SceneRendererData.LightSpaceMatricesPointBuffer));
 
 		s_SceneRendererData.CascadePlaneDistancesUniformBuffer->SetData(&s_SceneRendererData.CascadePlaneDistancesBuffer,
 			sizeof(s_SceneRendererData.CascadePlaneDistancesBuffer));
@@ -669,6 +759,60 @@ namespace OP
 		);
 
 
+		s_SceneRendererData.pointLightDepthRenderPass->InvokeCommands(
+			[&]() -> void {
+
+				s_SceneRendererData.pointLightDepthShader->Bind();
+
+				glClear(GL_DEPTH_BUFFER_BIT);
+				glCullFace(GL_FRONT);
+				// ------------ DRAW SCENE ------------
+
+
+				model = glm::mat4(1.0f);
+				model = glm::translate(model, glm::vec3(-100.0f, 100.0f, -40.0f));
+				model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
+				s_SceneRendererData.TransformBuffer.Model = model;
+				s_SceneRendererData.TransformUniformBuffer->SetData(&s_SceneRendererData.TransformBuffer, sizeof(SceneRendererData::TransformData));
+				s_SceneRendererData.icosphere->Draw();
+
+				model = glm::mat4(1.0f);
+				model = glm::translate(model, glm::vec3(0.0f, -3.0f, 0.0f));
+				model = glm::scale(model, glm::vec3(500.0f, 1.0f, 500.0f));
+				model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+				s_SceneRendererData.TransformBuffer.Model = model;
+				s_SceneRendererData.TransformUniformBuffer->SetData(&s_SceneRendererData.TransformBuffer, sizeof(SceneRendererData::TransformData));
+				s_SceneRendererData.cube->Draw();
+
+				model = glm::mat4(1.0f);
+				model = glm::translate(model, glm::vec3(-50.0f, 50.0f, 2.0f));
+				model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
+				s_SceneRendererData.TransformBuffer.Model = model;
+				s_SceneRendererData.TransformUniformBuffer->SetData(&s_SceneRendererData.TransformBuffer, sizeof(SceneRendererData::TransformData));
+				s_SceneRendererData.cube->Draw();
+
+
+				model = glm::mat4(1.0f);
+				model = glm::translate(model, glm::vec3(75.0f, 20.0f, -2.0f));
+				model = glm::scale(model, glm::vec3(15.0f, 15.0f, 15.0f));
+				s_SceneRendererData.TransformBuffer.Model = model;
+				s_SceneRendererData.TransformUniformBuffer->SetData(&s_SceneRendererData.TransformBuffer, sizeof(SceneRendererData::TransformData));
+				s_SceneRendererData.icosphere2->Draw();
+
+
+
+				s_SceneRendererData.spinningModel = glm::rotate(s_SceneRendererData.spinningModel, glm::radians((float)ts * time * 1.0f), glm::normalize(glm::vec3(1.0, 0.0, 1.0)));
+				s_SceneRendererData.TransformBuffer.Model = s_SceneRendererData.spinningModel;
+				s_SceneRendererData.TransformUniformBuffer->SetData(&s_SceneRendererData.TransformBuffer, sizeof(SceneRendererData::TransformData));
+				s_SceneRendererData.icosphere3->Draw();
+
+
+				// ---------- DRAW SCENE END ----------
+				glCullFace(GL_BACK);
+
+			}
+		);
+
 		// RENDER PASS FOR BLURING directional and spot light shadow maps altogether
 		float sW = s_SceneRendererData.ShadowMapSettingsBuffer.shadowMapResX;
 		float sH = s_SceneRendererData.ShadowMapSettingsBuffer.shadowMapResY;
@@ -707,7 +851,8 @@ namespace OP
 		}
 		glEnable(GL_DEPTH_TEST);
 
-
+		// POINT LIGHT ICIN PCF UYGULA SADECE!!!!!
+		
 		// FINAL RENDERING - (FOR NOW!)
 		
 		s_SceneRendererData.finalRenderPass->InvokeCommands(

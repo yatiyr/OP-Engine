@@ -265,6 +265,20 @@ namespace OP
 			out << YAML::Key << "CastShadows" << YAML::Value << spotLightComponent.CastShadows;
 		}
 
+		if (entity.HasComponent<PointLightComponent>())
+		{
+			out << YAML::Key << "PointLightComponent";
+			out << YAML::BeginMap;
+
+			auto& pointLightComponent = entity.GetComponent<PointLightComponent>();
+			out << YAML::Key << "Color" << YAML::Value << pointLightComponent.Color;
+			out << YAML::Key << "NearDist" << YAML::Value << pointLightComponent.NearDist;
+			out << YAML::Key << "FarDist" << YAML::Value << pointLightComponent.FarDist;
+			out << YAML::Key << "Kq" << YAML::Value << pointLightComponent.Kq;
+			out << YAML::Key << "Kl" << YAML::Value << pointLightComponent.Kl;
+			out << YAML::Key << "CastShadows" << YAML::Value << pointLightComponent.CastShadows;
+		}
+
 		out << YAML::EndMap; // Entity
 	}
 
@@ -291,7 +305,6 @@ namespace OP
 	void SceneSerializer::SerializeBinary(const std::string& filePath)
 	{
 		// Not implemented
-		OP_ENGINE_ASSERT(false);
 	}
 
 	bool SceneSerializer::DeserializeText(const std::string& filePath)
@@ -402,6 +415,18 @@ namespace OP
 					sLC.NearDist = spotLightComponent["NearDist"].as<float>();
 					sLC.Kq = spotLightComponent["Kq"].as<float>();
 					sLC.Kl = spotLightComponent["Kl"].as<float>();
+				}
+
+				auto pointLightComponent = entity["PointLightComponent"];
+				if (pointLightComponent)
+				{
+					auto& pLC = deserializedEntity.AddComponent<PointLightComponent>();
+					pLC.Color = pointLightComponent["Color"].as<glm::vec3>();
+					pLC.NearDist= pointLightComponent["NearDist"].as<float>();
+					pLC.FarDist = pointLightComponent["FarDist"].as<float>();
+					pLC.Kq = pointLightComponent["Kq"].as<float>();
+					pLC.Kl = pointLightComponent["Kl"].as<float>();
+					pLC.CastShadows= pointLightComponent["CastShadows"].as<bool>();
 				}
 			}
 		}

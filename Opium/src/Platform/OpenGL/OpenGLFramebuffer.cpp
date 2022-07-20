@@ -35,6 +35,11 @@ namespace OP
 			glCreateTextures(GL_TEXTURE_2D_ARRAY, count, outID);
 		}
 
+		static void CreateCubemapArray(uint32_t* outID, uint32_t count)
+		{
+			glCreateTextures(GL_TEXTURE_CUBE_MAP_ARRAY, count, outID);
+		}
+
 		static void BindTextureArray(uint32_t id)
 		{
 			glBindTexture(GL_TEXTURE_2D_ARRAY, id);
@@ -122,6 +127,26 @@ namespace OP
 			glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, id, 0);
 		}
 
+		static void AttachArrayCubemap_Point(uint32_t id, GLenum format, uint32_t width, uint32_t height, uint32_t layerCount)
+		{
+			glTexStorage3D(GL_TEXTURE_CUBE_MAP_ARRAY, 1, GL_DEPTH_COMPONENT32F, width, height, layerCount);
+			glTexParameteri(GL_TEXTURE_CUBE_MAP_ARRAY, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_CUBE_MAP_ARRAY, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_CUBE_MAP_ARRAY, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+			glTexParameteri(GL_TEXTURE_CUBE_MAP_ARRAY, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+			glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, id, 0);
+		}
+
+		static void AttachCubemapPointBlur(uint32_t id, uint32_t width, uint32_t height, uint32_t layerCount)
+		{
+			glTexStorage3D(GL_TEXTURE_CUBE_MAP_ARRAY, 1, GL_RGBA32F, width, height, layerCount);
+			glTexParameteri(GL_TEXTURE_CUBE_MAP_ARRAY, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_CUBE_MAP_ARRAY, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_CUBE_MAP_ARRAY, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+			glTexParameteri(GL_TEXTURE_CUBE_MAP_ARRAY, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+			glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, id, 0);
+		}
+
 		static void AttachArrayShadowMapVariance_Dir_Spot(uint32_t id, uint32_t width, uint32_t height, uint32_t layerCount)
 		{
 			// glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, GL_RG32F, width, height, layerCount, 0, GL_RGBA, GL_FLOAT, nullptr);
@@ -158,6 +183,7 @@ namespace OP
 				case FramebufferTextureFormat::DEPTH24STENCIL8: return true;
 				case FramebufferTextureFormat::DEPTH16: return true;
 				case FramebufferTextureFormat::SHADOWMAP_ARRAY_DEPTH: return true;
+				case FramebufferTextureFormat::CUBEMAP_ARRAY_DEPTH: return true;
 			}
 
 			return false;
@@ -235,6 +261,13 @@ namespace OP
 				Utils::AttachArrayShadowMapVariance_Dir_Spot(m_ColorAttachments[0], m_Specification.Width, m_Specification.Height, m_ColorAttachmentSpecifications[0].layerCount);
 
 			}
+			else if (m_ColorAttachmentSpecifications.size() == 1 && m_ColorAttachmentSpecifications[0].TextureFormat == FramebufferTextureFormat::SM_POINT_LIGHT_BLUR)
+			{
+				Utils::CreateTextureArray(&m_ColorAttachments[0], 1);
+				Utils::BindCubemapArray(m_ColorAttachments[0]);
+				Utils::AttachCubemapPointBlur(m_ColorAttachments[0], m_Specification.Width, m_Specification.Height, m_ColorAttachmentSpecifications[0].pointLightLayerCount);
+
+			}
 			else
 			{
 				Utils::CreateTextures(multisample, m_ColorAttachments.data(), m_ColorAttachments.size());
@@ -271,10 +304,10 @@ namespace OP
 					Utils::BindTexture(multisample, m_DepthAttachment);
 					Utils::AttachDepthTexture(m_DepthAttachment, m_Specification.Samples, GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, m_Specification.Width, m_Specification.Height);
 					break;
-				case FramebufferTextureFormat::CUBEMAP_DEPTH:
-					Utils::CreateTextures(multisample, &m_DepthAttachment, 1);
-					Utils::BindCubemap(m_DepthAttachment);
-					Utils::AttachDepthCubemapTexture(m_DepthAttachment, m_Specification.Samples, m_Specification.Width, m_Specification.Height);
+				case FramebufferTextureFormat::CUBEMAP_ARRAY_DEPTH:
+					Utils::CreateCubemapArray(&m_DepthAttachment, 1);
+					Utils::BindCubemapArray(m_DepthAttachment);
+					Utils::AttachArrayCubemap_Point(m_DepthAttachment, m_Specification.Samples, m_Specification.Width, m_Specification.Height, m_DepthAttachmentSpecification.pointLightLayerCount);
 					break;
 				case FramebufferTextureFormat::SHADOWMAP_ARRAY_DEPTH:
 					Utils::CreateTextureArray(&m_DepthAttachment, 1);

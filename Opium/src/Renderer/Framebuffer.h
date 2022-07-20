@@ -23,7 +23,8 @@ namespace OP
 		SHADOWMAP_OD_ARRAY_DEPTH,
 
 		// For omnidirectional shadow mapping
-		CUBEMAP_DEPTH,
+		CUBEMAP_ARRAY_DEPTH,
+		SM_POINT_LIGHT_BLUR,
 
 		// Default
 		Depth = DEPTH24STENCIL8
@@ -38,6 +39,7 @@ namespace OP
 
 		FramebufferTextureFormat TextureFormat = FramebufferTextureFormat::None;
 		uint32_t layerCount = MAX_DIR_LIGHTS * MAX_CASCADE_SIZE + MAX_SPOT_LIGHTS;
+		uint32_t pointLightLayerCount = MAX_POINT_LIGHTS;
 		// TODO: filtering/wrap
 	};
 

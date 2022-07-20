@@ -173,4 +173,18 @@ namespace OP
 		SpotLightComponent() = default;
 		SpotLightComponent(const SpotLightComponent&) = default;
 	};
+
+	struct PointLightComponent
+	{
+		float NearDist = 0.01;
+		float FarDist = 100.0f;
+		float Kq = 0.0075f;
+		float Kl = 0.045f;
+		float Bias;
+		glm::vec3 Color = glm::vec3(0.5f, 0.5f, 0.5f);
+		bool CastShadows;
+
+		PointLightComponent() = default;
+		PointLightComponent(const PointLightComponent&) = default;
+	};
 }
