@@ -20,7 +20,7 @@ vec2 poissonDisk[16] = vec2[]
 );
 
 
-vec3 sampleOffsetDirections[20] = vec3[]
+vec3 gridSamplingDisk[20] = vec3[]
 (
    vec3( 1,  1,  1), vec3( 1, -1,  1), vec3(-1, -1,  1), vec3(-1,  1,  1), 
    vec3( 1,  1, -1), vec3( 1, -1, -1), vec3(-1, -1, -1), vec3(-1,  1, -1),

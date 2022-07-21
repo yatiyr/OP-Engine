@@ -397,4 +397,10 @@ namespace OP
 	{
 
 	}
+
+	template<>
+	void Scene::OnComponentAdded<PointLightComponent>(Entity entity, PointLightComponent& component)
+	{
+
+	}
 }

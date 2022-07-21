@@ -379,6 +379,17 @@ namespace OP
 				}
 			}
 
+			if (!m_SelectionContext.HasComponent<SpotLightComponent>() &&
+				!m_SelectionContext.HasComponent<DirLightComponent>() &&
+				!m_SelectionContext.HasComponent<PointLightComponent>())
+			{
+				if (ImGui::MenuItem("Point Light"))
+				{
+					m_SelectionContext.AddComponent<PointLightComponent>();
+					ImGui::CloseCurrentPopup();
+				}
+			}
+
 			ImGui::EndPopup();
 		}
 

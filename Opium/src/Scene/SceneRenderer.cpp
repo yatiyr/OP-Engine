@@ -252,8 +252,8 @@ namespace OP
 			{
 				float shadowMapResX = 512.0f;
 				float shadowMapResY = 512.0f;
-				float pointLightSMResX = 256.0f;
-				float pointLightSMResY = 256.0f;
+				float pointLightSMResX = 1024.0f;
+				float pointLightSMResY = 1024.0f;
 				glm::vec2 blurScale = glm::vec2(0.0f);
 			} ShadowMapSettingsBuffer;
 
@@ -424,7 +424,6 @@ namespace OP
 		Ref<RenderPass> depthRenderPass;
 		Ref<RenderPass> pointLightDepthRenderPass;
 		Ref<PingPongRenderPass> depthBlurDSLRenderPass;
-		Ref<PingPongRenderPass> pointLightBlurRenderPass;
 		Ref<RenderPass> finalRenderPass;
 
 		// Temp
@@ -469,7 +468,7 @@ namespace OP
 		s_SceneRendererData.mainShader = ResourceManager::GetShader("Main.glsl");
 		s_SceneRendererData.depthShader = ResourceManager::GetShader("DirSpotShadowMapping.glsl");
 		s_SceneRendererData.depthDebugShader = ResourceManager::GetShader("DepthDebug.glsl");
-
+		s_SceneRendererData.pointLightDepthShader = ResourceManager::GetShader("PointShadowMapping.glsl");
 
 		// Deal with uniform buffers
 		s_SceneRendererData.CameraUniformBuffer            = UniformBuffer::Create(sizeof(SceneRendererData::CameraData), 0);
@@ -518,14 +517,7 @@ namespace OP
 		depthFBPointLight.Height = s_SceneRendererData.ShadowMapSettingsBuffer.pointLightSMResY;
 
 		s_SceneRendererData.pointLightDepthRenderPass = RenderPass::Create(std::string("Point Light Depth Pass"), depthFBPointLight, s_SceneRendererData.depthShader);
-		
-		// Depth blur framebuffer for Point Light Shadowmap blur
-		FramebufferSpecification depthFBPointLightBlur;
-		depthFBPointLightBlur.Attachments = { FramebufferTextureFormat::SM_POINT_LIGHT_BLUR };
-		depthFBPointLightBlur.Width = s_SceneRendererData.ShadowMapSettingsBuffer.pointLightSMResX;
-		depthFBPointLightBlur.Height = s_SceneRendererData.ShadowMapSettingsBuffer.pointLightSMResY;
 
-		s_SceneRendererData.pointLightBlurRenderPass = RenderPass::Create(std::string("Point Light Blur Render Pass"), depthFBPointLightBlur, s_SceneRendererData.pointLightSMBlurShader);
 
 		// Final Framebuffer
 		FramebufferSpecification finalFBSpec;
@@ -864,7 +856,7 @@ namespace OP
 				s_SceneRendererData.WhiteTexture->Bind(0);
 
 				uint32_t depthMap = s_SceneRendererData.depthBlurDSLRenderPass->GetColorAttachmentPP(0);
-				glBindTextureUnit(1, depthMap);
+				glBindTextureUnit(0, depthMap);
 				
 			
 				// ------------ DRAW SCENE ------------
@@ -923,8 +915,8 @@ namespace OP
 
 				s_SceneRendererData.depthDebugShader->Bind();
 
-				uint32_t depthMap2 = s_SceneRendererData.depthRenderPass->GetColorAttachment(0);
-				glBindTextureUnit(1, depthMap);
+				uint32_t depthMap2 = s_SceneRendererData.pointLightDepthRenderPass->GetDepthAttachment(0);
+				glBindTextureUnit(1, depthMap2);
 
 				glDisable(GL_DEPTH_TEST);
 				model = glm::mat4(1.0f);

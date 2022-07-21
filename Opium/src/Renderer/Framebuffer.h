@@ -39,7 +39,7 @@ namespace OP
 
 		FramebufferTextureFormat TextureFormat = FramebufferTextureFormat::None;
 		uint32_t layerCount = MAX_DIR_LIGHTS * MAX_CASCADE_SIZE + MAX_SPOT_LIGHTS;
-		uint32_t pointLightLayerCount = MAX_POINT_LIGHTS;
+		uint32_t pointLightLayerCount = MAX_POINT_LIGHTS * 6;
 		// TODO: filtering/wrap
 	};
 

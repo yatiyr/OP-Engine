@@ -97,3 +97,28 @@ float ShadowCalculationDir(vec3 fragPosWorldSpace, vec3 lightDir, vec3 normal,  
 
 	return 1 - shadow;
 }
+
+
+float ShadowCalculationPoint(vec3 fragPosWorldSpace, vec3 viewPos, samplerCubeArray shadowMapPoint, int pointLightIndex)
+{
+	vec3 fragToLight = fragPosWorldSpace - u_PointLights[pointLightIndex].Position;
+
+	float currentDepth = length(fragToLight);
+
+	float shadow = 0.0;
+	float bias = 0.15;
+	int samples = 20;
+	float viewDistance = length(viewPos - fragPosWorldSpace);
+	float diskRadius = (1.0 + (viewDistance / u_PointLights[pointLightIndex].FarDist)) / 25.0;
+	for(int i=0; i<samples; i++)
+	{
+		float closestDepth = texture(shadowMapPoint, vec4(fragToLight + gridSamplingDisk[i] * diskRadius, pointLightIndex)).r;
+		closestDepth *= u_PointLights[pointLightIndex].FarDist;
+		if (currentDepth - bias > closestDepth)
+			shadow += 1.0;
+	}
+
+	shadow /= float(samples);
+
+	return shadow;
+}

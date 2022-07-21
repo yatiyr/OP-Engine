@@ -73,7 +73,7 @@ layout(std140, binding = 5) uniform PointLightData
 {
 	int u_PointLightSize;
 	PointLight u_PointLights[MAX_POINT_LIGHTS];
-}
+};
 
 layout(std140, binding = 6) uniform LightSpaceMatricesDSData
 {

@@ -56,17 +56,17 @@ struct VS_OUT
 
 layout (location = 0) in VS_OUT fs_in;
 
-layout (binding = 0) uniform sampler2D u_DiffuseTexture;
-layout (binding = 1) uniform sampler2DArray u_ShadowMapDirSpot;
+layout (binding = 0) uniform sampler2DArray u_ShadowMapDirSpot;
+layout (binding = 1) uniform samplerCubeArray u_ShadowMapPoint;
 
+// ------------- GLOBAL VARIABLES ------------- //
+#include GlobalVariables.glsl
 // -------------- UNIFORM BUFFERS ------------- //
 #include UniformBuffers.glsl
 // ----------------- UTILS -------------------- //
 #include Utils.glsl
 // ------------- SHADOW FUNCS ----------------- //
 #include MainShadowFunctions.glsl
-// ------------- GLOBAL VARIABLES ------------- //
-#include GlobalVariables.glsl
 
 void main()
 {
@@ -145,6 +145,35 @@ void main()
 		vec3 halfwayDir = normalize(-lightDir + viewDir);
 		spec            = pow(max(dot(normal, halfwayDir), 0.0), 64);
 		specular   += spec * lightColor * intensity * (1 - shadow) * attenuation;
+
+	}
+
+	for(int i=0; i<u_PointLightSize; i++)
+	{
+		PointLight pL = u_PointLights[i];
+
+		vec3 lightColor = pL.Color;
+		vec3 lightPos = pL.Position;
+		vec3 lightDir = normalize(lightPos - fragPos);
+		float dist = length(lightPos - fragPos);
+		float Kq = u_PointLights[i].Kq;
+		float Kl = u_PointLights[i].Kl;
+
+		// Calculate attenuation
+		float attenuation = 1 / (1 + Kq * dist * dist + Kl * dist);
+
+		shadow = ShadowCalculationPoint(fragPos, u_ViewPos, u_ShadowMapPoint, i);
+
+		// diffuse
+		float diff = max(dot(lightDir, normal), 0.0);
+		diffuse += diff * lightColor * (1 - shadow) * attenuation;
+
+		// specular
+		vec3 viewDir = normalize(u_ViewPos - fs_in.FragPos);
+		float spec = 0.1;
+		vec3 halfwayDir = normalize(lightDir + viewDir);
+		spec = pow(max(dot(normal, halfwayDir), 0.0), 64);
+		specular += spec * lightColor * (1 - shadow) * attenuation;
 
 	}
 
