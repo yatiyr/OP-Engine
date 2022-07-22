@@ -45,6 +45,18 @@ layout (binding = 0) uniform sampler2D u_Image;
 
 void main()
 {
-	vec4 color = texture(u_Image, fs_in.TexCoords);
-	FragColor = color;
+	const float gamma = 2.2;
+	vec3 hdrColor = texture(u_Image, fs_in.TexCoords).rgb;
+
+	// exposure tone mapping
+	vec3 mapped = vec3(1.0) - exp(-hdrColor * u_Exposure);
+
+	// reinhard tone mapping
+	//vec3 mapped = hdrColor / (hdrColor + vec3(1.0));
+
+	// gamma correction
+	if(u_Hdr)
+		mapped = pow(mapped, vec3(1.0 / ( gamma)));
+
+	FragColor = vec4(mapped, 1.0);
 }

@@ -95,7 +95,8 @@
       <Command>IF EXIST "$(SolutionDir)\Tools\Opium_Editor\assets"\ (xcopy /Q /E /Y /I "$(SolutionDir)\Tools\Opium_Editor\assets" "..\..\bin\Debug-windows-x86_64\Opium_Editor\assets" &gt; nul) ELSE (xcopy /Q /Y /I "$(SolutionDir)\Tools\Opium_Editor\assets" "..\..\bin\Debug-windows-x86_64\Opium_Editor\assets" &gt; nul)
 IF EXIST "$(SolutionDir)\Opium\external\mono\bin\Release\mono-2.0-sgen.dll"\ (xcopy /Q /E /Y /I "$(SolutionDir)\Opium\external\mono\bin\Release\mono-2.0-sgen.dll" "..\..\bin\Debug-windows-x86_64\Opium_Editor" &gt; nul) ELSE (xcopy /Q /Y /I "$(SolutionDir)\Opium\external\mono\bin\Release\mono-2.0-sgen.dll" "..\..\bin\Debug-windows-x86_64\Opium_Editor" &gt; nul)
 IF EXIST "$(SolutionDir)\Tools\Opium_Editor\mono"\ (xcopy /Q /E /Y /I "$(SolutionDir)\Tools\Opium_Editor\mono" "..\..\bin\Debug-windows-x86_64\Opium_Editor\mono" &gt; nul) ELSE (xcopy /Q /Y /I "$(SolutionDir)\Tools\Opium_Editor\mono" "..\..\bin\Debug-windows-x86_64\Opium_Editor\mono" &gt; nul)
-IF EXIST "$(SolutionDir)\Tools\Opium_Editor\EditorResources"\ (xcopy /Q /E /Y /I "$(SolutionDir)\Tools\Opium_Editor\EditorResources" "..\..\bin\Debug-windows-x86_64\Opium_Editor\EditorResources" &gt; nul) ELSE (xcopy /Q /Y /I "$(SolutionDir)\Tools\Opium_Editor\EditorResources" "..\..\bin\Debug-windows-x86_64\Opium_Editor\EditorResources" &gt; nul)</Command>
+IF EXIST "$(SolutionDir)\Tools\Opium_Editor\EditorResources"\ (xcopy /Q /E /Y /I "$(SolutionDir)\Tools\Opium_Editor\EditorResources" "..\..\bin\Debug-windows-x86_64\Opium_Editor\EditorResources" &gt; nul) ELSE (xcopy /Q /Y /I "$(SolutionDir)\Tools\Opium_Editor\EditorResources" "..\..\bin\Debug-windows-x86_64\Opium_Editor\EditorResources" &gt; nul)
+IF EXIST "$(SolutionDir)\Opium\external\assimp\bin\assimp-vc143-mt.dll"\ (xcopy /Q /E /Y /I "$(SolutionDir)\Opium\external\assimp\bin\assimp-vc143-mt.dll" "..\..\bin\Debug-windows-x86_64\Opium_Editor" &gt; nul) ELSE (xcopy /Q /Y /I "$(SolutionDir)\Opium\external\assimp\bin\assimp-vc143-mt.dll" "..\..\bin\Debug-windows-x86_64\Opium_Editor" &gt; nul)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -122,7 +123,8 @@ IF EXIST "$(SolutionDir)\Tools\Opium_Editor\EditorResources"\ (xcopy /Q /E /Y /I
       <Command>IF EXIST "$(SolutionDir)\Tools\Opium_Editor\assets"\ (xcopy /Q /E /Y /I "$(SolutionDir)\Tools\Opium_Editor\assets" "..\..\bin\Release-windows-x86_64\Opium_Editor\assets" &gt; nul) ELSE (xcopy /Q /Y /I "$(SolutionDir)\Tools\Opium_Editor\assets" "..\..\bin\Release-windows-x86_64\Opium_Editor\assets" &gt; nul)
 IF EXIST "$(SolutionDir)\Opium\external\mono\bin\Release\mono-2.0-sgen.dll"\ (xcopy /Q /E /Y /I "$(SolutionDir)\Opium\external\mono\bin\Release\mono-2.0-sgen.dll" "..\..\bin\Release-windows-x86_64\Opium_Editor" &gt; nul) ELSE (xcopy /Q /Y /I "$(SolutionDir)\Opium\external\mono\bin\Release\mono-2.0-sgen.dll" "..\..\bin\Release-windows-x86_64\Opium_Editor" &gt; nul)
 IF EXIST "$(SolutionDir)\Tools\Opium_Editor\mono"\ (xcopy /Q /E /Y /I "$(SolutionDir)\Tools\Opium_Editor\mono" "..\..\bin\Release-windows-x86_64\Opium_Editor\mono" &gt; nul) ELSE (xcopy /Q /Y /I "$(SolutionDir)\Tools\Opium_Editor\mono" "..\..\bin\Release-windows-x86_64\Opium_Editor\mono" &gt; nul)
-IF EXIST "$(SolutionDir)\Tools\Opium_Editor\EditorResources"\ (xcopy /Q /E /Y /I "$(SolutionDir)\Tools\Opium_Editor\EditorResources" "..\..\bin\Release-windows-x86_64\Opium_Editor\EditorResources" &gt; nul) ELSE (xcopy /Q /Y /I "$(SolutionDir)\Tools\Opium_Editor\EditorResources" "..\..\bin\Release-windows-x86_64\Opium_Editor\EditorResources" &gt; nul)</Command>
+IF EXIST "$(SolutionDir)\Tools\Opium_Editor\EditorResources"\ (xcopy /Q /E /Y /I "$(SolutionDir)\Tools\Opium_Editor\EditorResources" "..\..\bin\Release-windows-x86_64\Opium_Editor\EditorResources" &gt; nul) ELSE (xcopy /Q /Y /I "$(SolutionDir)\Tools\Opium_Editor\EditorResources" "..\..\bin\Release-windows-x86_64\Opium_Editor\EditorResources" &gt; nul)
+IF EXIST "$(SolutionDir)\Opium\external\assimp\bin\assimp-vc143-mt.dll"\ (xcopy /Q /E /Y /I "$(SolutionDir)\Opium\external\assimp\bin\assimp-vc143-mt.dll" "..\..\bin\Release-windows-x86_64\Opium_Editor" &gt; nul) ELSE (xcopy /Q /Y /I "$(SolutionDir)\Opium\external\assimp\bin\assimp-vc143-mt.dll" "..\..\bin\Release-windows-x86_64\Opium_Editor" &gt; nul)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">
@@ -149,7 +151,8 @@ IF EXIST "$(SolutionDir)\Tools\Opium_Editor\EditorResources"\ (xcopy /Q /E /Y /I
       <Command>IF EXIST "$(SolutionDir)\Tools\Opium_Editor\assets"\ (xcopy /Q /E /Y /I "$(SolutionDir)\Tools\Opium_Editor\assets" "..\..\bin\Dist-windows-x86_64\Opium_Editor\assets" &gt; nul) ELSE (xcopy /Q /Y /I "$(SolutionDir)\Tools\Opium_Editor\assets" "..\..\bin\Dist-windows-x86_64\Opium_Editor\assets" &gt; nul)
 IF EXIST "$(SolutionDir)\Opium\external\mono\bin\Release\mono-2.0-sgen.dll"\ (xcopy /Q /E /Y /I "$(SolutionDir)\Opium\external\mono\bin\Release\mono-2.0-sgen.dll" "..\..\bin\Dist-windows-x86_64\Opium_Editor" &gt; nul) ELSE (xcopy /Q /Y /I "$(SolutionDir)\Opium\external\mono\bin\Release\mono-2.0-sgen.dll" "..\..\bin\Dist-windows-x86_64\Opium_Editor" &gt; nul)
 IF EXIST "$(SolutionDir)\Tools\Opium_Editor\mono"\ (xcopy /Q /E /Y /I "$(SolutionDir)\Tools\Opium_Editor\mono" "..\..\bin\Dist-windows-x86_64\Opium_Editor\mono" &gt; nul) ELSE (xcopy /Q /Y /I "$(SolutionDir)\Tools\Opium_Editor\mono" "..\..\bin\Dist-windows-x86_64\Opium_Editor\mono" &gt; nul)
-IF EXIST "$(SolutionDir)\Tools\Opium_Editor\EditorResources"\ (xcopy /Q /E /Y /I "$(SolutionDir)\Tools\Opium_Editor\EditorResources" "..\..\bin\Dist-windows-x86_64\Opium_Editor\EditorResources" &gt; nul) ELSE (xcopy /Q /Y /I "$(SolutionDir)\Tools\Opium_Editor\EditorResources" "..\..\bin\Dist-windows-x86_64\Opium_Editor\EditorResources" &gt; nul)</Command>
+IF EXIST "$(SolutionDir)\Tools\Opium_Editor\EditorResources"\ (xcopy /Q /E /Y /I "$(SolutionDir)\Tools\Opium_Editor\EditorResources" "..\..\bin\Dist-windows-x86_64\Opium_Editor\EditorResources" &gt; nul) ELSE (xcopy /Q /Y /I "$(SolutionDir)\Tools\Opium_Editor\EditorResources" "..\..\bin\Dist-windows-x86_64\Opium_Editor\EditorResources" &gt; nul)
+IF EXIST "$(SolutionDir)\Opium\external\assimp\bin\assimp-vc143-mt.dll"\ (xcopy /Q /E /Y /I "$(SolutionDir)\Opium\external\assimp\bin\assimp-vc143-mt.dll" "..\..\bin\Dist-windows-x86_64\Opium_Editor" &gt; nul) ELSE (xcopy /Q /Y /I "$(SolutionDir)\Opium\external\assimp\bin\assimp-vc143-mt.dll" "..\..\bin\Dist-windows-x86_64\Opium_Editor" &gt; nul)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -176,15 +179,6 @@ IF EXIST "$(SolutionDir)\Tools\Opium_Editor\EditorResources"\ (xcopy /Q /E /Y /I
     <ProjectReference Include="..\..\Opium\Opium.vcxproj">
       <Project>{8FC8D30D-FBDC-FBBE-C45E-9F1E3032F8EF}</Project>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="assets\shaders\include\Defines.glsl" />
-    <None Include="assets\shaders\include\GlobalVariables.glsl" />
-    <None Include="assets\shaders\include\MainShadowFunctions.glsl" />
-    <None Include="assets\shaders\include\UniformBuffers.glsl" />
-    <None Include="assets\shaders\include\Utils.glsl" />
-    <None Include="assets\shaders\src\Pbr\PointShadowMapping.glsl" />
-    <None Include="assets\shaders\src\Pbr\PostProcessing.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

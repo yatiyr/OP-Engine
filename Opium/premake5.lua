@@ -49,7 +49,8 @@ project "Opium"
 	    "%{IncludeDir.Mono}",
         "%{IncludeDir.VK_SDK}",
 	"%{IncludeDir.FontAwesome}",
-	"%{IncludeDir.SPIRV_Cross}"
+	"%{IncludeDir.SPIRV_Cross}",
+	"%{IncludeDir.Assimp}"
     }
 
     links
@@ -60,7 +61,8 @@ project "Opium"
         "ImGui",
         "yaml-cpp",
         "opengl32.lib",
-	    "%{Library.Mono}"
+	"%{Library.Mono}",
+	"%{Library.Assimp}"
     }
 
     filter "files:external/ImGuizmo/**.cpp"

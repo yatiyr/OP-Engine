@@ -37,3 +37,6 @@
 [submodule "Opium/external/box2d"]
 	path = Opium/external/box2d
 	url = https://github.com/yatiyr/box2d.git
+[submodule "Opium/external/assimp"]
+	path = Opium/external/assimp
+	url = https://github.com/yatiyr/assimp.git

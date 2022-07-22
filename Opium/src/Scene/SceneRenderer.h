@@ -27,6 +27,11 @@ namespace OP
 
 		static Ref<Framebuffer> GetFinalFramebuffer();
 
+		static void SetScene(Ref<Scene> scene);
+
+		static float* GetExposure();
+
+		static bool* GetHdr();
 	private:
 
 	};

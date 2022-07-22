@@ -94,7 +94,7 @@ void main()
 		shadow     = ShadowCalculationDir(fragPos, lightDir, normal, cascadeSize,i);
 
 		// ambient
-		ambient += 0.1 * lightColor;
+		// ambient += 0.1 * lightColor;
 
 		// diffuse
 		float diff    = max(dot(lightDir, normal), 0.0);
@@ -127,6 +127,7 @@ void main()
 		vec3 fragToLight = normalize(lightPos - fragPos);
 
 		// Calculate attenuation
+		
 		float attenuation = 1 / (1 + Kq * dist * dist + Kl * dist);
 
 

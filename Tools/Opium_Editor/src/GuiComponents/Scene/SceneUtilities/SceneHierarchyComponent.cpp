@@ -6,6 +6,8 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include <Scene/Components.h>
+#include <Scene/SceneRenderer.h>
+
 #include <Gui/Font/Font.h>
 
 
@@ -100,6 +102,15 @@ namespace OP
 		
 		
 
+		ImGui::End();
+		ImGui::PopStyleVar();
+
+
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(20, 40));
+		ImGui::Begin("SceneProperties", nullptr, ImGuiWindowFlags_NoTitleBar);
+
+			ImGui::DragFloat("Exposure", SceneRenderer::GetExposure(), 0.01f, 0.0f, 20.0f);
+			ImGui::Checkbox("Hdr", SceneRenderer::GetHdr());
 		ImGui::End();
 		ImGui::PopStyleVar();
 	}
@@ -552,7 +563,7 @@ namespace OP
 			{
 				ImGui::DragInt("Cascades", &component.CascadeSize, 1.0, 1, 10);
 				ImGui::DragFloat("Dist Factor", &component.FrustaDistFactor, 0.01f, 0.0f, 10.0f);
-				ImGui::ColorEdit3("Color", glm::value_ptr(component.Color));
+				ImGui::DragFloat3("Intensity", glm::value_ptr(component.Color));
 				ImGui::Checkbox("Cast Shadows", &component.CastShadows);
 			});
 
@@ -561,7 +572,7 @@ namespace OP
 			{
 				ImGui::DragFloat("Cutoff", &component.Cutoff, 0.01f, 0.0f, 80.0f);
 				ImGui::DragFloat("OuterCutoff", &component.OuterCutoff, 0.01f, 0.0f, 85.0f);
-				ImGui::ColorEdit3("Color", glm::value_ptr(component.Color));
+				ImGui::DragFloat3("Intensity", glm::value_ptr(component.Color));
 				ImGui::DragFloat("Near", &component.NearDist, 0.01f, 0.01f, 5.0f);
 				ImGui::DragFloat("Far", &component.FarDist, 0.01f, 0.02f, 5000.0f);
 				ImGui::DragFloat("Kq", &component.Kq, 0.000001f, 0.000002f, 2.0f);
@@ -573,7 +584,7 @@ namespace OP
 
 		DrawComponent<PointLightComponent>("Point Light", entity, [](auto& component)
 			{
-				ImGui::ColorEdit3("Color", glm::value_ptr(component.Color));
+				ImGui::DragFloat3("Intensity", glm::value_ptr(component.Color));
 				ImGui::DragFloat("Near", &component.NearDist, 0.01f, 0.01f, 5.0f);
 				ImGui::DragFloat("Far", &component.FarDist, 0.01f, 0.02f, 5000.0f);
 				ImGui::DragFloat("Kq", &component.Kq, 0.000001f, 0.000002f, 2.0f);

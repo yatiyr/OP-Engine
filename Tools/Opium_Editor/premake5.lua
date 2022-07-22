@@ -39,7 +39,8 @@ project "Opium_Editor"
            '{COPY} "%{wks.location}/Tools/Opium_Editor/assets" "%{cfg.targetdir}/assets"',
 	   '{COPY} "%{wks.location}/Opium/external/mono/bin/Release/mono-2.0-sgen.dll" "%{cfg.targetdir}"',
 	   '{COPY} "%{wks.location}/Tools/Opium_Editor/mono" "%{cfg.targetDir}/mono"',
-	   '{COPY} "%{wks.location}/Tools/Opium_Editor/EditorResources" "%{cfg.targetDir}/EditorResources"'
+	   '{COPY} "%{wks.location}/Tools/Opium_Editor/EditorResources" "%{cfg.targetDir}/EditorResources"',
+	   '{COPY} "%{wks.location}/Opium/external/assimp/bin/assimp-vc143-mt.dll" "%{cfg.targetDir}"'
 	}
 
 

@@ -12,6 +12,7 @@ namespace OP
 		// Color
 		RGBA8,
 		RGBA32F,
+		SRGB,
 		RED_INTEGER,
 		SM_VARIANCE32F,
 

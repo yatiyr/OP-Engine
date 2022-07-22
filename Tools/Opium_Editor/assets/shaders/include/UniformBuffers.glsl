@@ -102,3 +102,9 @@ layout(std140, binding = 9) uniform MaterialData
 {
 	vec3 u_Color;
 };
+
+layout(std140, binding = 10) uniform ToneMappingData
+{
+	float u_Exposure;
+	bool u_Hdr;
+};

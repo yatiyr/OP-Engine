@@ -219,6 +219,9 @@ namespace OP
 
 	struct SceneRendererData
 	{
+
+		Ref<Scene> m_Context;
+
 		// --------- RENDERER CONSTANTS -------- //
 			float Epsilon = 0.00000001;
 		// ------ END RENDER CONSTANTS --------- //
@@ -252,12 +255,20 @@ namespace OP
 			{
 				float shadowMapResX = 512.0f;
 				float shadowMapResY = 512.0f;
-				float pointLightSMResX = 2048.0f;
-				float pointLightSMResY = 2048.0f;
+				float pointLightSMResX = 1024.0f;
+				float pointLightSMResY = 1024.0f;
 				glm::vec2 blurScale = glm::vec2(0.0f);
 			} ShadowMapSettingsBuffer;
 
 			Ref<UniformBuffer> ShadowMapSettingsUniformBuffer;
+
+			struct ToneMappingSettings
+			{
+				float exposure = 1.0;
+				bool hdr = true;
+			} ToneMappingSettingsBuffer;
+
+			Ref<UniformBuffer> ToneMappingSettingsUniformBuffer;
 
 		// ----- END CASCADED SHADOW MAPPING SETTINGS ------ //
 
@@ -420,9 +431,6 @@ namespace OP
 		Ref<Framebuffer> sampleResolveFramebuffer;
 
 
-		unsigned int cubeVAO = 0;
-		unsigned int cubeVBO = 0;
-
 		Ref<RenderPass> depthRenderPass;
 		Ref<RenderPass> pointLightDepthRenderPass;
 		Ref<PingPongRenderPass> depthBlurDSLRenderPass;
@@ -431,7 +439,6 @@ namespace OP
 
 		// Temp
 		glm::mat4 spinningModel;
-
 		glm::vec3 spinningDir;
 
 	};
@@ -489,6 +496,8 @@ namespace OP
 
 		s_SceneRendererData.MaterialUniformBuffer  = UniformBuffer::Create(sizeof(SceneRendererData::MaterialData), 9);
 
+		s_SceneRendererData.ToneMappingSettingsUniformBuffer = UniformBuffer::Create(sizeof(SceneRendererData::ToneMappingSettings), 10);
+
 		s_SceneRendererData.ViewportSize.x = width;
 		s_SceneRendererData.ViewportSize.y = height;
 
@@ -526,10 +535,10 @@ namespace OP
 
 		// Final Framebuffer
 		FramebufferSpecification finalFBSpec;
-		finalFBSpec.Attachments = { FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::Depth };
+		finalFBSpec.Attachments = { FramebufferTextureFormat::RGBA32F, FramebufferTextureFormat::Depth };
 		finalFBSpec.Width = s_SceneRendererData.ViewportSize.x;
 		finalFBSpec.Height = s_SceneRendererData.ViewportSize.y;
-		finalFBSpec.Samples = 8;
+		finalFBSpec.Samples = 4;
 		s_SceneRendererData.finalFramebuffer = Framebuffer::Create(finalFBSpec);
 
 		s_SceneRendererData.finalRenderPass = RenderPass::Create(std::string("Final Pass"), finalFBSpec);
@@ -537,7 +546,7 @@ namespace OP
 
 		// Sample Resolve Framebuffer - Intermediate
 		FramebufferSpecification sampleResolveFB;
-		sampleResolveFB.Attachments = { FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::Depth };
+		sampleResolveFB.Attachments = { FramebufferTextureFormat::RGBA32F, FramebufferTextureFormat::Depth };
 		sampleResolveFB.Width = s_SceneRendererData.ViewportSize.x;
 		sampleResolveFB.Height = s_SceneRendererData.ViewportSize.y;
 		s_SceneRendererData.sampleResolveFramebuffer = Framebuffer::Create(sampleResolveFB);
@@ -582,6 +591,21 @@ namespace OP
 		return s_SceneRendererData.postProcessingPass->GetFramebuffer();
 	}
 
+	void SceneRenderer::SetScene(Ref<Scene> scene)
+	{
+		s_SceneRendererData.m_Context = scene;
+	}
+
+	float* SceneRenderer::GetExposure()
+	{
+		return &s_SceneRendererData.ToneMappingSettingsBuffer.exposure;
+	}
+
+	bool* SceneRenderer::GetHdr()
+	{
+		return &s_SceneRendererData.ToneMappingSettingsBuffer.hdr;
+	}
+
 	void SceneRenderer::Render(EditorCamera& camera, Ref<Scene> scene, Timestep ts)
 	{
 
@@ -595,6 +619,11 @@ namespace OP
 			s_SceneRendererData.CameraBuffer.View = camera.GetViewMatrix();
 			s_SceneRendererData.CameraUniformBuffer->SetData(&s_SceneRendererData.CameraBuffer, sizeof(SceneRendererData::CameraData));
 		// ---------------------- END CALCULATE CAMERA DATA -------------------------- //
+
+
+		// ---------------------- TONE MAPPING SETTINGS ------------------------------ //
+			s_SceneRendererData.ToneMappingSettingsUniformBuffer->SetData(&s_SceneRendererData.ToneMappingSettingsBuffer, sizeof(SceneRendererData::ToneMappingSettings));
+
 
 		// ------------------ FILL IN DIR LIGHT UNIFORMS -------------------------- //
 			glm::mat4 cameraProjection = camera.GetProjection();
@@ -890,7 +919,8 @@ namespace OP
 				uint32_t depthMap = s_SceneRendererData.depthBlurDSLRenderPass->GetColorAttachmentPP(0);
 				glBindTextureUnit(0, depthMap);
 				
-			
+				uint32_t depthMap2 = s_SceneRendererData.pointLightDepthRenderPass->GetDepthAttachment(0);
+				glBindTextureUnit(1, depthMap2);
 				// ------------ DRAW SCENE ------------
 
 
@@ -947,8 +977,6 @@ namespace OP
 
 				s_SceneRendererData.depthDebugShader->Bind();
 
-				uint32_t depthMap2 = s_SceneRendererData.pointLightDepthRenderPass->GetDepthAttachment(0);
-				glBindTextureUnit(1, depthMap2);
 
 				glDisable(GL_DEPTH_TEST);
 				model = glm::mat4(1.0f);

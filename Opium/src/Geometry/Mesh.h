@@ -10,9 +10,6 @@
 
 #include <vector>
 
-
-
-
 namespace OP
 {
 	class Mesh

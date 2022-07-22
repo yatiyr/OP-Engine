@@ -16,15 +16,18 @@ IncludeDir["shaderc"]     = "%{wks.location}/Opium/external/shaderc/include"
 IncludeDir["SPIRV_Cross"] = "%{wks.location}/Opium/external/SPIRV-Cross/include"
 IncludeDir["VK_SDK"]      = "%{VK_SDK}/Include"
 IncludeDir["FontAwesome"] = "%{wks.location}/Opium/external/iconFont"
- 
+IncludeDir["Assimp"]      = "%{wks.location}/Opium/external/assimp/include"
+
 LibraryDir = {}
 LibraryDir["Mono"]   = "%{wks.location}/Opium/external/mono/lib/Release"
 LibraryDir["VK_SDK"] = "%{VK_SDK}/Lib"
+LibraryDir["Assimp"] = "%{wks.location}/Opium/external/assimp/lib/Release"
 
 Library = {}
 Library["Mono"]     = "%{LibraryDir.Mono}/mono-2.0-sgen.lib"
 Library["VK"]       = "%{LibraryDir.VK_SDK}/vulkan-1.lib"
 Library["VK_UTILS"] = "%{LibraryDir.VK_SDK}/VkLayer_utils.lib"
+Library["Assimp"]   = "%{LibraryDir.Assimp}/assimp-vc143-mt.lib"
 
 Library["ShaderC_DBG"]          = "%{LibraryDir.VK_SDK}/shaderc_sharedd.lib"
 Library["SPIRV_CROSS_DBG"]      = "%{LibraryDir.VK_SDK}/spirv-cross-cored.lib"
