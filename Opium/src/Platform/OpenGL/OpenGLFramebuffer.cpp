@@ -194,6 +194,7 @@ namespace OP
 			switch(format)
 			{
 				case FramebufferTextureFormat::RGBA8: return GL_RGBA8;
+				case FramebufferTextureFormat::RGBA32F: return GL_RGBA32F;
 				case FramebufferTextureFormat::RED_INTEGER: return GL_RED_INTEGER;
 			}
 
@@ -281,6 +282,9 @@ namespace OP
 					case FramebufferTextureFormat::RGBA8:
 						Utils::AttachColorTexture(m_ColorAttachments[i], m_Specification.Samples, GL_RGBA8, GL_RGBA, m_Specification.Width, m_Specification.Height, i);
 						break;
+					case FramebufferTextureFormat::RGBA32F:
+						Utils::AttachColorTexture(m_ColorAttachments[i], m_Specification.Samples, GL_RGBA32F, GL_RGBA, m_Specification.Width, m_Specification.Height, i);
+						break;
 					case FramebufferTextureFormat::RED_INTEGER:
 						Utils::AttachColorTexture(m_ColorAttachments[i], m_Specification.Samples, GL_R32I, GL_RED_INTEGER, m_Specification.Width, m_Specification.Height, i);
 						break;
@@ -346,6 +350,16 @@ namespace OP
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
 		glViewport(0, 0, m_Specification.Width, m_Specification.Height);
+	}
+
+	void OpenGLFramebuffer::BindRead()
+	{
+		glBindFramebuffer(GL_READ_FRAMEBUFFER, m_RendererID);
+	}
+
+	void OpenGLFramebuffer::BindDraw()
+	{
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_RendererID);
 	}
 
 	void OpenGLFramebuffer::BindNoResize()

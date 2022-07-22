@@ -252,8 +252,8 @@ namespace OP
 			{
 				float shadowMapResX = 512.0f;
 				float shadowMapResY = 512.0f;
-				float pointLightSMResX = 1024.0f;
-				float pointLightSMResY = 1024.0f;
+				float pointLightSMResX = 2048.0f;
+				float pointLightSMResY = 2048.0f;
 				glm::vec2 blurScale = glm::vec2(0.0f);
 			} ShadowMapSettingsBuffer;
 
@@ -393,6 +393,7 @@ namespace OP
 		Ref<Shader> depthDebugShader;
 		Ref<Shader> shadowMapDirSpotBlur;
 		Ref<Shader> pointLightSMBlurShader;
+		Ref<Shader> postProcessingShader;
 
 		// Ref<Texture2D> woodTexture;
 		Ref<Texture2D> WhiteTexture;
@@ -416,6 +417,7 @@ namespace OP
 		// Framebuffer
 		Ref<Framebuffer> depthFramebuffer;
 		Ref<Framebuffer> finalFramebuffer;
+		Ref<Framebuffer> sampleResolveFramebuffer;
 
 
 		unsigned int cubeVAO = 0;
@@ -425,6 +427,7 @@ namespace OP
 		Ref<RenderPass> pointLightDepthRenderPass;
 		Ref<PingPongRenderPass> depthBlurDSLRenderPass;
 		Ref<RenderPass> finalRenderPass;
+		Ref<RenderPass> postProcessingPass;
 
 		// Temp
 		glm::mat4 spinningModel;
@@ -469,6 +472,7 @@ namespace OP
 		s_SceneRendererData.depthShader = ResourceManager::GetShader("DirSpotShadowMapping.glsl");
 		s_SceneRendererData.depthDebugShader = ResourceManager::GetShader("DepthDebug.glsl");
 		s_SceneRendererData.pointLightDepthShader = ResourceManager::GetShader("PointShadowMapping.glsl");
+		s_SceneRendererData.postProcessingShader = ResourceManager::GetShader("PostProcessing.glsl");
 
 		// Deal with uniform buffers
 		s_SceneRendererData.CameraUniformBuffer            = UniformBuffer::Create(sizeof(SceneRendererData::CameraData), 0);
@@ -519,14 +523,33 @@ namespace OP
 		s_SceneRendererData.pointLightDepthRenderPass = RenderPass::Create(std::string("Point Light Depth Pass"), depthFBPointLight, s_SceneRendererData.depthShader);
 
 
+
 		// Final Framebuffer
 		FramebufferSpecification finalFBSpec;
-		finalFBSpec.Attachments = { FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::RED_INTEGER, FramebufferTextureFormat::Depth };
+		finalFBSpec.Attachments = { FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::Depth };
 		finalFBSpec.Width = s_SceneRendererData.ViewportSize.x;
 		finalFBSpec.Height = s_SceneRendererData.ViewportSize.y;
+		finalFBSpec.Samples = 8;
 		s_SceneRendererData.finalFramebuffer = Framebuffer::Create(finalFBSpec);
 
-		s_SceneRendererData.finalRenderPass = RenderPass::Create(std::string("Final Pass"), fB);
+		s_SceneRendererData.finalRenderPass = RenderPass::Create(std::string("Final Pass"), finalFBSpec);
+
+
+		// Sample Resolve Framebuffer - Intermediate
+		FramebufferSpecification sampleResolveFB;
+		sampleResolveFB.Attachments = { FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::Depth };
+		sampleResolveFB.Width = s_SceneRendererData.ViewportSize.x;
+		sampleResolveFB.Height = s_SceneRendererData.ViewportSize.y;
+		s_SceneRendererData.sampleResolveFramebuffer = Framebuffer::Create(sampleResolveFB);
+
+
+		// Post Processing Final Framebuffer
+		FramebufferSpecification postProcessingFBSpec;
+		postProcessingFBSpec.Attachments = { FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::Depth };
+		postProcessingFBSpec.Width = s_SceneRendererData.ViewportSize.x;
+		postProcessingFBSpec.Height = s_SceneRendererData.ViewportSize.y;
+
+		s_SceneRendererData.postProcessingPass = RenderPass::Create(std::string("Post Processing Pass"), postProcessingFBSpec);
 
 		s_SceneRendererData.finalFramebuffer = fB;
 
@@ -544,10 +567,19 @@ namespace OP
 
 			// Resize necessary framebuffers
 			// s_SceneRendererData.depthFramebuffer->Resize(width, height);
-			s_SceneRendererData.finalFramebuffer->Resize(width, height);
+			s_SceneRendererData.postProcessingPass->GetFramebuffer()->Resize(width, height);
+			s_SceneRendererData.sampleResolveFramebuffer->Resize(width, height);
+			s_SceneRendererData.finalRenderPass->GetFramebuffer()->Resize(width, height);
+
+			// s_SceneRendererData.finalFramebuffer->Resize(width, height);
 
 			// s_SceneRendererData.depthRenderPass->ResizeFramebuffer(width, height);
 		}
+	}
+
+	Ref<Framebuffer> SceneRenderer::GetFinalFramebuffer()
+	{
+		return s_SceneRendererData.postProcessingPass->GetFramebuffer();
 	}
 
 	void SceneRenderer::Render(EditorCamera& camera, Ref<Scene> scene, Timestep ts)
@@ -850,7 +882,7 @@ namespace OP
 		s_SceneRendererData.finalRenderPass->InvokeCommands(
 			[&]()-> void {
 
-				glClear(GL_DEPTH_BUFFER_BIT);
+				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 				s_SceneRendererData.mainShader->Bind();
 
 				s_SceneRendererData.WhiteTexture->Bind(0);
@@ -927,6 +959,28 @@ namespace OP
 				s_SceneRendererData.plane->Draw();
 				glEnable(GL_DEPTH_TEST);
 				// ---------- DRAW SCENE END ----------
+			}
+		);
+
+		s_SceneRendererData.postProcessingPass->InvokeCommands(
+			[&]()-> void {
+
+				s_SceneRendererData.finalRenderPass->GetFramebuffer()->BindRead();
+				s_SceneRendererData.sampleResolveFramebuffer->BindDraw();
+				glBlitFramebuffer(0, 0, s_SceneRendererData.ViewportSize.x, s_SceneRendererData.ViewportSize.y,
+					0, 0, s_SceneRendererData.ViewportSize.x, s_SceneRendererData.ViewportSize.y, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+
+				s_SceneRendererData.postProcessingPass->GetFramebuffer()->Bind();
+				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+				s_SceneRendererData.postProcessingShader->Bind();
+
+				uint32_t resolvedImage = s_SceneRendererData.sampleResolveFramebuffer->GetColorAttachmentRendererID(0);
+				glBindTextureUnit(0, resolvedImage);
+
+				model = glm::mat4(1.0f);
+				s_SceneRendererData.TransformBuffer.Model = model;
+				s_SceneRendererData.TransformUniformBuffer->SetData(&s_SceneRendererData.TransformBuffer, sizeof(SceneRendererData::TransformData));
+				s_SceneRendererData.plane->Draw();
 			}
 		);
 

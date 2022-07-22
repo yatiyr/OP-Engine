@@ -13,6 +13,8 @@ namespace OP
 		void Invalidate();
 
 		virtual void Bind() override;
+		virtual void BindRead() override;
+		virtual void BindDraw() override;
 		virtual void BindNoResize() override;
 		virtual void Unbind() override;
 

@@ -25,6 +25,8 @@ namespace OP
 
 		static void ResizeViewport(float width, float height);
 
+		static Ref<Framebuffer> GetFinalFramebuffer();
+
 	private:
 
 	};

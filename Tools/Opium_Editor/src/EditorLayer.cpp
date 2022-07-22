@@ -61,6 +61,7 @@ namespace OP
 
 
 		SceneRenderer::Init(1280, 720, m_Framebuffer);
+		m_Framebuffer = SceneRenderer::GetFinalFramebuffer();
 
 		// Temp
 		m_ViewportComponent.SetFramebuffer(m_Framebuffer);
@@ -180,7 +181,7 @@ namespace OP
 
 
 		// Clear our entity ID attachment to -1
-		m_Framebuffer->ClearAttachment(1, -1);
+		//m_Framebuffer->ClearAttachment(1, -1);
 
 
 		// Playground code

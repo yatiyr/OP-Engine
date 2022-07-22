@@ -11,6 +11,7 @@ namespace OP
 
 		// Color
 		RGBA8,
+		RGBA32F,
 		RED_INTEGER,
 		SM_VARIANCE32F,
 
@@ -71,6 +72,10 @@ namespace OP
 		virtual ~Framebuffer() {}
 		virtual void Bind() = 0;
 		virtual void BindNoResize() = 0;
+
+		virtual void BindRead() = 0;
+		virtual void BindDraw() = 0;
+
 		virtual void Unbind() = 0;
 
 		virtual void GetSize(float& x, float& y) = 0;

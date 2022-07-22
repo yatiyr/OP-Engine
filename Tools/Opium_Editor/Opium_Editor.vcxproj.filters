@@ -73,5 +73,6 @@
     <None Include="assets\shaders\include\GlobalVariables.glsl" />
     <None Include="assets\shaders\include\Defines.glsl" />
     <None Include="assets\shaders\src\Pbr\PointShadowMapping.glsl" />
+    <None Include="assets\shaders\src\Pbr\PostProcessing.glsl" />
   </ItemGroup>
 </Project>
