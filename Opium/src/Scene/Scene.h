@@ -22,6 +22,17 @@ namespace OP
 
 		Entity CreateEntity(const std::string& name = std::string());
 		Entity CreateEntityWithUUID(UUID uuid, const std::string& name = std::string());
+
+		// Creates a new entity under a parent
+		Entity CreateChildEntity(Entity parent, const std::string& name = std::string());
+
+		// Add child entity to a parent, if child already has a parent, detach it first
+		Entity AddChildEntity(Entity parent, Entity child);
+
+		// Detaches the child entity from its former parent, if parent does not exist, no op
+		void DetachChild(Entity child);
+
+		// Detach the child and then remove it from the scene
 		void RemoveEntity(Entity entity);
 
 		void OnRuntimeStart();
@@ -35,6 +46,8 @@ namespace OP
 		void DuplicateEntity(Entity entity);
 
 		Entity GetPrimaryCameraEntity();
+
+		Entity GetEntityWithUUID(UUID id);
 	private:
 		template<typename T>
 		void OnComponentAdded(Entity entity, T& component);

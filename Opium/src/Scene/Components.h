@@ -11,6 +11,8 @@
 #include <Opium/UUID.h>
 #include <Renderer/Texture.h>
 
+class Entity;
+
 namespace OP
 {
 
@@ -21,6 +23,27 @@ namespace OP
 		IDComponent() = default;
 		IDComponent(const IDComponent&) = default;
 
+	};
+
+	struct RootComponent
+	{
+		bool root = true;
+
+		RootComponent() = default;
+		RootComponent(const RootComponent&) = default;
+	};
+
+	struct RelationshipComponent
+	{
+		size_t children = 0;
+
+		Entity parent;
+		Entity first;
+		Entity prev;
+		Entity next;
+
+		RelationshipComponent() = default;
+		RelationshipComponent(const RelationshipComponent&) = default;
 	};
 
 	struct TagComponent

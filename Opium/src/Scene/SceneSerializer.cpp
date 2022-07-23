@@ -156,6 +156,38 @@ namespace OP
 			out << YAML::EndMap; // Tag Component
 		}
 
+		if (entity.HasComponent<RootComponent>())
+		{
+			out << YAML::Key << "RootComponent";
+			out << YAML::BeginMap; // Root Component
+
+			auto& root = entity.GetComponent<RootComponent>().root;
+			out << YAML::Key << "Root" << YAML::Value << root;
+			out << YAML::EndMap; // Root Component
+		}
+		else
+		{
+			out << YAML::Key << "RootComponent";
+			out << YAML::BeginMap; // Root Component
+
+			out << YAML::Key << "Root" << YAML::Value << false;
+			out << YAML::EndMap; // Root Component
+		}
+
+		if (entity.HasComponent<RelationshipComponent>())
+		{
+			out << YAML::Key << "RelationshipComponent";
+			out << YAML::BeginMap; // Relationship Component
+
+			auto& comp = entity.GetComponent<RelationshipComponent>();
+
+			out << YAML::Key << "Children" << YAML::Value << comp.children;
+			out << YAML::Key << "Parent" << YAML::Value << comp.parent.GetUUID();
+			out << YAML::Key << "First" << YAML::Value << comp.first.GetUUID();
+			out << YAML::Key << "Prev" << YAML::Value << comp.prev.GetUUID();
+			out << YAML::Key << "Next" << YAML::Value << comp.next.GetUUID();
+		}
+
 		if (entity.HasComponent<TransformComponent>())
 		{
 			out << YAML::Key << "TransformComponent";
@@ -427,6 +459,25 @@ namespace OP
 					pLC.Kq = pointLightComponent["Kq"].as<float>();
 					pLC.Kl = pointLightComponent["Kl"].as<float>();
 					pLC.CastShadows= pointLightComponent["CastShadows"].as<bool>();
+				}
+			}
+
+			// Fill in hiearchical parts
+			for (auto entity : entities)
+			{
+				auto relComp = entity["RelationshipComponent"];
+				uint64_t uuid = entity["Entity"].as<uint64_t>();
+
+				Entity deserializedEntity = m_Scene->GetEntityWithUUID(uuid);
+				if (relComp)
+				{
+					auto& relCompDeserialized = deserializedEntity.GetComponent<RelationshipComponent>();
+					uint64_t parentUUID = relComp["Parent"].as<uint64_t>();
+					Entity parent = m_Scene->GetEntityWithUUID(parentUUID);
+					if (entt::entity(parent) != entt::null)
+					{
+						m_Scene->AddChildEntity(parent, deserializedEntity);
+					}
 				}
 			}
 		}

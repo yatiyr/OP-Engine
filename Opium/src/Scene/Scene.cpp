@@ -99,6 +99,7 @@ namespace OP
 
 		CopyComponent<DirLightComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
 		CopyComponent<SpotLightComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
+		CopyComponent<PointLightComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
 
 		return newScene;
 	}
@@ -108,19 +109,118 @@ namespace OP
 		return CreateEntityWithUUID(UUID(), name);
 	}
 
+	Entity Scene::CreateChildEntity(Entity parent, const std::string& name = std::string())
+	{
+		Entity child = CreateEntity(name);
+		AddChildEntity(parent, child);
+	}
+
+	Entity Scene::GetEntityWithUUID(UUID id)
+	{
+		auto view = m_Registry.view<IDComponent>();
+		for (auto e : view)
+		{
+			Entity e = { e, this };
+			if (e.GetUUID() == id)
+				return e;
+		}
+		Entity entity;
+		return entity;
+	}
+
+	Entity Scene::AddChildEntity(Entity parent, Entity child)
+	{
+
+		// We first detach the child from its former parent if exists.
+		DetachChild(child);
+
+		// Then we bind to new parent
+		auto& parentRelationship = parent.GetComponent<RelationshipComponent>();
+		auto& childRelationship = child.GetComponent<RelationshipComponent>();
+
+		Entity& firstChild = parentRelationship.first;
+
+		Entity iterator;
+		Entity iterator2;
+
+		iterator = firstChild;
+
+		// Parent has no children yet
+		if (entt::entity(iterator) == entt::null)
+		{
+			childRelationship.parent = parent;
+			parentRelationship.first = child;
+		}
+		else
+		{
+			iterator2 = firstChild.GetComponent<RelationshipComponent>().next;
+			while (entt::entity(iterator2) != entt::null)
+			{
+				iterator = iterator2;
+				iterator2 = iterator2.GetComponent<RelationshipComponent>().next;
+			}
+
+			auto& iteratorRelationshipComp = iterator.GetComponent<RelationshipComponent>();
+
+			iteratorRelationshipComp.next = child;
+			childRelationship.prev = iterator;
+		}
+
+	}
+
 	Entity Scene::CreateEntityWithUUID(UUID uuid, const std::string& name)
 	{
 		Entity entity = { m_Registry.create(), this };
 		entity.AddComponent<IDComponent>(uuid);
 		entity.AddComponent<TransformComponent>();
+		entity.AddComponent<RelationshipComponent>();
 		auto& tag = entity.AddComponent<TagComponent>();
 		tag.Tag = name.empty() ? tag.Tag = "Entity" : name;
 		return entity;
 	}
 
+	void Scene::DetachChild(Entity child)
+	{
+		auto& entityRelationshipComp = child.GetComponent<RelationshipComponent>();
+
+		Entity prev = entityRelationshipComp.prev;
+		Entity next = entityRelationshipComp.next;
+		Entity parent = entityRelationshipComp.parent;
+
+		if (entt::entity(parent) != entt::null)
+		{
+			// if entity is the first child
+			if (entt::entity(prev) == entt::null)
+			{
+				Entity nullEntity;
+				auto& parentRelComp = parent.GetComponent<RelationshipComponent>();
+				parentRelComp.first = nullEntity;
+			}
+			// Entity is the last child
+			else if (entt::entity(next) == entt::null)
+			{
+				Entity nullEntity;
+				auto& prevRelComp = prev.GetComponent<RelationshipComponent>();
+				prevRelComp.next = nullEntity;
+			}
+			// Entity is one of the middle children
+			else
+			{
+				auto& prevRelComp = prev.GetComponent<RelationshipComponent>();
+				auto& nextRelComp = next.GetComponent<RelationshipComponent>();
+
+				prevRelComp.next = next;
+				nextRelComp.prev = prev;
+			}
+		}
+	}
+
 	void Scene::RemoveEntity(Entity entity)
 	{
+
+		DetachChild(entity);
 		m_Registry.destroy(entity);
+
 	}
 
 	void Scene::OnRuntimeStart()
@@ -298,6 +398,7 @@ namespace OP
 		Entity newEntity = CreateEntity(entity.GetName());
 
 		CopyComponentIfExists<TransformComponent>(newEntity, entity);
+		CopyComponentIfExists<RelationshipComponent>(newEntity, entity);
 		CopyComponentIfExists<SpriteRendererComponent>(newEntity, entity);
 		CopyComponentIfExists<CameraComponent>(newEntity, entity);
 		CopyComponentIfExists<Rigidbody2DComponent>(newEntity, entity);
@@ -326,6 +427,18 @@ namespace OP
 	void Scene::OnComponentAdded(Entity entity, T& component)
 	{
 		static_assert(false);
+	}
+
+	template<>
+	void Scene::OnComponentAdded<RootComponent>(Entity entity, RootComponent& component)
+	{
+
+	}
+
+	template<>
+	void Scene::OnComponentAdded<RelationshipComponent>(Entity entity, RelationshipComponent& component)
+	{
+
 	}
 
 	template<>
