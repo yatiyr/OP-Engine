@@ -109,10 +109,12 @@ namespace OP
 		return CreateEntityWithUUID(UUID(), name);
 	}
 
-	Entity Scene::CreateChildEntity(Entity parent, const std::string& name = std::string())
+	Entity Scene::CreateChildEntity(Entity parent, const std::string& name)
 	{
 		Entity child = CreateEntity(name);
 		AddChildEntity(parent, child);
+
+		return child;
 	}
 
 	Entity Scene::GetEntityWithUUID(UUID id)
@@ -120,9 +122,9 @@ namespace OP
 		auto view = m_Registry.view<IDComponent>();
 		for (auto e : view)
 		{
-			Entity e = { e, this };
-			if (e.GetUUID() == id)
-				return e;
+			Entity ent = { e, this };
+			if (ent.GetUUID() == id)
+				return ent;
 		}
 		Entity entity;
 		return entity;
@@ -138,7 +140,7 @@ namespace OP
 		auto& parentRelationship = parent.GetComponent<RelationshipComponent>();
 		auto& childRelationship = child.GetComponent<RelationshipComponent>();
 
-		Entity& firstChild = parentRelationship.first;
+		Entity firstChild = GetEntityWithUUID(parentRelationship.first);
 
 		Entity iterator;
 		Entity iterator2;
@@ -148,24 +150,25 @@ namespace OP
 		// Parent has no children yet
 		if (entt::entity(iterator) == entt::null)
 		{
-			childRelationship.parent = parent;
-			parentRelationship.first = child;
+			childRelationship.parent = parent.GetUUID();
+			parentRelationship.first = child.GetUUID();
 		}
 		else
 		{
-			iterator2 = firstChild.GetComponent<RelationshipComponent>().next;
+			iterator2 = GetEntityWithUUID(firstChild.GetComponent<RelationshipComponent>().next);
 			while (entt::entity(iterator2) != entt::null)
 			{
 				iterator = iterator2;
-				iterator2 = iterator2.GetComponent<RelationshipComponent>().next;
+				iterator2 = GetEntityWithUUID(iterator2.GetComponent<RelationshipComponent>().next);
 			}
 
 			auto& iteratorRelationshipComp = iterator.GetComponent<RelationshipComponent>();
 
-			iteratorRelationshipComp.next = child;
-			childRelationship.prev = iterator;
+			iteratorRelationshipComp.next = child.GetUUID();
+			childRelationship.prev = iterator.GetUUID();
 		}
 
+		return child;
 	}
 
 	Entity Scene::CreateEntityWithUUID(UUID uuid, const std::string& name)
@@ -183,9 +186,9 @@ namespace OP
 	{
 		auto& entityRelationshipComp = child.GetComponent<RelationshipComponent>();
 
-		Entity prev = entityRelationshipComp.prev;
-		Entity next = entityRelationshipComp.next;
-		Entity parent = entityRelationshipComp.parent;
+		Entity prev = GetEntityWithUUID(entityRelationshipComp.prev);
+		Entity next = GetEntityWithUUID(entityRelationshipComp.next);
+		Entity parent = GetEntityWithUUID(entityRelationshipComp.parent);
 
 		if (entt::entity(parent) != entt::null)
 		{
@@ -194,14 +197,14 @@ namespace OP
 			{
 				Entity nullEntity;
 				auto& parentRelComp = parent.GetComponent<RelationshipComponent>();
-				parentRelComp.first = nullEntity;
+				parentRelComp.first = UINT64_MAX;
 			}
 			// Entity is the last child
 			else if (entt::entity(next) == entt::null)
 			{
 				Entity nullEntity;
 				auto& prevRelComp = prev.GetComponent<RelationshipComponent>();
-				prevRelComp.next = nullEntity;
+				prevRelComp.next = UINT64_MAX;
 			}
 			// Entity is one of the middle children
 			else
@@ -209,8 +212,8 @@ namespace OP
 				auto& prevRelComp = prev.GetComponent<RelationshipComponent>();
 				auto& nextRelComp = next.GetComponent<RelationshipComponent>();
 
-				prevRelComp.next = next;
-				nextRelComp.prev = prev;
+				prevRelComp.next = next.GetUUID();
+				nextRelComp.prev = prev.GetUUID();
 			}
 		}
 	}

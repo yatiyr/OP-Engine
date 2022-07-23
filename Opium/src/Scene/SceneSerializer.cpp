@@ -182,10 +182,10 @@ namespace OP
 			auto& comp = entity.GetComponent<RelationshipComponent>();
 
 			out << YAML::Key << "Children" << YAML::Value << comp.children;
-			out << YAML::Key << "Parent" << YAML::Value << comp.parent.GetUUID();
-			out << YAML::Key << "First" << YAML::Value << comp.first.GetUUID();
-			out << YAML::Key << "Prev" << YAML::Value << comp.prev.GetUUID();
-			out << YAML::Key << "Next" << YAML::Value << comp.next.GetUUID();
+			out << YAML::Key << "Parent" << YAML::Value << static_cast<uint64_t>(comp.parent);
+			out << YAML::Key << "First" << YAML::Value << static_cast<uint64_t>(comp.first);
+			out << YAML::Key << "Prev" << YAML::Value << static_cast<uint64_t>(comp.prev);
+			out << YAML::Key << "Next" << YAML::Value << static_cast<uint64_t>(comp.next);
 		}
 
 		if (entity.HasComponent<TransformComponent>())

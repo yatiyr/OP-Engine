@@ -11,7 +11,6 @@
 #include <Opium/UUID.h>
 #include <Renderer/Texture.h>
 
-class Entity;
 
 namespace OP
 {
@@ -37,10 +36,10 @@ namespace OP
 	{
 		size_t children = 0;
 
-		Entity parent;
-		Entity first;
-		Entity prev;
-		Entity next;
+		UUID parent;
+		UUID first;
+		UUID prev;
+		UUID next;
 
 		RelationshipComponent() = default;
 		RelationshipComponent(const RelationshipComponent&) = default;
