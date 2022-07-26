@@ -11,6 +11,7 @@
 #include <Opium/UUID.h>
 #include <Renderer/Texture.h>
 
+#include <Math/Math.h>
 
 namespace OP
 {
@@ -57,15 +58,66 @@ namespace OP
 
 	struct TransformComponent
 	{
+		bool dirty = false;
+
+		glm::vec3 LocalTranslation = { 0.0f, 0.0f, 0.0f };
+		glm::vec3 LocalRotation = { 0.0f, 0.0f, 0.0f };
+		glm::vec3 LocalScale = { 1.0f, 1.0f, 1.0f };
+
 		glm::vec3 Translation = { 0.0f, 0.0f, 0.0f };
 		glm::vec3 Rotation = { 0.0f, 0.0f, 0.0f };
 		glm::vec3 Scale = { 1.0f, 1.0f, 1.0f };
+
+
+		glm::mat4 globalTransformation = glm::mat4(1.0f);
+		glm::mat4 globalTransformationInv = glm::mat4(1.0f);
+
+		glm::mat4 localTransformation = glm::mat4(1.0f);
 
 		TransformComponent() = default;
 		TransformComponent(const TransformComponent&) = default;
 		TransformComponent(const glm::vec3& translation)
 			: Translation(translation) {}
 
+
+
+		void computeModelMatrix()
+		{
+			globalTransformation = GetTransform();
+			globalTransformationInv = glm::inverse(globalTransformation);
+		}
+
+		void computeModelMatrix(const glm::mat4& parentGlobalModelMatrix, const glm::mat4& parentGlobalTransformInv)
+		{
+			if (dirty)
+			{
+				globalTransformation = GetTransform();
+				globalTransformationInv = glm::inverse(globalTransformation);
+				computeLocalTransform(parentGlobalTransformInv);
+				dirty = false;
+			}
+			else
+			{
+				globalTransformation = parentGlobalModelMatrix * localTransformation;
+				globalTransformationInv = glm::inverse(globalTransformation);
+				Math::DecomposeTransform(globalTransformation, Translation, Rotation, Scale);
+			}
+
+		}
+
+		void computeLocalTransform(const glm::mat4& parentGlobalTransformInv)
+		{
+			localTransformation = parentGlobalTransformInv * globalTransformation;
+		}
+
+		glm::mat4 GetLocalTransform() const
+		{
+			glm::mat4 rotation = glm::toMat4(glm::quat(LocalRotation));
+
+			return glm::translate(glm::mat4(1.0f), LocalTranslation)
+				* rotation
+				* glm::scale(glm::mat4(1.0f), LocalScale);
+		}
 
 		glm::mat4 GetTransform() const
 		{

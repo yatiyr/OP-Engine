@@ -58,13 +58,19 @@ namespace OP
 
 			ImGui::BeginTable("sceneGraph", 3, ImGuiTableFlags_RowBg | ImGuiTableFlags_SizingFixedFit);
 
+			auto view = m_Context->m_Registry.view<RootComponent>();
 
+			for (auto e : view)
+			{
+				Entity entity{ e, m_Context.get() };
+				DrawEntityNode(entity);
+			}
 
-			m_Context->m_Registry.each([&](auto entityID)
+			/*m_Context->m_Registry.each([&](auto entityID)
 				{
 					Entity entity{ entityID, m_Context.get() };
 					DrawEntityNode(entity);
-				});
+				});*/
 
 			ImGui::EndTable();
 
@@ -138,12 +144,24 @@ namespace OP
 			m_SelectionContext = entity;
 		}
 		bool entityDeleted = false;
+		bool entityAdded = false;
+		bool entityDetached = false;
 		// Right-click on entity
 		if (ImGui::BeginPopupContextItem())
 		{
 			if (ImGui::MenuItem("Remove this Entity"))
 			{
 				entityDeleted = true;
+			}
+			
+			if (ImGui::MenuItem("Add Entity"))
+			{
+				entityAdded = true;
+			}
+
+			if (ImGui::MenuItem("Detach Entity"))
+			{
+				entityDetached = true;
 			}
 
 			ImGui::EndPopup();
@@ -172,10 +190,24 @@ namespace OP
 
 		if (opened)
 		{
-			ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
-			bool opened = ImGui::TreeNodeEx((void*)123213213, flags, tag.c_str());
-			if (opened)
-				ImGui::TreePop();
+			//ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
+			//bool opened = ImGui::TreeNodeEx((void*)123213213, flags, tag.c_str());
+			//if (opened)
+				//ImGui::TreePop();
+			auto relComp = entity.GetComponent<RelationshipComponent>();
+			Entity first = m_Context->GetEntityWithUUID(relComp.first);
+			if (entt::entity(first) != entt::null)
+			{
+				DrawEntityNode(first);
+				auto firstRelComp = first.GetComponent<RelationshipComponent>();
+				Entity next = m_Context->GetEntityWithUUID(firstRelComp.next);
+				while (entt::entity(next) != entt::null)
+				{
+					DrawEntityNode(next);
+					auto nextRelComp = next.GetComponent<RelationshipComponent>();
+					next = m_Context->GetEntityWithUUID(nextRelComp.next);
+				}
+			}
 			ImGui::TreePop();
 		}
 
@@ -186,11 +218,21 @@ namespace OP
 			if (m_SelectionContext == entity)
 				m_SelectionContext = {};
 		}
+
+		if (entityAdded)
+		{
+			m_Context->CreateChildEntity(entity, "New Entity");
+		}
+
+		if (entityDetached)
+		{
+			m_Context->DetachChild(entity);
+		}
 		
 	}
 
 
-	static void DrawVec3Control(const std::string& label, glm::vec3& values, float resetValue = 0.0f, float columnWidth = 100.0f)
+	static void DrawVec3Control(const std::string& label, glm::vec3& values, Entity& entity, float resetValue = 0.0f, float columnWidth = 100.0f)
 	{
 
 		ImFont* InterBoldFont = (ImFont*)Application::Get().GetImGuiLayer()->GetFontPtr("Inter-Bold-14");
@@ -214,13 +256,19 @@ namespace OP
 
 		ImGui::PushFont(InterBoldFont);
 		if (ImGui::Button("X", buttonSize))
+		{
 			values.x = resetValue;
+			entity.Patch<TransformComponent>();
+		}
 		ImGui::PopFont();
 
 		ImGui::PopStyleColor(3);
 
 		ImGui::SameLine();
-		ImGui::DragFloat("##X", &values.x, 0.1f, 0.0f, 0.0f, "%.2f");
+		if (ImGui::DragFloat("##X", &values.x, 0.1f, 0.0f, 0.0f, "%.2f"))
+		{
+			entity.Patch<TransformComponent>();
+		}
 		ImGui::PopItemWidth();
 		ImGui::SameLine();
 
@@ -230,13 +278,19 @@ namespace OP
 
 		ImGui::PushFont(InterBoldFont);
 		if (ImGui::Button("Y", buttonSize))
+		{
 			values.y = resetValue;
+			entity.Patch<TransformComponent>();
+		}
 		ImGui::PopFont();
 
 		ImGui::PopStyleColor(3);
 
 		ImGui::SameLine();
-		ImGui::DragFloat("##Y", &values.y, 0.1f, 0.0f, 0.0f, "%.2f");
+		if (ImGui::DragFloat("##Y", &values.y, 0.1f, 0.0f, 0.0f, "%.2f"))
+		{
+			entity.Patch<TransformComponent>();
+		}
 		ImGui::PopItemWidth();
 		ImGui::SameLine();
 
@@ -246,13 +300,116 @@ namespace OP
 
 		ImGui::PushFont(InterBoldFont);
 		if (ImGui::Button("Z", buttonSize))
+		{
 			values.z = resetValue;
+			entity.Patch<TransformComponent>();
+		}
 		ImGui::PopFont();
 
 		ImGui::PopStyleColor(3);
 
 		ImGui::SameLine();
-		ImGui::DragFloat("##Z", &values.z, 0.1f, 0.0f, 0.0f, "%.2f");
+		if (ImGui::DragFloat("##Z", &values.z, 0.1f, 0.0f, 0.0f, "%.2f"))
+		{
+			entity.Patch<TransformComponent>();
+		}
+		ImGui::PopItemWidth();
+
+		ImGui::PopStyleVar();
+
+		ImGui::Columns(1);
+
+		ImGui::PopID();
+
+	}
+
+
+	static void DrawVec3RotationControl(const std::string& label, TransformComponent& component, Entity& entity, float resetValue = 0.0f, float columnWidth = 100.0f)
+	{
+
+		glm::vec3 rotation = glm::degrees(component.Rotation);
+
+		ImFont* InterBoldFont = (ImFont*)Application::Get().GetImGuiLayer()->GetFontPtr("Inter-Bold-14");
+
+		ImGui::PushID(label.c_str());
+
+		ImGui::Columns(2);
+		ImGui::SetColumnWidth(0, columnWidth);
+		ImGui::Text(label.c_str());
+		ImGui::NextColumn();
+
+		ImGui::PushMultiItemsWidths(3, ImGui::CalcItemWidth());
+		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
+
+		float lineHeight = GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f;
+		ImVec2 buttonSize = { lineHeight + 3.0f, lineHeight };
+
+		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.8f, 0.1f, 0.15f, 1.0f });
+		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.9f, 0.2f, 0.2f, 1.0f });
+		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.8f, 0.1f, 0.15f, 1.0f });
+
+		ImGui::PushFont(InterBoldFont);
+		if (ImGui::Button("X", buttonSize))
+		{
+			component.Rotation.x = resetValue;
+			entity.Patch<TransformComponent>();
+		}
+		ImGui::PopFont();
+
+		ImGui::PopStyleColor(3);
+
+		ImGui::SameLine();
+		if (ImGui::DragFloat("##X", &rotation.x, 0.1f, 0.0f, 0.0f, "%.2f"))
+		{
+			component.Rotation = glm::radians(rotation);
+			entity.Patch<TransformComponent>();
+		}
+		ImGui::PopItemWidth();
+		ImGui::SameLine();
+
+		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.2f, 0.7f, 0.2f, 1.0f });
+		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.3f, 0.8f, 0.3f, 1.0f });
+		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.2f, 0.7f, 0.2f, 1.0f });
+
+		ImGui::PushFont(InterBoldFont);
+		if (ImGui::Button("Y", buttonSize))
+		{
+			component.Rotation.y = resetValue;
+			entity.Patch<TransformComponent>();
+		}
+		ImGui::PopFont();
+
+		ImGui::PopStyleColor(3);
+
+		ImGui::SameLine();
+		if (ImGui::DragFloat("##Y", &rotation.y, 0.1f, 0.0f, 0.0f, "%.2f"))
+		{
+			component.Rotation = glm::radians(rotation);
+			entity.Patch<TransformComponent>();
+		}
+		ImGui::PopItemWidth();
+		ImGui::SameLine();
+
+		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.1f, 0.25f, 0.8f, 1.0f });
+		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.2f, 0.35f, 0.9f, 1.0f });
+		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.1f, 0.25f, 0.8f, 1.0f });
+
+		ImGui::PushFont(InterBoldFont);
+		if (ImGui::Button("Z", buttonSize))
+		{
+			component.Rotation.z = resetValue;
+			entity.Patch<TransformComponent>();
+		}
+		ImGui::PopFont();
+
+		ImGui::PopStyleColor(3);
+
+		ImGui::SameLine();
+		if (ImGui::DragFloat("##Z", &rotation.z, 0.1f, 0.0f, 0.0f, "%.2f"))
+		{
+			component.Rotation = glm::radians(rotation);
+			entity.Patch<TransformComponent>();
+		}
 		ImGui::PopItemWidth();
 
 		ImGui::PopStyleVar();
@@ -261,6 +418,7 @@ namespace OP
 
 		ImGui::PopID();
 	}
+
 
 	template<typename T, typename UIFunction>
 	static void DrawComponent(const std::string& name, Entity entity, UIFunction uiFunction)
@@ -407,13 +565,11 @@ namespace OP
 		ImGui::PopItemWidth();
 
 
-		DrawComponent<TransformComponent>("Transform", entity, [](auto& component)
+		DrawComponent<TransformComponent>("Transform", entity, [&](auto& component)
 			{
-				DrawVec3Control("Translation", component.Translation);
-				glm::vec3 rotation = glm::degrees(component.Rotation);
-				DrawVec3Control("Rotation", rotation);
-				component.Rotation = glm::radians(rotation);
-				DrawVec3Control("Scale", component.Scale, 1.0f);
+				DrawVec3Control("Translation", component.Translation, entity);
+				DrawVec3RotationControl("Rotation", component, entity);
+				DrawVec3Control("Scale", component.Scale, entity, 1.0f);
 			});
 
 		DrawComponent<CameraComponent>("Camera", entity, [](auto& component)

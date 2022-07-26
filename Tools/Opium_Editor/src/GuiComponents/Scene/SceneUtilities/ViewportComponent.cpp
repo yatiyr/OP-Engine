@@ -182,6 +182,7 @@ namespace OP
 				tc.Translation = translation;
 				tc.Rotation += dRotation;
 				tc.Scale = scale;
+				selectedEntity.Patch<TransformComponent>();
 			}
 
 		}

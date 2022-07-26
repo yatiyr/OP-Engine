@@ -14,6 +14,41 @@ namespace OP
 		Entity(entt::entity handle, Scene* scene);
 		Entity(const Entity& other) = default;
 
+		void UpdateTransforms()
+		{
+			auto& tC = GetComponent<TransformComponent>();
+
+			if (!tC.dirty)
+				return;
+
+			ForceUpdateTransforms();
+		}
+
+		void ForceUpdateTransforms()
+		{
+			auto& tC   = GetComponent<TransformComponent>();
+			auto& relC = GetComponent<RelationshipComponent>();
+
+			Entity parent = m_Scene->GetEntityWithUUID(relC.parent);
+
+			if (entt::entity(parent) != entt::null)
+			{
+				tC.computeModelMatrix(parent.GetComponent<TransformComponent>().globalTransformation,
+									  parent.GetComponent<TransformComponent>().globalTransformationInv);
+			}
+			else
+			{
+				tC.computeModelMatrix();
+			}
+
+			Entity child = m_Scene->GetEntityWithUUID(relC.first);
+			while (entt::entity(child) != entt::null)
+			{
+				auto& relChild = child.GetComponent<RelationshipComponent>();
+				child.ForceUpdateTransforms();
+				child = m_Scene->GetEntityWithUUID(relChild.next);
+			}
+		}
 
 		template<typename T, typename... Args>
 		T& AddComponent(Args&&... args)
@@ -31,6 +66,12 @@ namespace OP
 			T& component = m_Scene->m_Registry.emplace_or_replace<T>(m_EntityHandle, std::forward<Args>(args)...);
 			m_Scene->OnComponentAdded<T>(*this, component); // TODO: SORT THIS OUT
 			return component;
+		}
+
+		template<typename T>
+		void Patch()
+		{
+			m_Scene->Patch<T>(m_EntityHandle);
 		}
 
 		template<typename T>

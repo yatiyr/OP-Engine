@@ -38,7 +38,13 @@ namespace OP
 		void OnRuntimeStart();
 		void OnRuntimeStop();
 
+		template<typename T>
+		void Patch(entt::entity handle)
+		{
+			m_Registry.patch<T>(handle);
+		}
 
+		void TransformChangeCallback(entt::registry& reg, entt::entity ent);
 		void OnUpdateEditor(Timestep ts, EditorCamera& camera);
 		void OnUpdateRuntime(Timestep ts);
 		void OnViewportResize(uint32_t width, uint32_t height);

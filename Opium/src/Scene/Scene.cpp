@@ -31,9 +31,17 @@ namespace OP
 		return b2_staticBody;
 	}
 
+	void Scene::TransformChangeCallback(entt::registry& reg, entt::entity ent)
+	{
+		auto& transform = reg.get<TransformComponent>(ent);
+		transform.dirty = true;
+		Entity e = { ent, this };
+		e.UpdateTransforms();
+	}
+
 	Scene::Scene()
 	{
-
+		m_Registry.on_update<TransformComponent>().connect<&Scene::TransformChangeCallback>(this);
 	}
 
 	Scene::~Scene()
@@ -106,12 +114,15 @@ namespace OP
 
 	Entity Scene::CreateEntity(const std::string& name)
 	{
-		return CreateEntityWithUUID(UUID(), name);
+		Entity entity = CreateEntityWithUUID(UUID(), name);
+		entity.AddComponent<RootComponent>();
+		return entity;
 	}
 
 	Entity Scene::CreateChildEntity(Entity parent, const std::string& name)
 	{
 		Entity child = CreateEntity(name);
+		child.RemoveComponent<RootComponent>();
 		AddChildEntity(parent, child);
 
 		return child;
@@ -168,6 +179,7 @@ namespace OP
 			childRelationship.prev = iterator.GetUUID();
 		}
 
+		child.RemoveComponent<RootComponent>();
 		return child;
 	}
 
@@ -216,6 +228,9 @@ namespace OP
 				nextRelComp.prev = prev.GetUUID();
 			}
 		}
+
+		if(!child.HasComponent<RootComponent>())
+			child.AddComponent<RootComponent>();
 	}
 
 	void Scene::RemoveEntity(Entity entity)
@@ -228,6 +243,7 @@ namespace OP
 
 	void Scene::OnRuntimeStart()
 	{
+
 		m_PhysicsWorld = new b2World({ 0.0f, -9.8f });
 		auto view = m_Registry.view<Rigidbody2DComponent>();
 		for (auto e : view)
