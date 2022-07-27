@@ -31,6 +31,9 @@ namespace OP
 		static int CompileShaders();
 		static Ref<Shader> GetShader(std::string name);
 
+
+		static int LoadModels(std::filesystem::path meshFilePath);
+
 		static std::string ResolveIncludes(const std::string& shaderSource, const std::string& fileName, std::unordered_map<std::string, bool>& includeMap, bool firstTime);
 		// Mesh Related functions
 		static int AddMesh();

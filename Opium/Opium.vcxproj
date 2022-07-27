@@ -576,6 +576,7 @@
     <ClInclude Include="src\Geometry\Cube.h" />
     <ClInclude Include="src\Geometry\Icosphere.h" />
     <ClInclude Include="src\Geometry\Mesh.h" />
+    <ClInclude Include="src\Geometry\Model.h" />
     <ClInclude Include="src\Geometry\Plane.h" />
     <ClInclude Include="src\Geometry\Quad.h" />
     <ClInclude Include="src\Geometry\RadialSphere.h" />
@@ -660,6 +661,7 @@
     <ClCompile Include="src\Geometry\Cube.cpp" />
     <ClCompile Include="src\Geometry\Icosphere.cpp" />
     <ClCompile Include="src\Geometry\Mesh.cpp" />
+    <ClCompile Include="src\Geometry\Model.cpp" />
     <ClCompile Include="src\Geometry\Plane.cpp" />
     <ClCompile Include="src\Geometry\Quad.cpp" />
     <ClCompile Include="src\Geometry\RadialSphere.cpp" />

@@ -9,8 +9,79 @@ namespace OP
 	Mesh::Mesh(bool smooth) : m_Smooth(smooth) {}
 	Mesh::Mesh() {}
 
+	Mesh::Mesh(aiMesh* mesh, const aiScene* scene)
+	{
+		for (uint32_t i = 0; i < mesh->mNumVertices; i++)
+		{
+			glm::vec3 vertex = {0.0f, 0.0f, 0.0f};
+			glm::vec3 normal = { 0.0f, 0.0f, 0.0f };
+			glm::vec2 texCoord = { 0.0f, 0.0f };
+			glm::vec3 tangent = { 0.0f, 0.0f, 0.0f };
+			glm::vec3 bitangent = { 0.0f, 0.0f, 0.0f };
+
+			vertex.x = mesh->mVertices[i].x;
+			vertex.y = mesh->mVertices[i].y;
+			vertex.z = mesh->mVertices[i].z;
+
+			if (mesh->mNormals)
+			{
+				normal.x = mesh->mNormals[i].x;
+				normal.y = mesh->mNormals[i].y;
+				normal.z = mesh->mNormals[i].z;
+			}
+
+			if (mesh->mTextureCoords[0])
+			{
+				texCoord.x = mesh->mTextureCoords[0][i].x;
+				texCoord.y = mesh->mTextureCoords[0][i].y;
+			}
+
+			if (mesh->mTangents)
+			{
+				tangent.x = mesh->mTangents[i].x;
+				tangent.y = mesh->mTangents[i].y;
+				tangent.z = mesh->mTangents[i].z;
+			}
+
+			if (mesh->mBitangents)
+			{
+				bitangent.x = mesh->mBitangents[i].x;
+				bitangent.y = mesh->mBitangents[i].y;
+				bitangent.z = mesh->mBitangents[i].z;
+			}
+
+			m_Vertices.push_back(vertex);
+			m_Normals.push_back(normal);
+			m_TexCoords.push_back(texCoord);
+			m_Tangents.push_back(tangent);
+			m_Bitangents.push_back(bitangent);
+		}
+
+		for (uint32_t i = 0; i < mesh->mNumFaces; i++)
+		{
+			aiFace face = mesh->mFaces[i];
+			for (uint32_t j = 0; j < face.mNumIndices; j++)
+			{
+				m_Indices.push_back(face.mIndices[j]);
+			}
+		}
+
+		if (mesh->mMaterialIndex >= 0)
+		{
+			aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
+		}
+
+		SetupArrayBuffer();
+		SetupMesh();
+	}
+
 	Mesh::~Mesh()
 	{
+	}
+
+	Ref<Mesh> Mesh::Create(aiMesh* mesh, const aiScene* scene)
+	{
+		return std::make_shared<Mesh>(mesh, scene);
 	}
 
 	void Mesh::SetupArrayBuffer()

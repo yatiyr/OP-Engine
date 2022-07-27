@@ -11,6 +11,11 @@
 
 #include <Renderer/Shader.h>
 
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
+
+
 namespace OP
 {
 
@@ -112,6 +117,56 @@ namespace OP
 		return s_ResourceManagerData.Shaders[shaderHandle];
 	}
 	 
+	int ResourceManager::LoadModels(std::filesystem::path meshFilePath)
+	{
+		uint32_t count = 0;
+		OP_ENGINE_WARN("\tLoading Models");
+
+		try
+		{
+			for (const auto& entry : std::filesystem::recursive_directory_iterator(meshFilePath))
+			{
+				if (entry.is_regular_file() && (
+					entry.path().extension() == ".gltf") || 
+					entry.path().extension() == ".fbx")
+				{
+					// Read the file and put it into unordered map with key
+					// as its filename
+					std::filesystem::path entryPath = entry.path();
+					std::ifstream shaderIncludeFile(entryPath);
+					std::stringstream buffer;
+					buffer << shaderIncludeFile.rdbuf();
+
+					OP_ENGINE_INFO("\t\tFile type {0}", entryPath.extension());
+					OP_ENGINE_INFO("\t\tFileName {0}", entryPath.filename());
+
+					Assimp::Importer import;
+					const aiScene* scene = import.ReadFile(entryPath.string(), aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
+
+					if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
+					{
+						OP_ENGINE_ERROR("ERROR::ASSIMP::{0}", import.GetErrorString());
+						return true;
+					}
+
+					shaderIncludeFile.close();
+
+					count++;
+				}
+			}
+
+			OP_ENGINE_INFO("\t\tTotal number of Models processed files : {0}", count);
+		}
+		catch (const std::exception&)
+		{
+			OP_ENGINE_ERROR("\tFailed to load Models.")
+				return 1;
+		}
+
+		OP_ENGINE_WARN("\tModels have been loaded")
+			return 0;
+	}
+
 	std::string ResourceManager::ResolveIncludes(const std::string& shaderSource, const std::string& fileName, std::unordered_map<std::string, bool>& includeMap , bool firstTime)
 	{
 		std::string includeToken = "#include ";
@@ -244,6 +299,7 @@ namespace OP
 		OP_ENGINE_INFO("\tRoot path is : {0}", rootFilePath);
 
 		std::filesystem::path assetPath = rootFilePath / "assets";
+		std::filesystem::path modelPath = assetPath / "models";
 
 		std::filesystem::path shaderPath = assetPath / "shaders";
 		std::filesystem::path shaderSrcPath = shaderPath / "src";
@@ -252,6 +308,9 @@ namespace OP
 		ResourceManager::LoadIncludeShaders(shaderIncludePath);
 		ResourceManager::LoadShaderSources(shaderSrcPath);
 		ResourceManager::CompileShaders();
+
+
+		ResourceManager::LoadModels(modelPath);
 
 		// Create generic resources
 			// GENERIC MESHES

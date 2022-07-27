@@ -7,6 +7,9 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 
 #include <vector>
 
@@ -18,10 +21,12 @@ namespace OP
 
 		Mesh(bool smooth);
 		Mesh();
+		Mesh(aiMesh* mesh, const aiScene* scene);
 		~Mesh();
 
 		virtual void BuildVertices() = 0;
 
+		static Ref<Mesh> Create(aiMesh* mesh, const aiScene* scene);
 
 		virtual void SetupArrayBuffer();
 		virtual void SetupMesh();

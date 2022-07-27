@@ -1566,6 +1566,7 @@
     <ClInclude Include="src\Window\Window.h">
       <Filter>src\Window</Filter>
     </ClInclude>
+    <ClInclude Include="src\Geometry\Model.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="external\ImGuizmo\GraphEditor.cpp">
@@ -1742,5 +1743,6 @@
     <ClCompile Include="src\Utils\ShaderIncludeUtils.cpp">
       <Filter>src\Utils</Filter>
     </ClCompile>
+    <ClCompile Include="src\Geometry\Model.cpp" />
   </ItemGroup>
 </Project>
