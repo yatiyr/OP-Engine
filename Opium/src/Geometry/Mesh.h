@@ -24,7 +24,7 @@ namespace OP
 		Mesh(aiMesh* mesh, const aiScene* scene);
 		~Mesh();
 
-		virtual void BuildVertices() = 0;
+		virtual void BuildVertices() {}
 
 		static Ref<Mesh> Create(aiMesh* mesh, const aiScene* scene);
 

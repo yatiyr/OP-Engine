@@ -66,11 +66,6 @@ namespace OP
 			}
 		}
 
-		if (mesh->mMaterialIndex >= 0)
-		{
-			aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
-		}
-
 		SetupArrayBuffer();
 		SetupMesh();
 	}

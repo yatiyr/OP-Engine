@@ -6,6 +6,8 @@
 #include <Geometry/Plane.h>
 #include <Geometry/RadialSphere.h>
 #include <Geometry/Cube.h>
+#include <Geometry/Model.h>
+
 
 #include <Renderer/Texture.h>
 
@@ -148,6 +150,8 @@ namespace OP
 						OP_ENGINE_ERROR("ERROR::ASSIMP::{0}", import.GetErrorString());
 						return true;
 					}
+
+					Ref<Model> testModel = Model::Create(scene->mRootNode, scene);
 
 					shaderIncludeFile.close();
 
