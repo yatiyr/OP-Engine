@@ -17,12 +17,24 @@ namespace OP
 		OP_ENGINE_ASSERT(false, "Unknown RendererAPI!");
 		return nullptr;
 	}
-	Ref<VertexBuffer> VertexBuffer::Create(float* vertices, uint32_t size)
+	/*Ref<VertexBuffer> VertexBuffer::Create(float* vertices, uint32_t size)
 	{
 		switch (Renderer::GetAPI())
 		{
 			case RendererAPI::API::None:   OP_ENGINE_ASSERT(false, "RendererAPI::None is not supported!"); return nullptr;
 			case RendererAPI::API::OpenGL: return std::make_shared<OpenGLVertexBuffer>(vertices, size);
+		}
+
+		OP_ENGINE_ASSERT(false, "Unknown RendererAPI!");
+		return nullptr;
+	}*/
+
+	Ref<VertexBuffer> VertexBuffer::Create(void* vertices, uint32_t size)
+	{
+		switch (Renderer::GetAPI())
+		{
+		case RendererAPI::API::None:   OP_ENGINE_ASSERT(false, "RendererAPI::None is not supported!"); return nullptr;
+		case RendererAPI::API::OpenGL: return std::make_shared<OpenGLVertexBuffer>(vertices, size);
 		}
 
 		OP_ENGINE_ASSERT(false, "Unknown RendererAPI!");

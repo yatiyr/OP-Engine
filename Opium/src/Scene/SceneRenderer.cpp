@@ -25,11 +25,13 @@
 #include <Geometry/Cube.h>
 #include <Geometry/Plane.h>
 #include <Geometry/Quad.h>
+#include <Geometry/Model.h>
 
 #define MAX_DIR_LIGHTS 4
 #define MAX_SPOT_LIGHTS 4
 #define MAX_CASCADE_SIZE 10
 #define MAX_POINT_LIGHTS 10
+#define MAX_BONES 100
 
 namespace OP
 {
@@ -246,6 +248,22 @@ namespace OP
 
 		// ------ END UNIFORM BUFFERS ---------- //
 
+		// ------ Animation Uniform Buffer ----- //
+
+			struct BoneMatrix
+			{
+				glm::mat4 mat;
+			};
+
+			// Bone matrices data
+			struct BoneMatricesData
+			{
+				BoneMatrix BoneMatrices[MAX_BONES];
+
+			};
+
+			Ref<UniformBuffer> BoneMatricesUniformBuffer;
+		// ------------------------------------- //
 
 
 		// -------- CASCADED SHADOW MAPPING SETTINGS ------- //
@@ -409,12 +427,11 @@ namespace OP
 		// Ref<Texture2D> woodTexture;
 		Ref<Texture2D> WhiteTexture;
 
-		Ref<Icosphere> icosphere;
-		Ref<Icosphere> icosphere2;
-		Ref<Icosphere> icosphere3;
 		Ref<Cube> cube;
 		Ref<Plane> plane;
 		Ref<Quad> quad;
+
+		Ref<Model> animatedModel;
 
 		// Ref<Icosphere> icosphere2;
 
@@ -450,6 +467,7 @@ namespace OP
 	{
 
 		// ---------- TEMP ----------
+
 		s_SceneRendererData.spinningModel = glm::mat4(1.0f);
 		s_SceneRendererData.spinningModel = glm::translate(s_SceneRendererData.spinningModel, glm::vec3(-4.0f, 6.0f, 5.0f));
 		s_SceneRendererData.spinningModel = glm::scale(s_SceneRendererData.spinningModel, glm::vec3(1.0f, 1.0f, 1.0f));
@@ -462,9 +480,6 @@ namespace OP
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_BACK);
 
-		s_SceneRendererData.icosphere = Icosphere::Create(1.0f, 4, true);
-		s_SceneRendererData.icosphere2 = Icosphere::Create(1.0f, 0, false);
-		s_SceneRendererData.icosphere3 = Icosphere::Create(1.5f, 1, false);
 		s_SceneRendererData.cube = Cube::Create();
 		s_SceneRendererData.plane = Plane::Create();
 		s_SceneRendererData.quad = Quad::Create();
@@ -476,6 +491,9 @@ namespace OP
 		s_SceneRendererData.depthDebugShader = ResourceManager::GetShader("DepthDebug.glsl");
 		s_SceneRendererData.pointLightDepthShader = ResourceManager::GetShader("PointShadowMapping.glsl");
 		s_SceneRendererData.postProcessingShader = ResourceManager::GetShader("PostProcessing.glsl");
+
+
+		s_SceneRendererData.animatedModel = ResourceManager::GetModel("Thriller Part 1");
 
 		// Deal with uniform buffers
 		s_SceneRendererData.CameraUniformBuffer            = UniformBuffer::Create(sizeof(SceneRendererData::CameraData), 0);
@@ -493,6 +511,9 @@ namespace OP
 		s_SceneRendererData.MaterialUniformBuffer  = UniformBuffer::Create(sizeof(SceneRendererData::MaterialData), 9);
 
 		s_SceneRendererData.ToneMappingSettingsUniformBuffer = UniformBuffer::Create(sizeof(SceneRendererData::ToneMappingSettings), 10);
+
+
+		s_SceneRendererData.BoneMatricesUniformBuffer = UniformBuffer::Create(sizeof(SceneRendererData::BoneMatricesData), 11);
 
 		s_SceneRendererData.ViewportSize.x = width;
 		s_SceneRendererData.ViewportSize.y = height;
@@ -620,6 +641,11 @@ namespace OP
 		// ---------------------- TONE MAPPING SETTINGS ------------------------------ //
 			s_SceneRendererData.ToneMappingSettingsUniformBuffer->SetData(&s_SceneRendererData.ToneMappingSettingsBuffer, sizeof(SceneRendererData::ToneMappingSettings));
 
+
+		// --------------------- UPDATE ANIMATIONS -------------------------------- //
+
+			s_SceneRendererData.animatedModel->UpdateAnimation(ts);
+			s_SceneRendererData.BoneMatricesUniformBuffer->SetData(&s_SceneRendererData.animatedModel->GetFinalBoneMatrices(), sizeof(SceneRendererData::BoneMatricesData));
 
 		// ------------------ FILL IN DIR LIGHT UNIFORMS -------------------------- //
 			glm::mat4 cameraProjection = camera.GetProjection();
@@ -762,14 +788,6 @@ namespace OP
 				glCullFace(GL_FRONT);
 				// ------------ DRAW SCENE ------------
 
-
-				model = glm::mat4(1.0f);
-				model = glm::translate(model, glm::vec3(-100.0f, 100.0f, -40.0f));
-				model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
-				s_SceneRendererData.TransformBuffer.Model = model;
-				s_SceneRendererData.TransformUniformBuffer->SetData(&s_SceneRendererData.TransformBuffer, sizeof(SceneRendererData::TransformData));
-				s_SceneRendererData.icosphere->Draw();
-
 				model = glm::mat4(1.0f);
 				model = glm::translate(model, glm::vec3(0.0f, -3.0f, 0.0f));
 				model = glm::scale(model, glm::vec3(500.0f, 1.0f, 500.0f));
@@ -787,20 +805,13 @@ namespace OP
 
 
 				model = glm::mat4(1.0f);
-				model = glm::translate(model, glm::vec3(75.0f, 20.0f, -2.0f));
-				model = glm::scale(model, glm::vec3(15.0f, 15.0f, 15.0f));
+				model = glm::translate(model, glm::vec3(-10.0f, 20.0f, 2.0f));
+				model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
 				s_SceneRendererData.TransformBuffer.Model = model;
 				s_SceneRendererData.TransformUniformBuffer->SetData(&s_SceneRendererData.TransformBuffer, sizeof(SceneRendererData::TransformData));
-				s_SceneRendererData.icosphere2->Draw();
-
-
-
-				s_SceneRendererData.spinningModel = glm::rotate(s_SceneRendererData.spinningModel, glm::radians((float)ts * time * 1.0f), glm::normalize(glm::vec3(1.0, 0.0, 1.0)));
-				s_SceneRendererData.TransformBuffer.Model = s_SceneRendererData.spinningModel;
-				s_SceneRendererData.TransformUniformBuffer->SetData(&s_SceneRendererData.TransformBuffer, sizeof(SceneRendererData::TransformData));
-				s_SceneRendererData.icosphere3->Draw();
-
-
+				//s_SceneRendererData.BoneMatricesUniformBuffer->SetData(&s_SceneRendererData.animatedModel->GetFinalBoneMatrices(), sizeof(SceneRendererData::BoneMatricesData));
+				s_SceneRendererData.animatedModel->Draw();
+				
 				// ---------- DRAW SCENE END ----------
 				glCullFace(GL_BACK);
 
@@ -819,13 +830,6 @@ namespace OP
 
 
 				model = glm::mat4(1.0f);
-				model = glm::translate(model, glm::vec3(-100.0f, 100.0f, -40.0f));
-				model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
-				s_SceneRendererData.TransformBuffer.Model = model;
-				s_SceneRendererData.TransformUniformBuffer->SetData(&s_SceneRendererData.TransformBuffer, sizeof(SceneRendererData::TransformData));
-				s_SceneRendererData.icosphere->Draw();
-
-				model = glm::mat4(1.0f);
 				model = glm::translate(model, glm::vec3(0.0f, -3.0f, 0.0f));
 				model = glm::scale(model, glm::vec3(500.0f, 1.0f, 500.0f));
 				model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
@@ -840,21 +844,13 @@ namespace OP
 				s_SceneRendererData.TransformUniformBuffer->SetData(&s_SceneRendererData.TransformBuffer, sizeof(SceneRendererData::TransformData));
 				s_SceneRendererData.cube->Draw();
 
-
 				model = glm::mat4(1.0f);
-				model = glm::translate(model, glm::vec3(75.0f, 20.0f, -2.0f));
-				model = glm::scale(model, glm::vec3(15.0f, 15.0f, 15.0f));
+				model = glm::translate(model, glm::vec3(-10.0f, 20.0f, 2.0f));
+				model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
 				s_SceneRendererData.TransformBuffer.Model = model;
 				s_SceneRendererData.TransformUniformBuffer->SetData(&s_SceneRendererData.TransformBuffer, sizeof(SceneRendererData::TransformData));
-				s_SceneRendererData.icosphere2->Draw();
-
-
-
-				s_SceneRendererData.spinningModel = glm::rotate(s_SceneRendererData.spinningModel, glm::radians((float)ts * time * 1.0f), glm::normalize(glm::vec3(1.0, 0.0, 1.0)));
-				s_SceneRendererData.TransformBuffer.Model = s_SceneRendererData.spinningModel;
-				s_SceneRendererData.TransformUniformBuffer->SetData(&s_SceneRendererData.TransformBuffer, sizeof(SceneRendererData::TransformData));
-				s_SceneRendererData.icosphere3->Draw();
-
+				//s_SceneRendererData.BoneMatricesUniformBuffer->SetData(&s_SceneRendererData.animatedModel->GetFinalBoneMatrices(), sizeof(SceneRendererData::BoneMatricesData));
+				s_SceneRendererData.animatedModel->Draw();
 
 				// ---------- DRAW SCENE END ----------
 				glCullFace(GL_BACK);
@@ -919,17 +915,6 @@ namespace OP
 				glBindTextureUnit(1, depthMap2);
 				// ------------ DRAW SCENE ------------
 
-
-				model = glm::mat4(1.0f);
-				model = glm::translate(model, glm::vec3(-100.0f, 100.0f, -40.0f));
-				model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
-				s_SceneRendererData.TransformBuffer.Model = model;
-				// yellowish
-				s_SceneRendererData.MaterialBuffer.Color = glm::vec3(0.7f, 0.6f, 0.2f);
-				s_SceneRendererData.TransformUniformBuffer->SetData(&s_SceneRendererData.TransformBuffer, sizeof(SceneRendererData::TransformData));
-				s_SceneRendererData.MaterialUniformBuffer->SetData(&s_SceneRendererData.MaterialBuffer, sizeof(SceneRendererData::MaterialData));
-				s_SceneRendererData.icosphere->Draw();
-
 				model = glm::mat4(1.0f);
 				model = glm::translate(model, glm::vec3(0.0f, -3.0f, 0.0f));
 				model = glm::scale(model, glm::vec3(500.0f, 1.0f, 500.0f));
@@ -951,24 +936,16 @@ namespace OP
 				s_SceneRendererData.MaterialUniformBuffer->SetData(&s_SceneRendererData.MaterialBuffer, sizeof(SceneRendererData::MaterialData));
 				s_SceneRendererData.cube->Draw();
 
+
 				model = glm::mat4(1.0f);
-				model = glm::translate(model, glm::vec3(75.0f, 20.0f, -2.0f));
-				model = glm::scale(model, glm::vec3(15.0f, 15.0f, 15.0f));
+				model = glm::translate(model, glm::vec3(-10.0f, 20.0f, 2.0f));
+				model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
 				s_SceneRendererData.TransformBuffer.Model = model;
-				// dark orange
-				s_SceneRendererData.MaterialBuffer.Color = glm::vec3(0.1f, 0.8f, 0.4f);
 				s_SceneRendererData.TransformUniformBuffer->SetData(&s_SceneRendererData.TransformBuffer, sizeof(SceneRendererData::TransformData));
+				//s_SceneRendererData.BoneMatricesUniformBuffer->SetData(&s_SceneRendererData.animatedModel->GetFinalBoneMatrices(), sizeof(SceneRendererData::BoneMatricesData));
 				s_SceneRendererData.MaterialUniformBuffer->SetData(&s_SceneRendererData.MaterialBuffer, sizeof(SceneRendererData::MaterialData));
-				s_SceneRendererData.icosphere2->Draw();
+				s_SceneRendererData.animatedModel->Draw();
 
-
-				s_SceneRendererData.spinningModel = glm::rotate(s_SceneRendererData.spinningModel, glm::radians((float)ts * time * 15.0f), glm::normalize(glm::vec3(1.0, 0.0, 1.0)));
-				s_SceneRendererData.TransformBuffer.Model = s_SceneRendererData.spinningModel;
-				// dark orange
-				s_SceneRendererData.MaterialBuffer.Color = glm::vec3(0.1f, 0.5f, 0.9f);
-				s_SceneRendererData.TransformUniformBuffer->SetData(&s_SceneRendererData.TransformBuffer, sizeof(SceneRendererData::TransformData));
-				s_SceneRendererData.MaterialUniformBuffer->SetData(&s_SceneRendererData.MaterialBuffer, sizeof(SceneRendererData::MaterialData));
-				s_SceneRendererData.icosphere3->Draw();
 				// ---------- DRAW SCENE END ----------
 
 				s_SceneRendererData.depthDebugShader->Bind();

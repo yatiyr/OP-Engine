@@ -567,6 +567,9 @@
     <ClInclude Include="external\glm\glm\vec4.hpp" />
     <ClInclude Include="external\glm\glm\vector_relational.hpp" />
     <ClInclude Include="external\stb_image\stb_image.h" />
+    <ClInclude Include="src\Animation\Animation.h" />
+    <ClInclude Include="src\Animation\AnimationHandler.h" />
+    <ClInclude Include="src\Animation\Bone.h" />
     <ClInclude Include="src\Config\Precomp.h" />
     <ClInclude Include="src\EntryPoint.h" />
     <ClInclude Include="src\EventSystem\AppEvent.h" />
@@ -611,6 +614,7 @@
     <ClInclude Include="src\Renderer\EditorCamera.h" />
     <ClInclude Include="src\Renderer\Framebuffer.h" />
     <ClInclude Include="src\Renderer\GraphicsContext.h" />
+    <ClInclude Include="src\Renderer\Material.h" />
     <ClInclude Include="src\Renderer\OrthographicCamera.h" />
     <ClInclude Include="src\Renderer\OrthographicCameraController.h" />
     <ClInclude Include="src\Renderer\PingPongRenderPass.h" />
@@ -634,6 +638,7 @@
     <ClInclude Include="src\ScriptManager\InternalCallArranger.h" />
     <ClInclude Include="src\ScriptManager\ScriptManager.h" />
     <ClInclude Include="src\ScriptManager\Wrappers.h" />
+    <ClInclude Include="src\Utils\AssimpGLMHelpers.h" />
     <ClInclude Include="src\Utils\PlatformUtils.h" />
     <ClInclude Include="src\Utils\ShaderIncludeUtils.h" />
     <ClInclude Include="src\Window\Window.h" />

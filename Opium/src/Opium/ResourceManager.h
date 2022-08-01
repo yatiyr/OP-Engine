@@ -2,6 +2,7 @@
 #include <Scene/Scene.h>
 #include <filesystem>
 #include <Renderer/Shader.h>
+#include <Geometry/Model.h>
 
 namespace OP
 {
@@ -31,8 +32,10 @@ namespace OP
 		static int CompileShaders();
 		static Ref<Shader> GetShader(std::string name);
 
+		static Ref<Model> GetModel(std::string name);
 
 		static int LoadModels(std::filesystem::path meshFilePath);
+		static int RegisterModelResources();
 
 		static std::string ResolveIncludes(const std::string& shaderSource, const std::string& fileName, std::unordered_map<std::string, bool>& includeMap, bool firstTime);
 		// Mesh Related functions

@@ -3,14 +3,38 @@
 
 // Temp
 #include <Renderer/RenderCommand.h>
+#include <Utils/AssimpGLMHelpers.h>
 
 namespace OP
 {
+
+	static void SetDefaultBoneIDsWeights(std::vector<BoneIds>& ids, std::vector<BoneWeights>& weights)
+	{
+		for (uint32_t i = 0; i < ids.size(); i++)
+		{
+			for (uint32_t j = 0; j < MAX_BONE_INFLUENCE; j++)
+			{
+				ids[i].IDs[j] = -1;
+				weights[i].Weights[j] = 0.0f;
+			}
+		}
+	}
+
 	Mesh::Mesh(bool smooth) : m_Smooth(smooth) {}
 	Mesh::Mesh() {}
 
-	Mesh::Mesh(aiMesh* mesh, const aiScene* scene)
+	Mesh::Mesh(aiMesh* mesh, const aiScene* scene, aiNode* currentNode, std::unordered_map<std::string, BoneInfo>& boneInfoMap, int& boneCounter)
 	{
+
+		aiMatrix4x4 transformation = aiMatrix4x4();
+		aiNode* nodeIterator = currentNode;
+
+		while (nodeIterator != nullptr)
+		{
+			transformation = nodeIterator->mTransformation * transformation;
+			nodeIterator = nodeIterator->mParent;
+		}
+
 		for (uint32_t i = 0; i < mesh->mNumVertices; i++)
 		{
 			glm::vec3 vertex = {0.0f, 0.0f, 0.0f};
@@ -19,15 +43,25 @@ namespace OP
 			glm::vec3 tangent = { 0.0f, 0.0f, 0.0f };
 			glm::vec3 bitangent = { 0.0f, 0.0f, 0.0f };
 
-			vertex.x = mesh->mVertices[i].x;
-			vertex.y = mesh->mVertices[i].y;
-			vertex.z = mesh->mVertices[i].z;
+			aiVector3D aiVertex    = mesh->mVertices[i];
+
+			aiMatrix4x4 inverseTransposeTrans = aiMatrix4x4(transformation);
+			inverseTransposeTrans.Inverse().Transpose();
+
+			aiVertex = transformation * aiVertex;
+
+			vertex.x = aiVertex.x;
+			vertex.y = aiVertex.y;
+			vertex.z = aiVertex.z;
 
 			if (mesh->mNormals)
 			{
-				normal.x = mesh->mNormals[i].x;
-				normal.y = mesh->mNormals[i].y;
-				normal.z = mesh->mNormals[i].z;
+				aiVector3D aiNormal = mesh->mNormals[i];
+				aiNormal = inverseTransposeTrans * aiNormal;
+
+				normal.x = aiNormal.x;
+				normal.y = aiNormal.y;
+				normal.z = aiNormal.z;
 			}
 
 			if (mesh->mTextureCoords[0])
@@ -38,16 +72,20 @@ namespace OP
 
 			if (mesh->mTangents)
 			{
-				tangent.x = mesh->mTangents[i].x;
-				tangent.y = mesh->mTangents[i].y;
-				tangent.z = mesh->mTangents[i].z;
+				aiVector3D aiTangent = mesh->mTangents[i];
+				aiTangent = inverseTransposeTrans * aiTangent;
+				tangent.x = aiTangent.x;
+				tangent.y = aiTangent.y;
+				tangent.z = aiTangent.z;
 			}
 
 			if (mesh->mBitangents)
 			{
-				bitangent.x = mesh->mBitangents[i].x;
-				bitangent.y = mesh->mBitangents[i].y;
-				bitangent.z = mesh->mBitangents[i].z;
+				aiVector3D aiBitangent = mesh->mBitangents[i];
+				aiBitangent = inverseTransposeTrans * aiBitangent;
+				bitangent.x = aiBitangent.x;
+				bitangent.y = aiBitangent.y;
+				bitangent.z = aiBitangent.z;
 			}
 
 			m_Vertices.push_back(vertex);
@@ -66,6 +104,50 @@ namespace OP
 			}
 		}
 
+		// Extract bone information
+		m_BoneIds.resize(m_Vertices.size());
+		m_BoneWeights.resize(m_Vertices.size());
+		SetDefaultBoneIDsWeights(m_BoneIds, m_BoneWeights);
+
+		
+		for (uint32_t boneIndex = 0; boneIndex < mesh->mNumBones; boneIndex++)
+		{
+			int boneID = -1;
+			std::string boneName = mesh->mBones[boneIndex]->mName.C_Str();
+			if (boneInfoMap.find(boneName) == boneInfoMap.end())
+			{
+				BoneInfo newBoneInfo;
+				newBoneInfo.id = boneCounter;
+				newBoneInfo.offset = AssimpGLMHelpers::ConvertMatrixToGLMFormat(mesh->mBones[boneIndex]->mOffsetMatrix);
+				boneInfoMap[boneName] = newBoneInfo;
+				boneID = boneCounter;
+				boneCounter++;
+			}
+			else
+			{
+				boneID = boneInfoMap[boneName].id;
+			}
+
+			auto weights = mesh->mBones[boneIndex]->mWeights;
+			int numWeights = mesh->mBones[boneIndex]->mNumWeights;
+
+			for (int weightIndex = 0; weightIndex < numWeights; weightIndex++)
+			{
+				int vertexID = weights[weightIndex].mVertexId;
+				float weight = weights[weightIndex].mWeight;
+
+				for (uint32_t i = 0; i < MAX_BONE_INFLUENCE; i++)
+				{
+					if (m_BoneIds[vertexID].IDs[i] < 0)
+					{
+						m_BoneIds[vertexID].IDs[i] = boneID;
+						m_BoneWeights[vertexID].Weights[i] = weight;
+						break;
+					}
+				}
+			}
+		}
+
 		SetupArrayBuffer();
 		SetupMesh();
 	}
@@ -74,9 +156,9 @@ namespace OP
 	{
 	}
 
-	Ref<Mesh> Mesh::Create(aiMesh* mesh, const aiScene* scene)
+	Ref<Mesh> Mesh::Create(aiMesh* mesh, const aiScene* scene, aiNode* currentNode, std::unordered_map<std::string, BoneInfo>& boneInfoMap, int& boneCounter)
 	{
-		return std::make_shared<Mesh>(mesh, scene);
+		return std::make_shared<Mesh>(mesh, scene, currentNode, boneInfoMap, boneCounter);
 	}
 
 	void Mesh::SetupArrayBuffer()
@@ -86,32 +168,33 @@ namespace OP
 
 		for (uint32_t i = 0; i < m_Vertices.size(); i++)
 		{
+
 			// Add position
-			m_ArrayBuffer.push_back(m_Vertices[i].x);
-			m_ArrayBuffer.push_back(m_Vertices[i].y);
-			m_ArrayBuffer.push_back(m_Vertices[i].z);
+			Vertex vert;
+			vert.Pos = m_Vertices[i];
+			vert.Normal = m_Normals[i];
+			vert.TexCoord = m_TexCoords[i];
+			vert.Tangent = m_Tangents[i];
+			vert.Bitangent = m_Bitangents[i];
+			
+			for (uint32_t j = 0; j < MAX_BONE_INFLUENCE; j++)
+			{
+				if (m_BoneIds.size() > 0)
+				{
+					vert.BoneIds[j] = m_BoneIds[i].IDs[j];
+					vert.BoneWeights[j] = m_BoneWeights[i].Weights[j];
+				}
+				else
+				{
+					vert.BoneIds[j] = -1;
+					vert.BoneWeights[j] = 0.0f;
+				}
+				
+			}
 
-			// Add Normal
-			m_ArrayBuffer.push_back(m_Normals[i].x);
-			m_ArrayBuffer.push_back(m_Normals[i].y);
-			m_ArrayBuffer.push_back(m_Normals[i].z);
-
-			// Add Texture Coords
-			m_ArrayBuffer.push_back(m_TexCoords[i].x);
-			m_ArrayBuffer.push_back(m_TexCoords[i].y);
-
-			// Add Tangents
-			m_ArrayBuffer.push_back(m_Tangents[i].x);
-			m_ArrayBuffer.push_back(m_Tangents[i].y);
-			m_ArrayBuffer.push_back(m_Tangents[i].z);
-
-			// Add Bitangents
-			m_ArrayBuffer.push_back(m_Bitangents[i].x);
-			m_ArrayBuffer.push_back(m_Bitangents[i].y);
-			m_ArrayBuffer.push_back(m_Bitangents[i].z);
+			m_ArrayBuffer.push_back(vert);
 
 		}
-
 	}
 
 	void Mesh::SetupMesh()
@@ -124,14 +207,16 @@ namespace OP
 		
 		m_VertexArray = VertexArray::Create();
 		
-		m_VertexBuffer = VertexBuffer::Create(&m_ArrayBuffer[0], m_ArrayBuffer.size() * sizeof(float));
+		m_VertexBuffer = VertexBuffer::Create(&m_ArrayBuffer[0], m_ArrayBuffer.size() * sizeof(Vertex));
 		m_VertexBuffer->SetLayout(
 			{
-				{ ShaderDataType::Float3, "a_Position"},
-				{ ShaderDataType::Float3, "a_Normal"},
-				{ ShaderDataType::Float2, "a_TexCoord"},
-				{ ShaderDataType::Float3, "a_Tangent"},
-				{ ShaderDataType::Float3, "a_Bitangent"}
+				{ ShaderDataType::Float3, "a_Position"    },
+				{ ShaderDataType::Float3, "a_Normal"      },
+				{ ShaderDataType::Float2, "a_TexCoord"    },
+				{ ShaderDataType::Float3, "a_Tangent"     },
+				{ ShaderDataType::Float3, "a_Bitangent"   },
+				{ ShaderDataType::Int4,   "a_BoneIDs"     },
+			    { ShaderDataType::Float4, "a_BoneWeights" }
 			}
 		);
 

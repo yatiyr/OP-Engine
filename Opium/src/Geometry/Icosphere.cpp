@@ -36,9 +36,9 @@ namespace OP
 		{
 			m_Vertices[i] *= scale;
 
-			m_ArrayBuffer[j] *= scale;
-			m_ArrayBuffer[j + 1] *= scale;
-			m_ArrayBuffer[j + 2] *= scale;
+			m_ArrayBuffer[j].Pos *= scale;
+			m_ArrayBuffer[j + 1].Pos *= scale;
+			m_ArrayBuffer[j + 2].Pos *= scale;
 		}
 	}
 

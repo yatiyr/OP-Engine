@@ -1,5 +1,7 @@
 #pragma once
 
+#define MAX_BONE_INFLUENCE 4
+
 #include <Renderer/VertexArray.h>
 
 
@@ -12,21 +14,54 @@
 #include <assimp/postprocess.h>
 
 #include <vector>
+#include <unordered_map>
 
 namespace OP
 {
+
+	struct BoneIds
+	{
+		int IDs[MAX_BONE_INFLUENCE];
+	};
+
+	struct BoneWeights
+	{
+		float Weights[MAX_BONE_INFLUENCE];
+	};
+
+	struct BoneInfo
+	{
+		/* index in finalBoneMatrices */
+		int id;
+
+		/* matrix to transform vertex from model space to bone space */
+		glm::mat4 offset;
+	};
+
+	struct Vertex
+	{
+		glm::vec3 Pos;
+		glm::vec3 Normal;
+		glm::vec2 TexCoord;
+		glm::vec3 Tangent;
+		glm::vec3 Bitangent;
+
+		int BoneIds[MAX_BONE_INFLUENCE];
+		float BoneWeights[MAX_BONE_INFLUENCE];
+	};
+
 	class Mesh
 	{
 	public:
 
 		Mesh(bool smooth);
 		Mesh();
-		Mesh(aiMesh* mesh, const aiScene* scene);
+		Mesh(aiMesh* mesh, const aiScene* scene, aiNode* currentNode, std::unordered_map<std::string, BoneInfo>& boneInfoMap, int& boneCounter);
 		~Mesh();
 
 		virtual void BuildVertices() {}
 
-		static Ref<Mesh> Create(aiMesh* mesh, const aiScene* scene);
+		static Ref<Mesh> Create(aiMesh* mesh, const aiScene* scene, aiNode* currentNode, std::unordered_map<std::string, BoneInfo>& boneInfoMap, int& boneCounter);
 
 		virtual void SetupArrayBuffer();
 		virtual void SetupMesh();
@@ -85,11 +120,16 @@ namespace OP
 		std::vector<glm::vec3> m_Bitangents;
 		std::vector<glm::vec2> m_TexCoords;
 
+		// Bone related stuff
+		std::vector<BoneIds>     m_BoneIds;
+		std::vector<BoneWeights> m_BoneWeights;
+
 
 		// Array object and buffers
-
-		std::vector<float> m_ArrayBuffer;
+		std::vector<Vertex> m_ArrayBuffer;
 		std::vector<uint32_t> m_Indices;
+
+		std::vector<float> m_ArrayBufferTest;
 
 		Ref<VertexArray> m_VertexArray;
 		Ref<VertexBuffer> m_VertexBuffer;

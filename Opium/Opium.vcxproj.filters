@@ -1386,6 +1386,9 @@
     <ClInclude Include="src\Geometry\Mesh.h">
       <Filter>src\Geometry</Filter>
     </ClInclude>
+    <ClInclude Include="src\Geometry\Model.h">
+      <Filter>src\Geometry</Filter>
+    </ClInclude>
     <ClInclude Include="src\Geometry\Plane.h">
       <Filter>src\Geometry</Filter>
     </ClInclude>
@@ -1566,7 +1569,11 @@
     <ClInclude Include="src\Window\Window.h">
       <Filter>src\Window</Filter>
     </ClInclude>
-    <ClInclude Include="src\Geometry\Model.h" />
+    <ClInclude Include="src\Renderer\Material.h" />
+    <ClInclude Include="src\Utils\AssimpGLMHelpers.h" />
+    <ClInclude Include="src\Animation\Bone.h" />
+    <ClInclude Include="src\Animation\Animation.h" />
+    <ClInclude Include="src\Animation\AnimationHandler.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="external\ImGuizmo\GraphEditor.cpp">
@@ -1597,6 +1604,9 @@
       <Filter>src\Geometry</Filter>
     </ClCompile>
     <ClCompile Include="src\Geometry\Mesh.cpp">
+      <Filter>src\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Geometry\Model.cpp">
       <Filter>src\Geometry</Filter>
     </ClCompile>
     <ClCompile Include="src\Geometry\Plane.cpp">
@@ -1743,6 +1753,5 @@
     <ClCompile Include="src\Utils\ShaderIncludeUtils.cpp">
       <Filter>src\Utils</Filter>
     </ClCompile>
-    <ClCompile Include="src\Geometry\Model.cpp" />
   </ItemGroup>
 </Project>

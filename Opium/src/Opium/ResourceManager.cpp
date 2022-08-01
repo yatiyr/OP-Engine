@@ -25,6 +25,7 @@ namespace OP
 	struct ResourceManagerData
 	{
 		std::unordered_map<uint32_t, Ref<Mesh>> Meshes;
+		std::unordered_map<uint32_t, Ref<Model>> Models;
 
 		std::unordered_map<uint32_t, Ref<Texture>> CubeMaps;
 		std::unordered_map<uint32_t, Ref<Texture>> PlainTextures;
@@ -113,6 +114,12 @@ namespace OP
 		return 0;
 	}
 
+	Ref<Model> ResourceManager::GetModel(std::string name)
+	{
+		uint32_t modelHandle = s_ResourceManagerData.StringLookupTable[name];
+		return s_ResourceManagerData.Models[modelHandle];
+	}
+
 	Ref<Shader> ResourceManager::GetShader(std::string name)
 	{
 		uint32_t shaderHandle =  s_ResourceManagerData.StringLookupTable[name];
@@ -130,20 +137,20 @@ namespace OP
 			{
 				if (entry.is_regular_file() && (
 					entry.path().extension() == ".gltf") || 
-					entry.path().extension() == ".fbx")
+					entry.path().extension() == ".fbx" || 
+					entry.path().extension() == ".dae")
 				{
 					// Read the file and put it into unordered map with key
 					// as its filename
 					std::filesystem::path entryPath = entry.path();
-					std::ifstream shaderIncludeFile(entryPath);
+					std::ifstream modelFile(entryPath);
 					std::stringstream buffer;
-					buffer << shaderIncludeFile.rdbuf();
+					buffer << modelFile.rdbuf();
 
-					OP_ENGINE_INFO("\t\tFile type {0}", entryPath.extension());
 					OP_ENGINE_INFO("\t\tFileName {0}", entryPath.filename());
 
 					Assimp::Importer import;
-					const aiScene* scene = import.ReadFile(entryPath.string(), aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
+					const aiScene* scene = import.ReadFile(entryPath.string(), aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace | aiProcess_GenSmoothNormals | aiProcess_DropNormals);
 
 					if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 					{
@@ -151,15 +158,20 @@ namespace OP
 						return true;
 					}
 
-					Ref<Model> testModel = Model::Create(scene->mRootNode, scene);
+					Ref<Model> model = Model::Create(scene->mRootNode, scene);
 
-					shaderIncludeFile.close();
+					s_ResourceManagerData.StringLookupTable[entryPath.stem().string()] = s_ResourceManagerData.counter;
+					s_ResourceManagerData.Models[s_ResourceManagerData.counter] = model;
+
+					s_ResourceManagerData.counter++;
+
+					modelFile.close();
 
 					count++;
 				}
 			}
 
-			OP_ENGINE_INFO("\t\tTotal number of Models processed files : {0}", count);
+			OP_ENGINE_INFO("\t\tTotal number of processed Models : {0}", count);
 		}
 		catch (const std::exception&)
 		{
@@ -169,6 +181,11 @@ namespace OP
 
 		OP_ENGINE_WARN("\tModels have been loaded")
 			return 0;
+	}
+
+	int ResourceManager::RegisterModelResources()
+	{
+		return 0;
 	}
 
 	std::string ResourceManager::ResolveIncludes(const std::string& shaderSource, const std::string& fileName, std::unordered_map<std::string, bool>& includeMap , bool firstTime)
@@ -318,15 +335,6 @@ namespace OP
 
 		// Create generic resources
 			// GENERIC MESHES
-			uint32_t icosphere = Allocate("Icosphere_1.0_4_smooth");
-			s_ResourceManagerData.Meshes[icosphere] = Icosphere::Create(1.0f, 4, true);
-
-			uint32_t icosphere2 = Allocate("Icosphere_1.0_0_flat");
-			s_ResourceManagerData.Meshes[icosphere2] = Icosphere::Create(1.0f, 0, false);
-
-			uint32_t icosphere3 = Allocate("Icosphere_1.0_1_flat");
-			s_ResourceManagerData.Meshes[icosphere3] = Icosphere::Create(1.0f, 1, false);
-
 			uint32_t cube = Allocate("Cube");
 			s_ResourceManagerData.Meshes[cube] = Cube::Create();
 
