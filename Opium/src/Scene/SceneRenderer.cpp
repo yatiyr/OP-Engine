@@ -417,8 +417,11 @@ namespace OP
 
 		// Shaders
 		Ref<Shader> mainShader;
+		Ref<Shader> mainShaderAnimated;
 		Ref<Shader> depthShader;
+		Ref<Shader> depthShaderAnimated;
 		Ref<Shader> pointLightDepthShader;
+		Ref<Shader> pointLightDepthShaderAnimated;
 		Ref<Shader> depthDebugShader;
 		Ref<Shader> shadowMapDirSpotBlur;
 		Ref<Shader> pointLightSMBlurShader;
@@ -487,9 +490,12 @@ namespace OP
 
 		s_SceneRendererData.shadowMapDirSpotBlur = ResourceManager::GetShader("DirSpotShadowMappingBlur.glsl");
 		s_SceneRendererData.mainShader = ResourceManager::GetShader("Main.glsl");
+		s_SceneRendererData.mainShaderAnimated = ResourceManager::GetShader("MainAnimated.glsl");
 		s_SceneRendererData.depthShader = ResourceManager::GetShader("DirSpotShadowMapping.glsl");
+		s_SceneRendererData.depthShaderAnimated = ResourceManager::GetShader("DirSpotShadowMappingAnimated.glsl");
 		s_SceneRendererData.depthDebugShader = ResourceManager::GetShader("DepthDebug.glsl");
 		s_SceneRendererData.pointLightDepthShader = ResourceManager::GetShader("PointShadowMapping.glsl");
+		s_SceneRendererData.pointLightDepthShaderAnimated = ResourceManager::GetShader("PointShadowMappingAnimated.glsl");
 		s_SceneRendererData.postProcessingShader = ResourceManager::GetShader("PostProcessing.glsl");
 
 
@@ -804,6 +810,8 @@ namespace OP
 				s_SceneRendererData.cube->Draw();
 
 
+				s_SceneRendererData.depthShaderAnimated->Bind();
+
 				model = glm::mat4(1.0f);
 				model = glm::translate(model, glm::vec3(-10.0f, 20.0f, 2.0f));
 				model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
@@ -843,6 +851,8 @@ namespace OP
 				s_SceneRendererData.TransformBuffer.Model = model;
 				s_SceneRendererData.TransformUniformBuffer->SetData(&s_SceneRendererData.TransformBuffer, sizeof(SceneRendererData::TransformData));
 				s_SceneRendererData.cube->Draw();
+
+				s_SceneRendererData.pointLightDepthShaderAnimated->Bind();
 
 				model = glm::mat4(1.0f);
 				model = glm::translate(model, glm::vec3(-10.0f, 20.0f, 2.0f));
@@ -936,6 +946,8 @@ namespace OP
 				s_SceneRendererData.MaterialUniformBuffer->SetData(&s_SceneRendererData.MaterialBuffer, sizeof(SceneRendererData::MaterialData));
 				s_SceneRendererData.cube->Draw();
 
+
+				s_SceneRendererData.mainShaderAnimated->Bind();
 
 				model = glm::mat4(1.0f);
 				model = glm::translate(model, glm::vec3(-10.0f, 20.0f, 2.0f));

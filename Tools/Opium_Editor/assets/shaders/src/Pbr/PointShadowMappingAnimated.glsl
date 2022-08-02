@@ -15,7 +15,21 @@ layout (location = 6) in vec4  a_BoneWeights;
 
 void main()
 {
-	gl_Position = u_Model * vec4(a_Position, 1.0);
+	vec4 totalPosition = vec4(0.0);
+	int counter = 0;
+
+    mat4 BoneTransform = u_BoneMatrices[a_BoneIDs[0]].mat * a_BoneWeights[0];
+		BoneTransform += u_BoneMatrices[a_BoneIDs[1]].mat * a_BoneWeights[1];
+		BoneTransform += u_BoneMatrices[a_BoneIDs[2]].mat * a_BoneWeights[2];
+		BoneTransform += u_BoneMatrices[a_BoneIDs[3]].mat * a_BoneWeights[3];
+
+	
+	//if(a_BoneWeights[0] == 0 && a_BoneWeights[1] == 0 && a_BoneWeights[2] == 0 && a_BoneWeights[3] == 0)
+		//BoneTransform = mat4(1.0);
+
+	totalPosition = BoneTransform * vec4(a_Position, 1.0);
+
+	gl_Position = u_Model * totalPosition;
 }
 
 #type geometry

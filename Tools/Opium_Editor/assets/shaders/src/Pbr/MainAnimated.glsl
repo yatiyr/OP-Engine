@@ -33,18 +33,50 @@ layout (location = 0) out VS_OUT vs_out;
 
 void main()
 {
-	vec3 T = normalize(a_Tangent);
-	vec3 B = normalize(a_Bitangent);
-	vec3 N = normalize(a_Normal);
+
+	vec4 totalPosition = vec4(0.0);
+	int counter = 0;
+
+    mat4 BoneTransform = u_BoneMatrices[a_BoneIDs[0]].mat * a_BoneWeights[0];
+		BoneTransform += u_BoneMatrices[a_BoneIDs[1]].mat * a_BoneWeights[1];
+		BoneTransform += u_BoneMatrices[a_BoneIDs[2]].mat * a_BoneWeights[2];
+		BoneTransform += u_BoneMatrices[a_BoneIDs[3]].mat * a_BoneWeights[3];
+
+	/*for(int i=0; i<MAX_BONE_INFLUENCE; i++)
+	{
+		if(a_BoneIDs[i] == -1)
+		{
+			counter++;
+			continue;
+		}
+		if(a_BoneIDs[i] >= MAX_BONES)
+		{
+			totalPosition = vec4(a_Position, 1.0f);
+			break;
+		}
+
+		BoneTransform += u_BoneMatrices[a_BoneIDs[i]].mat * a_BoneWeights[i];
+		vec4 localPosition = u_BoneMatrices[a_BoneIDs[i]].mat * vec4(a_Position, 1.0f);
+		totalPosition += localPosition * a_BoneWeights[i];
+	} */
+	/*if(a_BoneIDs[0] == -1 && a_BoneIDs[1] == -1 && a_BoneIDs[2] == -1 && a_BoneIDs[3] == -1)
+		BoneTransform = mat4(1.0);*/
+
+	totalPosition = BoneTransform * vec4(a_Position, 1.0);
+
+	mat3 normalMatrix = transpose(inverse(mat3(BoneTransform)));
+	vec3 T = normalize(normalMatrix * a_Tangent);
+	vec3 B = normalize(normalMatrix * a_Bitangent);
+	vec3 N = normalize(normalMatrix * a_Normal);
 	vs_out.TBN = mat3(T, B, N);
 	
 
-	vs_out.FragPos = vec3(u_Model * vec4(a_Position, 1.0));
+	vs_out.FragPos = vec3(u_Model * totalPosition);
 	vs_out.FragPosViewSpace = u_View * vec4(vs_out.FragPos, 1.0);
 	vs_out.Normal  = transpose(inverse(mat3(u_Model))) * N;
 	vs_out.TexCoords = a_TexCoords;
 
-	gl_Position =  u_ViewProjection * u_Model * vec4(a_Position, 1.0);
+	gl_Position =  u_ViewProjection * u_Model * totalPosition;
 }
 
 #type fragment

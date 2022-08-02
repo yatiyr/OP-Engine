@@ -108,3 +108,14 @@ layout(std140, binding = 10) uniform ToneMappingData
 	float u_Exposure;
 	bool u_Hdr;
 };
+
+
+struct BoneMat
+{
+	mat4 mat;
+};
+
+layout(std140, binding = 11) uniform BoneMatricesData
+{
+	BoneMat u_BoneMatrices[MAX_BONES];
+};
