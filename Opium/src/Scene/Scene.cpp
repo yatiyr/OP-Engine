@@ -98,6 +98,7 @@ namespace OP
 
 
 		CopyComponent<TransformComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
+		CopyComponent<RelationshipComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
 		CopyComponent<SpriteRendererComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
 		CopyComponent<CameraComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
 		CopyComponent<Rigidbody2DComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
@@ -108,6 +109,8 @@ namespace OP
 		CopyComponent<DirLightComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
 		CopyComponent<SpotLightComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
 		CopyComponent<PointLightComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
+
+		CopyComponent<MeshComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
 
 		return newScene;
 	}
@@ -177,6 +180,7 @@ namespace OP
 
 			iteratorRelationshipComp.next = child.GetUUID();
 			childRelationship.prev = iterator.GetUUID();
+			childRelationship.parent = parent.GetUUID();
 		}
 
 		child.RemoveComponent<RootComponent>();
@@ -532,6 +536,12 @@ namespace OP
 
 	template<>
 	void Scene::OnComponentAdded<PointLightComponent>(Entity entity, PointLightComponent& component)
+	{
+
+	}
+
+	template<>
+	void Scene::OnComponentAdded<MeshComponent>(Entity entity, MeshComponent& component)
 	{
 
 	}

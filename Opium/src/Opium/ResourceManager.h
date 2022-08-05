@@ -27,6 +27,9 @@ namespace OP
 
 		static int Init(std::filesystem::path rootPath);
 
+		static std::string GetNameFromID(uint32_t id);
+
+
 		static int LoadIncludeShaders(std::filesystem::path shaderIncludeFilePath);
 		static int LoadShaderSources(std::filesystem::path shaderIncludeFilePath);
 		static int CompileShaders();
@@ -40,7 +43,8 @@ namespace OP
 		static std::string ResolveIncludes(const std::string& shaderSource, const std::string& fileName, std::unordered_map<std::string, bool>& includeMap, bool firstTime);
 		// Mesh Related functions
 		static int AddMesh();
-
+		static Ref<Mesh> GetMesh(std::string name);
+		static const std::unordered_map<uint32_t, Ref<Mesh>>& GetMeshMap();
 
 		// Texture related functions
 		static int AddCubeMap(std::string filePath);

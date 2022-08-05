@@ -10,6 +10,7 @@
 
 #include <Gui/Font/Font.h>
 
+#include <Opium/ResourceManager.h>
 
 namespace OP
 {
@@ -559,6 +560,15 @@ namespace OP
 				}
 			}
 
+			if (!m_SelectionContext.HasComponent<MeshComponent>())
+			{
+				if (ImGui::MenuItem("Mesh Component"))
+				{
+					m_SelectionContext.AddComponent<MeshComponent>();
+					ImGui::CloseCurrentPopup();
+				}
+			}
+
 			ImGui::EndPopup();
 		}
 
@@ -719,7 +729,8 @@ namespace OP
 			{
 				ImGui::DragInt("Cascades", &component.CascadeSize, 1.0, 1, 10);
 				ImGui::DragFloat("Dist Factor", &component.FrustaDistFactor, 0.01f, 0.0f, 10.0f);
-				ImGui::DragFloat3("Intensity", glm::value_ptr(component.Color));
+				ImGui::ColorEdit3("Color", glm::value_ptr(component.Color));
+				ImGui::DragFloat("Intensity", &component.Intensity, 0.01f, 1.0f, 100000.0f);
 				ImGui::Checkbox("Cast Shadows", &component.CastShadows);
 			});
 
@@ -728,7 +739,8 @@ namespace OP
 			{
 				ImGui::DragFloat("Cutoff", &component.Cutoff, 0.01f, 0.0f, 80.0f);
 				ImGui::DragFloat("OuterCutoff", &component.OuterCutoff, 0.01f, 0.0f, 85.0f);
-				ImGui::DragFloat3("Intensity", glm::value_ptr(component.Color));
+				ImGui::ColorEdit3("Color", glm::value_ptr(component.Color));
+				ImGui::DragFloat("Intensity", &component.Intensity, 0.01f, 1.0f, 100000.0f);
 				ImGui::DragFloat("Near", &component.NearDist, 0.01f, 0.01f, 5.0f);
 				ImGui::DragFloat("Far", &component.FarDist, 0.01f, 0.02f, 5000.0f);
 				ImGui::DragFloat("Kq", &component.Kq, 0.000001f, 0.000002f, 2.0f);
@@ -740,13 +752,50 @@ namespace OP
 
 		DrawComponent<PointLightComponent>("Point Light", entity, [](auto& component)
 			{
-				ImGui::DragFloat3("Intensity", glm::value_ptr(component.Color));
+				ImGui::ColorEdit3("Color", glm::value_ptr(component.Color));
+				ImGui::DragFloat("Intensity", &component.Intensity, 0.01f, 1.0f, 100000.0f);
 				ImGui::DragFloat("Near", &component.NearDist, 0.01f, 0.01f, 5.0f);
 				ImGui::DragFloat("Far", &component.FarDist, 0.01f, 0.02f, 5000.0f);
 				ImGui::DragFloat("Kq", &component.Kq, 0.000001f, 0.000002f, 2.0f);
 				ImGui::DragFloat("Kl", &component.Kl, 0.000001f, 0.000002f, 2.0f);
 				ImGui::Checkbox("Cast Shadows", &component.CastShadows);
 			});
+
+
+		DrawComponent<MeshComponent>("Mesh", entity, [](auto& component)
+		{
+				std::unordered_map<uint32_t, Ref<Mesh>> meshes = ResourceManager::GetMeshMap();
+				std::vector<std::string> meshNames;
+				static int currentSelectedID = 0;
+
+				for (auto &[id, m] : meshes)
+				{
+					std::string meshName = ResourceManager::GetNameFromID(id);
+					meshNames.push_back(meshName);
+					Ref<Mesh> mesh = m;
+				}
+
+				const char* comboPreviewValue = meshNames[currentSelectedID].c_str();
+
+				if (ImGui::BeginCombo("Meshes", comboPreviewValue, ImGuiComboFlags_PopupAlignLeft))
+				{
+					for (int i = 0; i < meshNames.size(); i++)
+					{
+						const bool isSelected = (currentSelectedID == i);
+						if (ImGui::Selectable(meshNames[i].c_str(), isSelected))
+						{
+							currentSelectedID = i;
+							component.Mesh = ResourceManager::GetMesh(meshNames[i]);
+						}
+
+						if (isSelected)
+						{
+							ImGui::SetItemDefaultFocus();
+						}
+					}
+					ImGui::EndCombo();
+				}
+		});
 
 	}
 }

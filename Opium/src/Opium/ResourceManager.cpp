@@ -41,6 +41,7 @@ namespace OP
 
 
 		std::unordered_map<std::string, uint32_t> StringLookupTable;
+		std::unordered_map<uint32_t, std::string> IDLookupTable;
 
 		uint32_t counter = 0;
 
@@ -51,9 +52,10 @@ namespace OP
 	static uint32_t Allocate(std::string name)
 	{
 		s_ResourceManagerData.StringLookupTable[name] = s_ResourceManagerData.counter;
+		s_ResourceManagerData.IDLookupTable[s_ResourceManagerData.counter] = name;
 		s_ResourceManagerData.counter++;
 
-		return s_ResourceManagerData.counter;
+		return s_ResourceManagerData.counter - 1;
 	}
 	
 	int ResourceManager::CompileShaders()
@@ -97,11 +99,13 @@ namespace OP
 				// Vertex Fragment
 				case 2:
 					s_ResourceManagerData.StringLookupTable[key] = s_ResourceManagerData.counter;
+					s_ResourceManagerData.IDLookupTable[s_ResourceManagerData.counter] = key;
 					s_ResourceManagerData.Shaders[s_ResourceManagerData.counter] = Shader::Create(key, sources[0], sources[1]);
 					break;
 				// Vertex Fragment Geometry
 				case 3:
 					s_ResourceManagerData.StringLookupTable[key] = s_ResourceManagerData.counter;
+					s_ResourceManagerData.IDLookupTable[s_ResourceManagerData.counter] = key;
 					s_ResourceManagerData.Shaders[s_ResourceManagerData.counter] = Shader::Create(key, sources[0], sources[1], sources[2]);
 					break;
 			}
@@ -325,6 +329,7 @@ namespace OP
 		std::filesystem::path shaderPath = assetPath / "shaders";
 		std::filesystem::path shaderSrcPath = shaderPath / "src";
 		std::filesystem::path shaderIncludePath = shaderPath / "include";
+
 		// Recursively go through all shader includes
 		ResourceManager::LoadIncludeShaders(shaderIncludePath);
 		ResourceManager::LoadShaderSources(shaderSrcPath);
@@ -341,6 +346,58 @@ namespace OP
 			uint32_t plane = Allocate("Plane");
 			s_ResourceManagerData.Meshes[plane] = Plane::Create();
 
+			uint32_t icosphere_s0_smooth = Allocate("Icosphere_s0_smooth");
+			s_ResourceManagerData.Meshes[icosphere_s0_smooth] = Icosphere::Create(1.0f, 0, true);
+
+			uint32_t icosphere_s1_smooth = Allocate("Icosphere_s1_smooth");
+			s_ResourceManagerData.Meshes[icosphere_s1_smooth] = Icosphere::Create(1.0f, 1, true);
+
+			uint32_t icosphere_s2_smooth = Allocate("Icosphere_s2_smooth");
+			s_ResourceManagerData.Meshes[icosphere_s2_smooth] = Icosphere::Create(1.0f, 2, true);
+
+			uint32_t icosphere_s3_smooth = Allocate("Icosphere_s3_smooth");
+			s_ResourceManagerData.Meshes[icosphere_s3_smooth] = Icosphere::Create(1.0f, 3, true);
+
+			uint32_t icosphere_s0_flat = Allocate("Icosphere_s0_flat");
+			s_ResourceManagerData.Meshes[icosphere_s0_flat] = Icosphere::Create(1.0f, 0, false);
+
+			uint32_t icosphere_s1_flat = Allocate("Icosphere_s1_flat");
+			s_ResourceManagerData.Meshes[icosphere_s1_flat] = Icosphere::Create(1.0f, 1, false);
+
+			uint32_t icosphere_s2_flat = Allocate("Icosphere_s2_flat");
+			s_ResourceManagerData.Meshes[icosphere_s2_flat] = Icosphere::Create(1.0f, 2, false);
+
+			uint32_t icosphere_s3_flat = Allocate("Icosphere_s3_flat");
+			s_ResourceManagerData.Meshes[icosphere_s3_flat] = Icosphere::Create(1.0f, 3, false);
+
+
+
+			uint32_t radialSphere_s0_smooth = Allocate("RadialSphere_s0_smooth");
+			s_ResourceManagerData.Meshes[radialSphere_s0_smooth] = RadialSphere::Create(1.0f, 16, 16, true);
+
+			uint32_t radialSphere_s1_smooth = Allocate("RadialSphere_s1_smooth");
+			s_ResourceManagerData.Meshes[radialSphere_s1_smooth] = RadialSphere::Create(1.0f, 32, 32, true);
+
+			uint32_t radialSphere_s2_smooth = Allocate("RadialSphere_s2_smooth");
+			s_ResourceManagerData.Meshes[radialSphere_s2_smooth] = RadialSphere::Create(1.0f, 64, 64, true);
+
+			uint32_t radialSphere_s3_smooth = Allocate("RadialSphere_s3_smooth");
+			s_ResourceManagerData.Meshes[radialSphere_s3_smooth] = RadialSphere::Create(1.0f, 128, 128, true);
+
+			uint32_t radialSphere_s0_flat = Allocate("RadialSphere_s0_flat");
+			s_ResourceManagerData.Meshes[radialSphere_s0_flat] = RadialSphere::Create(1.0f, 16, 16, false);
+
+			uint32_t radialSphere_s1_flat = Allocate("RadialSphere_s1_flat");
+			s_ResourceManagerData.Meshes[radialSphere_s1_flat] = RadialSphere::Create(1.0f, 32, 32, false);
+
+			uint32_t radialSphere_s2_flat = Allocate("RadialSphere_s2_flat");
+			s_ResourceManagerData.Meshes[radialSphere_s2_flat] = RadialSphere::Create(1.0f, 64, 64, false);
+
+			uint32_t radialSphere_s3_flat = Allocate("RadialSphere_s3_flat");
+			s_ResourceManagerData.Meshes[radialSphere_s3_flat] = RadialSphere::Create(1.0f, 128, 128, false);
+
+
+
 			// GENERIC TEXTURES
 			uint32_t whiteTexture = Allocate("WhiteTexture");
 			uint32_t whiteTextureData = 0xffffffff;
@@ -352,9 +409,25 @@ namespace OP
 		return 0;
 	}
 
+	std::string ResourceManager::GetNameFromID(uint32_t id)
+	{
+		return s_ResourceManagerData.IDLookupTable[id];
+	}
+
 	int ResourceManager::AddMesh()
 	{
 		return 0;
+	}
+
+	Ref<Mesh> ResourceManager::GetMesh(std::string name)
+	{
+		uint32_t meshID = s_ResourceManagerData.StringLookupTable[name];
+		return s_ResourceManagerData.Meshes[meshID];
+	}
+
+	const std::unordered_map<uint32_t, Ref<Mesh>>& ResourceManager::GetMeshMap()
+	{
+		return s_ResourceManagerData.Meshes;
 	}
 
 	int ResourceManager::AddCubeMap(std::string filePath)

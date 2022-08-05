@@ -13,6 +13,8 @@
 
 #include <Math/Math.h>
 
+#include <Geometry/Mesh.h>
+
 namespace OP
 {
 
@@ -225,6 +227,7 @@ namespace OP
 	{
 		int CascadeSize;
 		float FrustaDistFactor;
+		float Intensity = 1.0f;
 		glm::vec3 Color;
 		bool CastShadows;
 
@@ -241,6 +244,7 @@ namespace OP
 		float Kq = 0.0075f;
 		float Kl = 0.045f;
 		float Bias;
+		float Intensity = 1.0f;
 		glm::vec3 Color = glm::vec3(0.5f, 0.5f, 0.5f);
 		bool CastShadows;
 
@@ -255,10 +259,20 @@ namespace OP
 		float Kq = 0.0075f;
 		float Kl = 0.045f;
 		float Bias;
+		float Intensity = 1.0f;
 		glm::vec3 Color = glm::vec3(0.5f, 0.5f, 0.5f);
 		bool CastShadows;
 
 		PointLightComponent() = default;
 		PointLightComponent(const PointLightComponent&) = default;
+	};
+
+	struct MeshComponent
+	{
+		std::string MeshName;
+		Ref<Mesh> Mesh;
+
+		MeshComponent() = default;
+		MeshComponent(const MeshComponent&) = default;
 	};
 }

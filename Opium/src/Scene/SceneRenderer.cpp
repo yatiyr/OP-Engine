@@ -499,7 +499,7 @@ namespace OP
 		s_SceneRendererData.postProcessingShader = ResourceManager::GetShader("PostProcessing.glsl");
 
 
-		s_SceneRendererData.animatedModel = ResourceManager::GetModel("Thriller Part 1");
+		s_SceneRendererData.animatedModel = ResourceManager::GetModel("Swing Dancing");
 
 		// Deal with uniform buffers
 		s_SceneRendererData.CameraUniformBuffer            = UniformBuffer::Create(sizeof(SceneRendererData::CameraData), 0);
@@ -561,7 +561,7 @@ namespace OP
 		finalFBSpec.Attachments = { FramebufferTextureFormat::RGBA32F, FramebufferTextureFormat::Depth };
 		finalFBSpec.Width = s_SceneRendererData.ViewportSize.x;
 		finalFBSpec.Height = s_SceneRendererData.ViewportSize.y;
-		finalFBSpec.Samples = 4;
+		finalFBSpec.Samples = 8;
 		s_SceneRendererData.finalFramebuffer = Framebuffer::Create(finalFBSpec);
 
 		s_SceneRendererData.finalRenderPass = RenderPass::Create(std::string("Final Pass"), finalFBSpec);
@@ -650,8 +650,8 @@ namespace OP
 
 		// --------------------- UPDATE ANIMATIONS -------------------------------- //
 
-			s_SceneRendererData.animatedModel->UpdateAnimation(ts);
-			s_SceneRendererData.BoneMatricesUniformBuffer->SetData(&s_SceneRendererData.animatedModel->GetFinalBoneMatrices(), sizeof(SceneRendererData::BoneMatricesData));
+			//s_SceneRendererData.animatedModel->UpdateAnimation(ts);
+			//s_SceneRendererData.BoneMatricesUniformBuffer->SetData(&s_SceneRendererData.animatedModel->GetFinalBoneMatrices(), sizeof(SceneRendererData::BoneMatricesData));
 
 		// ------------------ FILL IN DIR LIGHT UNIFORMS -------------------------- //
 			glm::mat4 cameraProjection = camera.GetProjection();
@@ -666,7 +666,7 @@ namespace OP
 
 					glm::vec3 lightDirection = transform.GetDirection();
 					s_SceneRendererData.DirLightsBuffer.DirLights[dirLightCounter].LightDir = lightDirection;
-					s_SceneRendererData.DirLightsBuffer.DirLights[dirLightCounter].Color = dirLight.Color;
+					s_SceneRendererData.DirLightsBuffer.DirLights[dirLightCounter].Color = dirLight.Color * dirLight.Intensity;
 					s_SceneRendererData.DirLightsBuffer.DirLights[dirLightCounter].CascadeSize = dirLight.CascadeSize;
 					s_SceneRendererData.DirLightsBuffer.DirLights[dirLightCounter].FrustaDistFactor = dirLight.FrustaDistFactor;
 
@@ -700,7 +700,7 @@ namespace OP
 				glm::vec3 lightDirection = transform.GetDirection();
 				glm::vec3 pos = transform.Translation;
 				s_SceneRendererData.SpotLightsBuffer.SpotLights[spotLightCounter].LightDir = lightDirection;
-				s_SceneRendererData.SpotLightsBuffer.SpotLights[spotLightCounter].Color = spotLight.Color;
+				s_SceneRendererData.SpotLightsBuffer.SpotLights[spotLightCounter].Color = spotLight.Color * spotLight.Intensity;
 				s_SceneRendererData.SpotLightsBuffer.SpotLights[spotLightCounter].Cutoff = cos(glm::radians(spotLight.Cutoff));
 				s_SceneRendererData.SpotLightsBuffer.SpotLights[spotLightCounter].OuterCutoff = cos(glm::radians(spotLight.OuterCutoff));
 				s_SceneRendererData.SpotLightsBuffer.SpotLights[spotLightCounter].Position = pos;
@@ -730,7 +730,7 @@ namespace OP
 
 				glm::vec3 pos = transform.Translation;
 				s_SceneRendererData.PointLightsBuffer.PointLights[pointLightCounter].Position = pos;
-				s_SceneRendererData.PointLightsBuffer.PointLights[pointLightCounter].Color = pointLight.Color;
+				s_SceneRendererData.PointLightsBuffer.PointLights[pointLightCounter].Color = pointLight.Color * pointLight.Intensity;
 				s_SceneRendererData.PointLightsBuffer.PointLights[pointLightCounter].NearDist = pointLight.NearDist;
 				s_SceneRendererData.PointLightsBuffer.PointLights[pointLightCounter].FarDist = pointLight.FarDist;
 				s_SceneRendererData.PointLightsBuffer.PointLights[pointLightCounter].Kl = pointLight.Kl;
@@ -794,23 +794,19 @@ namespace OP
 				glCullFace(GL_FRONT);
 				// ------------ DRAW SCENE ------------
 
-				model = glm::mat4(1.0f);
-				model = glm::translate(model, glm::vec3(0.0f, -3.0f, 0.0f));
-				model = glm::scale(model, glm::vec3(500.0f, 1.0f, 500.0f));
-				model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-				s_SceneRendererData.TransformBuffer.Model = model;
-				s_SceneRendererData.TransformUniformBuffer->SetData(&s_SceneRendererData.TransformBuffer, sizeof(SceneRendererData::TransformData));
-				s_SceneRendererData.cube->Draw();
+				auto meshes = scene->m_Registry.group<MeshComponent>(entt::get<TransformComponent>);
+				for (auto mesh : meshes)
+				{
+					auto [tC, mC] = meshes.get<TransformComponent, MeshComponent>(mesh);
 
-				model = glm::mat4(1.0f);
-				model = glm::translate(model, glm::vec3(-50.0f, 50.0f, 2.0f));
-				model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
-				s_SceneRendererData.TransformBuffer.Model = model;
-				s_SceneRendererData.TransformUniformBuffer->SetData(&s_SceneRendererData.TransformBuffer, sizeof(SceneRendererData::TransformData));
-				s_SceneRendererData.cube->Draw();
+					s_SceneRendererData.TransformBuffer.Model = tC.GetTransform();
+					s_SceneRendererData.TransformUniformBuffer->SetData(&s_SceneRendererData.TransformBuffer, sizeof(SceneRendererData::TransformData));
+					if(mC.Mesh)
+						mC.Mesh->Draw();
+				}
 
 
-				s_SceneRendererData.depthShaderAnimated->Bind();
+				/*s_SceneRendererData.depthShaderAnimated->Bind();
 
 				model = glm::mat4(1.0f);
 				model = glm::translate(model, glm::vec3(-10.0f, 20.0f, 2.0f));
@@ -818,7 +814,7 @@ namespace OP
 				s_SceneRendererData.TransformBuffer.Model = model;
 				s_SceneRendererData.TransformUniformBuffer->SetData(&s_SceneRendererData.TransformBuffer, sizeof(SceneRendererData::TransformData));
 				//s_SceneRendererData.BoneMatricesUniformBuffer->SetData(&s_SceneRendererData.animatedModel->GetFinalBoneMatrices(), sizeof(SceneRendererData::BoneMatricesData));
-				s_SceneRendererData.animatedModel->Draw();
+				s_SceneRendererData.animatedModel->Draw(); */
 				
 				// ---------- DRAW SCENE END ----------
 				glCullFace(GL_BACK);
@@ -836,23 +832,18 @@ namespace OP
 				glCullFace(GL_FRONT);
 				// ------------ DRAW SCENE ------------
 
+				auto meshes = scene->m_Registry.group<MeshComponent>(entt::get<TransformComponent>);
+				for (auto mesh : meshes)
+				{
+					auto [tC, mC] = meshes.get<TransformComponent, MeshComponent>(mesh);
 
-				model = glm::mat4(1.0f);
-				model = glm::translate(model, glm::vec3(0.0f, -3.0f, 0.0f));
-				model = glm::scale(model, glm::vec3(500.0f, 1.0f, 500.0f));
-				model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-				s_SceneRendererData.TransformBuffer.Model = model;
-				s_SceneRendererData.TransformUniformBuffer->SetData(&s_SceneRendererData.TransformBuffer, sizeof(SceneRendererData::TransformData));
-				s_SceneRendererData.cube->Draw();
+					s_SceneRendererData.TransformBuffer.Model = tC.GetTransform();
+					s_SceneRendererData.TransformUniformBuffer->SetData(&s_SceneRendererData.TransformBuffer, sizeof(SceneRendererData::TransformData));
+					if (mC.Mesh)
+						mC.Mesh->Draw();
+				}
 
-				model = glm::mat4(1.0f);
-				model = glm::translate(model, glm::vec3(-50.0f, 50.0f, 2.0f));
-				model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
-				s_SceneRendererData.TransformBuffer.Model = model;
-				s_SceneRendererData.TransformUniformBuffer->SetData(&s_SceneRendererData.TransformBuffer, sizeof(SceneRendererData::TransformData));
-				s_SceneRendererData.cube->Draw();
-
-				s_SceneRendererData.pointLightDepthShaderAnimated->Bind();
+				/*s_SceneRendererData.pointLightDepthShaderAnimated->Bind();
 
 				model = glm::mat4(1.0f);
 				model = glm::translate(model, glm::vec3(-10.0f, 20.0f, 2.0f));
@@ -860,7 +851,7 @@ namespace OP
 				s_SceneRendererData.TransformBuffer.Model = model;
 				s_SceneRendererData.TransformUniformBuffer->SetData(&s_SceneRendererData.TransformBuffer, sizeof(SceneRendererData::TransformData));
 				//s_SceneRendererData.BoneMatricesUniformBuffer->SetData(&s_SceneRendererData.animatedModel->GetFinalBoneMatrices(), sizeof(SceneRendererData::BoneMatricesData));
-				s_SceneRendererData.animatedModel->Draw();
+				s_SceneRendererData.animatedModel->Draw(); */
 
 				// ---------- DRAW SCENE END ----------
 				glCullFace(GL_BACK);
@@ -925,29 +916,20 @@ namespace OP
 				glBindTextureUnit(1, depthMap2);
 				// ------------ DRAW SCENE ------------
 
-				model = glm::mat4(1.0f);
-				model = glm::translate(model, glm::vec3(0.0f, -3.0f, 0.0f));
-				model = glm::scale(model, glm::vec3(500.0f, 1.0f, 500.0f));
-				model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-				s_SceneRendererData.TransformBuffer.Model = model;
-				// bright grey
-				s_SceneRendererData.MaterialBuffer.Color = glm::vec3(0.9f, 0.9f, 0.9f);
-				s_SceneRendererData.TransformUniformBuffer->SetData(&s_SceneRendererData.TransformBuffer, sizeof(SceneRendererData::TransformData));
-				s_SceneRendererData.MaterialUniformBuffer->SetData(&s_SceneRendererData.MaterialBuffer, sizeof(SceneRendererData::MaterialData));
-				s_SceneRendererData.cube->Draw();
+				auto meshes = scene->m_Registry.group<MeshComponent>(entt::get<TransformComponent>);
+				for (auto mesh : meshes)
+				{
+					auto [tC, mC] = meshes.get<TransformComponent, MeshComponent>(mesh);
 
-				model = glm::mat4(1.0f);
-				model = glm::translate(model, glm::vec3(-50.0f, 50.0f, 2.0f));
-				model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
-				s_SceneRendererData.TransformBuffer.Model = model;
-				// dark orange
-				s_SceneRendererData.MaterialBuffer.Color = glm::vec3(0.8f, 0.2f, 0.4f);
-				s_SceneRendererData.TransformUniformBuffer->SetData(&s_SceneRendererData.TransformBuffer, sizeof(SceneRendererData::TransformData));
-				s_SceneRendererData.MaterialUniformBuffer->SetData(&s_SceneRendererData.MaterialBuffer, sizeof(SceneRendererData::MaterialData));
-				s_SceneRendererData.cube->Draw();
+					s_SceneRendererData.TransformBuffer.Model = tC.GetTransform();
+					s_SceneRendererData.MaterialBuffer.Color = glm::vec3(0.9f, 0.3f, 0.2f);
+					s_SceneRendererData.MaterialUniformBuffer->SetData(&s_SceneRendererData.MaterialBuffer, sizeof(SceneRendererData::MaterialData));
+					s_SceneRendererData.TransformUniformBuffer->SetData(&s_SceneRendererData.TransformBuffer, sizeof(SceneRendererData::TransformData));
+					if (mC.Mesh)
+						mC.Mesh->Draw();
+				}
 
-
-				s_SceneRendererData.mainShaderAnimated->Bind();
+				/*s_SceneRendererData.mainShaderAnimated->Bind();
 
 				model = glm::mat4(1.0f);
 				model = glm::translate(model, glm::vec3(-10.0f, 20.0f, 2.0f));
@@ -956,11 +938,11 @@ namespace OP
 				s_SceneRendererData.TransformUniformBuffer->SetData(&s_SceneRendererData.TransformBuffer, sizeof(SceneRendererData::TransformData));
 				//s_SceneRendererData.BoneMatricesUniformBuffer->SetData(&s_SceneRendererData.animatedModel->GetFinalBoneMatrices(), sizeof(SceneRendererData::BoneMatricesData));
 				s_SceneRendererData.MaterialUniformBuffer->SetData(&s_SceneRendererData.MaterialBuffer, sizeof(SceneRendererData::MaterialData));
-				s_SceneRendererData.animatedModel->Draw();
+				s_SceneRendererData.animatedModel->Draw(); */
 
 				// ---------- DRAW SCENE END ----------
 
-				s_SceneRendererData.depthDebugShader->Bind();
+				/*s_SceneRendererData.depthDebugShader->Bind();
 
 
 				glDisable(GL_DEPTH_TEST);
@@ -970,7 +952,7 @@ namespace OP
 				s_SceneRendererData.TransformBuffer.Model = model;
 				s_SceneRendererData.TransformUniformBuffer->SetData(&s_SceneRendererData.TransformBuffer, sizeof(SceneRendererData::TransformData));
 				s_SceneRendererData.plane->Draw();
-				glEnable(GL_DEPTH_TEST);
+				glEnable(GL_DEPTH_TEST); */
 				// ---------- DRAW SCENE END ----------
 			}
 		);

@@ -27,6 +27,8 @@ namespace OP
 	{
 		currentNode->Name = node->mName.C_Str();
 		currentNode->Parent = parentNode;
+		currentNode->LocalTransformation = AssimpGLMHelpers::ConvertMatrixToGLMFormat(node->mTransformation);
+
 		for (uint32_t i=0; i<node->mNumMeshes; i++)
 		{
 			aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];

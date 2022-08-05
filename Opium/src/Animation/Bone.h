@@ -94,7 +94,7 @@ namespace OP
 		{
 			for (int index = 0; index < m_NumPositions - 1; index++)
 			{
-				if (animationTime < m_Positions[index + 1].timeStamp && index < m_NumPositions - 2)
+				if (animationTime < m_Positions[index + 1].timeStamp)
 					return index;
 			}
 
@@ -106,7 +106,7 @@ namespace OP
 		{
 			for (int index = 0; index < m_NumRotations - 1; index++)
 			{
-				if (animationTime < m_Rotations[index + 1].timeStamp && index < m_NumPositions - 2)
+				if (animationTime < m_Rotations[index + 1].timeStamp)
 					return index;
 			}
 
@@ -118,7 +118,7 @@ namespace OP
 		{
 			for (int index = 0; index < m_NumScalings - 1; index++)
 			{
-				if (animationTime < m_Scales[index + 1].timeStamp && index < m_NumPositions - 2)
+				if (animationTime < m_Scales[index + 1].timeStamp)
 					return index;
 			}
 

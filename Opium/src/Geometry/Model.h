@@ -32,6 +32,7 @@ namespace OP
 	{
 		std::string Name;
 	    ModelNode* Parent;
+		glm::mat4 LocalTransformation;
 		std::vector<ModelMesh> Meshes;
 		std::vector<ModelNode*> Children;
 	};

@@ -6,6 +6,7 @@
 #include <fstream>
 #include <yaml-cpp/yaml.h>
 
+#include <Opium/ResourceManager.h>
 
 namespace YAML
 {
@@ -275,6 +276,7 @@ namespace OP
 
 			auto& dirLightComponent = entity.GetComponent<DirLightComponent>();
 			out << YAML::Key << "Color" << YAML::Value << dirLightComponent.Color;
+			out << YAML::Key << "Intensity" << YAML::Value << dirLightComponent.Intensity;
 			out << YAML::Key << "CascadeSize" << YAML::Value << dirLightComponent.CascadeSize;
 			out << YAML::Key << "FrustaDistFactor" << YAML::Value << dirLightComponent.FrustaDistFactor;
 			out << YAML::Key << "CastShadows" << YAML::Value << dirLightComponent.CastShadows;
@@ -288,6 +290,7 @@ namespace OP
 
 			auto& spotLightComponent = entity.GetComponent<SpotLightComponent>();
 			out << YAML::Key << "Color" << YAML::Value << spotLightComponent.Color;
+			out << YAML::Key << "Intensity" << YAML::Value << spotLightComponent.Intensity;
 			out << YAML::Key << "Cutoff" << YAML::Value << spotLightComponent.Cutoff;
 			out << YAML::Key << "FarDist" << YAML::Value << spotLightComponent.FarDist;
 			out << YAML::Key << "NearDist" << YAML::Value << spotLightComponent.NearDist;
@@ -304,11 +307,21 @@ namespace OP
 
 			auto& pointLightComponent = entity.GetComponent<PointLightComponent>();
 			out << YAML::Key << "Color" << YAML::Value << pointLightComponent.Color;
+			out << YAML::Key << "Intensity" << YAML::Value << pointLightComponent.Intensity;
 			out << YAML::Key << "NearDist" << YAML::Value << pointLightComponent.NearDist;
 			out << YAML::Key << "FarDist" << YAML::Value << pointLightComponent.FarDist;
 			out << YAML::Key << "Kq" << YAML::Value << pointLightComponent.Kq;
 			out << YAML::Key << "Kl" << YAML::Value << pointLightComponent.Kl;
 			out << YAML::Key << "CastShadows" << YAML::Value << pointLightComponent.CastShadows;
+		}
+
+		if (entity.HasComponent<MeshComponent>())
+		{
+			out << YAML::Key << "MeshComponent";
+			out << YAML::BeginMap;
+
+			auto& meshComponent = entity.GetComponent<MeshComponent>();
+			out << YAML::Key << "MeshName" << YAML::Value << meshComponent.MeshName;
 		}
 
 		out << YAML::EndMap; // Entity
@@ -430,6 +443,7 @@ namespace OP
 				{
 					auto& dLC = deserializedEntity.AddComponent<DirLightComponent>();
 					dLC.Color = dirLightComponent["Color"].as<glm::vec3>();
+					dLC.Intensity = dirLightComponent["Intensity"].as<float>();
 					dLC.CascadeSize = dirLightComponent["CascadeSize"].as<int>();
 					dLC.FrustaDistFactor = dirLightComponent["FrustaDistFactor"].as<float>();
 					dLC.CastShadows = dirLightComponent["CastShadows"].as<bool>();
@@ -440,6 +454,7 @@ namespace OP
 				{
 					auto& sLC = deserializedEntity.AddComponent<SpotLightComponent>();
 					sLC.Color = spotLightComponent["Color"].as<glm::vec3>();
+					sLC.Intensity = spotLightComponent["Intensity"].as<float>();
 					sLC.Cutoff = spotLightComponent["Cutoff"].as<float>();
 					sLC.OuterCutoff = spotLightComponent["OuterCutoff"].as<float>();
 					sLC.CastShadows = spotLightComponent["CastShadows"].as<float>();
@@ -454,11 +469,20 @@ namespace OP
 				{
 					auto& pLC = deserializedEntity.AddComponent<PointLightComponent>();
 					pLC.Color = pointLightComponent["Color"].as<glm::vec3>();
+					pLC.Intensity = pointLightComponent["Intensity"].as<float>();
 					pLC.NearDist= pointLightComponent["NearDist"].as<float>();
 					pLC.FarDist = pointLightComponent["FarDist"].as<float>();
 					pLC.Kq = pointLightComponent["Kq"].as<float>();
 					pLC.Kl = pointLightComponent["Kl"].as<float>();
 					pLC.CastShadows= pointLightComponent["CastShadows"].as<bool>();
+				}
+
+				auto meshComponent = entity["MeshComponent"];
+				if (meshComponent)
+				{
+					auto& mC = deserializedEntity.AddComponent<MeshComponent>();
+					mC.MeshName = meshComponent["MeshName"].as<std::string>();
+					mC.Mesh = ResourceManager::GetMesh(mC.MeshName);
 				}
 			}
 
