@@ -4,6 +4,8 @@
 #include <Renderer/Shader.h>
 #include <Geometry/Model.h>
 
+#include <Renderer/Material.h>
+#include <Renderer/Texture.h>
 namespace OP
 {
 
@@ -33,9 +35,11 @@ namespace OP
 		static int LoadIncludeShaders(std::filesystem::path shaderIncludeFilePath);
 		static int LoadShaderSources(std::filesystem::path shaderIncludeFilePath);
 		static int CompileShaders();
-		static Ref<Shader> GetShader(std::string name);
 
+		static Ref<Shader> GetShader(std::string name);
 		static Ref<Model> GetModel(std::string name);
+		static Ref<Texture> GetTexture(std::string name);
+		static Ref<Material> GetMaterial(std::string name);
 
 		static int LoadModels(std::filesystem::path meshFilePath);
 		static int RegisterModelResources();
@@ -45,6 +49,9 @@ namespace OP
 		static int AddMesh();
 		static Ref<Mesh> GetMesh(std::string name);
 		static const std::unordered_map<uint32_t, Ref<Mesh>>& GetMeshMap();
+
+
+		static int LoadMaterials(std::filesystem::path materialsFilePath);
 
 		// Texture related functions
 		static int AddCubeMap(std::string filePath);

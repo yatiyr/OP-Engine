@@ -65,7 +65,7 @@ namespace OP
 				}
 			};
 
-			Material readMaterial(material);
+			// Material readMaterial(material);
 
 			aiString roughness;
 			material->Get(AI_MATKEY_TEXTURE(aiTextureType_DIFFUSE_ROUGHNESS, 0), roughness);

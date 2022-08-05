@@ -14,6 +14,7 @@
 #include <Math/Math.h>
 
 #include <Geometry/Mesh.h>
+#include <Renderer/Material.h>
 
 namespace OP
 {
@@ -274,5 +275,13 @@ namespace OP
 
 		MeshComponent() = default;
 		MeshComponent(const MeshComponent&) = default;
+	};
+
+	struct MaterialComponent
+	{
+		Ref<MaterialInstance> MatInstance;
+
+		MaterialComponent() = default;
+		MaterialComponent(const MaterialComponent&) = default;
 	};
 }

@@ -108,7 +108,7 @@ namespace OP
 		
 		{
 			Timer timer;
-			CompileOrGetVulkanBinaries(shaderSources);
+			//CompileOrGetVulkanBinaries(shaderSources);
 			CompileOrGetOpenGLBinaries(shaderSources);
 			CreateProgram();
 			OP_ENGINE_WARN("Shader creation took {0} ms", timer.ElapsedMilliseconds());
@@ -131,7 +131,7 @@ namespace OP
 		sources[GL_VERTEX_SHADER] = vertexSrc;
 		sources[GL_FRAGMENT_SHADER] = fragmentSrc;
 
-		CompileOrGetVulkanBinaries(sources);
+		//CompileOrGetVulkanBinaries(sources);
 		CompileOrGetOpenGLBinaries(sources);
 		CreateProgram();
 	}
@@ -143,7 +143,7 @@ namespace OP
 		sources[GL_FRAGMENT_SHADER] = fragmentSrc;
 		sources[GL_GEOMETRY_SHADER] = geomSrc;
 
-		CompileOrGetVulkanBinaries(sources);
+		//CompileOrGetVulkanBinaries(sources);
 		CompileOrGetOpenGLBinaries(sources);
 		CreateProgram();
 	}

@@ -37,6 +37,9 @@
     <Filter Include="src">
       <UniqueIdentifier>{2DAB880B-99B4-887C-2230-9F7C8E38947C}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Animation">
+      <UniqueIdentifier>{5C00BBE1-C8C0-3618-91FB-7F95FD7A7BF4}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\Config">
       <UniqueIdentifier>{92319E09-7EE9-DF56-E7F0-B8B2D3C77A47}</UniqueIdentifier>
     </Filter>
@@ -1359,6 +1362,15 @@
     <ClInclude Include="external\stb_image\stb_image.h">
       <Filter>external\stb_image</Filter>
     </ClInclude>
+    <ClInclude Include="src\Animation\Animation.h">
+      <Filter>src\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Animation\AnimationHandler.h">
+      <Filter>src\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Animation\Bone.h">
+      <Filter>src\Animation</Filter>
+    </ClInclude>
     <ClInclude Include="src\Config\Precomp.h">
       <Filter>src\Config</Filter>
     </ClInclude>
@@ -1491,6 +1503,9 @@
     <ClInclude Include="src\Renderer\GraphicsContext.h">
       <Filter>src\Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="src\Renderer\Material.h">
+      <Filter>src\Renderer</Filter>
+    </ClInclude>
     <ClInclude Include="src\Renderer\OrthographicCamera.h">
       <Filter>src\Renderer</Filter>
     </ClInclude>
@@ -1560,6 +1575,9 @@
     <ClInclude Include="src\ScriptManager\Wrappers.h">
       <Filter>src\ScriptManager</Filter>
     </ClInclude>
+    <ClInclude Include="src\Utils\AssimpGLMHelpers.h">
+      <Filter>src\Utils</Filter>
+    </ClInclude>
     <ClInclude Include="src\Utils\PlatformUtils.h">
       <Filter>src\Utils</Filter>
     </ClInclude>
@@ -1569,11 +1587,6 @@
     <ClInclude Include="src\Window\Window.h">
       <Filter>src\Window</Filter>
     </ClInclude>
-    <ClInclude Include="src\Renderer\Material.h" />
-    <ClInclude Include="src\Utils\AssimpGLMHelpers.h" />
-    <ClInclude Include="src\Animation\Bone.h" />
-    <ClInclude Include="src\Animation\Animation.h" />
-    <ClInclude Include="src\Animation\AnimationHandler.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="external\ImGuizmo\GraphEditor.cpp">
@@ -1753,5 +1766,6 @@
     <ClCompile Include="src\Utils\ShaderIncludeUtils.cpp">
       <Filter>src\Utils</Filter>
     </ClCompile>
+    <ClCompile Include="src\Renderer\Material.cpp" />
   </ItemGroup>
 </Project>

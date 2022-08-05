@@ -298,6 +298,8 @@ namespace OP
 			out << YAML::Key << "Kl" << YAML::Value << spotLightComponent.Kl;
 			out << YAML::Key << "OuterCutoff" << YAML::Value << spotLightComponent.OuterCutoff;
 			out << YAML::Key << "CastShadows" << YAML::Value << spotLightComponent.CastShadows;
+
+			out << YAML::EndMap;
 		}
 
 		if (entity.HasComponent<PointLightComponent>())
@@ -313,6 +315,8 @@ namespace OP
 			out << YAML::Key << "Kq" << YAML::Value << pointLightComponent.Kq;
 			out << YAML::Key << "Kl" << YAML::Value << pointLightComponent.Kl;
 			out << YAML::Key << "CastShadows" << YAML::Value << pointLightComponent.CastShadows;
+
+			out << YAML::EndMap;
 		}
 
 		if (entity.HasComponent<MeshComponent>())
@@ -322,6 +326,67 @@ namespace OP
 
 			auto& meshComponent = entity.GetComponent<MeshComponent>();
 			out << YAML::Key << "MeshName" << YAML::Value << meshComponent.MeshName;
+
+			out << YAML::EndMap;
+		}
+
+		if (entity.HasComponent<MaterialComponent>())
+		{
+			out << YAML::Key << "MaterialComponent";
+			out << YAML::BeginMap;
+
+			auto& materialComponent = entity.GetComponent<MaterialComponent>();
+			Ref<MaterialInstance> matInstance = materialComponent.MatInstance;
+
+			out << YAML::Key << "MaterialName" << YAML::Value << matInstance->Mat->m_Name;
+
+			// Write float values
+			out << YAML::Key << "FloatValues";
+			out << YAML::BeginMap;
+			for (auto& [name, val] : matInstance->Floats)
+			{
+				out << YAML::Key << name << YAML::Value << val;
+			}
+			out << YAML::EndMap;
+
+			// Write float2 values
+			out << YAML::Key << "Float2Values";
+			out << YAML::BeginMap;
+			for (auto& [name, val] : matInstance->Float2s)
+			{
+				out << YAML::Key << name << YAML::Value << val;
+			}
+			out << YAML::EndMap;
+
+			// Write float3 values
+			out << YAML::Key << "Float3Values";
+			out << YAML::BeginMap;
+			for (auto& [name, val] : matInstance->Float3s)
+			{
+				out << YAML::Key << name << YAML::Value << val;
+			}
+			out << YAML::EndMap;
+
+			// Write int values
+			out << YAML::Key << "IntValues";
+			out << YAML::BeginMap;
+			for (auto& [name, val] : matInstance->Ints)
+			{
+				out << YAML::Key << name << YAML::Value << val;
+			}
+			out << YAML::EndMap;
+
+			// Write textures
+			out << YAML::Key << "Textures";
+			out << YAML::BeginMap;
+			for (auto& [name, tex] : matInstance->Textures)
+			{
+				out << YAML::Key << name << YAML::Value << tex->m_Name;
+			}
+			out << YAML::EndMap;
+
+
+			out << YAML::EndMap;
 		}
 
 		out << YAML::EndMap; // Entity
@@ -483,6 +548,52 @@ namespace OP
 					auto& mC = deserializedEntity.AddComponent<MeshComponent>();
 					mC.MeshName = meshComponent["MeshName"].as<std::string>();
 					mC.Mesh = ResourceManager::GetMesh(mC.MeshName);
+				}
+
+				auto materialComponent = entity["MaterialComponent"];
+				if (materialComponent)
+				{
+					auto& mC = deserializedEntity.AddComponent<MaterialComponent>();
+					Ref<Material> mat = ResourceManager::GetMaterial(materialComponent["MaterialName"].as<std::string>());
+					mC.MatInstance = MaterialInstance::Create(mat);
+
+					// Read float values
+					auto floatValues = materialComponent["FloatValues"];
+					for (const auto& element : floatValues)
+					{
+						mC.MatInstance->Floats[element.first.as<std::string>()] = element.second.as<float>();
+					}
+
+					// Read float2 values
+					auto float2Values = materialComponent["Float2Values"];
+					for (const auto& element : float2Values)
+					{
+						mC.MatInstance->Float2s[element.first.as<std::string>()] = element.second.as<glm::vec2>();
+					}
+
+					// Read float3 values
+					auto float3Values = materialComponent["Float3Values"];
+					for (const auto& element : float3Values)
+					{
+						mC.MatInstance->Float3s[element.first.as<std::string>()] = element.second.as<glm::vec3>();
+					}
+
+					// Read Int values
+					auto intValues = materialComponent["IntValues"];
+					for (const auto& element : intValues)
+					{
+						mC.MatInstance->Ints[element.first.as<std::string>()] = element.second.as<int>();
+					}
+
+					// Read Textures
+					auto textures = materialComponent["Textures"];
+					for (const auto& element : textures)
+					{
+						std::string textureName = element.first.as<std::string>();
+						Ref<Texture> texture = ResourceManager::GetTexture(textureName);
+						mC.MatInstance->Textures.push_back({ textureName, texture });
+					}
+
 				}
 			}
 

@@ -4,6 +4,28 @@
 
 namespace OP
 {
+	OpenGLTexture2D::OpenGLTexture2D(uint32_t width, uint32_t height, std::string name) : m_Width(width), m_Height(height)
+	{
+
+		m_Name = name;
+
+		OP_PROFILE_FUNCTION();
+
+		GLenum internalFormat = GL_RGBA8, dataFormat = GL_RGBA;
+
+		glCreateTextures(GL_TEXTURE_2D, 1, &m_RendererID);
+		glTextureStorage2D(m_RendererID, 1, internalFormat, m_Width, m_Height);
+
+		glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+		m_InternalFormat = internalFormat;
+		m_DataFormat = dataFormat;
+	}
+
 	OpenGLTexture2D::OpenGLTexture2D(uint32_t width, uint32_t height) : m_Width(width), m_Height(height)
 	{
 		OP_PROFILE_FUNCTION();

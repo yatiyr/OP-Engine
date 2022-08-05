@@ -545,4 +545,10 @@ namespace OP
 	{
 
 	}
+
+	template<>
+	void Scene::OnComponentAdded<MaterialComponent>(Entity entity, MaterialComponent& component)
+	{
+
+	}
 }

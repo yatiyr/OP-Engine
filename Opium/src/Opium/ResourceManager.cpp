@@ -12,6 +12,7 @@
 #include <Renderer/Texture.h>
 
 #include <Renderer/Shader.h>
+#include <Renderer/Material.h>
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
@@ -26,14 +27,10 @@ namespace OP
 	{
 		std::unordered_map<uint32_t, Ref<Mesh>> Meshes;
 		std::unordered_map<uint32_t, Ref<Model>> Models;
+		std::unordered_map<uint32_t, Ref<Material>> Materials;
 
 		std::unordered_map<uint32_t, Ref<Texture>> CubeMaps;
-		std::unordered_map<uint32_t, Ref<Texture>> PlainTextures;
-		std::unordered_map<uint32_t, Ref<Texture>> AlbedoTextures;
-		std::unordered_map<uint32_t, Ref<Texture>> MetalnessTextures;
-		std::unordered_map<uint32_t, Ref<Texture>> RoughnessTextures;
-		std::unordered_map<uint32_t, Ref<Texture>> NormalTextures;
-		std::unordered_map<uint32_t, Ref<Texture>> HeightTextures;
+		std::unordered_map<uint32_t, Ref<Texture>> Textures;
 
 		std::unordered_map<uint32_t, Ref<Shader>> Shaders;
 		std::unordered_map<std::string, std::string> ShaderSources;
@@ -122,6 +119,18 @@ namespace OP
 	{
 		uint32_t modelHandle = s_ResourceManagerData.StringLookupTable[name];
 		return s_ResourceManagerData.Models[modelHandle];
+	}
+
+	Ref<Texture> ResourceManager::GetTexture(std::string name)
+	{
+		uint32_t modelHandle = s_ResourceManagerData.StringLookupTable[name];
+		return s_ResourceManagerData.Textures[modelHandle];
+	}
+
+	Ref<Material> ResourceManager::GetMaterial(std::string name)
+	{
+		uint32_t modelHandle = s_ResourceManagerData.StringLookupTable[name];
+		return s_ResourceManagerData.Materials[modelHandle];
 	}
 
 	Ref<Shader> ResourceManager::GetShader(std::string name)
@@ -330,6 +339,8 @@ namespace OP
 		std::filesystem::path shaderSrcPath = shaderPath / "src";
 		std::filesystem::path shaderIncludePath = shaderPath / "include";
 
+		std::filesystem::path materialPath = assetPath / "materials";
+
 		// Recursively go through all shader includes
 		ResourceManager::LoadIncludeShaders(shaderIncludePath);
 		ResourceManager::LoadShaderSources(shaderSrcPath);
@@ -401,8 +412,23 @@ namespace OP
 			// GENERIC TEXTURES
 			uint32_t whiteTexture = Allocate("WhiteTexture");
 			uint32_t whiteTextureData = 0xffffffff;
-			s_ResourceManagerData.PlainTextures[whiteTexture] = Texture2D::Create(1, 1);
-			s_ResourceManagerData.PlainTextures[whiteTexture]->SetData(&whiteTextureData, sizeof(uint32_t));
+			s_ResourceManagerData.Textures[whiteTexture] = Texture2D::Create(1, 1, "WhiteTexture");
+			s_ResourceManagerData.Textures[whiteTexture]->SetData(&whiteTextureData, sizeof(uint32_t));
+
+
+			uint32_t blackTexture = Allocate("BlackTexture");
+			uint32_t blackTextureData = 0x000000ff;
+			s_ResourceManagerData.Textures[blackTexture] = Texture2D::Create(1, 1, "BlackTexture");
+			s_ResourceManagerData.Textures[blackTexture]->SetData(&blackTextureData, sizeof(uint32_t));
+
+			uint32_t defaultNormalMap = Allocate("DefaultNormalMap");
+			uint32_t defaultNormalMapData = 0x8080ffff;
+			s_ResourceManagerData.Textures[defaultNormalMap] = Texture2D::Create(1, 1, "DefaultNormalMap");
+			s_ResourceManagerData.Textures[defaultNormalMap]->SetData(&defaultNormalMapData, sizeof(uint32_t));
+
+
+			// LOAD MATERIALS
+			LoadMaterials(materialPath);
 		
 
 		OP_ENGINE_WARN("Resource Manager has been inititalized!");
@@ -428,6 +454,25 @@ namespace OP
 	const std::unordered_map<uint32_t, Ref<Mesh>>& ResourceManager::GetMeshMap()
 	{
 		return s_ResourceManagerData.Meshes;
+	}
+
+	int ResourceManager::LoadMaterials(std::filesystem::path materialsFilePath)
+	{
+		OP_ENGINE_WARN("\tLoading Materials");
+		MaterialSpec defaultMaterialSpec;
+		defaultMaterialSpec.MaterialName = "DefaultPbr";
+		defaultMaterialSpec.Float3s["albedo"] = glm::vec3(1.0f,1.0f,1.0f);
+		defaultMaterialSpec.Floats["roughness"] = 0.5f;
+		defaultMaterialSpec.Floats["metalness"] = 0.1f;
+		defaultMaterialSpec.Textures.push_back({ "albedo",    GetTexture("WhiteTexture") });
+		defaultMaterialSpec.Textures.push_back({ "roughness", GetTexture("WhiteTexture") });
+		defaultMaterialSpec.Textures.push_back({ "metalness", GetTexture("WhiteTexture") });
+		defaultMaterialSpec.Textures.push_back({ "normalMap", GetTexture("DefaultNormalMap") });
+		defaultMaterialSpec.Textures.push_back({ "heightMap", GetTexture("BlackTexture") });
+		Ref<Material> defaultMaterial = Material::Create(defaultMaterialSpec, GetShader("Main.glsl"));
+		OP_ENGINE_WARN("\tMaterials have been loaded");
+
+		return 0;
 	}
 
 	int ResourceManager::AddCubeMap(std::string filePath)

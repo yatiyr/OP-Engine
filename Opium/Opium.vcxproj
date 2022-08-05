@@ -693,6 +693,7 @@
     <ClCompile Include="src\Renderer\Buffer.cpp" />
     <ClCompile Include="src\Renderer\EditorCamera.cpp" />
     <ClCompile Include="src\Renderer\Framebuffer.cpp" />
+    <ClCompile Include="src\Renderer\Material.cpp" />
     <ClCompile Include="src\Renderer\OrthographicCamera.cpp" />
     <ClCompile Include="src\Renderer\OrthographicCameraController.cpp" />
     <ClCompile Include="src\Renderer\PingPongRenderPass.cpp" />
