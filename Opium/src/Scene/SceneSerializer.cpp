@@ -561,28 +561,28 @@ namespace OP
 					auto floatValues = materialComponent["FloatValues"];
 					for (const auto& element : floatValues)
 					{
-						mC.MatInstance->Floats[element.first.as<std::string>()] = element.second.as<float>();
+						mC.MatInstance->Floats.push_back({ element.first.as<std::string>(), element.second.as<float>() });
 					}
 
 					// Read float2 values
 					auto float2Values = materialComponent["Float2Values"];
 					for (const auto& element : float2Values)
 					{
-						mC.MatInstance->Float2s[element.first.as<std::string>()] = element.second.as<glm::vec2>();
+						mC.MatInstance->Float2s.push_back({ element.first.as<std::string>(), element.second.as<glm::vec2>() });
 					}
 
 					// Read float3 values
 					auto float3Values = materialComponent["Float3Values"];
 					for (const auto& element : float3Values)
 					{
-						mC.MatInstance->Float3s[element.first.as<std::string>()] = element.second.as<glm::vec3>();
+						mC.MatInstance->Float3s.push_back({ element.first.as<std::string>(), element.second.as<glm::vec3>() });
 					}
 
 					// Read Int values
 					auto intValues = materialComponent["IntValues"];
 					for (const auto& element : intValues)
 					{
-						mC.MatInstance->Ints[element.first.as<std::string>()] = element.second.as<int>();
+						mC.MatInstance->Ints.push_back({ element.first.as<std::string>(), element.second.as<int>() });
 					}
 
 					// Read Textures

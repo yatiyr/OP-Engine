@@ -88,7 +88,7 @@ namespace OP
 
 		auto directionalLightEntity = m_ActiveScene->CreateEntity("DirLight1");
 		auto& comp = directionalLightEntity.AddComponent<DirLightComponent>();
-		comp.CascadeSize = 10;
+		comp.CascadeSize = 5;
 		comp.CastShadows = true;
 		comp.Color = glm::vec3(1.0f, 1.0f, 1.0f);
 		comp.FrustaDistFactor = 2.0f;

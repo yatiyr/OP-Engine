@@ -108,8 +108,8 @@ namespace OP
 		
 		{
 			Timer timer;
-			//CompileOrGetVulkanBinaries(shaderSources);
 			CompileOrGetOpenGLBinaries(shaderSources);
+			//CompileOrGetVulkanBinaries(shaderSources);
 			CreateProgram();
 			OP_ENGINE_WARN("Shader creation took {0} ms", timer.ElapsedMilliseconds());
 		}
@@ -131,8 +131,8 @@ namespace OP
 		sources[GL_VERTEX_SHADER] = vertexSrc;
 		sources[GL_FRAGMENT_SHADER] = fragmentSrc;
 
-		//CompileOrGetVulkanBinaries(sources);
 		CompileOrGetOpenGLBinaries(sources);
+		//CompileOrGetVulkanBinaries(sources);
 		CreateProgram();
 	}
 
@@ -143,8 +143,8 @@ namespace OP
 		sources[GL_FRAGMENT_SHADER] = fragmentSrc;
 		sources[GL_GEOMETRY_SHADER] = geomSrc;
 
-		//CompileOrGetVulkanBinaries(sources);
 		CompileOrGetOpenGLBinaries(sources);
+		//CompileOrGetVulkanBinaries(sources);
 		CreateProgram();
 	}
 
@@ -261,6 +261,8 @@ namespace OP
 				}
 			}
 
+			for (auto&& [stage, data] : shaderData)
+				Reflect(stage, data);
 		}
 	}
 
@@ -513,6 +515,41 @@ namespace OP
 		UploadUniformMat4(name, value);
 	}
 
+	void OpenGLShader::SetInt(uint32_t loc, int value)
+	{
+		UploadUniformInt(loc, value);
+	}
+
+	void OpenGLShader::SetIntArray(uint32_t loc, int* values, uint32_t count)
+	{
+		UploadUniformIntArray(loc, values, count);
+	}
+
+	void OpenGLShader::SetFloat(uint32_t loc, float value)
+	{
+		UploadUniformFloat(loc, value);
+	}
+
+	void OpenGLShader::SetFloat2(uint32_t loc, const glm::vec2& value)
+	{
+		UploadUniformFloat2(loc, value);
+	}
+
+	void OpenGLShader::SetFloat3(uint32_t loc, const glm::vec3& value)
+	{
+		UploadUniformFloat3(loc, value);
+	}
+
+	void OpenGLShader::SetFloat4(uint32_t loc, const glm::vec4& value)
+	{
+		UploadUniformFloat4(loc, value);
+	}
+
+	void OpenGLShader::SetMat4(uint32_t loc, const glm::mat4& value)
+	{
+		UploadUniformMat4(loc, value);
+	}
+
 	void OpenGLShader::UploadUniformInt(const std::string& name, int value)
 	{
 		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
@@ -559,6 +596,46 @@ namespace OP
 	{
 		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
 		glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
+	}
+
+	void OpenGLShader::UploadUniformInt(uint32_t loc, int value)
+	{
+		glUniform1i(loc, value);
+	}
+
+	void OpenGLShader::UploadUniformIntArray(uint32_t loc, int* values, uint32_t count)
+	{
+		glUniform1iv(loc, count, values);
+	}
+
+	void OpenGLShader::UploadUniformFloat(uint32_t loc, float value)
+	{
+		glUniform1f(loc, value);
+	}
+
+	void OpenGLShader::UploadUniformFloat2(uint32_t loc, const glm::vec2& vec)
+	{
+		glUniform2f(loc, vec.x, vec.y);
+	}
+
+	void OpenGLShader::UploadUniformFloat3(uint32_t loc, const glm::vec3& vec)
+	{
+		glUniform3f(loc, vec.x, vec.y, vec.z);
+	}
+
+	void OpenGLShader::UploadUniformFloat4(uint32_t loc, const glm::vec4& vec)
+	{
+		glUniform4f(loc, vec.x, vec.y, vec.z, vec.w);
+	}
+
+	void OpenGLShader::UploadUniformMat3(uint32_t loc, const glm::mat3& matrix)
+	{
+		glUniformMatrix3fv(loc, 1, GL_FALSE, glm::value_ptr(matrix));
+	}
+
+	void OpenGLShader::UploadUniformMat4(uint32_t loc, const glm::mat4& matrix)
+	{
+		glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(matrix));
 	}
 
 }

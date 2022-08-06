@@ -16,12 +16,15 @@ namespace OP
 	Material::Material(const MaterialSpec& spec, Ref<Shader> shader)
 	{
 		m_Name     = spec.MaterialName;
+		m_Shader   = shader;
+
 		m_Floats   = spec.Floats;
 		m_Float2s  = spec.Float2s;
 		m_Float3s  = spec.Float3s;
 		m_Mat4s    = spec.Mat4s;
 		m_Ints     = spec.Ints;
 		m_Textures = spec.Textures;
+
 
 	}
 
@@ -40,32 +43,32 @@ namespace OP
 
 	void Material::AddFloat(std::string name, float value)
 	{
-		m_Floats[name] = value;
+		m_Floats.push_back({ name,value });
 	}
 
 	void Material::AddFloat2(std::string name, glm::vec2 value)
 	{
-		m_Float2s[name] = value;
+		m_Float2s.push_back({ name, value });
 	}
 
 	void Material::AddFloat3(std::string name, glm::vec3 value)
 	{
-		m_Float3s[name] = value;
+		m_Float3s.push_back({ name, value });
 	}
 
 	void Material::AddMat4(std::string name, glm::mat4 value)
 	{
-		m_Mat4s[name] = value;
+		m_Mat4s.push_back({ name, value });
 	}
 
 	void Material::AddInt(std::string name, int value)
 	{
-		m_Ints[name] = value;
+		m_Ints.push_back({ name, value });
 	}
 
 	void Material::AddTexture(std::string name, Ref<Texture> tex)
 	{
-		m_Textures.push_back({name, tex});
+		m_Textures.push_back({ name, tex });
 	}
 
 	Ref<Material> Material::Create(const MaterialSpec& spec, Ref<Shader> shader)
@@ -82,29 +85,37 @@ namespace OP
 
 	void MaterialInstance::AssignValues()
 	{
+
+		uint32_t currentLoc = 0;
+
 		for (auto& [name, val] : Floats)
 		{
-			Mat->m_Shader->SetFloat(name, val);
+			Mat->m_Shader->SetFloat(currentLoc, val);
+			currentLoc++;
 		}
 
 		for (auto& [name, val] : Float2s)
 		{
-			Mat->m_Shader->SetFloat2(name, val);
+			Mat->m_Shader->SetFloat2(currentLoc, val);
+			currentLoc++;
 		}
 
 		for (auto& [name, val] : Float3s)
 		{
-			Mat->m_Shader->SetFloat3(name, val);
+			Mat->m_Shader->SetFloat3(currentLoc, val);
+			currentLoc++;
 		}
 
 		for (auto& [name, val] : Mat4s)
 		{
-			Mat->m_Shader->SetMat4(name, val);
+			Mat->m_Shader->SetMat4(currentLoc, val);
+			currentLoc++;
 		}
 
 		for (auto& [name, val] : Ints)
 		{
-			Mat->m_Shader->SetInt(name, val);
+			Mat->m_Shader->SetInt(currentLoc, val);
+			currentLoc;
 		}
 	}
 

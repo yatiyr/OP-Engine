@@ -27,9 +27,9 @@
 #include <Geometry/Quad.h>
 #include <Geometry/Model.h>
 
-#define MAX_DIR_LIGHTS 4
+#define MAX_DIR_LIGHTS 2
 #define MAX_SPOT_LIGHTS 4
-#define MAX_CASCADE_SIZE 10
+#define MAX_CASCADE_SIZE 15
 #define MAX_POINT_LIGHTS 10
 #define MAX_BONES 100
 
@@ -271,8 +271,8 @@ namespace OP
 			float blurAmount = 1;
 			struct ShadowMapSettings
 			{
-				float shadowMapResX = 512.0f;
-				float shadowMapResY = 512.0f;
+				float shadowMapResX = 256.0f;
+				float shadowMapResY = 256.0f;
 				float pointLightSMResX = 1024.0f;
 				float pointLightSMResY = 1024.0f;
 				glm::vec2 blurScale = glm::vec2(0.0f);
@@ -461,6 +461,8 @@ namespace OP
 		glm::mat4 spinningModel;
 		glm::vec3 spinningDir;
 
+		Ref<MaterialInstance> defaultPbrMaterialInstance;
+
 	};
 
 
@@ -500,6 +502,8 @@ namespace OP
 
 
 		s_SceneRendererData.animatedModel = ResourceManager::GetModel("Swing Dancing");
+
+		s_SceneRendererData.defaultPbrMaterialInstance = MaterialInstance::Create(ResourceManager::GetMaterial("DefaultPbr"));
 
 		// Deal with uniform buffers
 		s_SceneRendererData.CameraUniformBuffer            = UniformBuffer::Create(sizeof(SceneRendererData::CameraData), 0);
@@ -921,12 +925,32 @@ namespace OP
 				{
 					auto [tC, mC] = meshes.get<TransformComponent, MeshComponent>(mesh);
 
+					bool hasMaterial = scene->m_Registry.any_of<MaterialComponent>(mesh);
+
 					s_SceneRendererData.TransformBuffer.Model = tC.GetTransform();
-					s_SceneRendererData.MaterialBuffer.Color = glm::vec3(0.9f, 0.3f, 0.2f);
-					s_SceneRendererData.MaterialUniformBuffer->SetData(&s_SceneRendererData.MaterialBuffer, sizeof(SceneRendererData::MaterialData));
 					s_SceneRendererData.TransformUniformBuffer->SetData(&s_SceneRendererData.TransformBuffer, sizeof(SceneRendererData::TransformData));
+
+					if (!hasMaterial)
+					{
+						s_SceneRendererData.defaultPbrMaterialInstance->Mat->Bind();
+						glBindTextureUnit(0, depthMap);
+						glBindTextureUnit(1, depthMap2);
+						s_SceneRendererData.defaultPbrMaterialInstance->AssignValues();
+					}
+					else
+					{
+						auto matC = scene->m_Registry.get<MaterialComponent>(mesh);
+						matC.MatInstance->Mat->Bind();
+						glBindTextureUnit(0, depthMap);
+						glBindTextureUnit(1, depthMap2);
+						matC.MatInstance->AssignValues();
+					}
 					if (mC.Mesh)
 						mC.Mesh->Draw();
+
+
+					/*s_SceneRendererData.MaterialBuffer.Color = glm::vec3(0.9f, 0.3f, 0.2f);
+					s_SceneRendererData.MaterialUniformBuffer->SetData(&s_SceneRendererData.MaterialBuffer, sizeof(SceneRendererData::MaterialData));*/
 				}
 
 				/*s_SceneRendererData.mainShaderAnimated->Bind();

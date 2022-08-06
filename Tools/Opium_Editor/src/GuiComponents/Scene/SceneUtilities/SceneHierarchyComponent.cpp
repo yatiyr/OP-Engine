@@ -569,6 +569,15 @@ namespace OP
 				}
 			}
 
+			if (!m_SelectionContext.HasComponent<MaterialComponent>())
+			{
+				if (ImGui::MenuItem("Material Component"))
+				{
+					m_SelectionContext.AddComponent<MaterialComponent>();
+					ImGui::CloseCurrentPopup();
+				}
+			}
+
 			ImGui::EndPopup();
 		}
 
@@ -794,6 +803,31 @@ namespace OP
 						}
 					}
 					ImGui::EndCombo();
+				}
+		});
+
+		DrawComponent<MaterialComponent>("Material", entity, [](auto& component)
+		{
+				Ref<MaterialInstance> instance = component.MatInstance;
+				ImGui::Text(instance->Mat->m_Name.c_str());
+				for (auto& [name, val] : instance->Float3s)
+				{
+					ImGui::ColorEdit3(name.c_str(), glm::value_ptr(val));
+				}
+
+				for (auto& [name, val] : instance->Float2s)
+				{
+					ImGui::DragFloat2(name.c_str(), glm::value_ptr(val));
+				}
+
+				for (auto& [name, val] : instance->Floats)
+				{
+					ImGui::DragFloat(name.c_str(), &val);
+				}
+
+				for (auto& [name, val] : instance->Ints)
+				{
+					ImGui::DragInt(name.c_str(), &val);
 				}
 		});
 

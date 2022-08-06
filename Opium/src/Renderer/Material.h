@@ -17,11 +17,13 @@ namespace OP
 	struct MaterialSpec
 	{
 		std::string MaterialName;
-		std::unordered_map<std::string, float> Floats;
-		std::unordered_map<std::string, glm::vec2> Float2s;
-		std::unordered_map<std::string, glm::vec3> Float3s;
-		std::unordered_map<std::string, glm::mat4> Mat4s;
-		std::unordered_map<std::string, int> Ints;
+
+		// Their indexes will be uniform locations in shader
+		std::vector<std::pair<std::string, float>> Floats;
+		std::vector<std::pair<std::string, glm::vec2>> Float2s;
+		std::vector<std::pair<std::string, glm::vec3>> Float3s;
+		std::vector<std::pair<std::string, glm::mat4>> Mat4s;
+		std::vector<std::pair<std::string, int>> Ints;
 
 		// Indexes of textures will be their slots in the shader
 		std::vector<std::pair<std::string, Ref<Texture>>> Textures;
@@ -62,12 +64,13 @@ namespace OP
 		std::string m_Name;
 		Ref<Shader> m_Shader;
 
-		std::unordered_map<std::string, float> m_Floats;
-		std::unordered_map<std::string, glm::vec2> m_Float2s;
-		std::unordered_map<std::string, glm::vec3> m_Float3s;
-		std::unordered_map<std::string, glm::mat4> m_Mat4s;
-		std::unordered_map<std::string, int> m_Ints;
+		std::vector<std::pair<std::string, float>> m_Floats;
+		std::vector<std::pair<std::string, glm::vec2>> m_Float2s;
+		std::vector<std::pair<std::string, glm::vec3>> m_Float3s;
+		std::vector<std::pair<std::string, glm::mat4>> m_Mat4s;
+		std::vector<std::pair<std::string, int>> m_Ints;
 
+		// Indexes of textures will be their slots in the shader
 		std::vector<std::pair<std::string, Ref<Texture>>> m_Textures;
 	};
 
@@ -83,12 +86,13 @@ namespace OP
 
 		static Ref<MaterialInstance> Create(Ref<Material> mat);
 
-		std::unordered_map<std::string, float> Floats;
-		std::unordered_map<std::string, glm::vec2> Float2s;
-		std::unordered_map<std::string, glm::vec3> Float3s;
-		std::unordered_map<std::string, glm::mat4> Mat4s;
-		std::unordered_map<std::string, int> Ints;
+		std::vector<std::pair<std::string, float>> Floats;
+		std::vector<std::pair<std::string, glm::vec2>> Float2s;
+		std::vector<std::pair<std::string, glm::vec3>> Float3s;
+		std::vector<std::pair<std::string, glm::mat4>> Mat4s;
+		std::vector<std::pair<std::string, int>> Ints;
 
+		// Indexes of textures will be their slots in the shader
 		std::vector<std::pair<std::string, Ref<Texture>>> Textures;
 	};
 }

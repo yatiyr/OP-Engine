@@ -15,6 +15,8 @@
 #include <box2d/b2_fixture.h>
 #include <box2d/b2_polygon_shape.h>
 
+#include <Opium/ResourceManager.h>
+
 namespace OP
 {
 
@@ -543,12 +545,13 @@ namespace OP
 	template<>
 	void Scene::OnComponentAdded<MeshComponent>(Entity entity, MeshComponent& component)
 	{
-
+		entity.AddComponent<MaterialComponent>();
 	}
 
 	template<>
 	void Scene::OnComponentAdded<MaterialComponent>(Entity entity, MaterialComponent& component)
 	{
-
+		Ref<Material> defaultPbr = ResourceManager::GetMaterial("DefaultPbr");
+		component.MatInstance = MaterialInstance::Create(defaultPbr);
 	}
 }

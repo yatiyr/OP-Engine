@@ -29,6 +29,16 @@ namespace OP
 		virtual void SetFloat4(const std::string& name, const glm::vec4& value) override;
 		virtual void SetMat4(const std::string& name, const glm::mat4& value) override;
 
+
+		virtual void SetInt(uint32_t loc, int value) override;
+		virtual void SetIntArray(uint32_t loc, int* values, uint32_t count) override;
+		virtual void SetFloat(uint32_t loc, float value) override;
+		virtual void SetFloat2(uint32_t loc, const glm::vec2& value) override;
+		virtual void SetFloat3(uint32_t loc, const glm::vec3& value) override;
+		virtual void SetFloat4(uint32_t loc, const glm::vec4& value) override;
+		virtual void SetMat4(uint32_t loc, const glm::mat4& value) override;
+
+
 		virtual const std::string& GetName() const override { return m_Name; }
 
 		void UploadUniformInt(const std::string& name, int value);
@@ -41,6 +51,18 @@ namespace OP
 
 		void UploadUniformMat3(const std::string& name, const glm::mat3& matrix);
 		void UploadUniformMat4(const std::string& name, const glm::mat4& matrix);
+
+
+		void UploadUniformInt(uint32_t loc, int value);
+		void UploadUniformIntArray(uint32_t loc, int* values, uint32_t count);
+
+		void UploadUniformFloat(uint32_t loc, float value);
+		void UploadUniformFloat2(uint32_t loc, const glm::vec2& vec);
+		void UploadUniformFloat3(uint32_t loc, const glm::vec3& vec);
+		void UploadUniformFloat4(uint32_t loc, const glm::vec4& vec);
+
+		void UploadUniformMat3(uint32_t loc, const glm::mat3& matrix);
+		void UploadUniformMat4(uint32_t loc, const glm::mat4& matrix);
 	private:
 		std::string ReadFile(const std::string& filePath);
 		std::unordered_map<GLenum, std::string> PreProcess(const std::string& source);

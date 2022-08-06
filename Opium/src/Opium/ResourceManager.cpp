@@ -459,17 +459,19 @@ namespace OP
 	int ResourceManager::LoadMaterials(std::filesystem::path materialsFilePath)
 	{
 		OP_ENGINE_WARN("\tLoading Materials");
+		uint32_t id = Allocate("DefaultPbr");
 		MaterialSpec defaultMaterialSpec;
 		defaultMaterialSpec.MaterialName = "DefaultPbr";
-		defaultMaterialSpec.Float3s["albedo"] = glm::vec3(1.0f,1.0f,1.0f);
-		defaultMaterialSpec.Floats["roughness"] = 0.5f;
-		defaultMaterialSpec.Floats["metalness"] = 0.1f;
-		defaultMaterialSpec.Textures.push_back({ "albedo",    GetTexture("WhiteTexture") });
-		defaultMaterialSpec.Textures.push_back({ "roughness", GetTexture("WhiteTexture") });
-		defaultMaterialSpec.Textures.push_back({ "metalness", GetTexture("WhiteTexture") });
+		defaultMaterialSpec.Floats.push_back({ "roughness", 0.5f });
+		defaultMaterialSpec.Floats.push_back({ "metalness", 0.1f });
+		defaultMaterialSpec.Float3s.push_back({ "albedo", glm::vec3(1.0f,1.0f,1.0f) });
+		defaultMaterialSpec.Textures.push_back({ "albedoMap",    GetTexture("WhiteTexture") });
+		defaultMaterialSpec.Textures.push_back({ "roughnessMap", GetTexture("WhiteTexture") });
+		defaultMaterialSpec.Textures.push_back({ "metalnessMap", GetTexture("WhiteTexture") });
 		defaultMaterialSpec.Textures.push_back({ "normalMap", GetTexture("DefaultNormalMap") });
 		defaultMaterialSpec.Textures.push_back({ "heightMap", GetTexture("BlackTexture") });
 		Ref<Material> defaultMaterial = Material::Create(defaultMaterialSpec, GetShader("Main.glsl"));
+		s_ResourceManagerData.Materials[id] = defaultMaterial;
 		OP_ENGINE_WARN("\tMaterials have been loaded");
 
 		return 0;
