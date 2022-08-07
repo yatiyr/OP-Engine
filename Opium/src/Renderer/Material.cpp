@@ -86,36 +86,45 @@ namespace OP
 	void MaterialInstance::AssignValues()
 	{
 
-		uint32_t currentLoc = 0;
+		uint32_t currentVarLoc = 0;
 
 		for (auto& [name, val] : Floats)
 		{
-			Mat->m_Shader->SetFloat(currentLoc, val);
-			currentLoc++;
+			Mat->m_Shader->SetFloat(currentVarLoc, val);
+			currentVarLoc++;
 		}
 
 		for (auto& [name, val] : Float2s)
 		{
-			Mat->m_Shader->SetFloat2(currentLoc, val);
-			currentLoc++;
+			Mat->m_Shader->SetFloat2(currentVarLoc, val);
+			currentVarLoc++;
 		}
 
 		for (auto& [name, val] : Float3s)
 		{
-			Mat->m_Shader->SetFloat3(currentLoc, val);
-			currentLoc++;
+			Mat->m_Shader->SetFloat3(currentVarLoc, val);
+			currentVarLoc++;
 		}
 
 		for (auto& [name, val] : Mat4s)
 		{
-			Mat->m_Shader->SetMat4(currentLoc, val);
-			currentLoc++;
+			Mat->m_Shader->SetMat4(currentVarLoc, val);
+			currentVarLoc++;
 		}
 
 		for (auto& [name, val] : Ints)
 		{
-			Mat->m_Shader->SetInt(currentLoc, val);
-			currentLoc;
+			Mat->m_Shader->SetInt(currentVarLoc, val);
+			currentVarLoc;
+		}
+
+
+		uint32_t currentTextureLoc = 2;
+
+		for (auto& [name, val] : Textures)
+		{
+			val->Bind(currentTextureLoc);
+			currentTextureLoc++;
 		}
 	}
 
@@ -132,6 +141,7 @@ namespace OP
 		Float3s = Mat->m_Float3s;
 		Mat4s = Mat->m_Mat4s;
 		Ints = Mat->m_Ints;
+		Textures = Mat->m_Textures;
 	}
 
 	Ref<MaterialInstance> MaterialInstance::Create(Ref<Material> mat)

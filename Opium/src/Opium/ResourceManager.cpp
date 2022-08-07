@@ -410,6 +410,8 @@ namespace OP
 
 
 			// GENERIC TEXTURES
+
+			// CONSIDER ENDIANNESS - CURRENT MACHINE IS LITTLE ENDIAN!!!
 			uint32_t whiteTexture = Allocate("WhiteTexture");
 			uint32_t whiteTextureData = 0xffffffff;
 			s_ResourceManagerData.Textures[whiteTexture] = Texture2D::Create(1, 1, "WhiteTexture");
@@ -417,12 +419,12 @@ namespace OP
 
 
 			uint32_t blackTexture = Allocate("BlackTexture");
-			uint32_t blackTextureData = 0x000000ff;
+			uint32_t blackTextureData = 0xff000000;
 			s_ResourceManagerData.Textures[blackTexture] = Texture2D::Create(1, 1, "BlackTexture");
 			s_ResourceManagerData.Textures[blackTexture]->SetData(&blackTextureData, sizeof(uint32_t));
 
 			uint32_t defaultNormalMap = Allocate("DefaultNormalMap");
-			uint32_t defaultNormalMapData = 0x8080ffff;
+			uint32_t defaultNormalMapData = 0xffff8080;
 			s_ResourceManagerData.Textures[defaultNormalMap] = Texture2D::Create(1, 1, "DefaultNormalMap");
 			s_ResourceManagerData.Textures[defaultNormalMap]->SetData(&defaultNormalMapData, sizeof(uint32_t));
 
@@ -468,6 +470,7 @@ namespace OP
 		defaultMaterialSpec.Textures.push_back({ "albedoMap",    GetTexture("WhiteTexture") });
 		defaultMaterialSpec.Textures.push_back({ "roughnessMap", GetTexture("WhiteTexture") });
 		defaultMaterialSpec.Textures.push_back({ "metalnessMap", GetTexture("WhiteTexture") });
+		defaultMaterialSpec.Textures.push_back({ "aoMap",        GetTexture("WhiteTexture") });
 		defaultMaterialSpec.Textures.push_back({ "normalMap", GetTexture("DefaultNormalMap") });
 		defaultMaterialSpec.Textures.push_back({ "heightMap", GetTexture("BlackTexture") });
 		Ref<Material> defaultMaterial = Material::Create(defaultMaterialSpec, GetShader("Main.glsl"));
