@@ -225,7 +225,7 @@ namespace OP
 		m_VertexArray->SetIndexBuffer(m_IndexBuffer);
 	}
 
-	void Mesh::SetupTangentBitangents()
+	void Mesh::SetupTangentBitangents(bool calculateHandedness)
 	{
 		// initialize tangent and bitangent
 		m_Tangents = std::vector<glm::vec3>(m_Normals.size(), glm::vec3(0.0f));
@@ -277,10 +277,12 @@ namespace OP
 			tangent = glm::normalize(tangent - normal * glm::dot(normal, tangent));
 
 			// calculate handedness
-			if (glm::dot(glm::cross(tangent, normal), bitangent) < 0.0f)
+			if (glm::dot(glm::cross(tangent, normal), bitangent) < 0.0f && calculateHandedness)
+			{
 				tangent *= -1.0f;
 
-			bitangent = glm::normalize(glm::cross(tangent, normal));
+				bitangent = glm::normalize(glm::cross(tangent, normal));
+			}
 		}
 
 

@@ -66,7 +66,7 @@ namespace OP
 		virtual void SetupArrayBuffer();
 		virtual void SetupMesh();
 
-		virtual void SetupTangentBitangents();
+		virtual void SetupTangentBitangents(bool calculateHandedness);
 		void AddIndices(uint32_t i1, uint32_t i2, uint32_t i3);
 
 		void ClearArrays();

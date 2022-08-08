@@ -146,7 +146,7 @@ namespace OP
             }
         }
 
-        SetupTangentBitangents();
+        SetupTangentBitangents(true);
         SetupArrayBuffer();
         SetupMesh();
 	}
@@ -300,7 +300,7 @@ namespace OP
             }
         }
 
-        SetupTangentBitangents();
+        SetupTangentBitangents(true);
         SetupArrayBuffer();
         SetupMesh();
 	}

@@ -148,7 +148,7 @@ namespace OP
 		m_Indices.push_back(20); m_Indices.push_back(22); m_Indices.push_back(23);
 
 
-		SetupTangentBitangents();
+		SetupTangentBitangents(false);
 		SetupArrayBuffer();
 		SetupMesh();
 	}

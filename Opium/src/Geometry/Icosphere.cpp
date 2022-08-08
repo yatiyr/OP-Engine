@@ -264,7 +264,7 @@ namespace OP
 		SubdivideVerticesSmooth();
 
 
-		SetupTangentBitangents();
+		SetupTangentBitangents(true);
 		SetupArrayBuffer();
 		SetupMesh();
 	}
@@ -349,7 +349,7 @@ namespace OP
 		// subdivide icosahedron
 		SubdivideVerticesFlat();
 
-		SetupTangentBitangents();
+		SetupTangentBitangents(true);
 		SetupArrayBuffer();
 		SetupMesh();
 	}
