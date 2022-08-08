@@ -73,6 +73,11 @@ namespace OP
 			internalFormat = GL_RGB8;
 			dataFormat = GL_RGB;
 		}
+		else if (channels == 1)
+		{
+			internalFormat = GL_R8;
+			dataFormat = GL_RED;
+		}
 
 		OP_ENGINE_ASSERT(internalFormat & dataFormat, "This format is not supported!");
 

@@ -53,6 +53,6 @@ layout (location = 0) in VS_OUT fs_in;
 
 void main()
 {
-    float val = texture(u_ShadowMapDirSpot, vec3(fs_in.TexCoords, 40)).x;
+    float val = texture(u_ShadowMapDirSpot, vec3(fs_in.TexCoords, 0)).x;
 	FragColor = vec4(vec3(val), 1.0);
 }

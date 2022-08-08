@@ -472,7 +472,7 @@ namespace OP
 		defaultMaterialSpec.Textures.push_back({ "metalnessMap", GetTexture("WhiteTexture") });
 		defaultMaterialSpec.Textures.push_back({ "aoMap",        GetTexture("WhiteTexture") });
 		defaultMaterialSpec.Textures.push_back({ "normalMap", GetTexture("DefaultNormalMap") });
-		defaultMaterialSpec.Textures.push_back({ "heightMap", GetTexture("BlackTexture") });
+		defaultMaterialSpec.Textures.push_back({ "heightMap", GetTexture("WhiteTexture") });
 		Ref<Material> defaultMaterial = Material::Create(defaultMaterialSpec, GetShader("Main.glsl"));
 		s_ResourceManagerData.Materials[id] = defaultMaterial;
 		OP_ENGINE_WARN("\tMaterials have been loaded");

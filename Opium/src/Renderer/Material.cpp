@@ -17,7 +17,9 @@ namespace OP
 	{
 		m_Name     = spec.MaterialName;
 		m_Shader   = shader;
-
+		m_TilingFactor = spec.TilingFactor;
+		m_HeightFactor = spec.HeightFactor;
+		m_ClipBorder = spec.ClipBorder;
 		m_Floats   = spec.Floats;
 		m_Float2s  = spec.Float2s;
 		m_Float3s  = spec.Float3s;
@@ -115,9 +117,14 @@ namespace OP
 		for (auto& [name, val] : Ints)
 		{
 			Mat->m_Shader->SetInt(currentVarLoc, val);
-			currentVarLoc;
+			currentVarLoc++;
 		}
 
+		Mat->m_Shader->SetFloat(currentVarLoc, TilingFactor);
+		currentVarLoc++;
+		Mat->m_Shader->SetFloat(currentVarLoc, HeightFactor);
+		currentVarLoc++;
+		Mat->m_Shader->SetInt(currentVarLoc, ClipBorder);
 
 		uint32_t currentTextureLoc = 2;
 
@@ -142,6 +149,9 @@ namespace OP
 		Mat4s = Mat->m_Mat4s;
 		Ints = Mat->m_Ints;
 		Textures = Mat->m_Textures;
+		TilingFactor = Mat->m_TilingFactor;
+		HeightFactor = Mat->m_HeightFactor;
+		ClipBorder = Mat->m_ClipBorder;
 	}
 
 	Ref<MaterialInstance> MaterialInstance::Create(Ref<Material> mat)

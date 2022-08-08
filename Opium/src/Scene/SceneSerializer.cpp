@@ -339,7 +339,9 @@ namespace OP
 			Ref<MaterialInstance> matInstance = materialComponent.MatInstance;
 
 			out << YAML::Key << "MaterialName" << YAML::Value << matInstance->Mat->m_Name;
-
+			out << YAML::Key << "TilingFactor" << YAML::Value << matInstance->TilingFactor;
+			out << YAML::Key << "HeightFactor" << YAML::Value << matInstance->HeightFactor;
+			out << YAML::Key << "ClipBorder" << YAML::Value << matInstance->ClipBorder;
 			// Write float values
 			out << YAML::Key << "FloatValues";
 			out << YAML::BeginMap;
@@ -556,7 +558,9 @@ namespace OP
 					auto& mC = deserializedEntity.AddComponent<MaterialComponent>();
 					Ref<Material> mat = ResourceManager::GetMaterial(materialComponent["MaterialName"].as<std::string>());
 					mC.MatInstance = MaterialInstance::Create(mat);
-
+					mC.MatInstance->TilingFactor = materialComponent["TilingFactor"].as<float>();
+					mC.MatInstance->HeightFactor = materialComponent["HeightFactor"].as<float>();
+					mC.MatInstance->ClipBorder = materialComponent["ClipBorder"].as<bool>();
 					// Read float values
 					auto floatValues = materialComponent["FloatValues"];
 					for (const auto& element : floatValues)

@@ -548,6 +548,10 @@ namespace OP
 		s_SceneRendererData.ShadowMapSettingsUniformBuffer->SetData(&s_SceneRendererData.ShadowMapSettingsBuffer, sizeof(SceneRendererData::ShadowMapSettings));
 
 
+		FramebufferSpecification depthFBBlurSpec;
+		depthFBSpec.Attachments = { FramebufferTextureFormat::SM_VARIANCE32F, FramebufferTextureFormat::SHADOWMAP_ARRAY_DEPTH };
+		depthFBSpec.Width = s_SceneRendererData.ShadowMapSettingsBuffer.shadowMapResX;
+		depthFBSpec.Height = s_SceneRendererData.ShadowMapSettingsBuffer.shadowMapResY;
 		s_SceneRendererData.depthBlurDSLRenderPass = PingPongRenderPass::Create(std::string("DSL Blur Pass"), depthFBSpec, s_SceneRendererData.shadowMapDirSpotBlur);
 
 		// Depth framebuffer for Point Lights
@@ -674,7 +678,7 @@ namespace OP
 					s_SceneRendererData.DirLightsBuffer.DirLights[dirLightCounter].CascadeSize = dirLight.CascadeSize;
 					s_SceneRendererData.DirLightsBuffer.DirLights[dirLightCounter].FrustaDistFactor = dirLight.FrustaDistFactor;
 
-					std::vector<float> cascadeLevels = DistributeShadowCascadeLevels(dirLight.CascadeSize, dirLight.FrustaDistFactor, camera.GetFarClip());
+					std::vector<float> cascadeLevels = DistributeShadowCascadeLevels(dirLight.CascadeSize, dirLight.FrustaDistFactor, camera.GetFarClip() / 20);
 					OP_ENGINE_ASSERT(cascadeLevels <= MAX_CASCADE_SIZE);
 					std::vector<glm::mat4> matrices = getLightSpaceMatrices(cameraProjection, camera.GetViewMatrix(),
 						cascadeLevels, camera.GetNearClip(), camera.GetFarClip(),
@@ -967,8 +971,9 @@ namespace OP
 				// ---------- DRAW SCENE END ----------
 
 				/*s_SceneRendererData.depthDebugShader->Bind();
+				uint32_t depthMapDbg = depthMap;
 
-
+				glBindTextureUnit(1, depthMapDbg);
 				glDisable(GL_DEPTH_TEST);
 				model = glm::mat4(1.0f);
 				model = glm::translate(model, glm::vec3(0.75f, 0.75f, 0.0f));
@@ -976,7 +981,7 @@ namespace OP
 				s_SceneRendererData.TransformBuffer.Model = model;
 				s_SceneRendererData.TransformUniformBuffer->SetData(&s_SceneRendererData.TransformBuffer, sizeof(SceneRendererData::TransformData));
 				s_SceneRendererData.plane->Draw();
-				glEnable(GL_DEPTH_TEST); */
+				glEnable(GL_DEPTH_TEST);*/
 				// ---------- DRAW SCENE END ----------
 			}
 		);

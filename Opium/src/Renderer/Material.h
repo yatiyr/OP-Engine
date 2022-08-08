@@ -18,6 +18,10 @@ namespace OP
 	{
 		std::string MaterialName;
 
+		float TilingFactor = 1.0f;
+		float HeightFactor = 0.0f;
+		bool ClipBorder = false;
+
 		// Their indexes will be uniform locations in shader
 		std::vector<std::pair<std::string, float>> Floats;
 		std::vector<std::pair<std::string, glm::vec2>> Float2s;
@@ -70,6 +74,9 @@ namespace OP
 		std::vector<std::pair<std::string, glm::mat4>> m_Mat4s;
 		std::vector<std::pair<std::string, int>> m_Ints;
 
+		float m_TilingFactor = 1.0f;
+		float m_HeightFactor = 0.0f;
+		bool m_ClipBorder = false;
 		// Indexes of textures will be their slots in the shader
 		std::vector<std::pair<std::string, Ref<Texture>>> m_Textures;
 	};
@@ -92,6 +99,9 @@ namespace OP
 		std::vector<std::pair<std::string, glm::mat4>> Mat4s;
 		std::vector<std::pair<std::string, int>> Ints;
 
+		float TilingFactor = 1.0f;
+		float HeightFactor = 0.0f;
+		bool ClipBorder = false;
 		// Indexes of textures will be their slots in the shader
 		std::vector<std::pair<std::string, Ref<Texture>>> Textures;
 	};
