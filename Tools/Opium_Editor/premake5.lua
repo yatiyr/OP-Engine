@@ -25,6 +25,7 @@ project "Opium_Editor"
         "%{IncludeDir.entt}",
 	"%{IncludeDir.FontAwesome}",
         "%{IncludeDir.ImGuizmo}",
+	"%{IncludeDir.Assimp}",
 	    "src"
     }
 

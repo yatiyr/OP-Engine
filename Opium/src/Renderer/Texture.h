@@ -27,6 +27,8 @@ namespace OP
 	class Texture2D : public Texture
 	{
 	public:
+		static Ref<Texture2D> CreateF(uint32_t width, uint32_t height, float* data, int channels);
+		static Ref<Texture2D> Create(uint32_t width, uint32_t height, unsigned char* data, int channels);
 		static Ref<Texture2D> Create(uint32_t width, uint32_t height, std::string name);
 		static Ref<Texture2D> Create(uint32_t width, uint32_t height);
 		static Ref<Texture2D> Create(const std::string& path);

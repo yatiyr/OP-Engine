@@ -109,7 +109,7 @@ float ShadowCalculationPoint(vec3 fragPosWorldSpace, vec3 viewPos, samplerCubeAr
 	float bias = 0.15;
 	int samples = 20;
 	float viewDistance = length(viewPos - fragPosWorldSpace);
-	float diskRadius = (1.0 + (viewDistance / u_PointLights[pointLightIndex].FarDist)) / 25.0;
+	float diskRadius = (1.0 + (viewDistance / u_PointLights[pointLightIndex].FarDist)) / 100.0;
 	for(int i=0; i<samples; i++)
 	{
 		float closestDepth = texture(shadowMapPoint, vec4(fragToLight + gridSamplingDisk[i] * diskRadius, pointLightIndex)).r;

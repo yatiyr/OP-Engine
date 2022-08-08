@@ -18,6 +18,8 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
+#include <stb_image.h>
+#include <tinyexr.h>
 
 namespace OP
 {
@@ -29,7 +31,7 @@ namespace OP
 		std::unordered_map<uint32_t, Ref<Model>> Models;
 		std::unordered_map<uint32_t, Ref<Material>> Materials;
 
-		std::unordered_map<uint32_t, Ref<Texture>> CubeMaps;
+		std::unordered_map<uint32_t, Ref<Texture>> HdrTextures;
 		std::unordered_map<uint32_t, Ref<Texture>> Textures;
 
 		std::unordered_map<uint32_t, Ref<Shader>> Shaders;
@@ -341,6 +343,8 @@ namespace OP
 
 		std::filesystem::path materialPath = assetPath / "materials";
 
+		std::filesystem::path texturePath = assetPath / "textures";
+
 		// Recursively go through all shader includes
 		ResourceManager::LoadIncludeShaders(shaderIncludePath);
 		ResourceManager::LoadShaderSources(shaderSrcPath);
@@ -428,6 +432,10 @@ namespace OP
 			s_ResourceManagerData.Textures[defaultNormalMap] = Texture2D::Create(1, 1, "DefaultNormalMap");
 			s_ResourceManagerData.Textures[defaultNormalMap]->SetData(&defaultNormalMapData, sizeof(uint32_t));
 
+			// Load Textures from filesystem
+			LoadHdrTextures(texturePath);
+			LoadTextures(texturePath);
+
 
 			// LOAD MATERIALS
 			LoadMaterials(materialPath);
@@ -480,49 +488,137 @@ namespace OP
 		return 0;
 	}
 
-	int ResourceManager::AddCubeMap(std::string filePath)
+	int ResourceManager::LoadHdrTextures(std::filesystem::path texturesFilePath)
 	{
-		return 0;
+		uint32_t count = 0;
+		OP_ENGINE_WARN("\tLoading Hdr Textures");
+
+		try
+		{
+			stbi_set_flip_vertically_on_load(1);
+
+			for (const auto& entry : std::filesystem::recursive_directory_iterator(texturesFilePath))
+			{
+				if (entry.is_regular_file())
+				{
+					std::filesystem::path entryPath = entry.path();
+					if (entry.path().extension() == ".hdr")
+					{
+						int width, height, channels;
+						float* data = stbi_loadf(entryPath.string().c_str(), &width, &height, &channels, 0);
+						Ref<Texture> hdrTexture;
+						if (data)
+						{
+							hdrTexture = Texture2D::CreateF(width, height, data, channels);
+						}
+						else
+						{
+							OP_ENGINE_ERROR("Could not load Hdr Texture {0}", entry.path().filename());
+							continue;
+						}
+
+						s_ResourceManagerData.StringLookupTable[entryPath.stem().string()] = s_ResourceManagerData.counter;
+						s_ResourceManagerData.HdrTextures[s_ResourceManagerData.counter] = hdrTexture;
+						s_ResourceManagerData.counter++;
+						OP_ENGINE_INFO("\t\tFileName {0}", entryPath.filename());
+						count++;
+					}
+					else if (entry.path().extension() == ".exr")
+					{
+						int width, height;
+						float* data;
+						const char* error = nullptr;
+
+						int ret = LoadEXR(&data, &width, &height, entryPath.string().c_str(), &error);
+						Ref<Texture> hdrTexture;
+						if (ret != TINYEXR_SUCCESS)
+						{
+							if (error)
+							{
+								OP_ENGINE_ERROR("Coult not load Exr Texture: {0}", error);
+								FreeEXRErrorMessage(error);
+								continue;
+							}
+								
+						}
+
+						hdrTexture = Texture2D::CreateF(width, height, data, 4);
+
+						s_ResourceManagerData.StringLookupTable[entryPath.stem().string()] = s_ResourceManagerData.counter;
+						s_ResourceManagerData.HdrTextures[s_ResourceManagerData.counter] = hdrTexture;
+						s_ResourceManagerData.counter++;
+						OP_ENGINE_INFO("\t\tFileName {0}", entryPath.filename());
+						count++;
+					}
+
+
+				}
+			}
+
+			OP_ENGINE_INFO("\t\tTotal number of processed Hdr Textures : {0}", count);
+		}
+		catch (const std::exception&)
+		{
+			OP_ENGINE_ERROR("\tFailed to load Hdr Textures.")
+				return 1;
+		}
+
+		OP_ENGINE_WARN("\Hdr Textures have been loaded")
+			return 0;
 	}
 
-	int ResourceManager::AddPlainTexture(std::string filePath)
+	int ResourceManager::LoadTextures(std::filesystem::path texturesFilePath)
 	{
-		return 0;
-	}
+		uint32_t count = 0;
+		OP_ENGINE_WARN("\tLoading Textures");
 
-	int ResourceManager::AddAlbedoTexture(std::string filePath)
-	{
-		return 0;
-	}
+		try
+		{
+			stbi_set_flip_vertically_on_load(1);
 
-	int ResourceManager::AddMetalnessMap(std::string filePath)
-	{
-		return 0;
-	}
+			for (const auto& entry : std::filesystem::recursive_directory_iterator(texturesFilePath))
+			{
+				if (entry.is_regular_file() && (
+					entry.path().extension() == ".png" ||
+					entry.path().extension() == ".jpeg" ||
+					entry.path().extension() == ".bmp" ||
+					entry.path().extension() == ".tga"))
+				{
 
-	int ResourceManager::AddRoughnessMap(std::string filePath)
-	{
-		return 0;
-	}
+					std::filesystem::path entryPath = entry.path();
 
-	int ResourceManager::AddNormalMap(std::string filePath)
-	{
-		return 0;
-	}
+					int width, height, channels;
+					stbi_uc* data = stbi_load(entryPath.string().c_str(), &width, &height, &channels, 0);
+					Ref<Texture> texture;
+					if (data)
+					{
+						texture = Texture2D::Create(width, height, data, channels);
+					}
+					else
+					{
+						OP_ENGINE_ERROR("Could not load Texture {0}", entry.path().filename());
+						continue;
+					}
 
-	int ResourceManager::AddHeightMap(std::string filePath)
-	{
-		return 0;
-	}
+					s_ResourceManagerData.StringLookupTable[entryPath.stem().string()] = s_ResourceManagerData.counter;
+					s_ResourceManagerData.Textures[s_ResourceManagerData.counter] = texture;
+					s_ResourceManagerData.counter++;
 
-	int ResourceManager::AddShaderProgram(std::string filePath)
-	{
-		return 0;
-	}
+					OP_ENGINE_INFO("\t\tFileName {0}", entryPath.filename());
+					count++;
+				}
+			}
 
-	int ResourceManager::LoadSceneResources(Ref<Scene> scene)
-	{
-		return 0;
+			OP_ENGINE_INFO("\t\tTotal number of processed Textures : {0}", count);
+		}
+		catch (const std::exception&)
+		{
+			OP_ENGINE_ERROR("\tFailed to load Textures.")
+				return 1;
+		}
+
+		OP_ENGINE_WARN("\Textures have been loaded")
+			return 0;
 	}
 
 }

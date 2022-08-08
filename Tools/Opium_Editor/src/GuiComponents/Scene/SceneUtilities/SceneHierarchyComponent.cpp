@@ -752,8 +752,6 @@ namespace OP
 				ImGui::DragFloat("Intensity", &component.Intensity, 0.01f, 1.0f, 100000.0f);
 				ImGui::DragFloat("Near", &component.NearDist, 0.01f, 0.01f, 5.0f);
 				ImGui::DragFloat("Far", &component.FarDist, 0.01f, 0.02f, 5000.0f);
-				ImGui::DragFloat("Kq", &component.Kq, 0.000001f, 0.000002f, 2.0f);
-				ImGui::DragFloat("Kl", &component.Kl, 0.000001f, 0.000002f, 2.0f);
 				ImGui::DragFloat("Bias", &component.Bias, 0.001f, 0.0f);
 				ImGui::Checkbox("Cast Shadows", &component.CastShadows);
 				
@@ -765,8 +763,6 @@ namespace OP
 				ImGui::DragFloat("Intensity", &component.Intensity, 0.01f, 1.0f, 100000.0f);
 				ImGui::DragFloat("Near", &component.NearDist, 0.01f, 0.01f, 5.0f);
 				ImGui::DragFloat("Far", &component.FarDist, 0.01f, 0.02f, 5000.0f);
-				ImGui::DragFloat("Kq", &component.Kq, 0.000001f, 0.000002f, 2.0f);
-				ImGui::DragFloat("Kl", &component.Kl, 0.000001f, 0.000002f, 2.0f);
 				ImGui::Checkbox("Cast Shadows", &component.CastShadows);
 			});
 
@@ -828,6 +824,32 @@ namespace OP
 				for (auto& [name, val] : instance->Ints)
 				{
 					ImGui::DragInt(name.c_str(), &val);
+				}
+
+				ImGui::Text("Textures - Metallic Workflow");
+
+				ImGui::DragFloat("Texture Tiling Factor", &instance->TilingFactor, 0.01, 0.01, 10000);
+				ImGui::DragFloat("Height Factor", &instance->HeightFactor, 0.001, 0.001, 1);
+				ImGui::Checkbox("Clip Border", &instance->ClipBorder);
+				for (auto& [name, val] : instance->Textures)
+				{
+					ImGui::Text(name.c_str());
+
+					if (val)
+						ImGui::ImageButton((ImTextureID)val.get()->GetRendererID(), { 100.0f, 100.0f }, { 0, 1 }, { 1, 0 });
+					else
+						ImGui::Button("Texture", ImVec2(100.0f, 0.0f));
+
+					if (ImGui::BeginDragDropTarget())
+					{
+						if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
+						{
+							const wchar_t* path = (const wchar_t*)payload->Data;
+							std::filesystem::path texturePath = std::filesystem::path(g_AssetPath) / path;
+							val = Texture2D::Create(texturePath.string());
+						}
+						ImGui::EndDragDropTarget();
+					}
 				}
 		});
 

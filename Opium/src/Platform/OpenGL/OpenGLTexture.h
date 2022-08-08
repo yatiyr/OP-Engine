@@ -9,6 +9,8 @@ namespace OP
 	class OpenGLTexture2D : public Texture2D
 	{
 	public:
+		OpenGLTexture2D(uint32_t width, uint32_t height, float* data, int channels);
+		OpenGLTexture2D(uint32_t width, uint32_t height, unsigned char* data, int channels);
 		OpenGLTexture2D(uint32_t width, uint32_t height, std::string name);
 		OpenGLTexture2D(uint32_t width, uint32_t height);
 		OpenGLTexture2D(const std::string& path);

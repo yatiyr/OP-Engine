@@ -155,12 +155,14 @@ void main()
 		vec3 kD = vec3(1.0) - kS;
 		kD *= 1.0 - metalness;
 
+		float backFacingFactor = dot(normalize(fs_in.Normal), lightDir) > 0 ? 1.0 : 0.0;
+
 		float NdotL = max(dot(normal, lightDir), 0.0);
 
 		float layerHeight;
 		float shadowMultiplier = parallaxShadowMultiplier(u_HeightMap, vec3(0.0, 0.0, 1.0), normalize(transpose(fs_in.TBN) * lightDir), texCoords, parallaxHeight - 0.01, layerHeight, u_TilingFactor, u_HeightFactor);
 
-		Lo += (kD * color / PI + specular) * radiance * NdotL * (1 - shadow) * pow(shadowMultiplier, 16);
+		Lo += (kD * color / PI + specular) * radiance * NdotL * (1 - shadow) * pow(shadowMultiplier, 16) * backFacingFactor;
 	}
 
 	for(int i=0; i<u_SpotLightSize; i++)
@@ -203,11 +205,13 @@ void main()
 		vec3 kD = vec3(1.0) - kS;
 		kD *= 1.0 - metalness;
 
+		float backFacingFactor = dot(normalize(fs_in.Normal), -lightDir) > 0 ? 1.0 : 0.0;
+
 		float NdotL = max(dot(normal, -lightDir), 0.0);
 
 		float layerHeight;
 		float shadowMultiplier = parallaxShadowMultiplier(u_HeightMap, vec3(0.0, 0.0, 1.0), -normalize(transpose(fs_in.TBN) * lightDir), texCoords, parallaxHeight - 0.01, layerHeight, u_TilingFactor,  u_HeightFactor);
-		Lo += (kD * color / PI + specular) * radiance * NdotL * (1 - shadow) * intensity * pow(shadowMultiplier, 16);
+		Lo += (kD * color / PI + specular) * radiance * NdotL * (1 - shadow) * intensity * pow(shadowMultiplier, 16) * backFacingFactor;
 
 	}
 
@@ -238,11 +242,12 @@ void main()
 		vec3 kD = vec3(1.0) - kS;
 		kD *= 1.0 - metalness;
 
+		float backFacingFactor = dot(normalize(fs_in.Normal), lightDir) > 0 ? 1.0 : 0.0;
 		float NdotL = max(dot(normal, lightDir), 0.0);
 
 		float layerHeight;
 		float shadowMultiplier = parallaxShadowMultiplier(u_HeightMap, vec3(0.0, 0.0, 1.0), normalize(transpose(fs_in.TBN) * lightDir), texCoords, parallaxHeight - 0.01, layerHeight, u_TilingFactor,  u_HeightFactor);
-		Lo += (kD * color / PI + specular) * radiance * NdotL * (1 - shadow) * pow(shadowMultiplier, 16);
+		Lo += (kD * color / PI + specular) * radiance * NdotL * (1 - shadow) * pow(shadowMultiplier, 16) * backFacingFactor;
 
 	}
 

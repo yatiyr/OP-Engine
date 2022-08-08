@@ -54,22 +54,9 @@ namespace OP
 		static int LoadMaterials(std::filesystem::path materialsFilePath);
 
 		// Texture related functions
-		static int AddCubeMap(std::string filePath);
+		static int LoadHdrTextures(std::filesystem::path texturesFilePath);
+		static int LoadTextures(std::filesystem::path texturesFilePath);
 
-		static int AddPlainTexture(std::string filePath);
-		static int AddAlbedoTexture(std::string filePath);
-		static int AddMetalnessMap(std::string filePath);
-		static int AddRoughnessMap(std::string filePath);
-		static int AddNormalMap(std::string filePath);
-		static int AddHeightMap(std::string filePath);
-
-
-		// Shaders related functions
-		static int AddShaderProgram(std::string filePath);
-
-
-		// Load scene related objects
-		static int LoadSceneResources(Ref<Scene> scene);
 	private:
 	};
 

@@ -273,8 +273,8 @@ namespace OP
 			{
 				float shadowMapResX = 256.0f;
 				float shadowMapResY = 256.0f;
-				float pointLightSMResX = 1024.0f;
-				float pointLightSMResY = 1024.0f;
+				float pointLightSMResX = 512.0f;
+				float pointLightSMResY = 512.0f;
 				glm::vec2 blurScale = glm::vec2(0.0f);
 			} ShadowMapSettingsBuffer;
 
