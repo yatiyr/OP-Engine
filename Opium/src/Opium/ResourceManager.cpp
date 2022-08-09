@@ -129,6 +129,12 @@ namespace OP
 		return s_ResourceManagerData.Textures[modelHandle];
 	}
 
+	Ref<Texture> ResourceManager::GetHdrTexture(std::string name)
+	{
+		uint32_t modelHandle = s_ResourceManagerData.StringLookupTable[name];
+		return s_ResourceManagerData.HdrTextures[modelHandle];
+	}
+
 	Ref<Material> ResourceManager::GetMaterial(std::string name)
 	{
 		uint32_t modelHandle = s_ResourceManagerData.StringLookupTable[name];
@@ -525,30 +531,91 @@ namespace OP
 					}
 					else if (entry.path().extension() == ".exr")
 					{
-						int width, height;
-						float* data;
-						const char* error = nullptr;
 
-						int ret = LoadEXR(&data, &width, &height, entryPath.string().c_str(), &error);
-						Ref<Texture> hdrTexture;
-						if (ret != TINYEXR_SUCCESS)
+						// Read EXR Version
+						EXRVersion exr_version;
+						int ret = ParseEXRVersionFromFile(&exr_version, entryPath.string().c_str());
+						if (ret != 0)
 						{
-							if (error)
-							{
-								OP_ENGINE_ERROR("Coult not load Exr Texture: {0}", error);
-								FreeEXRErrorMessage(error);
-								continue;
-							}
-								
+							OP_ENGINE_ERROR("\t\tCould not parse .exr file: {0}", entryPath.filename())
+							continue;
 						}
 
-						hdrTexture = Texture2D::CreateF(width, height, data, 4);
+						if (exr_version.multipart)
+						{
+							OP_ENGINE_ERROR("\t\tExr file must not be multipart.")
+							continue;
+						}
+
+						// Read EXR Header
+						EXRHeader exr_header;
+						InitEXRHeader(&exr_header);
+
+						const char* err = nullptr;
+						ret = ParseEXRHeaderFromFile(&exr_header, &exr_version, entryPath.string().c_str(), &err);
+
+						if (ret != 0)
+						{
+							OP_ENGINE_ERROR("\t\tCould not parse exr header: {0}", err);
+							FreeEXRErrorMessage(err);
+							continue;
+						}
+
+						// Read HALF channel as FLOAT.
+						for (int i = 0; i < exr_header.num_channels; i++)
+						{
+							if (exr_header.pixel_types[i] == TINYEXR_PIXELTYPE_HALF)
+							{
+							   exr_header.requested_pixel_types[i] = TINYEXR_PIXELTYPE_FLOAT;
+							}
+						}
+
+						EXRImage exr_image;
+						InitEXRImage(&exr_image);
+
+						ret = LoadEXRImageFromFile(&exr_image, &exr_header, entryPath.string().c_str(), &err);
+						if (ret != 0)
+						{
+							OP_ENGINE_ERROR("\t\tCould not load .exr file: {0}", err);
+							FreeEXRHeader(&exr_header);
+							FreeEXRErrorMessage(err);
+							continue;
+						}
+
+				
+						Ref<Texture> hdrTexture;
+
+						// We assume that there are 3 channels
+						float* imageBuffer = new float[exr_image.width * exr_image.height * 3];
+						int counter = 0;
+						for (int i = exr_image.height - 1; i >= 0; i--)
+						{
+							for (int j = 0; j < exr_image.width; j++)
+							{
+								const float valR = reinterpret_cast<float**>(exr_image.images)[2][i * exr_image.width + j];
+								const float valG = reinterpret_cast<float**>(exr_image.images)[1][i * exr_image.width + j];
+								const float valB = reinterpret_cast<float**>(exr_image.images)[0][i * exr_image.width + j];
+
+								// R Channel
+								imageBuffer[counter++] = valR;
+								// G Channel
+								imageBuffer[counter++] = valG;
+								// B Channel
+								imageBuffer[counter++] = valB;
+							}
+						}
+
+						hdrTexture = Texture2D::CreateF(exr_image.width, exr_image.height, imageBuffer, 3);
 
 						s_ResourceManagerData.StringLookupTable[entryPath.stem().string()] = s_ResourceManagerData.counter;
 						s_ResourceManagerData.HdrTextures[s_ResourceManagerData.counter] = hdrTexture;
 						s_ResourceManagerData.counter++;
 						OP_ENGINE_INFO("\t\tFileName {0}", entryPath.filename());
 						count++;
+
+						delete imageBuffer[];
+						FreeEXRImage(&exr_image);
+						FreeEXRHeader(&exr_header);
 					}
 
 

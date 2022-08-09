@@ -39,6 +39,7 @@ namespace OP
 		static Ref<Shader> GetShader(std::string name);
 		static Ref<Model> GetModel(std::string name);
 		static Ref<Texture> GetTexture(std::string name);
+		static Ref<Texture> GetHdrTexture(std::string name);
 		static Ref<Material> GetMaterial(std::string name);
 
 		static int LoadModels(std::filesystem::path meshFilePath);

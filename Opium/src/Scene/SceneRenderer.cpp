@@ -415,6 +415,9 @@ namespace OP
 
 		// ------------ OLD PART --------------- //
 
+		// CubemapTexture
+		Ref<Texture> cubemap;
+		
 		// Shaders
 		Ref<Shader> mainShader;
 		Ref<Shader> mainShaderAnimated;
@@ -427,6 +430,8 @@ namespace OP
 		Ref<Shader> pointLightSMBlurShader;
 		Ref<Shader> postProcessingShader;
 
+
+		Ref<Shader> equirectangularToCubeShader;
 		// Ref<Texture2D> woodTexture;
 		Ref<Texture2D> WhiteTexture;
 
@@ -489,6 +494,7 @@ namespace OP
 		s_SceneRendererData.plane = Plane::Create();
 		s_SceneRendererData.quad = Quad::Create();
 
+		s_SceneRendererData.cubemap = ResourceManager::GetHdrTexture("Playa_Sunrise");
 
 		s_SceneRendererData.shadowMapDirSpotBlur = ResourceManager::GetShader("DirSpotShadowMappingBlur.glsl");
 		s_SceneRendererData.mainShader = ResourceManager::GetShader("Main.glsl");
@@ -499,7 +505,8 @@ namespace OP
 		s_SceneRendererData.pointLightDepthShader = ResourceManager::GetShader("PointShadowMapping.glsl");
 		s_SceneRendererData.pointLightDepthShaderAnimated = ResourceManager::GetShader("PointShadowMappingAnimated.glsl");
 		s_SceneRendererData.postProcessingShader = ResourceManager::GetShader("PostProcessing.glsl");
-
+		
+		s_SceneRendererData.equirectangularToCubeShader = ResourceManager::GetShader("EquirectangularToCube.glsl");
 
 		s_SceneRendererData.animatedModel = ResourceManager::GetModel("Swing Dancing");
 
@@ -957,6 +964,9 @@ namespace OP
 					s_SceneRendererData.MaterialUniformBuffer->SetData(&s_SceneRendererData.MaterialBuffer, sizeof(SceneRendererData::MaterialData));*/
 				}
 
+				s_SceneRendererData.equirectangularToCubeShader->Bind();
+				glBindTextureUnit(1, s_SceneRendererData.cubemap->GetRendererID());
+				s_SceneRendererData.cube->Draw();
 				/*s_SceneRendererData.mainShaderAnimated->Bind();
 
 				model = glm::mat4(1.0f);
