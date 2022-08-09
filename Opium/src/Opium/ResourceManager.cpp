@@ -613,7 +613,7 @@ namespace OP
 						OP_ENGINE_INFO("\t\tFileName {0}", entryPath.filename());
 						count++;
 
-						delete imageBuffer[];
+						delete[] imageBuffer;
 						FreeEXRImage(&exr_image);
 						FreeEXRHeader(&exr_header);
 					}
