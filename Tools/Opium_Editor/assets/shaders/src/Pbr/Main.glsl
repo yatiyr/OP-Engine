@@ -44,7 +44,7 @@ void main()
 
 	vs_out.FragPos = vec3(u_Model * vec4(a_Position, 1.0));
 	vs_out.FragPosViewSpace = u_View * vec4(vs_out.FragPos, 1.0);
-	vs_out.Normal  = transpose(inverse(mat3(u_Model))) * N;
+	vs_out.Normal  = modelMatrixN * a_Normal;
 	vs_out.TexCoords = a_TexCoords;
 
 	gl_Position =  u_ViewProjection * u_Model * vec4(a_Position, 1.0);

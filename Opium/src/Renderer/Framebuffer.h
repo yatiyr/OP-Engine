@@ -28,6 +28,9 @@ namespace OP
 		CUBEMAP_ARRAY_DEPTH,
 		SM_POINT_LIGHT_BLUR,
 
+		// For skyboxes - cubemaps
+		CUBEMAP,
+		CUBEMAP_DEPTH,
 		// Default
 		Depth = DEPTH24STENCIL8
 	};

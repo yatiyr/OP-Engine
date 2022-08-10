@@ -26,6 +26,7 @@
 #include <Geometry/Plane.h>
 #include <Geometry/Quad.h>
 #include <Geometry/Model.h>
+#include <Geometry/Skybox.h>
 
 #define MAX_DIR_LIGHTS 2
 #define MAX_SPOT_LIGHTS 4
@@ -230,10 +231,28 @@ namespace OP
 
 		// ----------- UNIFORM BUFFERS --------- //
 
+			// cubemap capture
+			struct CubemapCaptureViewData
+			{
+				glm::mat4 CaptureViews[6] =
+				{							
+					glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
+					glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
+					glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f,  1.0f,  0.0f), glm::vec3(0.0f,  0.0f,  1.0f)),
+					glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f,  0.0f), glm::vec3(0.0f,  0.0f, -1.0f)),
+					glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f,  0.0f,  1.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
+					glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f,  0.0f, -1.0f), glm::vec3(0.0f, -1.0f,  0.0f))
+		
+				};
+			} CubemapCaptureBuffer;
+
+			Ref<UniformBuffer> CubemapCaptureUniformBuffer;
+
 			struct CameraData
 			{
 				glm::mat4 ViewProjection;
 				glm::mat4 View;
+				glm::mat4 Projection;
 				alignas(16) glm::vec3 ViewPos;
 			} CameraBuffer;
 
@@ -419,6 +438,8 @@ namespace OP
 		Ref<Texture> cubemap;
 		
 		// Shaders
+		Ref<Shader> equirectangularToCubeMapShader;
+		Ref<Shader> skyboxShader;
 		Ref<Shader> mainShader;
 		Ref<Shader> mainShaderAnimated;
 		Ref<Shader> depthShader;
@@ -438,7 +459,7 @@ namespace OP
 		Ref<Cube> cube;
 		Ref<Plane> plane;
 		Ref<Quad> quad;
-
+		Ref<Skybox> skybox;
 		Ref<Model> animatedModel;
 
 		// Ref<Icosphere> icosphere2;
@@ -456,6 +477,7 @@ namespace OP
 		Ref<Framebuffer> sampleResolveFramebuffer;
 
 
+		Ref<RenderPass> cubemapCaptureRenderPass;
 		Ref<RenderPass> depthRenderPass;
 		Ref<RenderPass> pointLightDepthRenderPass;
 		Ref<PingPongRenderPass> depthBlurDSLRenderPass;
@@ -475,6 +497,46 @@ namespace OP
 
 	void SceneRenderer::Init(float width, float height, Ref<Framebuffer> fB)
 	{
+		s_SceneRendererData.cubemap = ResourceManager::GetHdrTexture("Playa_Sunrise");
+		s_SceneRendererData.equirectangularToCubeMapShader = ResourceManager::GetShader("EquirectangularToCubemap.glsl");
+
+		glDepthFunc(GL_LEQUAL);
+		
+		s_SceneRendererData.skybox = Skybox::Create();
+
+		// Framebuffer for cubemap capture
+		s_SceneRendererData.CubemapCaptureUniformBuffer = UniformBuffer::Create(sizeof(SceneRendererData::CubemapCaptureViewData), 0);
+		FramebufferSpecification cubemapCFSpec;
+		cubemapCFSpec.Attachments = { FramebufferTextureFormat::CUBEMAP, FramebufferTextureFormat::CUBEMAP_DEPTH };
+		cubemapCFSpec.Width = 512;
+		cubemapCFSpec.Height = 512;
+
+		s_SceneRendererData.cubemapCaptureRenderPass = RenderPass::Create(std::string("Cubemap Capture Pass"), cubemapCFSpec, s_SceneRendererData.equirectangularToCubeShader);
+
+		glm::mat4 captureProjection = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 10.0f);
+
+
+		s_SceneRendererData.CubemapCaptureUniformBuffer->SetData(&s_SceneRendererData.CubemapCaptureBuffer, sizeof(SceneRendererData::CubemapCaptureViewData));
+
+		s_SceneRendererData.cubemapCaptureRenderPass->InvokeCommands(
+			[&]() -> void {
+
+				s_SceneRendererData.equirectangularToCubeMapShader->Bind();
+				glBindTextureUnit(0, s_SceneRendererData.cubemap->GetRendererID());
+				s_SceneRendererData.equirectangularToCubeMapShader->SetMat4(0, captureProjection);
+
+				glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+				// ------------ DRAW SCENE ------------
+				s_SceneRendererData.skybox->Draw();
+				// ---------- DRAW SCENE END ----------
+
+			}
+		);
+
+
+
+
+
 
 		// ---------- TEMP ----------
 
@@ -494,8 +556,6 @@ namespace OP
 		s_SceneRendererData.plane = Plane::Create();
 		s_SceneRendererData.quad = Quad::Create();
 
-		s_SceneRendererData.cubemap = ResourceManager::GetHdrTexture("Playa_Sunrise");
-
 		s_SceneRendererData.shadowMapDirSpotBlur = ResourceManager::GetShader("DirSpotShadowMappingBlur.glsl");
 		s_SceneRendererData.mainShader = ResourceManager::GetShader("Main.glsl");
 		s_SceneRendererData.mainShaderAnimated = ResourceManager::GetShader("MainAnimated.glsl");
@@ -513,24 +573,24 @@ namespace OP
 		s_SceneRendererData.defaultPbrMaterialInstance = MaterialInstance::Create(ResourceManager::GetMaterial("DefaultPbr"));
 
 		// Deal with uniform buffers
-		s_SceneRendererData.CameraUniformBuffer            = UniformBuffer::Create(sizeof(SceneRendererData::CameraData), 0);
-		s_SceneRendererData.TransformUniformBuffer         = UniformBuffer::Create(sizeof(SceneRendererData::TransformData), 1);
-		s_SceneRendererData.ShadowMapSettingsUniformBuffer = UniformBuffer::Create(sizeof(SceneRendererData::ShadowMapSettings), 2);
+		s_SceneRendererData.CameraUniformBuffer            = UniformBuffer::Create(sizeof(SceneRendererData::CameraData), 1);
+		s_SceneRendererData.TransformUniformBuffer         = UniformBuffer::Create(sizeof(SceneRendererData::TransformData), 2);
+		s_SceneRendererData.ShadowMapSettingsUniformBuffer = UniformBuffer::Create(sizeof(SceneRendererData::ShadowMapSettings), 3);
 
-		s_SceneRendererData.DirLightUniformBuffer   = UniformBuffer::Create(sizeof(SceneRendererData::DirLightData), 3);
-		s_SceneRendererData.SpotLightUniformBuffer  = UniformBuffer::Create(sizeof(SceneRendererData::SpotLightData), 4);
-		s_SceneRendererData.PointLightUniformBuffer = UniformBuffer::Create(sizeof(SceneRendererData::PointLightData), 5);
+		s_SceneRendererData.DirLightUniformBuffer   = UniformBuffer::Create(sizeof(SceneRendererData::DirLightData), 4);
+		s_SceneRendererData.SpotLightUniformBuffer  = UniformBuffer::Create(sizeof(SceneRendererData::SpotLightData), 5);
+		s_SceneRendererData.PointLightUniformBuffer = UniformBuffer::Create(sizeof(SceneRendererData::PointLightData), 6);
 
-		s_SceneRendererData.LightSpaceMatricesDSUniformBuffer  = UniformBuffer::Create(sizeof(SceneRendererData::LightSpaceMatricesDSData), 6);
-		s_SceneRendererData.LightSpaceMatricesPointUniformBuffer = UniformBuffer::Create(sizeof(SceneRendererData::LightSpaceMatricesPointData), 7);
-		s_SceneRendererData.CascadePlaneDistancesUniformBuffer = UniformBuffer::Create(sizeof(SceneRendererData::CascadePlaneDistancesData), 8);
+		s_SceneRendererData.LightSpaceMatricesDSUniformBuffer  = UniformBuffer::Create(sizeof(SceneRendererData::LightSpaceMatricesDSData), 7);
+		s_SceneRendererData.LightSpaceMatricesPointUniformBuffer = UniformBuffer::Create(sizeof(SceneRendererData::LightSpaceMatricesPointData), 8);
+		s_SceneRendererData.CascadePlaneDistancesUniformBuffer = UniformBuffer::Create(sizeof(SceneRendererData::CascadePlaneDistancesData), 9);
 
-		s_SceneRendererData.MaterialUniformBuffer  = UniformBuffer::Create(sizeof(SceneRendererData::MaterialData), 9);
+		s_SceneRendererData.MaterialUniformBuffer  = UniformBuffer::Create(sizeof(SceneRendererData::MaterialData), 10);
 
-		s_SceneRendererData.ToneMappingSettingsUniformBuffer = UniformBuffer::Create(sizeof(SceneRendererData::ToneMappingSettings), 10);
+		s_SceneRendererData.ToneMappingSettingsUniformBuffer = UniformBuffer::Create(sizeof(SceneRendererData::ToneMappingSettings), 11);
 
 
-		s_SceneRendererData.BoneMatricesUniformBuffer = UniformBuffer::Create(sizeof(SceneRendererData::BoneMatricesData), 11);
+		s_SceneRendererData.BoneMatricesUniformBuffer = UniformBuffer::Create(sizeof(SceneRendererData::BoneMatricesData), 12);
 
 		s_SceneRendererData.ViewportSize.x = width;
 		s_SceneRendererData.ViewportSize.y = height;
@@ -568,8 +628,6 @@ namespace OP
 		depthFBPointLight.Height = s_SceneRendererData.ShadowMapSettingsBuffer.pointLightSMResY;
 
 		s_SceneRendererData.pointLightDepthRenderPass = RenderPass::Create(std::string("Point Light Depth Pass"), depthFBPointLight, s_SceneRendererData.depthShader);
-
-
 
 		// Final Framebuffer
 		FramebufferSpecification finalFBSpec;
@@ -655,6 +713,7 @@ namespace OP
 			s_SceneRendererData.CameraBuffer.ViewProjection = camera.GetViewProjection();
 			s_SceneRendererData.CameraBuffer.ViewPos = camera.GetPosition();
 			s_SceneRendererData.CameraBuffer.View = camera.GetViewMatrix();
+			s_SceneRendererData.CameraBuffer.Projection = camera.GetProjection();
 			s_SceneRendererData.CameraUniformBuffer->SetData(&s_SceneRendererData.CameraBuffer, sizeof(SceneRendererData::CameraData));
 		// ---------------------- END CALCULATE CAMERA DATA -------------------------- //
 
@@ -967,6 +1026,7 @@ namespace OP
 				s_SceneRendererData.equirectangularToCubeShader->Bind();
 				glBindTextureUnit(1, s_SceneRendererData.cubemap->GetRendererID());
 				s_SceneRendererData.cube->Draw();
+
 				/*s_SceneRendererData.mainShaderAnimated->Bind();
 
 				model = glm::mat4(1.0f);

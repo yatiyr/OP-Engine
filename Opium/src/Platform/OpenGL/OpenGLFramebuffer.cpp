@@ -35,6 +35,11 @@ namespace OP
 			glCreateTextures(GL_TEXTURE_2D_ARRAY, count, outID);
 		}
 
+		static void CreateCubemap(uint32_t* outID, uint32_t count)
+		{
+			glCreateTextures(GL_TEXTURE_CUBE_MAP, count, outID);
+		}
+
 		static void CreateCubemapArray(uint32_t* outID, uint32_t count)
 		{
 			glCreateTextures(GL_TEXTURE_CUBE_MAP_ARRAY, count, outID);
@@ -127,6 +132,17 @@ namespace OP
 			glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, id, 0);
 		}
 
+		static void AttachCubemap(uint32_t id, uint32_t width, uint32_t height, bool isDepth)
+		{
+			glTexStorage2D(GL_TEXTURE_CUBE_MAP, 1, isDepth ? GL_DEPTH_COMPONENT24 : GL_RGB16F, width, height);
+			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+			glFramebufferTexture(GL_FRAMEBUFFER, isDepth ? GL_DEPTH_ATTACHMENT : GL_COLOR_ATTACHMENT0, id, 0);
+
+		}
+
 		static void AttachArrayCubemap_Point(uint32_t id, GLenum format, uint32_t width, uint32_t height, uint32_t layerCount)
 		{
 			glTexStorage3D(GL_TEXTURE_CUBE_MAP_ARRAY, 1, GL_DEPTH_COMPONENT32F, width, height, layerCount);
@@ -184,6 +200,7 @@ namespace OP
 				case FramebufferTextureFormat::DEPTH16: return true;
 				case FramebufferTextureFormat::SHADOWMAP_ARRAY_DEPTH: return true;
 				case FramebufferTextureFormat::CUBEMAP_ARRAY_DEPTH: return true;
+				case FramebufferTextureFormat::CUBEMAP_DEPTH: return true;
 			}
 
 			return false;
@@ -269,6 +286,13 @@ namespace OP
 				Utils::AttachCubemapPointBlur(m_ColorAttachments[0], m_Specification.Width, m_Specification.Height, m_ColorAttachmentSpecifications[0].pointLightLayerCount);
 
 			}
+			else if (m_ColorAttachmentSpecifications.size() == 1 && m_ColorAttachmentSpecifications[0].TextureFormat == FramebufferTextureFormat::CUBEMAP)
+			{
+				Utils::CreateCubemap(& m_ColorAttachments[0], 1);
+				Utils::BindCubemap(m_ColorAttachments[0]);
+				Utils::AttachCubemap(m_ColorAttachments[0], m_Specification.Width, m_Specification.Height, false);
+
+			}
 			else
 			{
 				Utils::CreateTextures(multisample, m_ColorAttachments.data(), m_ColorAttachments.size());
@@ -312,6 +336,11 @@ namespace OP
 					Utils::CreateCubemapArray(&m_DepthAttachment, 1);
 					Utils::BindCubemapArray(m_DepthAttachment);
 					Utils::AttachArrayCubemap_Point(m_DepthAttachment, m_Specification.Samples, m_Specification.Width, m_Specification.Height, m_DepthAttachmentSpecification.pointLightLayerCount);
+					break;
+				case FramebufferTextureFormat::CUBEMAP_DEPTH:
+					Utils::CreateCubemap(&m_DepthAttachment, 1);
+					Utils::BindCubemap(m_DepthAttachment);
+					Utils::AttachCubemap(m_DepthAttachment, m_Specification.Width, m_Specification.Height, true);
 					break;
 				case FramebufferTextureFormat::SHADOWMAP_ARRAY_DEPTH:
 					Utils::CreateTextureArray(&m_DepthAttachment, 1);
