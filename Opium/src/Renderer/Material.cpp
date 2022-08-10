@@ -126,7 +126,7 @@ namespace OP
 		currentVarLoc++;
 		Mat->m_Shader->SetInt(currentVarLoc, ClipBorder);
 
-		uint32_t currentTextureLoc = 2;
+		uint32_t currentTextureLoc = 3;
 
 		for (auto& [name, val] : Textures)
 		{

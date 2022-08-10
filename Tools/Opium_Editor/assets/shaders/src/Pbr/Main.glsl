@@ -73,6 +73,7 @@ layout (location = 0) in VS_OUT fs_in;
 
 layout (binding = 0) uniform sampler2DArray u_ShadowMapDirSpot;
 layout (binding = 1) uniform samplerCubeArray u_ShadowMapPoint;
+layout (binding = 2) uniform samplerCube u_IrradianceMap;
 
 layout (location = 0) uniform float u_Roughness;
 layout (location = 1) uniform float u_Metalness;
@@ -81,12 +82,12 @@ layout (location = 3) uniform float u_TilingFactor;
 layout (location = 4) uniform float u_HeightFactor;
 layout (location = 5) uniform int u_ClipBorder;
 
-layout (binding = 2) uniform sampler2D u_albedoMap;
-layout (binding = 3) uniform sampler2D u_RoughnessMap;
-layout (binding = 4) uniform sampler2D u_MetalnessMap;
-layout (binding = 5) uniform sampler2D u_AoMap;
-layout (binding = 6) uniform sampler2D u_NormalMap;
-layout (binding = 7) uniform sampler2D u_HeightMap;
+layout (binding = 3) uniform sampler2D u_albedoMap;
+layout (binding = 4) uniform sampler2D u_RoughnessMap;
+layout (binding = 5) uniform sampler2D u_MetalnessMap;
+layout (binding = 6) uniform sampler2D u_AoMap;
+layout (binding = 7) uniform sampler2D u_NormalMap;
+layout (binding = 8) uniform sampler2D u_HeightMap;
 // ------------- GLOBAL VARIABLES ------------- //
 #include GlobalVariables.glsl
 // -------------- UNIFORM BUFFERS ------------- //
@@ -148,7 +149,7 @@ void main()
 		vec3  F   = FresnelSchlick(max(dot(halfwayDir, viewDir), 0.0), F0);
 
 		vec3 numerator = NDF * G * F;
-		float denominator = 4.0 * max(dot(normal, viewDir), 0.0) * max(dot(normal, lightDir), 0.0) + 0.0001;
+		float denominator = 4.0 * max(dot(normal, viewDir), 0.0) * max(dot(normal, lightDir), 0.0) + 0.001;
 		vec3 specular = numerator / denominator;
 
 		vec3 kS = F;
@@ -198,7 +199,7 @@ void main()
 		vec3  F   = FresnelSchlick(max(dot(halfwayDir, viewDir), 0.0), F0);
 
 		vec3 numerator = NDF * G * F;
-		float denominator = 4.0 * max(dot(normal, viewDir), 0.0) * max(dot(normal, -lightDir), 0.0) + 0.0001;
+		float denominator = 4.0 * max(dot(normal, viewDir), 0.0) * max(dot(normal, -lightDir), 0.0) + 0.001;
 		vec3 specular = numerator / denominator;
 
 		vec3 kS = F;
@@ -235,7 +236,7 @@ void main()
 		vec3  F   = FresnelSchlick(max(dot(halfwayDir, viewDir), 0.0), F0);
 
 		vec3 numerator = NDF * G * F;
-		float denominator = 4.0 * max(dot(normal, viewDir), 0.0) * max(dot(normal, lightDir), 0.0) + 0.0001;
+		float denominator = 4.0 * max(dot(normal, viewDir), 0.0) * max(dot(normal, lightDir), 0.0) + 0.001;
 		vec3 specular = numerator / denominator;
 
 		vec3 kS = F;
@@ -251,7 +252,13 @@ void main()
 
 	}
 
-	vec3 ambient = vec3(0.03) * color * ao;
+	vec3 kS = FresnelSchlick(max(dot(normal, viewDir), 0.0), F0); 
+	vec3 kD = 1.0 - kS;
+	kD *= 1.0 - metalness;
+	vec3 irradiance = texture(u_IrradianceMap, normal).rgb;
+	vec3 diffuse    = irradiance * color;
+	vec3 ambient    = (kD * diffuse) * ao; 
+	//vec3 ambient = vec3(0.03) * color * ao;
 
 	vec3 lighting    =  (ambient + Lo);
 

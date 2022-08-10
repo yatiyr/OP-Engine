@@ -439,6 +439,7 @@ namespace OP
 		
 		// Shaders
 		Ref<Shader> equirectangularToCubeMapShader;
+		Ref<Shader> cubemapConvolutionShader;
 		Ref<Shader> skyboxShader;
 		Ref<Shader> mainShader;
 		Ref<Shader> mainShaderAnimated;
@@ -478,6 +479,7 @@ namespace OP
 
 
 		Ref<RenderPass> cubemapCaptureRenderPass;
+		Ref<RenderPass> irradianceMapGenerationRenderPass;
 		Ref<RenderPass> depthRenderPass;
 		Ref<RenderPass> pointLightDepthRenderPass;
 		Ref<PingPongRenderPass> depthBlurDSLRenderPass;
@@ -497,8 +499,11 @@ namespace OP
 
 	void SceneRenderer::Init(float width, float height, Ref<Framebuffer> fB)
 	{
-		s_SceneRendererData.cubemap = ResourceManager::GetHdrTexture("Playa_Sunrise");
+		glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
+
+		s_SceneRendererData.cubemap = ResourceManager::GetHdrTexture("snow_field_4k");
 		s_SceneRendererData.equirectangularToCubeMapShader = ResourceManager::GetShader("EquirectangularToCubemap.glsl");
+		s_SceneRendererData.skyboxShader = ResourceManager::GetShader("SimpleSkybox.glsl");
 
 		glDepthFunc(GL_LEQUAL);
 		
@@ -535,8 +540,27 @@ namespace OP
 
 
 
+		s_SceneRendererData.cubemapConvolutionShader = ResourceManager::GetShader("CubemapConvolution.glsl");
+		// Framebuffer for generating irradiance map
+		FramebufferSpecification irradianceCFSpec;
+		irradianceCFSpec.Attachments = { FramebufferTextureFormat::CUBEMAP, FramebufferTextureFormat::CUBEMAP_DEPTH };
+		irradianceCFSpec.Width = 2;
+		irradianceCFSpec.Height = 2;
 
+		s_SceneRendererData.irradianceMapGenerationRenderPass = RenderPass::Create(std::string("Irradiance Map Generation Pass"), irradianceCFSpec, s_SceneRendererData.cubemapConvolutionShader);
 
+		s_SceneRendererData.irradianceMapGenerationRenderPass->InvokeCommands(
+			[&]() -> void {
+				glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+				s_SceneRendererData.equirectangularToCubeMapShader->Bind();
+				uint32_t environmentMap = s_SceneRendererData.cubemapCaptureRenderPass->GetColorAttachment(0);
+				glBindTextureUnit(0, environmentMap);
+				// ------------ DRAW SCENE ------------
+				s_SceneRendererData.skybox->Draw();
+				// ---------- DRAW SCENE END ----------
+
+			}
+		);
 
 		// ---------- TEMP ----------
 
@@ -979,6 +1003,8 @@ namespace OP
 			[&]()-> void {
 
 				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+
 				s_SceneRendererData.mainShader->Bind();
 
 				s_SceneRendererData.WhiteTexture->Bind(0);
@@ -989,6 +1015,9 @@ namespace OP
 				uint32_t depthMap2 = s_SceneRendererData.pointLightDepthRenderPass->GetDepthAttachment(0);
 				glBindTextureUnit(1, depthMap2);
 				// ------------ DRAW SCENE ------------
+
+				uint32_t environmentMap = s_SceneRendererData.irradianceMapGenerationRenderPass->GetColorAttachment(0);
+				glBindTextureUnit(2, environmentMap);
 
 				auto meshes = scene->m_Registry.group<MeshComponent>(entt::get<TransformComponent>);
 				for (auto mesh : meshes)
@@ -1023,9 +1052,18 @@ namespace OP
 					s_SceneRendererData.MaterialUniformBuffer->SetData(&s_SceneRendererData.MaterialBuffer, sizeof(SceneRendererData::MaterialData));*/
 				}
 
-				s_SceneRendererData.equirectangularToCubeShader->Bind();
+
+				// Render Skybox last
+				glCullFace(GL_FRONT);
+				s_SceneRendererData.skyboxShader->Bind();
+
+				environmentMap = s_SceneRendererData.irradianceMapGenerationRenderPass->GetColorAttachment(0);
+				glBindTextureUnit(0, environmentMap);
+				s_SceneRendererData.skybox->Draw();
+				glCullFace(GL_BACK);
+				/*s_SceneRendererData.equirectangularToCubeShader->Bind();
 				glBindTextureUnit(1, s_SceneRendererData.cubemap->GetRendererID());
-				s_SceneRendererData.cube->Draw();
+				s_SceneRendererData.cube->Draw();*/
 
 				/*s_SceneRendererData.mainShaderAnimated->Bind();
 
