@@ -15,5 +15,10 @@ namespace OP
 
 		virtual void DrawIndexed(const Ref<VertexArray>& vertexArray, uint32_t indexCount = 0)  override;
 		virtual void DrawIndexedBinded(const Ref<VertexArray>& vertexArray, uint32_t indexCount) override;
+
+		virtual void Enable(MODE mode) override;
+		virtual void Disable(MODE mode) override;
+
+		virtual void DepthFunc(DEPTHFUNC func) override;
 	};
 }

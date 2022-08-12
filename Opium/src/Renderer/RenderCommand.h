@@ -4,6 +4,7 @@
 
 namespace OP
 {
+
 	class RenderCommand
 	{
 	public:
@@ -28,7 +29,6 @@ namespace OP
 			s_RendererAPI->Clear();
 		}
 
-
 		inline static void DrawIndexed(const Ref<VertexArray>& vertexArray, uint32_t count = 0)
 		{
 			s_RendererAPI->DrawIndexed(vertexArray, count);
@@ -38,6 +38,24 @@ namespace OP
 		{
 			s_RendererAPI->DrawIndexedBinded(vertexArray, count);
 		}
+
+		inline static void Enable(MODE mode)
+		{
+			s_RendererAPI->Enable(mode);
+		}
+
+		inline static void Disable(MODE mode)
+		{
+			s_RendererAPI->Disable(mode);
+		}
+
+		inline static void DepthFunc(DEPTHFUNC func)
+		{
+			s_RendererAPI->DepthFunc(func);
+		}
+
+		
+
 
 	private:
 		static RendererAPI* s_RendererAPI;

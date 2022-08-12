@@ -1,12 +1,14 @@
 #include <Precomp.h> 
 #include <Opium/Application.h>
 #include <Opium/ResourceManager.h>
+#include <Renderer/RenderCommand.h>
 
 #include <Input/Input.h>
 
 #include <Renderer/Renderer.h>
 
 #include <ScriptManager/ScriptManager.h>
+
 
 namespace OP
 {
@@ -26,6 +28,8 @@ namespace OP
 
 		m_DpiScale = m_Window->GetDpiScale();
 
+		RenderCommand::Enable(MODE::DITHER);
+		RenderCommand::Enable(MODE::TEXTURE_CUBE_MAP_SEAMLESS);
 
 		ResourceManager::Init(std::filesystem::current_path());
 		Renderer::Init();

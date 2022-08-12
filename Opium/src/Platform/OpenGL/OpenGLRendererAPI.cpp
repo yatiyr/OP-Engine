@@ -6,6 +6,48 @@
 namespace OP
 {
 
+	static int OPModeToGL(MODE mode)
+	{
+		switch (mode)
+		{
+			case OP::MODE::TEXTURE_CUBE_MAP_SEAMLESS:
+				return GL_TEXTURE_CUBE_MAP_SEAMLESS;
+			case OP::MODE::DITHER:
+				return GL_DITHER;
+			case OP::MODE::DEPTH_TEST:
+				return GL_DEPTH_TEST;
+			case OP::MODE::CULL_FACE:
+				return GL_CULL_FACE;
+			default:
+				return -1;
+		}
+	}
+
+	static int OPDepthFuncToGL(DEPTHFUNC func)
+	{
+		switch (func)
+		{
+			case OP::DEPTHFUNC::NEVER:
+				return GL_NEVER;
+			case OP::DEPTHFUNC::LESS:
+				return GL_LESS;
+			case OP::DEPTHFUNC::LEQUAL:
+				return GL_LEQUAL;
+			case OP::DEPTHFUNC::EQUAL:
+				return GL_EQUAL;
+			case OP::DEPTHFUNC::GREATER:
+				return GL_GREATER;
+			case OP::DEPTHFUNC::NOTEQUAL:
+				return GL_NOTEQUAL;
+			case OP::DEPTHFUNC::GEQUAL:
+				return GL_GEQUAL;
+			case OP::DEPTHFUNC::ALWAYS:
+				return GL_ALWAYS;
+			default:
+				break;
+		}
+	}
+
 	void OpenGLRendererAPI::Init()
 	{
 		glEnable(GL_BLEND);
@@ -45,6 +87,21 @@ namespace OP
 		vertexArray->Bind();
 		glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, nullptr);
 		vertexArray->Unbind();
+	}
+
+	void OpenGLRendererAPI::Enable(MODE mode)
+	{
+		glEnable(OPModeToGL(mode));
+	}
+
+	void OpenGLRendererAPI::Disable(MODE mode)
+	{
+		glDisable(OPModeToGL(mode));
+	}
+
+	void OpenGLRendererAPI::DepthFunc(DEPTHFUNC func)
+	{
+		glDepthFunc(OPDepthFuncToGL(func));
 	}
 
 }

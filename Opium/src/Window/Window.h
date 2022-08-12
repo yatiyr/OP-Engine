@@ -13,7 +13,7 @@ namespace OP
 		uint32_t Width;
 		uint32_t Height;
 
-		WinProperties(const std::string& title = "Opium 03",
+		WinProperties(const std::string& title = "OP Application",
 					  uint32_t width = 1280,
 			          uint32_t height = 720) : 
 					  Title(title), Width(width), Height(height) {}

@@ -5,6 +5,27 @@
 
 namespace OP
 {
+
+	enum class MODE
+	{
+		TEXTURE_CUBE_MAP_SEAMLESS,
+		DITHER,
+		DEPTH_TEST,
+		CULL_FACE
+	};
+
+	enum class DEPTHFUNC
+	{
+		NEVER,
+		LESS,
+		LEQUAL,
+		EQUAL,
+		GREATER,
+		NOTEQUAL,
+		GEQUAL,
+		ALWAYS
+	};
+
 	class RendererAPI
 	{
 	public:
@@ -20,6 +41,11 @@ namespace OP
 
 		virtual void DrawIndexed(const Ref<VertexArray>& vertexArray, uint32_t indexCount = 0) = 0;
 		virtual void DrawIndexedBinded(const Ref<VertexArray>& vertexArray, uint32_t indexCount) = 0;
+
+		virtual void Enable(MODE mode) = 0;
+		virtual void Disable(MODE mode) = 0;
+
+		virtual void DepthFunc(DEPTHFUNC func) = 0;
 
 		inline static API GetAPI() { return s_API; }
 	private:
