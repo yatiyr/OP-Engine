@@ -440,6 +440,8 @@ namespace OP
 		// Shaders
 		Ref<Shader> equirectangularToCubeMapShader;
 		Ref<Shader> cubemapConvolutionShader;
+		Ref<Shader> prefilterShader;
+		Ref<Shader> brdfLUTShader;
 		Ref<Shader> skyboxShader;
 		Ref<Shader> mainShader;
 		Ref<Shader> mainShaderAnimated;
@@ -480,6 +482,9 @@ namespace OP
 
 		Ref<RenderPass> cubemapCaptureRenderPass;
 		Ref<RenderPass> irradianceMapGenerationRenderPass;
+		Ref<RenderPass> prefilterGenerationRenderPass;
+		Ref<RenderPass> brdfLUTGenerationPass;
+
 		Ref<RenderPass> depthRenderPass;
 		Ref<RenderPass> pointLightDepthRenderPass;
 		Ref<PingPongRenderPass> depthBlurDSLRenderPass;
@@ -492,6 +497,10 @@ namespace OP
 
 		Ref<MaterialInstance> defaultPbrMaterialInstance;
 
+
+		// TESTTT
+		uint32_t prefilterMap;
+
 	};
 
 
@@ -499,22 +508,25 @@ namespace OP
 
 	void SceneRenderer::Init(float width, float height, Ref<Framebuffer> fB)
 	{
+		glEnable(GL_DITHER);
 		glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 
-		s_SceneRendererData.cubemap = ResourceManager::GetHdrTexture("snow_field_4k");
+		s_SceneRendererData.cubemap = ResourceManager::GetHdrTexture("solitude_night_4k");
 		s_SceneRendererData.equirectangularToCubeMapShader = ResourceManager::GetShader("EquirectangularToCubemap.glsl");
 		s_SceneRendererData.skyboxShader = ResourceManager::GetShader("SimpleSkybox.glsl");
 
 		glDepthFunc(GL_LEQUAL);
 		
 		s_SceneRendererData.skybox = Skybox::Create();
+		s_SceneRendererData.plane = Plane::Create();
+		s_SceneRendererData.quad = Quad::Create();
 
 		// Framebuffer for cubemap capture
 		s_SceneRendererData.CubemapCaptureUniformBuffer = UniformBuffer::Create(sizeof(SceneRendererData::CubemapCaptureViewData), 0);
 		FramebufferSpecification cubemapCFSpec;
 		cubemapCFSpec.Attachments = { FramebufferTextureFormat::CUBEMAP, FramebufferTextureFormat::CUBEMAP_DEPTH };
-		cubemapCFSpec.Width = 512;
-		cubemapCFSpec.Height = 512;
+		cubemapCFSpec.Width = 4096;
+		cubemapCFSpec.Height = 4096;
 
 		s_SceneRendererData.cubemapCaptureRenderPass = RenderPass::Create(std::string("Cubemap Capture Pass"), cubemapCFSpec, s_SceneRendererData.equirectangularToCubeShader);
 
@@ -528,6 +540,10 @@ namespace OP
 
 				s_SceneRendererData.equirectangularToCubeMapShader->Bind();
 				glBindTextureUnit(0, s_SceneRendererData.cubemap->GetRendererID());
+
+				uint32_t ditheringTex = ResourceManager::GetTexture("BayerMatrixDithering")->GetRendererID();
+				glBindTextureUnit(1, ditheringTex);
+
 				s_SceneRendererData.equirectangularToCubeMapShader->SetMat4(0, captureProjection);
 
 				glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
@@ -538,25 +554,102 @@ namespace OP
 			}
 		);
 
-
+		glBindTexture(GL_TEXTURE_CUBE_MAP, s_SceneRendererData.cubemapCaptureRenderPass->GetColorAttachment(0));
+		glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
 
 		s_SceneRendererData.cubemapConvolutionShader = ResourceManager::GetShader("CubemapConvolution.glsl");
 		// Framebuffer for generating irradiance map
 		FramebufferSpecification irradianceCFSpec;
 		irradianceCFSpec.Attachments = { FramebufferTextureFormat::CUBEMAP, FramebufferTextureFormat::CUBEMAP_DEPTH };
-		irradianceCFSpec.Width = 2;
-		irradianceCFSpec.Height = 2;
+		irradianceCFSpec.Width = 32;
+		irradianceCFSpec.Height = 32;
 
 		s_SceneRendererData.irradianceMapGenerationRenderPass = RenderPass::Create(std::string("Irradiance Map Generation Pass"), irradianceCFSpec, s_SceneRendererData.cubemapConvolutionShader);
 
 		s_SceneRendererData.irradianceMapGenerationRenderPass->InvokeCommands(
 			[&]() -> void {
 				glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-				s_SceneRendererData.equirectangularToCubeMapShader->Bind();
+				s_SceneRendererData.cubemapConvolutionShader->Bind();
 				uint32_t environmentMap = s_SceneRendererData.cubemapCaptureRenderPass->GetColorAttachment(0);
+
+				uint32_t ditheringTex = ResourceManager::GetTexture("BayerMatrixDithering")->GetRendererID();
+				glBindTextureUnit(1, ditheringTex);
+
 				glBindTextureUnit(0, environmentMap);
+				s_SceneRendererData.cubemapConvolutionShader->SetMat4(0, captureProjection);
 				// ------------ DRAW SCENE ------------
 				s_SceneRendererData.skybox->Draw();
+				// ---------- DRAW SCENE END ----------
+
+			}
+		);
+
+
+		// ----------------------- TEST ----------------------------- //
+		s_SceneRendererData.prefilterShader = ResourceManager::GetShader("PbrPreFilter.glsl");
+
+
+		// Framebuffer for generating prefilter map
+		FramebufferSpecification prefilterFSpec;
+		prefilterFSpec.Attachments = { FramebufferTextureFormat::CUBEMAP_MIP, FramebufferTextureFormat::CUBEMAP_DEPTH_RBO };
+		prefilterFSpec.Width = 128;
+		prefilterFSpec.Height = 128;
+
+		s_SceneRendererData.prefilterGenerationRenderPass = RenderPass::Create(std::string("Prefilter Generation Pass"), prefilterFSpec, s_SceneRendererData.prefilterShader);
+
+		s_SceneRendererData.prefilterGenerationRenderPass->InvokeCommands(
+			[&]() -> void {
+				s_SceneRendererData.prefilterShader->Bind();
+				uint32_t environmentMap = s_SceneRendererData.cubemapCaptureRenderPass->GetColorAttachment(0);
+				glBindTextureUnit(0, environmentMap);
+				uint32_t ditheringTex = ResourceManager::GetTexture("BayerMatrixDithering")->GetRendererID();
+				glBindTextureUnit(1, ditheringTex);
+
+				s_SceneRendererData.prefilterShader->SetMat4(0, captureProjection);
+				uint32_t maxMipLevels = 5;
+				for (uint32_t mip = 0; mip < maxMipLevels; mip++)
+				{
+					uint32_t mipWidth  = static_cast<unsigned int>(prefilterFSpec.Width * std::pow(0.5, mip));
+					uint32_t mipHeight = static_cast<unsigned int>(prefilterFSpec.Height * std::pow(0.5, mip));
+					s_SceneRendererData.prefilterGenerationRenderPass->GetFramebuffer()->Resize(mipWidth, mipHeight);
+					glViewport(0, 0, mipWidth, mipHeight);
+
+					float roughness = (float)mip / (float)(maxMipLevels - 1);
+					s_SceneRendererData.prefilterShader->SetFloat(1, roughness);
+					for (uint32_t i = 0; i < 6; i++)
+					{
+						glm::mat4 view = s_SceneRendererData.CubemapCaptureBuffer.CaptureViews[i];
+						s_SceneRendererData.prefilterShader->SetMat4(2, view);
+						uint32_t tex = s_SceneRendererData.prefilterGenerationRenderPass->GetFramebuffer()->GetColorAttachmentRendererID(0);
+						glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
+							tex, mip);
+						glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+						// ------------ DRAW SCENE ------------
+						s_SceneRendererData.skybox->Draw();
+						// ---------- DRAW SCENE END ----------
+					}
+				}
+			}
+		);
+
+		s_SceneRendererData.brdfLUTShader = ResourceManager::GetShader("BrdfLUT.glsl");
+
+		// Framebuffer for generating irradiance map
+		FramebufferSpecification brdfLUTFSpec;
+		brdfLUTFSpec.Attachments = { FramebufferTextureFormat::RGBA32F, FramebufferTextureFormat::Depth };
+		brdfLUTFSpec.Width = 512;
+		brdfLUTFSpec.Height = 512;
+
+		s_SceneRendererData.brdfLUTGenerationPass = RenderPass::Create(std::string("BRDF LUT Generation Pass"), brdfLUTFSpec, s_SceneRendererData.brdfLUTShader);
+
+		s_SceneRendererData.brdfLUTGenerationPass->InvokeCommands(
+			[&]() -> void {
+				s_SceneRendererData.brdfLUTShader->Bind();
+				glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+				glDisable(GL_DEPTH_TEST);
+				// ------------ DRAW SCENE ------------
+				s_SceneRendererData.plane->Draw();
+				glEnable(GL_DEPTH_TEST);
 				// ---------- DRAW SCENE END ----------
 
 			}
@@ -1019,6 +1112,15 @@ namespace OP
 				uint32_t environmentMap = s_SceneRendererData.irradianceMapGenerationRenderPass->GetColorAttachment(0);
 				glBindTextureUnit(2, environmentMap);
 
+				uint32_t prefilterMap = s_SceneRendererData.prefilterGenerationRenderPass->GetColorAttachment(0);
+				glBindTextureUnit(3, prefilterMap);
+
+				uint32_t brdfLUT = s_SceneRendererData.brdfLUTGenerationPass->GetColorAttachment(0);
+				glBindTextureUnit(4, brdfLUT);
+
+				uint32_t ditheringTex = ResourceManager::GetTexture("BayerMatrixDithering")->GetRendererID();
+				glBindTextureUnit(5, ditheringTex);
+
 				auto meshes = scene->m_Registry.group<MeshComponent>(entt::get<TransformComponent>);
 				for (auto mesh : meshes)
 				{
@@ -1057,8 +1159,10 @@ namespace OP
 				glCullFace(GL_FRONT);
 				s_SceneRendererData.skyboxShader->Bind();
 
-				environmentMap = s_SceneRendererData.irradianceMapGenerationRenderPass->GetColorAttachment(0);
+				environmentMap = s_SceneRendererData.cubemapCaptureRenderPass->GetColorAttachment(0);
 				glBindTextureUnit(0, environmentMap);
+
+
 				s_SceneRendererData.skybox->Draw();
 				glCullFace(GL_BACK);
 				/*s_SceneRendererData.equirectangularToCubeShader->Bind();
@@ -1079,7 +1183,7 @@ namespace OP
 				// ---------- DRAW SCENE END ----------
 
 				/*s_SceneRendererData.depthDebugShader->Bind();
-				uint32_t depthMapDbg = depthMap;
+				uint32_t depthMapDbg = s_SceneRendererData.brdfLUTGenerationPass->GetColorAttachment(0);
 
 				glBindTextureUnit(1, depthMapDbg);
 				glDisable(GL_DEPTH_TEST);
@@ -1089,7 +1193,7 @@ namespace OP
 				s_SceneRendererData.TransformBuffer.Model = model;
 				s_SceneRendererData.TransformUniformBuffer->SetData(&s_SceneRendererData.TransformBuffer, sizeof(SceneRendererData::TransformData));
 				s_SceneRendererData.plane->Draw();
-				glEnable(GL_DEPTH_TEST);*/
+				glEnable(GL_DEPTH_TEST); */
 				// ---------- DRAW SCENE END ----------
 			}
 		);

@@ -31,6 +31,8 @@ namespace OP
 		// For skyboxes - cubemaps
 		CUBEMAP,
 		CUBEMAP_DEPTH,
+		CUBEMAP_MIP,
+		CUBEMAP_DEPTH_RBO,
 		// Default
 		Depth = DEPTH24STENCIL8
 	};

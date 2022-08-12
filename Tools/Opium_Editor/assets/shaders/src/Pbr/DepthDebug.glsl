@@ -43,7 +43,7 @@ struct VS_OUT
 	vec2 TexCoords;
 };
 
-layout (binding = 1) uniform sampler2DArray u_ShadowMapDirSpot;
+layout (binding = 1) uniform sampler2D u_ShadowMapDirSpot;
 
 layout (location = 0) in VS_OUT fs_in;
 
@@ -53,6 +53,6 @@ layout (location = 0) in VS_OUT fs_in;
 
 void main()
 {
-    float val = texture(u_ShadowMapDirSpot, vec3(fs_in.TexCoords, 0)).x;
-	FragColor = vec4(vec3(val), 1.0);
+    vec3 val = texture(u_ShadowMapDirSpot, fs_in.TexCoords).xyz;
+	FragColor = vec4(val, 1.0);
 }

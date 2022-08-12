@@ -31,6 +31,7 @@ namespace OP
 		virtual void GetSize(float& x, float &y) override;
 	private:
 		uint32_t m_RendererID = 0;
+		uint32_t m_RenderBufferID = 0;
 		FramebufferSpecification m_Specification;
 
 

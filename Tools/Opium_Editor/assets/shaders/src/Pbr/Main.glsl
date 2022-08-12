@@ -71,10 +71,6 @@ struct VS_OUT
 
 layout (location = 0) in VS_OUT fs_in;
 
-layout (binding = 0) uniform sampler2DArray u_ShadowMapDirSpot;
-layout (binding = 1) uniform samplerCubeArray u_ShadowMapPoint;
-layout (binding = 2) uniform samplerCube u_IrradianceMap;
-
 layout (location = 0) uniform float u_Roughness;
 layout (location = 1) uniform float u_Metalness;
 layout (location = 2) uniform vec3 u_Albedo;
@@ -82,12 +78,20 @@ layout (location = 3) uniform float u_TilingFactor;
 layout (location = 4) uniform float u_HeightFactor;
 layout (location = 5) uniform int u_ClipBorder;
 
-layout (binding = 3) uniform sampler2D u_albedoMap;
-layout (binding = 4) uniform sampler2D u_RoughnessMap;
-layout (binding = 5) uniform sampler2D u_MetalnessMap;
-layout (binding = 6) uniform sampler2D u_AoMap;
-layout (binding = 7) uniform sampler2D u_NormalMap;
-layout (binding = 8) uniform sampler2D u_HeightMap;
+// TEXTURES
+layout (binding = 0) uniform sampler2DArray u_ShadowMapDirSpot;
+layout (binding = 1) uniform samplerCubeArray u_ShadowMapPoint;
+layout (binding = 2) uniform samplerCube u_IrradianceMap;
+layout (binding = 3) uniform samplerCube u_PrefilterMap;
+layout (binding = 4) uniform sampler2D u_BrdfLUT;
+layout (binding = 5) uniform sampler2D u_BayerDithering;
+
+layout (binding = 6) uniform sampler2D u_albedoMap;
+layout (binding = 7) uniform sampler2D u_RoughnessMap;
+layout (binding = 8) uniform sampler2D u_MetalnessMap;
+layout (binding = 9) uniform sampler2D u_AoMap;
+layout (binding = 10) uniform sampler2D u_NormalMap;
+layout (binding = 11) uniform sampler2D u_HeightMap;
 // ------------- GLOBAL VARIABLES ------------- //
 #include GlobalVariables.glsl
 // -------------- UNIFORM BUFFERS ------------- //
@@ -123,6 +127,8 @@ void main()
 	vec3 normal = texture(u_NormalMap, texCoords * u_TilingFactor).rgb;
 	normal = normalize(normal * 2.0 - 1.0);
 	normal = normalize(fs_in.TBN * normal);
+
+	vec3 reflectionVec = normalize(reflect(-viewDir, normal)); 
 
 	vec3 F0 = vec3(0.04);
 	F0 = mix(F0, color, metalness);
@@ -252,15 +258,25 @@ void main()
 
 	}
 
-	vec3 kS = FresnelSchlick(max(dot(normal, viewDir), 0.0), F0); 
+	vec3 kS = FresnelSchlickRoughness(max(dot(normal, viewDir), 0.0), F0, roughness); 
 	vec3 kD = 1.0 - kS;
 	kD *= 1.0 - metalness;
+
 	vec3 irradiance = texture(u_IrradianceMap, normal).rgb;
 	vec3 diffuse    = irradiance * color;
-	vec3 ambient    = (kD * diffuse) * ao; 
+
+	// sample both pre-filter map and the BRDF lut and combine them together as per the split-sum approximation to get the IBL specular part
+	const float MAX_REFLECTION_LOD = 4.0;
+	vec3 prefilteredColor = textureLod(u_PrefilterMap, reflectionVec, roughness * MAX_REFLECTION_LOD).rgb;
+	vec2 brdf = texture(u_BrdfLUT, vec2(max(dot(normal, viewDir), 0.0), roughness)).rg;
+	vec3 specular = prefilteredColor * (kS * brdf.x + brdf.y);
+
+	vec3 ambient    = (kD * diffuse + specular) * ao; 
 	//vec3 ambient = vec3(0.03) * color * ao;
 
 	vec3 lighting    =  (ambient + Lo);
 
 	FragColor = vec4(lighting, 1.0);
+
+	FragColor += vec4(texture(u_BayerDithering, gl_FragCoord.xy / 8.0).r / 64.0 - (1.0 / 128.0));
 }

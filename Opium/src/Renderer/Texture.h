@@ -5,6 +5,25 @@
 
 namespace OP
 {
+
+	enum class TextureFilter
+	{
+		TEX_LINEAR,
+		TEX_NEAREST
+	};
+
+	enum class TextureDataFormat
+	{
+		TEX_RGB,
+		TEX_R
+	};
+
+	enum class TextureInternalDataFormat
+	{
+		TEX_RGB16,
+		TEX_UNSIGNED_BYTE
+	};
+
 	class Texture
 	{
 	public:
@@ -31,6 +50,7 @@ namespace OP
 		static Ref<Texture2D> Create(uint32_t width, uint32_t height, unsigned char* data, int channels);
 		static Ref<Texture2D> Create(uint32_t width, uint32_t height, std::string name);
 		static Ref<Texture2D> Create(uint32_t width, uint32_t height);
+		static Ref<Texture2D> Create(uint32_t width, uint32_t height, TextureFilter filter, unsigned char* data);
 		static Ref<Texture2D> Create(const std::string& path);
 
 	};

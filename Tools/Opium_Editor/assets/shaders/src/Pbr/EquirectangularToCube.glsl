@@ -65,5 +65,8 @@ void main()
 	vec2 uv = SampleSphericalMap(normalize(fs_in.LocalPosition));
 	vec3 color = texture(u_EquirectangularMap, uv).rgb;
 
-	FragColor = vec4(color, 1.0);
+	// reinhard tone mapping
+    vec3 mapped = color / (color + vec3(1.0));
+
+	FragColor = vec4(mapped, 1.0);
 }

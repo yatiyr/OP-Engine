@@ -81,6 +81,7 @@ layout (location = 1) in GS_OUT fs_in;
 // ---------------------------------------------- //
 
 layout (binding = 0) uniform sampler2D u_EquirectangularMap;
+layout (binding = 1) uniform sampler2D u_BayerDithering;
 
 const vec2 invAtan = vec2(0.1591, 0.3183);
 
@@ -95,7 +96,29 @@ vec2 SampleSphericalMap(vec3 v)
 void main()
 {
 	vec2 uv = SampleSphericalMap(normalize(fs_in.WorldPos));
-	vec3 color = texture(u_EquirectangularMap, uv).rgb;
+
+	vec3 firstColor = texture(u_EquirectangularMap, uv).rgb;
+	vec3 color = firstColor;
+
+	vec4 intermediateCol = vec4(color, 1.0);
+	intermediateCol += vec4(texture(u_BayerDithering, gl_FragCoord.xy / 8.0).r / 128.0 - (1.0 / 128.0));
+
+	color = vec3(intermediateCol);
+
+	// luma based reinhard tone mapping
+	float luma = dot(color, vec3(0.2126, 0.7152, 0.0722));
+	float toneMappedLuma = luma / (1.0 + luma);
+	color *= toneMappedLuma / luma;
+    
+	
+	if(isnan(color.x))
+		color.x = 0.999;
+
+	if(isnan(color.y))
+		color.y = 0.999;
+
+	if(isnan(color.z))
+		color.z = 0.999;
 
 	FragColor = vec4(color, 1.0);
 }

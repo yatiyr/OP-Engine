@@ -813,12 +813,12 @@ namespace OP
 
 				for (auto& [name, val] : instance->Float2s)
 				{
-					ImGui::DragFloat2(name.c_str(), glm::value_ptr(val));
+					ImGui::DragFloat2(name.c_str(), glm::value_ptr(val), 0.001f, 0.000, 100.0);
 				}
 
 				for (auto& [name, val] : instance->Floats)
 				{
-					ImGui::DragFloat(name.c_str(), &val);
+					ImGui::DragFloat(name.c_str(), &val, 0.001f, 0.000, 100.0);
 				}
 
 				for (auto& [name, val] : instance->Ints)

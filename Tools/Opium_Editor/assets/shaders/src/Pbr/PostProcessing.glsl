@@ -43,6 +43,12 @@ layout (binding = 0) uniform sampler2D u_Image;
 #include UniformBuffers.glsl
 // -------------------------------------------- //
 
+const highp float NOISE_GRANULARITY = 0.5/255.0;
+
+highp float random(highp vec2 coords) {
+   return fract(sin(dot(coords.xy, vec2(12.9898,78.233))) * 43758.5453);
+}
+
 void main()
 {
 	const float gamma = 2.2;
@@ -57,6 +63,8 @@ void main()
 	// gamma correction
 	if(u_Hdr)
 		mapped = pow(mapped, vec3(1.0 / ( gamma)));
+
+	mapped += mix(-NOISE_GRANULARITY, NOISE_GRANULARITY, random(fs_in.TexCoords));
 
 	FragColor = vec4(mapped, 1.0);
 }

@@ -55,6 +55,12 @@ namespace OP
 			glBindTexture(GL_TEXTURE_CUBE_MAP_ARRAY, id);
 		}
 
+		static void RenderbufferResize(uint32_t id, uint32_t width, uint32_t height)
+		{
+			glBindRenderbuffer(GL_RENDERBUFFER, id);
+			glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, width, height);
+		}
+
 		static void AttachColorTexture(uint32_t id, int samples, GLenum internalFormat, GLenum format, uint32_t width, uint32_t height, int index)
 		{
 			bool multisampled = samples > 1;
@@ -134,14 +140,30 @@ namespace OP
 
 		static void AttachCubemap(uint32_t id, uint32_t width, uint32_t height, bool isDepth)
 		{
+			//for (unsigned int i = 0; i < 6; ++i)
+			//{
+			//	glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, isDepth ? GL_DEPTH_COMPONENT24 : GL_RGB32F, width, height, 0, GL_RGB, GL_FLOAT, nullptr);
+			//}
 			glTexStorage2D(GL_TEXTURE_CUBE_MAP, 1, isDepth ? GL_DEPTH_COMPONENT24 : GL_RGB16F, width, height);
 			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-			glGenerateMipmap(id);
 			glFramebufferTexture(GL_FRAMEBUFFER, isDepth ? GL_DEPTH_ATTACHMENT : GL_COLOR_ATTACHMENT0, id, 0);
+
+		}
+
+		static void AttachCubemap_MIP(uint32_t id, uint32_t width, uint32_t height)
+		{
+			glTexStorage2D(GL_TEXTURE_CUBE_MAP, 5, GL_RGB16F, width, height);
+			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+			glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
+			//glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, id, 0);
 
 		}
 
@@ -203,6 +225,7 @@ namespace OP
 				case FramebufferTextureFormat::SHADOWMAP_ARRAY_DEPTH: return true;
 				case FramebufferTextureFormat::CUBEMAP_ARRAY_DEPTH: return true;
 				case FramebufferTextureFormat::CUBEMAP_DEPTH: return true;
+				case FramebufferTextureFormat::CUBEMAP_DEPTH_RBO: return true;
 			}
 
 			return false;
@@ -295,6 +318,12 @@ namespace OP
 				Utils::AttachCubemap(m_ColorAttachments[0], m_Specification.Width, m_Specification.Height, false);
 
 			}
+			else if (m_ColorAttachmentSpecifications.size() == 1 && m_ColorAttachmentSpecifications[0].TextureFormat == FramebufferTextureFormat::CUBEMAP_MIP)
+			{
+				Utils::CreateCubemap(&m_ColorAttachments[0], 1);
+				Utils::BindCubemap(m_ColorAttachments[0]);
+				Utils::AttachCubemap_MIP(m_ColorAttachments[0], m_Specification.Width, m_Specification.Height);
+			}
 			else
 			{
 				Utils::CreateTextures(multisample, m_ColorAttachments.data(), m_ColorAttachments.size());
@@ -348,6 +377,12 @@ namespace OP
 					Utils::CreateTextureArray(&m_DepthAttachment, 1);
 					Utils::BindTextureArray(m_DepthAttachment);
 					Utils::AttachArrayShadowMap_Dir_Spot(m_DepthAttachment, m_Specification.Samples, m_Specification.Width, m_Specification.Height, m_DepthAttachmentSpecification.layerCount);
+					break;
+				case FramebufferTextureFormat::CUBEMAP_DEPTH_RBO:
+					glGenRenderbuffers(1, &m_RenderBufferID);
+					glBindRenderbuffer(GL_RENDERBUFFER, m_RenderBufferID);
+					glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, m_Specification.Width, m_Specification.Height);
+					glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_RenderBufferID);
 					break;
 			}
 		}
@@ -412,7 +447,10 @@ namespace OP
 		}
 		m_Specification.Width = width;
 		m_Specification.Height = height;
-		Invalidate();
+		if (m_RenderBufferID == 0)
+			Invalidate();
+		else
+			Utils::RenderbufferResize(m_RenderBufferID, width, height);
 	}
 	
 	int OpenGLFramebuffer::ReadPixel(uint32_t attachmentIndex, int x, int y)
