@@ -278,5 +278,5 @@ void main()
 
 	FragColor = vec4(lighting, 1.0);
 
-	FragColor += vec4(texture(u_BayerDithering, gl_FragCoord.xy / 8.0).r / 64.0 - (1.0 / 128.0));
+	FragColor += vec4(vec3(texture(u_BayerDithering, gl_FragCoord.xy / 8.0).r / 64.0 - (1.0 / 128.0)), 0.0);
 }
