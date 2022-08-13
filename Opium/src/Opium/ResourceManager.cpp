@@ -21,6 +21,8 @@
 #include <stb_image.h>
 #include <tinyexr.h>
 
+#include <Renderer/EnvironmentMap.h>
+
 namespace OP
 {
 
@@ -31,7 +33,7 @@ namespace OP
 		std::unordered_map<uint32_t, Ref<Model>> Models;
 		std::unordered_map<uint32_t, Ref<Material>> Materials;
 
-		std::unordered_map<uint32_t, Ref<Texture>> HdrTextures;
+		std::unordered_map<uint32_t, Ref<EnvironmentMap>> EnvironmentMaps;
 		std::unordered_map<uint32_t, Ref<Texture>> Textures;
 
 		std::unordered_map<uint32_t, Ref<Shader>> Shaders;
@@ -129,10 +131,10 @@ namespace OP
 		return s_ResourceManagerData.Textures[modelHandle];
 	}
 
-	Ref<Texture> ResourceManager::GetHdrTexture(std::string name)
+	Ref<EnvironmentMap> ResourceManager::GetEnvironmentMap(std::string name)
 	{
 		uint32_t modelHandle = s_ResourceManagerData.StringLookupTable[name];
-		return s_ResourceManagerData.HdrTextures[modelHandle];
+		return s_ResourceManagerData.EnvironmentMaps[modelHandle];
 	}
 
 	Ref<Material> ResourceManager::GetMaterial(std::string name)
@@ -181,10 +183,8 @@ namespace OP
 
 					Ref<Model> model = Model::Create(scene->mRootNode, scene);
 
-					s_ResourceManagerData.StringLookupTable[entryPath.stem().string()] = s_ResourceManagerData.counter;
-					s_ResourceManagerData.Models[s_ResourceManagerData.counter] = model;
-
-					s_ResourceManagerData.counter++;
+					uint32_t id = Allocate(entryPath.stem().string());
+					s_ResourceManagerData.Models[id] = model;
 
 					modelFile.close();
 
@@ -454,7 +454,7 @@ namespace OP
 
 
 			// Load Textures from filesystem
-			LoadHdrTextures(texturePath);
+			LoadEnvironmentMaps(texturePath);
 			LoadTextures(texturePath);
 
 
@@ -487,6 +487,11 @@ namespace OP
 		return s_ResourceManagerData.Meshes;
 	}
 
+	const std::unordered_map<uint32_t, Ref<EnvironmentMap>>& ResourceManager::GetEnvironmentMaps()
+	{
+		return s_ResourceManagerData.EnvironmentMaps;
+	}
+
 	int ResourceManager::LoadMaterials(std::filesystem::path materialsFilePath)
 	{
 		OP_ENGINE_WARN("\tLoading Materials");
@@ -509,16 +514,24 @@ namespace OP
 		return 0;
 	}
 
-	int ResourceManager::LoadHdrTextures(std::filesystem::path texturesFilePath)
+	int ResourceManager::LoadEnvironmentMaps(std::filesystem::path environmentMapsFilepath)
 	{
 		uint32_t count = 0;
-		OP_ENGINE_WARN("\tLoading Hdr Textures");
+		OP_ENGINE_WARN("\tLoading Environment Maps");
+
+
+		EnvironmentMapSpec eMSpec;
+		eMSpec.CubemapCaptureShader = ResourceManager::GetShader("EquirectangularToCubemap.glsl");
+		eMSpec.IrradianceMapGenerationShader = ResourceManager::GetShader("CubemapConvolution.glsl");
+		eMSpec.PrefilterGenerationShader = ResourceManager::GetShader("PbrPreFilter.glsl");
+		eMSpec.BrdfLUTGenerationShader = ResourceManager::GetShader("BrdfLUT.glsl");
+		eMSpec.SkyboxShader = ResourceManager::GetShader("SimpleSkybox.glsl");
 
 		try
 		{
 			stbi_set_flip_vertically_on_load(1);
 
-			for (const auto& entry : std::filesystem::recursive_directory_iterator(texturesFilePath))
+			for (const auto& entry : std::filesystem::recursive_directory_iterator(environmentMapsFilepath))
 			{
 				if (entry.is_regular_file())
 				{
@@ -527,10 +540,10 @@ namespace OP
 					{
 						int width, height, channels;
 						float* data = stbi_loadf(entryPath.string().c_str(), &width, &height, &channels, 0);
-						Ref<Texture> hdrTexture;
+						Ref<Texture> equirectangularTex;
 						if (data)
 						{
-							hdrTexture = Texture2D::CreateF(width, height, data, channels);
+							equirectangularTex = Texture2D::CreateF(width, height, data, channels);
 						}
 						else
 						{
@@ -538,9 +551,11 @@ namespace OP
 							continue;
 						}
 
-						s_ResourceManagerData.StringLookupTable[entryPath.stem().string()] = s_ResourceManagerData.counter;
-						s_ResourceManagerData.HdrTextures[s_ResourceManagerData.counter] = hdrTexture;
-						s_ResourceManagerData.counter++;
+						eMSpec.Name = entryPath.stem().string();
+						eMSpec.EquirectangularTex = equirectangularTex;
+
+						uint32_t id = Allocate(entryPath.stem().string());
+						s_ResourceManagerData.EnvironmentMaps[id] = EnvironmentMap::Create(eMSpec);
 						OP_ENGINE_INFO("\t\tFileName {0}", entryPath.filename());
 						count++;
 					}
@@ -598,7 +613,7 @@ namespace OP
 						}
 
 				
-						Ref<Texture> hdrTexture;
+						Ref<Texture> equirectangularTex;
 
 						// We assume that there are 3 channels
 						float* imageBuffer = new float[exr_image.width * exr_image.height * 3];
@@ -620,11 +635,13 @@ namespace OP
 							}
 						}
 
-						hdrTexture = Texture2D::CreateF(exr_image.width, exr_image.height, imageBuffer, 3);
+						equirectangularTex = Texture2D::CreateF(exr_image.width, exr_image.height, imageBuffer, 3);
 
-						s_ResourceManagerData.StringLookupTable[entryPath.stem().string()] = s_ResourceManagerData.counter;
-						s_ResourceManagerData.HdrTextures[s_ResourceManagerData.counter] = hdrTexture;
-						s_ResourceManagerData.counter++;
+						eMSpec.Name = entryPath.stem().string();
+						eMSpec.EquirectangularTex = equirectangularTex;
+
+						uint32_t id = Allocate(entryPath.stem().string());
+						s_ResourceManagerData.EnvironmentMaps[id] = EnvironmentMap::Create(eMSpec);
 						OP_ENGINE_INFO("\t\tFileName {0}", entryPath.filename());
 						count++;
 
@@ -637,7 +654,7 @@ namespace OP
 				}
 			}
 
-			OP_ENGINE_INFO("\t\tTotal number of processed Hdr Textures : {0}", count);
+			OP_ENGINE_INFO("\t\tTotal number of processed Environment Maps : {0}", count);
 		}
 		catch (const std::exception&)
 		{
@@ -682,9 +699,8 @@ namespace OP
 						continue;
 					}
 
-					s_ResourceManagerData.StringLookupTable[entryPath.stem().string()] = s_ResourceManagerData.counter;
-					s_ResourceManagerData.Textures[s_ResourceManagerData.counter] = texture;
-					s_ResourceManagerData.counter++;
+					uint32_t id = Allocate(entryPath.stem().string());
+					s_ResourceManagerData.Textures[id] = texture;
 
 					OP_ENGINE_INFO("\t\tFileName {0}", entryPath.filename());
 					count++;

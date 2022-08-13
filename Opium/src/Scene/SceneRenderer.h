@@ -32,6 +32,8 @@ namespace OP
 		static float* GetExposure();
 
 		static bool* GetHdr();
+
+		static void ChangeEnvironmentMap(std::string newMapName);
 	private:
 
 	};

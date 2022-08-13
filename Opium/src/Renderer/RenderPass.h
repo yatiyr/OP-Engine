@@ -14,7 +14,7 @@ namespace OP
 		RenderPass(std::string name, FramebufferSpecification spec);
 		RenderPass(std::string name, FramebufferSpecification spec, Ref<Shader> shader);
 		RenderPass(std::string name, Ref<Framebuffer> framebuffer);
-
+		~RenderPass();
 		// Color or depth?
 		// This might change and be Texture Class itself
 		virtual uint32_t GetColorAttachment(uint32_t index);
@@ -33,6 +33,7 @@ namespace OP
 		// Temp
 		Ref<Shader> m_Shader;
 
+		void FreeFramebuffer();
 
 		virtual void ResizeFramebuffer(uint32_t width, uint32_t height);
 

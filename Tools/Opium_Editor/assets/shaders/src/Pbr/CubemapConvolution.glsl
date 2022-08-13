@@ -110,7 +110,7 @@ void main()
 			// tangent space to world
 			vec3 sampleVec = tangentSample.x * right + tangentSample.y * up + tangentSample.z * N; 
 
-			irradiance += texture(u_Cubemap, sampleVec).rgb * cos(theta) * sin(theta);
+			irradiance += textureLod(u_Cubemap, sampleVec, 0.0).rgb * cos(theta) * sin(theta);
 			nrSamples++;
 		}
 	}

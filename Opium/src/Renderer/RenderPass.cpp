@@ -27,6 +27,11 @@ namespace OP
 		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 	}
 
+	RenderPass::~RenderPass()
+	{
+		//delete m_Framebuffer.get();
+	}
+
 	uint32_t RenderPass::GetColorAttachment(uint32_t index)
 	{
 		return m_Framebuffer->GetColorAttachmentRendererID(index);
@@ -70,6 +75,11 @@ namespace OP
 	Ref<RenderPass> RenderPass::Create(std::string name, Ref<Framebuffer> framebuffer)
 	{
 		return std::make_shared<RenderPass>(name, framebuffer);
+	}
+
+	void RenderPass::FreeFramebuffer()
+	{
+		m_Framebuffer->FreeFramebuffer();
 	}
 
 	void RenderPass::ResizeFramebuffer(uint32_t width, uint32_t height)

@@ -79,6 +79,8 @@ namespace OP
 		virtual void Bind() = 0;
 		virtual void BindNoResize() = 0;
 
+		virtual void FreeFramebuffer() = 0;
+
 		virtual void BindRead() = 0;
 		virtual void BindDraw() = 0;
 

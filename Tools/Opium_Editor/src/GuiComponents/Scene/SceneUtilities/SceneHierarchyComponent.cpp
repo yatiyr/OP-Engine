@@ -118,6 +118,39 @@ namespace OP
 
 			ImGui::DragFloat("Exposure", SceneRenderer::GetExposure(), 0.01f, 0.0f, 20.0f);
 			ImGui::Checkbox("Hdr", SceneRenderer::GetHdr());
+
+			std::unordered_map<uint32_t, Ref<EnvironmentMap>> envMaps = ResourceManager::GetEnvironmentMaps();
+			std::vector<std::string> envMapNames;
+			static int currentSelectedID = 0;
+
+			for (auto& [id, m] : envMaps)
+			{
+				std::string envMapName = ResourceManager::GetNameFromID(id);
+				envMapNames.push_back(envMapName);
+				//Ref<Mesh> mesh = m;
+			}
+
+			const char* comboPreviewValue = "belfast_sunset_4k";
+
+			if (ImGui::BeginCombo("Environment", comboPreviewValue, ImGuiComboFlags_PopupAlignLeft))
+			{
+				for (int i = 0; i < envMapNames.size(); i++)
+				{
+					const bool isSelected = (currentSelectedID == i);
+					if (ImGui::Selectable(envMapNames[i].c_str(), isSelected))
+					{
+						currentSelectedID = i;
+						SceneRenderer::ChangeEnvironmentMap(envMapNames[i]);
+					}
+
+					if (isSelected)
+					{
+						ImGui::SetItemDefaultFocus();
+					}
+				}
+				ImGui::EndCombo();
+			}
+
 		ImGui::End();
 		ImGui::PopStyleVar();
 	}

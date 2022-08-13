@@ -163,7 +163,7 @@ namespace OP
 			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 			glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
-			//glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, id, 0);
+			glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, id, 0);
 
 		}
 
@@ -410,6 +410,15 @@ namespace OP
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
+	}
+
+	void OpenGLFramebuffer::FreeFramebuffer()
+	{
+		glDeleteFramebuffers(1, &m_RendererID);
+		glDeleteTextures(m_ColorAttachments.size(), m_ColorAttachments.data());
+		glDeleteTextures(1, &m_DepthAttachment);
+
+		m_DepthAttachment = 0;
 	}
 
 	void OpenGLFramebuffer::Bind()

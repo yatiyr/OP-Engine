@@ -28,6 +28,8 @@
 #include <Geometry/Model.h>
 #include <Geometry/Skybox.h>
 
+#include <Utils/CSMHelpers.h>
+
 #define MAX_DIR_LIGHTS 2
 #define MAX_SPOT_LIGHTS 4
 #define MAX_CASCADE_SIZE 15
@@ -39,175 +41,6 @@
 namespace OP
 {
 
-	 
-	// ---------------------------- UTILITY FUNCTIONS ------------------------------------ //
-		
-		// ----------- CASCADED SHADOW MAPPING ------------ //
-
-			// Finds world coordinates of the frustum represented by
-			// the projection matrix
-			// We will use camera's projection matrix in this function
-			static std::vector<glm::vec4> GetFrustumCornerCoordinatesWorldSpace(const glm::mat4& projViewMatrix)
-			{
-				const glm::mat4 inv = glm::inverse(projViewMatrix);
-
-				std::vector<glm::vec4> frustumCoordinates;
-				for (uint32_t x = 0; x < 2; x++)
-				{
-					for (uint32_t y = 0; y < 2; y++)
-					{
-						for (uint32_t z = 0; z < 2; z++)
-						{
-							const glm::vec4 ndcPoint = inv * glm::vec4(2.0f * x - 1.0f,
-																	   2.0f * y - 1.0f,
-																	   2.0f * z - 1.0f,
-																	   1.0f);
-
-							// Perspective division
-							frustumCoordinates.push_back(ndcPoint / ndcPoint.w);
-						}
-					}
-				}
-
-				return frustumCoordinates;
-			}
-
-			// static std::vector<glm::vec4> GetFrustumCornerCoordinatesWorldSpace(const glm::mat4& projectionMatrix, const glm::mat4& view)
-			// {
-			//	return GetFrustomCornerCoordinatesWorldSpace(projectionMatrix * view);
-			// }
-
-			// We will get orthographic projection matrix which tightly overlaps the frustum part and
-			// view matrix of the light (light will be on the center of frustum)
-			static glm::mat4 GetLightLightSpaceMatrix(const glm::mat4& projectionMatrix, const glm::mat4& viewMatrix, const float nearPlane, const float farPlane, const glm::vec3& lightDir, const float zMult)
-			{
-
-				float left_, right_, bottom_, top_, near_, far_;
-
-				
-				Math::DecomposePerspectiveProj(projectionMatrix, left_, right_, bottom_, top_, near_, far_);
-
-				float fovy = 2 * std::atan2(top_, near_);
-				float aspectRatio = right_ / top_;
-
-				glm::mat4 newProjectionMatrix = glm::perspective(fovy, aspectRatio, nearPlane, farPlane);
-
-				std::vector<glm::vec4> frustumCornerCoordinates = GetFrustumCornerCoordinatesWorldSpace(newProjectionMatrix * viewMatrix);
-
-				// Calculate view matrix
-				glm::vec3 center = glm::vec3(0.0f, 0.0f, 0.0f);
-				for (const glm::vec4& coord : frustumCornerCoordinates)
-				{
-					center += glm::vec3(coord);
-				}
-				center /= frustumCornerCoordinates.size();
-
-				glm::vec3 controlledLightDir = lightDir;
-				if (controlledLightDir.x == 0.0 && controlledLightDir.z == 0.0)
-				{
-					controlledLightDir += glm::vec3(0.00001f, 0.0f, -0.00001f);
-				}
-				glm::mat4 lightView = glm::lookAt(center, center + controlledLightDir, glm::vec3(0.0f, 1.0f, 0.0f));
-
-				float minX = std::numeric_limits<float>::max();
-				float maxX = std::numeric_limits<float>::min();
-				float minY = std::numeric_limits<float>::max();
-				float maxY = std::numeric_limits<float>::min();
-				float minZ = std::numeric_limits<float>::max();
-				float maxZ = std::numeric_limits<float>::min();
-
-				// Determine box bounds by traversing frustum coordinates
-				for (const glm::vec4& coord : frustumCornerCoordinates)
-				{
-					const glm::vec4 coordAccordingToLight = lightView * coord;
-					minX = std::min(minX, coordAccordingToLight.x);
-					maxX = std::max(maxX, coordAccordingToLight.x);
-					minY = std::min(minY, coordAccordingToLight.y);
-					maxY = std::max(maxY, coordAccordingToLight.y);
-					minZ = std::min(minZ, coordAccordingToLight.z);
-					maxZ = std::max(maxZ, coordAccordingToLight.z);
-					
-					if (isnan(coordAccordingToLight.x) || isnan(coordAccordingToLight.y) || isnan(coordAccordingToLight.z))
-						OP_ENGINE_INFO("isnan!");
-				}
-
-				// Tune parameter
-				if (minZ < 0)
-					minZ *= zMult;
-				else
-					minZ /= zMult;
-				if (maxZ < 0)
-					maxZ /= zMult;
-				else
-					maxZ *= zMult;
-
-				const glm::mat4 lightProjection = glm::ortho(minX, maxX, minY, maxY, minZ, maxZ);
-
-				return lightProjection * lightView;
-			}
-
-			// This function gives cascaded levels according to a distFactor.
-			// The larger this factor is, further levels have much more far - near differences
-			// If distributionFactor is 1, then far plane is divided equally.
-			static std::vector<float> DistributeShadowCascadeLevels(uint32_t cascadeSize, float distFactor, float farPlane)
-			{
-				const uint32_t newPlaneSize = cascadeSize - 1;
-
-				std::vector<float> levels;
-
-				if (newPlaneSize == 0)
-				{
-					levels.push_back(farPlane);
-					return levels;
-				}
-
-				float unitSize = farPlane / std::pow(cascadeSize, distFactor);
-				levels.push_back(unitSize);
-
-				float prevSum = 1.0f;
-				for (uint32_t i = 2; i < newPlaneSize + 1; i++)
-				{
-					float newSum = std::pow(i, distFactor);
-					levels.push_back(unitSize * (newSum));
-					prevSum = newSum;
-				}
-				
-				return levels;
-			}
-
-
-			// It gives light space matrices for each cascade
-			std::vector<glm::mat4> getLightSpaceMatrices(const glm::mat4& projectionMatrix,
-				                                         const glm::mat4& viewMatrix,
-				                                         const std::vector<float>& cascadeLevels,
-				                                         const float nearPlane, const float farPlane,
-				                                         const glm::vec3& lightDir, const float zMult)
-			{
-				std::vector<glm::mat4> matrices;
-
-				for (uint32_t i = 0; i < cascadeLevels.size(); i++)
-				{
-					if (i == 0)
-					{
-						matrices.push_back(GetLightLightSpaceMatrix(projectionMatrix, viewMatrix, nearPlane, cascadeLevels[i], lightDir, zMult));
-					}
-					else
-					{
-						matrices.push_back(GetLightLightSpaceMatrix(projectionMatrix, viewMatrix, cascadeLevels[i - 1], cascadeLevels[i], lightDir, zMult));
-					}
-				}
-
-				if(cascadeLevels.size() > 1)
-					matrices.push_back(GetLightLightSpaceMatrix(projectionMatrix, viewMatrix, cascadeLevels[cascadeLevels.size() - 1], farPlane, lightDir, zMult));
-
-				return matrices;
-			}
-
-
-
-		// -------- END CASCADED SHADOW MAPPING ----------- //
-
-
 	struct SceneRendererData
 	{
 
@@ -218,23 +51,6 @@ namespace OP
 		// ------ END RENDER CONSTANTS --------- //
 
 		// ----------- UNIFORM BUFFERS --------- //
-
-			// cubemap capture
-			struct CubemapCaptureViewData
-			{
-				glm::mat4 CaptureViews[6] =
-				{							
-					glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
-					glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
-					glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f,  1.0f,  0.0f), glm::vec3(0.0f,  0.0f,  1.0f)),
-					glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f,  0.0f), glm::vec3(0.0f,  0.0f, -1.0f)),
-					glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f,  0.0f,  1.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
-					glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f,  0.0f, -1.0f), glm::vec3(0.0f, -1.0f,  0.0f))
-		
-				};
-			} CubemapCaptureBuffer;
-
-			Ref<UniformBuffer> CubemapCaptureUniformBuffer;
 
 			struct CameraData
 			{
@@ -398,17 +214,6 @@ namespace OP
 		Ref<UniformBuffer> PointLightUniformBuffer;
 		// ------------------------------------- //
 
-
-
-
-		struct LightData
-		{
-			glm::mat4 LightSpaceMatrix;
-			glm::vec3 LightDir;
-		} LightBuffer;
-
-		Ref<UniformBuffer> LightUniformBuffer;
-
 		// Needs an overhaul
 		struct MaterialData
 		{
@@ -418,19 +223,10 @@ namespace OP
 		Ref<UniformBuffer> MaterialUniformBuffer;
 
 
-
-
-		// ------------ OLD PART --------------- //
-
 		// CubemapTexture
 		Ref<Texture> cubemap;
 		
 		// Shaders
-		Ref<Shader> equirectangularToCubeMapShader;
-		Ref<Shader> cubemapConvolutionShader;
-		Ref<Shader> prefilterShader;
-		Ref<Shader> brdfLUTShader;
-		Ref<Shader> skyboxShader;
 		Ref<Shader> mainShader;
 		Ref<Shader> mainShaderAnimated;
 		Ref<Shader> depthShader;
@@ -443,9 +239,6 @@ namespace OP
 		Ref<Shader> postProcessingShader;
 
 
-		Ref<Shader> equirectangularToCubeShader;
-		// Ref<Texture2D> woodTexture;
-		Ref<Texture2D> WhiteTexture;
 
 		Ref<Cube> cube;
 		Ref<Plane> plane;
@@ -453,11 +246,6 @@ namespace OP
 		Ref<Skybox> skybox;
 		Ref<Model> animatedModel;
 
-		// Ref<Icosphere> icosphere2;
-
-
-		// Directional light
-		glm::vec3 lightPos{-2.0f, 10.0f, -1.0f};
 
 		glm::vec2 ViewportSize{0.0f, 0.0f};
 
@@ -468,25 +256,20 @@ namespace OP
 		Ref<Framebuffer> sampleResolveFramebuffer;
 
 
-		Ref<RenderPass> cubemapCaptureRenderPass;
-		Ref<RenderPass> irradianceMapGenerationRenderPass;
-		Ref<RenderPass> prefilterGenerationRenderPass;
-		Ref<RenderPass> brdfLUTGenerationPass;
-
 		Ref<RenderPass> depthRenderPass;
 		Ref<RenderPass> pointLightDepthRenderPass;
 		Ref<PingPongRenderPass> depthBlurDSLRenderPass;
 		Ref<RenderPass> finalRenderPass;
 		Ref<RenderPass> postProcessingPass;
 
-		// Temp
-		glm::mat4 spinningModel;
-		glm::vec3 spinningDir;
+
 
 		Ref<MaterialInstance> defaultPbrMaterialInstance;
 
 
-		// TESTTT
+
+
+
 		Ref<EnvironmentMap> environmentMap;
 
 	};
@@ -496,20 +279,23 @@ namespace OP
 
 	void SceneRenderer::Init(float width, float height, Ref<Framebuffer> fB)
 	{
-		//RenderCommand::Enable(MODE::DITHER);
-		//RenderCommand::Enable(MODE::TEXTURE_CUBE_MAP_SEAMLESS);
 
-		s_SceneRendererData.skyboxShader = ResourceManager::GetShader("SimpleSkybox.glsl");
-
-		EnvironmentMapSpec eMSpec;
+		/*/EnvironmentMapSpec eMSpec;
 		eMSpec.EquirectangularTex = ResourceManager::GetHdrTexture("neon_photostudio_4k");
 		eMSpec.CubemapCaptureShader = ResourceManager::GetShader("EquirectangularToCubemap.glsl");
 		eMSpec.IrradianceMapGenerationShader = ResourceManager::GetShader("CubemapConvolution.glsl");
 		eMSpec.PrefilterGenerationShader = ResourceManager::GetShader("PbrPreFilter.glsl");
 		eMSpec.BrdfLUTGenerationShader = ResourceManager::GetShader("BrdfLUT.glsl");
+		eMSpec.SkyboxShader = ResourceManager::GetShader("SimpleSkybox.glsl"); */
 
-		s_SceneRendererData.environmentMap = EnvironmentMap::Create(eMSpec);
+		s_SceneRendererData.environmentMap = ResourceManager::GetEnvironmentMap("belfast_sunset_4k");
+		s_SceneRendererData.environmentMap->GenerateMaps();
 
+
+		//s_SceneRendererData.environmentMap->FreeMemory();
+
+		//s_SceneRendererData.environmentMap = ResourceManager::GetEnvironmentMap("snow_field_4k");
+		//s_SceneRendererData.environmentMap->GenerateMaps();
 		
 		s_SceneRendererData.skybox = Skybox::Create();
 		s_SceneRendererData.plane = Plane::Create();
@@ -517,15 +303,6 @@ namespace OP
 
 
 
-		// ---------- TEMP ----------
-
-		s_SceneRendererData.spinningModel = glm::mat4(1.0f);
-		s_SceneRendererData.spinningModel = glm::translate(s_SceneRendererData.spinningModel, glm::vec3(-4.0f, 6.0f, 5.0f));
-		s_SceneRendererData.spinningModel = glm::scale(s_SceneRendererData.spinningModel, glm::vec3(1.0f, 1.0f, 1.0f));
-		s_SceneRendererData.LightBuffer.LightDir = glm::vec3(0.0f, -1.0f, 0.0f);
-
-		s_SceneRendererData.spinningDir = glm::normalize(glm::vec3(-1.0f, -1.0f, -0.0f));
-		// ---------------
 
 		RenderCommand::Enable(MODE::DEPTH_TEST);
 		RenderCommand::Enable(MODE::CULL_FACE);
@@ -545,7 +322,6 @@ namespace OP
 		s_SceneRendererData.pointLightDepthShaderAnimated = ResourceManager::GetShader("PointShadowMappingAnimated.glsl");
 		s_SceneRendererData.postProcessingShader = ResourceManager::GetShader("PostProcessing.glsl");
 		
-		s_SceneRendererData.equirectangularToCubeShader = ResourceManager::GetShader("EquirectangularToCube.glsl");
 
 		s_SceneRendererData.animatedModel = ResourceManager::GetModel("Swing Dancing");
 
@@ -574,10 +350,6 @@ namespace OP
 		s_SceneRendererData.ViewportSize.x = width;
 		s_SceneRendererData.ViewportSize.y = height;
 
-		// Create white texture
-		s_SceneRendererData.WhiteTexture = Texture2D::Create(1, 1);
-		uint32_t whiteTextureData = 0xffffffff;
-		s_SceneRendererData.WhiteTexture->SetData(&whiteTextureData, sizeof(uint32_t));
 
 		// Arrange Framebuffers
 
@@ -681,13 +453,20 @@ namespace OP
 		return &s_SceneRendererData.ToneMappingSettingsBuffer.hdr;
 	}
 
+	void SceneRenderer::ChangeEnvironmentMap(std::string newMapName)
+	{
+		Ref<EnvironmentMap> newMap = ResourceManager::GetEnvironmentMap(newMapName);
+		if (newMap.get())
+		{
+			s_SceneRendererData.environmentMap->FreeMemory();
+			newMap->GenerateMaps();
+			s_SceneRendererData.environmentMap = newMap;
+		}
+	}
+
 	void SceneRenderer::Render(EditorCamera& camera, Ref<Scene> scene, Timestep ts)
 	{
 
-		float time = (float)Application::Get().GetWindow().GetTime();
-		glm::mat3 rotationMatrix = glm::mat3(cos(0.001), sin(0.001), 0, -sin(0.001), cos(0.001f), 0, 0, 0, 1);
-		s_SceneRendererData.spinningDir = rotationMatrix * s_SceneRendererData.spinningDir;
-		s_SceneRendererData.spinningDir = glm::normalize(s_SceneRendererData.spinningDir);
 		// -------------------- CALCULATE CAMERA DATA -------------------------------- //
 			s_SceneRendererData.CameraBuffer.ViewProjection = camera.GetViewProjection();
 			s_SceneRendererData.CameraBuffer.ViewPos = camera.GetPosition();
@@ -723,9 +502,9 @@ namespace OP
 					s_SceneRendererData.DirLightsBuffer.DirLights[dirLightCounter].CascadeSize = dirLight.CascadeSize;
 					s_SceneRendererData.DirLightsBuffer.DirLights[dirLightCounter].FrustaDistFactor = dirLight.FrustaDistFactor;
 
-					std::vector<float> cascadeLevels = DistributeShadowCascadeLevels(dirLight.CascadeSize, dirLight.FrustaDistFactor, camera.GetFarClip() / 20);
+					std::vector<float> cascadeLevels = Utils::DistributeShadowCascadeLevels(dirLight.CascadeSize, dirLight.FrustaDistFactor, camera.GetFarClip() / 20);
 					OP_ENGINE_ASSERT(cascadeLevels <= MAX_CASCADE_SIZE);
-					std::vector<glm::mat4> matrices = getLightSpaceMatrices(cameraProjection, camera.GetViewMatrix(),
+					std::vector<glm::mat4> matrices = Utils::GetLightSpaceMatrices(cameraProjection, camera.GetViewMatrix(),
 						cascadeLevels, camera.GetNearClip(), camera.GetFarClip(),
 						lightDirection, s_SceneRendererData.zMult);
 
@@ -963,8 +742,6 @@ namespace OP
 
 				s_SceneRendererData.mainShader->Bind();
 
-				s_SceneRendererData.WhiteTexture->Bind(0);
-
 				uint32_t depthMap = s_SceneRendererData.depthBlurDSLRenderPass->GetColorAttachmentPP(0);
 				glBindTextureUnit(0, depthMap);
 				
@@ -1021,7 +798,9 @@ namespace OP
 					s_SceneRendererData.MaterialUniformBuffer->SetData(&s_SceneRendererData.MaterialBuffer, sizeof(SceneRendererData::MaterialData));*/
 				}
 
-				RenderCommand::DepthFunc(DEPTHFUNC::LEQUAL);
+				s_SceneRendererData.environmentMap->RenderSkybox();
+
+				/*RenderCommand::DepthFunc(DEPTHFUNC::LEQUAL);
 				// Render Skybox last
 				glCullFace(GL_FRONT);
 				s_SceneRendererData.skyboxShader->Bind();
@@ -1032,7 +811,7 @@ namespace OP
 
 				s_SceneRendererData.skybox->Draw();
 				glCullFace(GL_BACK);
-				RenderCommand::DepthFunc(DEPTHFUNC::LESS);
+				RenderCommand::DepthFunc(DEPTHFUNC::LESS); */
 				/*s_SceneRendererData.equirectangularToCubeShader->Bind();
 				glBindTextureUnit(1, s_SceneRendererData.cubemap->GetRendererID());
 				s_SceneRendererData.cube->Draw();*/

@@ -15,6 +15,8 @@
 
 #include <Renderer/RenderCommand.h>
 
+#include <string>
+
 namespace OP
 {
 
@@ -33,11 +35,13 @@ namespace OP
 
 	struct EnvironmentMapSpec
 	{
+		std::string Name;
 		Ref<Texture> EquirectangularTex;
 		Ref<Shader> CubemapCaptureShader;
 		Ref<Shader> IrradianceMapGenerationShader;
 		Ref<Shader> PrefilterGenerationShader;
 		Ref<Shader> BrdfLUTGenerationShader;
+		Ref<Shader> SkyboxShader;
 	};
 
 	class EnvironmentMap
@@ -58,9 +62,21 @@ namespace OP
 		void BindPrefilterMap(uint32_t slot);
 		void BindBrdfLUT(uint32_t slot);
 
+		void RenderSkybox();
+
+		std::string GetName();
+		void FreeMemory();
+
 		static Ref<EnvironmentMap> Create(EnvironmentMapSpec spec);
 	private:
+
+		void GenerateRenderPasses();
+
 		Ref<Texture> m_EquirectangularTex;
+		Ref<Texture> m_CubemapTex;
+		Ref<Texture> m_IrradianceTex;
+		Ref<Texture> m_PrefilterTex;
+		Ref<Texture> m_BrdfLUTTex;
 
 		Ref<UniformBuffer> m_CubemapCaptureUniformBuffer;
 
@@ -69,6 +85,7 @@ namespace OP
 		Ref<RenderPass> m_PrefilterGenerationRenderPass;
 		Ref<RenderPass> m_BrdfLUTGenerationPass;
 
+		Ref<Shader> m_SkyboxShader;
 		Ref<Shader> m_CubemapCaptureShader;
 		Ref<Shader> m_IrradianceMapGenerationShader;
 		Ref<Shader> m_PrefilterGenerationShader;
@@ -78,6 +95,8 @@ namespace OP
 
 		Ref<Skybox> m_Skybox;
 		Ref<Plane> m_Plane;
+
+		std::string m_Name;
 
 		glm::mat4 m_CaptureProjection = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 10.0f);
 	};

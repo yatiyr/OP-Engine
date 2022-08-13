@@ -11,6 +11,7 @@ namespace OP
 		virtual ~OpenGLFramebuffer();
 
 		void Invalidate();
+		virtual void FreeFramebuffer() override;
 
 		virtual void Bind() override;
 		virtual void BindRead() override;

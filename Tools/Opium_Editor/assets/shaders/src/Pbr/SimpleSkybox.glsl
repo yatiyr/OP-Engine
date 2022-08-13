@@ -59,7 +59,7 @@ layout (location = 0) in VS_OUT fs_in;
 void main()
 {
 
-	vec3 envColor = textureLod(u_EnvironmentMap, fs_in.LocalPosition, 1.2).rgb;
+	vec3 envColor = textureLod(u_EnvironmentMap, fs_in.LocalPosition, 0.0).rgb;
 
 	FragColor = vec4(envColor, 1.0);
 }

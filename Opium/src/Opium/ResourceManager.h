@@ -6,6 +6,9 @@
 
 #include <Renderer/Material.h>
 #include <Renderer/Texture.h>
+
+#include <Renderer/EnvironmentMap.h>
+
 namespace OP
 {
 
@@ -39,7 +42,7 @@ namespace OP
 		static Ref<Shader> GetShader(std::string name);
 		static Ref<Model> GetModel(std::string name);
 		static Ref<Texture> GetTexture(std::string name);
-		static Ref<Texture> GetHdrTexture(std::string name);
+		static Ref<EnvironmentMap> GetEnvironmentMap(std::string name);
 		static Ref<Material> GetMaterial(std::string name);
 
 		static int LoadModels(std::filesystem::path meshFilePath);
@@ -50,12 +53,12 @@ namespace OP
 		static int AddMesh();
 		static Ref<Mesh> GetMesh(std::string name);
 		static const std::unordered_map<uint32_t, Ref<Mesh>>& GetMeshMap();
-
+		static const std::unordered_map<uint32_t, Ref<EnvironmentMap>>& GetEnvironmentMaps();
 
 		static int LoadMaterials(std::filesystem::path materialsFilePath);
 
 		// Texture related functions
-		static int LoadHdrTextures(std::filesystem::path texturesFilePath);
+		static int LoadEnvironmentMaps(std::filesystem::path texturesFilePath);
 		static int LoadTextures(std::filesystem::path texturesFilePath);
 
 	private:

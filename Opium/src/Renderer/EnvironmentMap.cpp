@@ -7,70 +7,39 @@
 namespace OP
 {
 	EnvironmentMap::EnvironmentMap(EnvironmentMapSpec spec) :
+		m_Name(spec.Name),
 		m_EquirectangularTex(spec.EquirectangularTex),
 		m_CubemapCaptureShader(spec.CubemapCaptureShader),
 		m_IrradianceMapGenerationShader(spec.IrradianceMapGenerationShader),
 		m_PrefilterGenerationShader(spec.PrefilterGenerationShader),
-		m_BrdfLUTGenerationShader(spec.BrdfLUTGenerationShader)
+		m_BrdfLUTGenerationShader(spec.BrdfLUTGenerationShader),
+		m_SkyboxShader(spec.SkyboxShader)
 	{
+		
 		// Create UniformBuffer and Set Its Data
 		m_CubemapCaptureUniformBuffer = UniformBuffer::Create(sizeof(CubemapCaptureViewData), 0);
 		m_CubemapCaptureUniformBuffer->SetData(&m_CubemapCaptureBuffer, sizeof(CubemapCaptureViewData));
-		
 
 		// Initialize Geometry for Rendering
 		m_Skybox = Skybox::Create();
 		m_Plane = Plane::Create();
-		
-		
-		// ------------------ CUBEMAP CAPTURE RENDER PASS ---------------- //
-		FramebufferSpecification cubemapCFSpec;
-		cubemapCFSpec.Attachments = { FramebufferTextureFormat::CUBEMAP, FramebufferTextureFormat::CUBEMAP_DEPTH };
-		cubemapCFSpec.Width = 4096;
-		cubemapCFSpec.Height = 4096;
 
-		m_CubemapCaptureRenderPass = RenderPass::Create(std::string("Cubemap Capture Pass"),
-			cubemapCFSpec,
-			m_CubemapCaptureShader);
-		// -------------- IRRADIANCE MAP GENERATION PASS ------------------ //
-		FramebufferSpecification irradianceCFSpec;
-		irradianceCFSpec.Attachments = { FramebufferTextureFormat::CUBEMAP, FramebufferTextureFormat::CUBEMAP_DEPTH };
-		irradianceCFSpec.Width = 32;
-		irradianceCFSpec.Height = 32;
-
-		m_IrradianceMapGenerationRenderPass = RenderPass::Create(std::string("Irradiance Map Generation Pass"),
-			irradianceCFSpec,
-			m_IrradianceMapGenerationShader);
-		// -------------- PREFILTER GENERATION PASS ------------------------ //
-		FramebufferSpecification prefilterFSpec;
-		prefilterFSpec.Attachments = { FramebufferTextureFormat::CUBEMAP_MIP, FramebufferTextureFormat::CUBEMAP_DEPTH_RBO };
-		prefilterFSpec.Width = 128;
-		prefilterFSpec.Height = 128;
-
-		m_PrefilterGenerationRenderPass = RenderPass::Create(std::string("Prefilter Generation Pass"),
-			prefilterFSpec,
-			m_PrefilterGenerationShader);
-		// -------------- BRDF LUT GENERATION PASS -------------------------- //
-		FramebufferSpecification brdfLUTFSpec;
-		brdfLUTFSpec.Attachments = { FramebufferTextureFormat::RGBA32F, FramebufferTextureFormat::Depth };
-		brdfLUTFSpec.Width = 512;
-		brdfLUTFSpec.Height = 512;
-
-		m_BrdfLUTGenerationPass = RenderPass::Create(std::string("BRDF LUT Generation Pass"),
-			brdfLUTFSpec,
-			m_BrdfLUTGenerationShader);
-
-
-		GenerateMaps();
+		//GenerateMaps();
 
 	}
 
 	void EnvironmentMap::GenerateMaps()
 	{
+		RenderCommand::Disable(MODE::DEPTH_TEST);
+		RenderCommand::Disable(MODE::CULL_FACE);
+		FreeMemory();
+		GenerateRenderPasses();
 		GenerateEnvironmentCubemap();
 		GenerateIrradianceMap();
 		GeneratePrefilterMap();
 		GenerateBrdfLUT();
+		RenderCommand::Enable(MODE::DEPTH_TEST);
+		RenderCommand::Enable(MODE::CULL_FACE);
 	}
 
 	void EnvironmentMap::GenerateEnvironmentCubemap()
@@ -181,8 +150,90 @@ namespace OP
 		glBindTextureUnit(slot, brdfLUT);
 	}
 
+	void EnvironmentMap::RenderSkybox()
+	{
+		RenderCommand::DepthFunc(DEPTHFUNC::LEQUAL);
+		glCullFace(GL_FRONT);
+		m_SkyboxShader->Bind();
+		BindEnvironmentCubemap(0);
+		m_Skybox->Draw();
+		glCullFace(GL_BACK);
+		RenderCommand::DepthFunc(DEPTHFUNC::LESS);
+	}
+
+	std::string EnvironmentMap::GetName()
+	{
+		return m_Name;
+	}
+
 	Ref<EnvironmentMap> EnvironmentMap::Create(EnvironmentMapSpec spec)
 	{
 		return std::make_shared<EnvironmentMap>(spec);
 	}
+
+	void EnvironmentMap::FreeMemory()
+	{
+		if (m_CubemapCaptureRenderPass.get())
+		{
+			m_CubemapCaptureRenderPass->FreeFramebuffer();
+			m_CubemapCaptureRenderPass.reset();
+		}
+		if (m_IrradianceMapGenerationRenderPass.get())
+		{
+			m_IrradianceMapGenerationRenderPass->FreeFramebuffer();
+			m_IrradianceMapGenerationRenderPass.reset();
+		}
+		if (m_PrefilterGenerationRenderPass.get())
+		{
+			m_PrefilterGenerationRenderPass->FreeFramebuffer();
+			m_PrefilterGenerationRenderPass.reset();
+		}
+		if (m_BrdfLUTGenerationPass.get())
+		{
+			m_BrdfLUTGenerationPass->FreeFramebuffer();
+			m_BrdfLUTGenerationPass.reset();
+		}
+			
+	}
+
+	void EnvironmentMap::GenerateRenderPasses()
+	{
+		// ------------------ CUBEMAP CAPTURE RENDER PASS ---------------- //
+		FramebufferSpecification cubemapCFSpec;
+		cubemapCFSpec.Attachments = { FramebufferTextureFormat::CUBEMAP_MIP, FramebufferTextureFormat::CUBEMAP_DEPTH };
+		cubemapCFSpec.Width = 4096;
+		cubemapCFSpec.Height = 4096;
+
+		m_CubemapCaptureRenderPass = RenderPass::Create(std::string("Cubemap Capture Pass"),
+			cubemapCFSpec,
+			m_CubemapCaptureShader);
+		// -------------- IRRADIANCE MAP GENERATION PASS ------------------ //
+		FramebufferSpecification irradianceCFSpec;
+		irradianceCFSpec.Attachments = { FramebufferTextureFormat::CUBEMAP, FramebufferTextureFormat::CUBEMAP_DEPTH };
+		irradianceCFSpec.Width = 32;
+		irradianceCFSpec.Height = 32;
+
+		m_IrradianceMapGenerationRenderPass = RenderPass::Create(std::string("Irradiance Map Generation Pass"),
+			irradianceCFSpec,
+			m_IrradianceMapGenerationShader);
+		// -------------- PREFILTER GENERATION PASS ------------------------ //
+		FramebufferSpecification prefilterFSpec;
+		prefilterFSpec.Attachments = { FramebufferTextureFormat::CUBEMAP_MIP, FramebufferTextureFormat::CUBEMAP_DEPTH_RBO };
+		prefilterFSpec.Width = 128;
+		prefilterFSpec.Height = 128;
+
+		m_PrefilterGenerationRenderPass = RenderPass::Create(std::string("Prefilter Generation Pass"),
+			prefilterFSpec,
+			m_PrefilterGenerationShader);
+		// -------------- BRDF LUT GENERATION PASS -------------------------- //
+		FramebufferSpecification brdfLUTFSpec;
+		brdfLUTFSpec.Attachments = { FramebufferTextureFormat::RGBA32F, FramebufferTextureFormat::Depth };
+		brdfLUTFSpec.Width = 512;
+		brdfLUTFSpec.Height = 512;
+
+		m_BrdfLUTGenerationPass = RenderPass::Create(std::string("BRDF LUT Generation Pass"),
+			brdfLUTFSpec,
+			m_BrdfLUTGenerationShader);
+	}
+
 }
