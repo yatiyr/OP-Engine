@@ -10,6 +10,8 @@
 #include <ScriptManager/ScriptManager.h>
 
 
+#include <PhysicsManager/PhysicsManager.h>
+
 namespace OP
 {
 
@@ -32,6 +34,7 @@ namespace OP
 		RenderCommand::Enable(MODE::TEXTURE_CUBE_MAP_SEAMLESS);
 
 		ResourceManager::Init(std::filesystem::current_path());
+		PhysicsManager::Init();
 		Renderer::Init();
 		ScriptManager::InitializeManager("assets/scripts/ExampleOpiumApp.dll");
 
