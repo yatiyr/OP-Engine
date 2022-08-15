@@ -34,6 +34,12 @@ namespace OP
 		static bool* GetHdr();
 
 		static void ChangeEnvironmentMap(std::string newMapName);
+
+		static float GetFinalRenderMiliseconds();
+		static float GetShadowMapDirPassMiliseconds();
+		static float GetShadowMapPointPassMiliseconds();
+		static float GetPostProcessingPassMiliseconds();
+		static float GetShadowMapBlurMiliseconds();
 	private:
 
 	};

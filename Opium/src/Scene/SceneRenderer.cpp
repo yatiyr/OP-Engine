@@ -38,6 +38,8 @@
 
 #include <Renderer/EnvironmentMap.h>
 
+#include <Profiling/Timer.h>
+
 namespace OP
 {
 
@@ -272,6 +274,16 @@ namespace OP
 
 		Ref<EnvironmentMap> environmentMap;
 
+		Timer timer;
+		float tFinalRenderMiliseconds = 0.0;
+
+		float tShadowMapDirPass = 0.0;
+		float tShadowMapPointPass = 0.0;
+
+		float tRenderPass = 0.0;
+		float tPostProcessingPass = 0.0;
+
+		float tShadowMapBlurPass = 0.0;
 	};
 
 
@@ -280,22 +292,9 @@ namespace OP
 	void SceneRenderer::Init(float width, float height, Ref<Framebuffer> fB)
 	{
 
-		/*/EnvironmentMapSpec eMSpec;
-		eMSpec.EquirectangularTex = ResourceManager::GetHdrTexture("neon_photostudio_4k");
-		eMSpec.CubemapCaptureShader = ResourceManager::GetShader("EquirectangularToCubemap.glsl");
-		eMSpec.IrradianceMapGenerationShader = ResourceManager::GetShader("CubemapConvolution.glsl");
-		eMSpec.PrefilterGenerationShader = ResourceManager::GetShader("PbrPreFilter.glsl");
-		eMSpec.BrdfLUTGenerationShader = ResourceManager::GetShader("BrdfLUT.glsl");
-		eMSpec.SkyboxShader = ResourceManager::GetShader("SimpleSkybox.glsl"); */
-
 		s_SceneRendererData.environmentMap = ResourceManager::GetEnvironmentMap("belfast_sunset_4k");
 		s_SceneRendererData.environmentMap->GenerateMaps();
 
-
-		//s_SceneRendererData.environmentMap->FreeMemory();
-
-		//s_SceneRendererData.environmentMap = ResourceManager::GetEnvironmentMap("snow_field_4k");
-		//s_SceneRendererData.environmentMap->GenerateMaps();
 		
 		s_SceneRendererData.skybox = Skybox::Create();
 		s_SceneRendererData.plane = Plane::Create();
@@ -409,8 +408,6 @@ namespace OP
 
 		s_SceneRendererData.finalFramebuffer = fB;
 
-
-
 	}
 
 	void SceneRenderer::ResizeViewport(float width, float height)
@@ -464,9 +461,34 @@ namespace OP
 		}
 	}
 
+	float SceneRenderer::GetFinalRenderMiliseconds()
+	{
+		return s_SceneRendererData.tFinalRenderMiliseconds;
+	}
+
+	float SceneRenderer::GetShadowMapDirPassMiliseconds()
+	{
+		return s_SceneRendererData.tShadowMapDirPass;
+	}
+
+	float SceneRenderer::GetShadowMapPointPassMiliseconds()
+	{
+		return s_SceneRendererData.tShadowMapPointPass;
+	}
+
+	float SceneRenderer::GetPostProcessingPassMiliseconds()
+	{
+		return s_SceneRendererData.tPostProcessingPass;
+	}
+
+	float SceneRenderer::GetShadowMapBlurMiliseconds()
+	{
+		return s_SceneRendererData.tShadowMapBlurPass;
+	}
+
 	void SceneRenderer::Render(EditorCamera& camera, Ref<Scene> scene, Timestep ts)
 	{
-
+		s_SceneRendererData.timer.Reset();
 		// -------------------- CALCULATE CAMERA DATA -------------------------------- //
 			s_SceneRendererData.CameraBuffer.ViewProjection = camera.GetViewProjection();
 			s_SceneRendererData.CameraBuffer.ViewPos = camera.GetPosition();
@@ -653,7 +675,7 @@ namespace OP
 
 			}
 		);
-
+		s_SceneRendererData.tShadowMapDirPass = s_SceneRendererData.timer.ElapsedMilliseconds();
 
 		s_SceneRendererData.pointLightDepthRenderPass->InvokeCommands(
 			[&]() -> void {
@@ -690,6 +712,7 @@ namespace OP
 
 			}
 		);
+		s_SceneRendererData.tShadowMapPointPass = s_SceneRendererData.timer.ElapsedMilliseconds() - s_SceneRendererData.tShadowMapDirPass;
 
 		// RENDER PASS FOR BLURING directional and spot light shadow maps altogether
 		float sW = s_SceneRendererData.ShadowMapSettingsBuffer.shadowMapResX;
@@ -728,6 +751,8 @@ namespace OP
 				}
 				);
 		}
+
+		s_SceneRendererData.tShadowMapBlurPass = s_SceneRendererData.timer.ElapsedMilliseconds() - s_SceneRendererData.tShadowMapPointPass;
 		RenderCommand::Enable(MODE::DEPTH_TEST);
 
 		// POINT LIGHT ICIN PCF UYGULA SADECE!!!!!
@@ -778,16 +803,12 @@ namespace OP
 					if (!hasMaterial)
 					{
 						s_SceneRendererData.defaultPbrMaterialInstance->Mat->Bind();
-						glBindTextureUnit(0, depthMap);
-						glBindTextureUnit(1, depthMap2);
 						s_SceneRendererData.defaultPbrMaterialInstance->AssignValues();
 					}
 					else
 					{
 						auto matC = scene->m_Registry.get<MaterialComponent>(mesh);
 						matC.MatInstance->Mat->Bind();
-						glBindTextureUnit(0, depthMap);
-						glBindTextureUnit(1, depthMap2);
 						matC.MatInstance->AssignValues();
 					}
 					if (mC.Mesh)
@@ -845,6 +866,8 @@ namespace OP
 			}
 		);
 
+		s_SceneRendererData.tFinalRenderMiliseconds = s_SceneRendererData.timer.ElapsedMilliseconds() - s_SceneRendererData.tShadowMapBlurPass;
+
 		s_SceneRendererData.postProcessingPass->InvokeCommands(
 			[&]()-> void {
 
@@ -866,7 +889,7 @@ namespace OP
 				s_SceneRendererData.plane->Draw();
 			}
 		);
-
+		s_SceneRendererData.tPostProcessingPass = s_SceneRendererData.timer.ElapsedMilliseconds() - s_SceneRendererData.tFinalRenderMiliseconds;
 	}
 
 	SceneRendererStats SceneRenderer::GetStats()

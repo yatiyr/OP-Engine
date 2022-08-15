@@ -433,6 +433,9 @@ namespace OP
 
 		CopyComponentIfExists<DirLightComponent>(newEntity, entity);
 		CopyComponentIfExists<SpotLightComponent>(newEntity, entity);
+
+		CopyComponentIfExists<MeshComponent>(newEntity, entity);
+		CopyComponentIfExists<MaterialComponent>(newEntity, entity);
 	}
 
 	Entity Scene::GetPrimaryCameraEntity()
