@@ -76,7 +76,7 @@ namespace OP
 		}
 
 		s_ActiveScene = m_ActiveScene.get();
-
+		m_EditorScene = m_ActiveScene;
 		m_EditorCamera = EditorCamera(30.0f, 1280.0f / 720.0f, 0.1, 5000.0f);
 
 		// For testing C# integration

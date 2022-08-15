@@ -68,7 +68,7 @@ namespace OP
 			}
 
 			/*m_Context->m_Registry.each([&](auto entityID)
-				{
+				{""""""""""""""""""""""""""""""""""""""""""""""""""""
 					Entity entity{ entityID, m_Context.get() };
 					DrawEntityNode(entity);
 				});*/
@@ -116,9 +116,6 @@ namespace OP
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(20, 40));
 		ImGui::Begin("SceneProperties", nullptr, ImGuiWindowFlags_NoTitleBar);
 
-			ImGui::DragFloat("Exposure", SceneRenderer::GetExposure(), 0.01f, 0.0f, 20.0f);
-			ImGui::Checkbox("Hdr", SceneRenderer::GetHdr());
-
 			std::unordered_map<uint32_t, Ref<EnvironmentMap>> envMaps = ResourceManager::GetEnvironmentMaps();
 			std::vector<std::string> envMapNames;
 			static int currentSelectedID = 0;
@@ -150,6 +147,15 @@ namespace OP
 				}
 				ImGui::EndCombo();
 			}
+
+			ImGui::DragFloat("Exposure", SceneRenderer::GetExposure(), 0.01f, 0.0f, 20.0f);
+			ImGui::Checkbox("ToneMap", SceneRenderer::GetHdr());
+
+			ImGui::Text("SM Dir Time: %.1f", SceneRenderer::GetShadowMapDirPassMiliseconds());
+			ImGui::Text("SM Point Time: %.1f", SceneRenderer::GetShadowMapPointPassMiliseconds());
+			ImGui::Text("SM Blur Time: %.1f", SceneRenderer::GetShadowMapBlurMiliseconds());
+			ImGui::Text("Final Render Time: %.1f", SceneRenderer::GetFinalRenderMiliseconds());
+			ImGui::Text("Post Processing Time: %.1f", SceneRenderer::GetPostProcessingPassMiliseconds());
 
 		ImGui::End();
 		ImGui::PopStyleVar();

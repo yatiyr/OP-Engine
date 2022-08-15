@@ -18,11 +18,14 @@ IncludeDir["SPIRV_Cross"] = "%{wks.location}/Opium/external/SPIRV-Cross/include"
 IncludeDir["VK_SDK"]      = "%{VK_SDK}/Include"
 IncludeDir["FontAwesome"] = "%{wks.location}/Opium/external/iconFont"
 IncludeDir["Assimp"]      = "%{wks.location}/Opium/external/assimp/include"
+IncludeDir["Bullet"]      = "%{wks.location}/Opium/external/bullet/include"
 
 LibraryDir = {}
 LibraryDir["Mono"]   = "%{wks.location}/Opium/external/mono/lib/Release"
 LibraryDir["VK_SDK"] = "%{VK_SDK}/Lib"
 LibraryDir["Assimp"] = "%{wks.location}/Opium/external/assimp/lib/Release"
+LibraryDir["BulletRel"] = "%{wks.location}/Opium/external/bullet/lib/release"
+LibraryDir["BulletDbg"] = "%{wks.location}/Opium/external/bullet/lib/debug"
 
 Library = {}
 Library["Mono"]     = "%{LibraryDir.Mono}/mono-2.0-sgen.lib"
