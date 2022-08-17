@@ -8,7 +8,7 @@ float SampleVarianceShadowMap(sampler2DArray shadowMap, vec3 coords, float compa
 	float variance = max(moments.y - moments.x * moments.x, 0.000000002);
 
 	float d = compare - moments.x;
-	float pMax = linstep(0.6, 1.0,variance / (variance + d*d));
+	float pMax = linstep(0.1, 1.0,variance / (variance + d*d));
 
 	return min(max(p, pMax), 1.0);
 }

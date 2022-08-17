@@ -16,6 +16,9 @@
 #include <Geometry/Mesh.h>
 #include <Renderer/Material.h>
 
+
+#include <PhysicsManager/PhysicsManager.h>
+
 namespace OP
 {
 
@@ -223,6 +226,13 @@ namespace OP
 		BoxCollider2DComponent(const BoxCollider2DComponent&) = default;
 	};
 
+	struct Rigidbody3DComponent
+	{
+		enum class BodyType { Static = 0, Dynamic, Kinematic };
+		BodyType Type = BodyType::Static;
+		
+	};
+
 	// Directional Light Component
 	struct DirLightComponent
 	{
@@ -283,5 +293,154 @@ namespace OP
 
 		MaterialComponent() = default;
 		MaterialComponent(const MaterialComponent&) = default;
+	};
+
+	struct Physics3DMaterial
+	{
+		// Motion state will give us physical world coordinates and orientation of
+		// the entity
+		void* RuntimeMotionState = nullptr;
+		void* RuntimeBody = nullptr;
+
+		float Mass = 1.0;
+		float Friction = 0.1f;
+		float RollingFriction = 0.1f;
+		float SpinningFriction = 0.1f;
+		float Restitution = 0.5f;
+
+		void OnMassChanged()
+		{
+			if (RuntimeBody != nullptr)
+			{
+				btRigidBody* rB = (btRigidBody*)RuntimeBody;
+				rB->setMassProps(Mass, rB->getLocalInertia());
+			}
+			
+		}
+
+		void OnFrictionChanged()
+		{
+			if (RuntimeBody != nullptr)
+			{
+				btRigidBody* rB = (btRigidBody*)RuntimeBody;
+				rB->setFriction(Friction);
+			}
+		}
+
+		void OnRollingFrictionChanged()
+		{
+			if (RuntimeBody != nullptr)
+			{
+				btRigidBody* rB = (btRigidBody*)RuntimeBody;
+				rB->setRollingFriction(RollingFriction);
+			}
+		}
+
+		void OnSpinningFrictionChanged()
+		{
+			if (RuntimeBody != nullptr)
+			{
+				btRigidBody* rB = (btRigidBody*)RuntimeBody;
+				rB->setSpinningFriction(SpinningFriction);
+			}
+		}
+
+		void OnRestitutionChanged()
+		{
+			if (RuntimeBody != nullptr)
+			{
+				btRigidBody* rB = (btRigidBody*)RuntimeBody;
+				rB->setRestitution(Restitution);
+			}
+		}
+
+		Physics3DMaterial() = default;
+		Physics3DMaterial(const Physics3DMaterial&) = default;
+	};
+
+	struct Physics3DCollider
+	{
+		// Shape = 0 -> Box
+		// Shape = 1 -> Sphere
+		int Shape = 0;
+
+		// Scale for box, radius for sphere
+		glm::vec3 Scale = glm::vec3(1.0, 1.0, 1.0);
+		float Radius = 1.0f;
+
+		// If this is false, there will be no force applied
+		// on contact. Objects can go through it
+		bool ContactResponse = true;
+
+		// Runtime Shape
+		void* RuntimeBody = nullptr;
+		void* RuntimeCollisionShape = nullptr;
+		int runtimeShapeIndex = -1;
+
+		void OnShapeChanged()
+		{
+			if (RuntimeBody != nullptr)
+			{
+				btRigidBody* rB = (btRigidBody*)RuntimeBody;
+				btCollisionShape* cS = (btCollisionShape*)RuntimeCollisionShape;
+				
+				btCollisionShape* newCS = nullptr;
+
+				if (Shape == 0)
+				{
+					newCS = new btSphereShape(Radius);
+
+					rB->setCollisionShape(newCS);
+					delete cS;
+					cS = newCS;
+				}
+				else if (Shape == 1)
+				{
+					newCS = new btBoxShape(btVector3(Scale.x, Scale.y, Scale.z));
+
+					rB->setCollisionShape(newCS);
+					delete cS;
+					cS = newCS;
+				}
+
+
+			}
+		}
+
+		void OnScaleChanged()
+		{
+			if (RuntimeBody != nullptr && RuntimeCollisionShape != nullptr)
+			{
+				btCollisionShape* cS = (btCollisionShape*)RuntimeCollisionShape;
+				cS->setLocalScaling(btVector3(Scale.x, Scale.y, Scale.z));
+			}
+		}
+
+		void OnRadiusChanged()
+		{
+			if (RuntimeBody != nullptr && RuntimeCollisionShape != nullptr)
+			{
+
+			}
+		}
+
+		void OnContactResponseChanged()
+		{
+			if (RuntimeBody != nullptr)
+			{
+				btRigidBody* rB = (btRigidBody*)RuntimeBody;
+				if (ContactResponse)
+				{
+					rB->setCollisionFlags(rB->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
+				}
+				else
+				{
+					rB->setCollisionFlags(rB->getCollisionFlags() & ~btCollisionObject::CF_NO_CONTACT_RESPONSE);
+				}
+			}
+		}
+
+		Physics3DCollider() = default;
+		Physics3DCollider(const Physics3DCollider&) = default;
 	};
 }

@@ -85,6 +85,8 @@ namespace OP
 		void RemoveComponent()
 		{
 			OP_ENGINE_ASSERT(HasComponent<T>(), "Entity does not have this component");
+			T& component = m_Scene->m_Registry.get<T>(m_EntityHandle);
+			m_Scene->OnComponentRemoved<T>(*this, component);
 			m_Scene->m_Registry.remove<T>(m_EntityHandle);
 		}
 

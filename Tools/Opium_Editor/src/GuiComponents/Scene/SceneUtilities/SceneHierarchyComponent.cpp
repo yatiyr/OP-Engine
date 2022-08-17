@@ -548,7 +548,8 @@ namespace OP
 				}
 			}
 
-			if (!m_SelectionContext.HasComponent<Rigidbody2DComponent>())
+			if (!m_SelectionContext.HasComponent<Rigidbody2DComponent>() &&
+				!m_SelectionContext.HasComponent<Physics3DMaterial>())
 			{
 				if (ImGui::MenuItem("2D RigidBody"))
 				{
@@ -557,11 +558,32 @@ namespace OP
 				}
 			}
 
-			if (!m_SelectionContext.HasComponent<BoxCollider2DComponent>())
+			if (!m_SelectionContext.HasComponent<Rigidbody2DComponent>() &&
+				!m_SelectionContext.HasComponent<Physics3DMaterial>())
+			{
+				if (ImGui::MenuItem("3D PhysicsMaterial"))
+				{
+					m_SelectionContext.AddComponent<Physics3DMaterial>();
+					ImGui::CloseCurrentPopup();
+				}
+			}
+
+			if (!m_SelectionContext.HasComponent<BoxCollider2DComponent>() &&
+				!m_SelectionContext.HasComponent<Physics3DCollider>())
 			{
 				if (ImGui::MenuItem("2D Box Collider"))
 				{
 					m_SelectionContext.AddComponent<BoxCollider2DComponent>();
+					ImGui::CloseCurrentPopup();
+				}
+			}
+
+			if (!m_SelectionContext.HasComponent<BoxCollider2DComponent>() &&
+				!m_SelectionContext.HasComponent<Physics3DCollider>())
+			{
+				if (ImGui::MenuItem("3D Physics Collider"))
+				{
+					m_SelectionContext.AddComponent<Physics3DCollider>();
 					ImGui::CloseCurrentPopup();
 				}
 			}
@@ -759,6 +781,74 @@ namespace OP
 				ImGui::Checkbox("Fixed Rotation", &component.FixedRotation);
 			});
 
+		DrawComponent<Physics3DMaterial>("3D Physics Material", entity, [](auto& component)
+			{
+				if (ImGui::DragFloat("Mass", &component.Mass, 0.01f, 0.0f, 10000000.0f))
+				{
+					component.OnMassChanged();
+				}
+				if (ImGui::DragFloat("Friction", &component.Friction, 0.01f, 0.0f, 1000.0f))
+				{
+					component.OnFrictionChanged();
+				}
+				if (ImGui::DragFloat("RFriction", &component.RollingFriction, 0.01f, 0.0f, 1000.0f))
+				{
+					component.OnRollingFrictionChanged();
+				}
+				if (ImGui::DragFloat("SFriction", &component.SpinningFriction, 0.01f, 0.0f, 1000.0f))
+				{
+					component.OnSpinningFrictionChanged();
+				}
+				if (ImGui::DragFloat("Restitution", &component.Restitution, 0.01f, 0.0f, 100.0f))
+				{
+					component.OnRestitutionChanged();
+				}
+			});
+
+		DrawComponent<Physics3DCollider>("3D Physics Collider", entity, [](auto& component)
+			{
+				int currentSelected = component.Shape;
+
+				std::string curSelectedName;
+
+				if (currentSelected == 0)
+					curSelectedName = "Box";
+				else if (currentSelected == 1)
+					curSelectedName = "Sphere";
+
+				std::vector<std::string> shapeNames = { "Box", "Sphere" };
+
+				if (ImGui::BeginCombo("Collider", curSelectedName.c_str(), ImGuiComboFlags_PopupAlignLeft))
+				{
+					for (int i = 0; i < shapeNames.size(); i++)
+					{
+						const bool isSelected = (currentSelected == i);
+						if (ImGui::Selectable(shapeNames[i].c_str(), isSelected))
+						{
+							currentSelected = i;
+							component.Shape = i;
+							component.OnShapeChanged();							
+						}
+
+						if (isSelected)
+						{
+							ImGui::SetItemDefaultFocus();
+						}
+					}
+					ImGui::EndCombo();
+				}
+
+				if (ImGui::DragFloat3("Scale", glm::value_ptr(component.Scale)))
+				{
+					component.OnScaleChanged();
+				}
+
+				if (ImGui::Checkbox("Contact Response", &component.ContactResponse))
+				{
+					component.OnContactResponseChanged();
+				}
+
+			});
 
 		DrawComponent<BoxCollider2DComponent>("2D Box Collider", entity, [](auto& component)
 			{

@@ -19,7 +19,7 @@ namespace OP
 	public:
 		static void Init(float width, float height, Ref<Framebuffer> fB);
 
-		static void Render(EditorCamera& camera, Ref<Scene> scene, Timestep ts);
+		static void Render(EditorCamera& camera, Scene* scene, Timestep ts);
 
 		static SceneRendererStats GetStats();
 

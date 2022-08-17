@@ -17,6 +17,8 @@
 
 #include <Opium/ResourceManager.h>
 
+#include <Scene/SceneRenderer.h>
+
 namespace OP
 {
 
@@ -98,7 +100,7 @@ namespace OP
 		}
 
 
-
+		CopyComponent<RootComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
 		CopyComponent<TransformComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
 		CopyComponent<RelationshipComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
 		CopyComponent<SpriteRendererComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
@@ -113,6 +115,11 @@ namespace OP
 		CopyComponent<PointLightComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
 
 		CopyComponent<MeshComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
+		CopyComponent<MaterialComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
+
+		CopyComponent<Physics3DMaterial>(dstSceneRegistry, srcSceneRegistry, enttMap);
+		CopyComponent<Physics3DCollider>(dstSceneRegistry, srcSceneRegistry, enttMap);
+
 
 		return newScene;
 	}
@@ -241,7 +248,17 @@ namespace OP
 
 	void Scene::RemoveEntity(Entity entity)
 	{
+		
+		// If the entity is being removed during runtime and has physical properties
+		// we also need to remove the entity from the physical world.
+		if (entity.HasComponent<Physics3DMaterial>() && entity.HasComponent<Physics3DCollider>())
+		{
+			auto& physics3DMaterial = entity.GetComponent<Physics3DMaterial>();
+			auto& physics3DCollider = entity.GetComponent<Physics3DCollider>();
 
+			if(physics3DMaterial.RuntimeBody)
+				PhysicsManager::DeleteRigidBody(physics3DMaterial.RuntimeBody, physics3DCollider.runtimeShapeIndex);
+		}
 		DetachChild(entity);
 		m_Registry.destroy(entity);
 
@@ -249,39 +266,54 @@ namespace OP
 
 	void Scene::OnRuntimeStart()
 	{
+		// We tell physics manager ot start the physics world
+		PhysicsManager::StartWorld();
 
-		m_PhysicsWorld = new b2World({ 0.0f, -9.8f });
-		auto view = m_Registry.view<Rigidbody2DComponent>();
-		for (auto e : view)
+		// We will add entities which have physical properties to the world.
+		auto group = m_Registry.group<Physics3DMaterial>(entt::get<Physics3DCollider>);
+		for (auto entity : group)
 		{
-			Entity entity = { e, this };
-			auto& transform = entity.GetComponent<TransformComponent>();
-			auto& rb2d = entity.GetComponent<Rigidbody2DComponent>();
+			Entity e = { entity, this };
+			auto& physics3DMaterial  = e.GetComponent<Physics3DMaterial>();
+			auto& physics3DCollider  = e.GetComponent<Physics3DCollider>();
+			auto& transformComponent = e.GetComponent<TransformComponent>();
 
-			b2BodyDef bodyDef;
-			bodyDef.type = RigidbodyTypeToBox2DBody(rb2d.Type);
-			bodyDef.position.Set(transform.Translation.x, transform.Translation.y);
-			bodyDef.angle = transform.Rotation.z;
+			RigidBodySpec spec;
 
-			b2Body* body = m_PhysicsWorld->CreateBody(&bodyDef);
-			body->SetFixedRotation(rb2d.FixedRotation);
-			rb2d.RuntimeBody = body;
+			spec.Mass             = physics3DMaterial.Mass;
+			spec.Friction         = physics3DMaterial.Friction;
+			spec.RollingFriction  = physics3DMaterial.RollingFriction;
+			spec.SpinningFriction = physics3DMaterial.SpinningFriction;
+			spec.Restitution      = physics3DMaterial.Restitution;
 
-			if (entity.HasComponent<BoxCollider2DComponent>())
-			{
-				auto& bc2d = entity.GetComponent<BoxCollider2DComponent>();
+			spec.Shape = physics3DCollider.Shape;
+			spec.Radius = physics3DCollider.Radius;
 
-				b2PolygonShape polygonShape;
-				polygonShape.SetAsBox(bc2d.Size.x * transform.Scale.x, bc2d.Size.y * transform.Scale.y);
+			glm::quat orientation = glm::quat(transformComponent.Rotation);
+			glm::vec3 translation = transformComponent.Translation;
+			glm::vec3 scale       = transformComponent.Scale;
 
-				b2FixtureDef fixtureDef;
-				fixtureDef.shape = &polygonShape;
-				fixtureDef.density = bc2d.Density;
-				fixtureDef.friction = bc2d.Friction;
-				fixtureDef.restitution = bc2d.Restitution;
-				fixtureDef.restitutionThreshold = bc2d.RestitutionThreshold;
-				body->CreateFixture(&fixtureDef);
-			}
+			spec.scale       = btVector3(scale.x, scale.y, scale.z);
+			spec.Orientation = btQuaternion(orientation.x, orientation.y, orientation.z, orientation.w);
+			spec.Origin      = btVector3(translation.x, translation.y, translation.z);
+
+			spec.ContactResponse = physics3DCollider.ContactResponse;
+
+			Entity* entityPointer = new Entity(entity, this);
+
+			AddRigidBodyResponse resp = PhysicsManager::AddRigidBody(spec,
+					physics3DMaterial.RuntimeMotionState,
+					physics3DMaterial.RuntimeBody,
+					physics3DCollider.RuntimeCollisionShape,
+				    entityPointer);
+
+			
+			physics3DCollider.runtimeShapeIndex = resp.collisionShapeIndex;
+			physics3DMaterial.RuntimeMotionState = resp.motionState;
+			physics3DMaterial.RuntimeBody = resp.body;
+			physics3DCollider.RuntimeCollisionShape = resp.collisionShape;
+			physics3DCollider.RuntimeBody = physics3DMaterial.RuntimeBody;
+
 		}
 	}
 
@@ -293,78 +325,47 @@ namespace OP
 
 	void Scene::OnUpdateEditor(Timestep ts, EditorCamera& camera)
 	{
-		Renderer2D::BeginScene(camera);
+		SceneRenderer::Render(camera, this, ts);
+	}
 
-
-		/*m_Registry.view<ScriptComponent>().each([=](auto entity, auto& comp)
-		{
-				Entity e = { entity, this };
-				ScriptManager::OnUpdateEntity(e, ts);
-		});*/
-
-		auto group = m_Registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
+	void Scene::OnUpdateRuntime(Timestep ts, EditorCamera& camera)
+	{
+		// Update scripts
+		auto group = m_Registry.group<ScriptComponent>(entt::get<TransformComponent>);
 		for (auto entity : group)
 		{
 			Entity e = { entity, this };
-
-			if (e.HasComponent<ScriptComponent>())
-			{
-				ScriptManager::OnUpdateEntity((uint32_t)e, ts);
-			}
-
-			auto [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
-
-			// Renderer2D::DrawQuad(transform.GetTransform(), sprite.Color);
-			Renderer2D::DrawSprite(transform.GetTransform(), sprite, (int)entity);
-		}
-
-		Renderer2D::EndScene();
-	}
-
-	void Scene::OnUpdateRuntime(Timestep ts)
-	{
-
-		// Update scripts
-		{
-			m_Registry.view<NativeScriptComponent>().each([=](auto entity, auto& nsc)
-				{
-					// TODO: Move to Scene::OnScenePlay
-					if (!nsc.Instance)
-					{
-						nsc.Instance = nsc.InstantiateScript();
-						nsc.Instance->m_Entity = Entity{ entity, this };
-						nsc.Instance->OnCreate();
-					}
-
-					nsc.Instance->OnUpdate(ts);
-				});
+			//ScriptManager::OnUpdateEntity((uint32_t)e, ts);
 		}
 
 		// Physics
 		{
-			const int32_t velocityIterations = 6;
-			const int32_t positionIterations = 2;
-			m_PhysicsWorld->Step(ts, velocityIterations, positionIterations);
-
-			// Retrieve transform from box2d
-			auto view = m_Registry.view<Rigidbody2DComponent>();
-			for (auto e : view)
+			PhysicsManager::StepWorld(ts);
+			auto group = m_Registry.group<Physics3DMaterial>(entt::get<Physics3DCollider>);
+			for (auto entity : group)
 			{
-				Entity entity = { e, this };
-				auto& transform = entity.GetComponent<TransformComponent>();
-				auto& rb2d = entity.GetComponent<Rigidbody2DComponent>();
+				Entity e = { entity, this };
+				auto& physics3DMaterial = e.GetComponent<Physics3DMaterial>();
+				auto& transformComponent = e.GetComponent<TransformComponent>();
+				btMotionState* mS = (btMotionState*)physics3DMaterial.RuntimeMotionState;
 
+				btTransform transform;
+				mS->getWorldTransform(transform);
 
-				b2Body* body = (b2Body*)rb2d.RuntimeBody;
-				const auto& position = body->GetPosition();
-				transform.Translation.x = position.x;
-				transform.Translation.y = position.y;
-				transform.Rotation.z = body->GetAngle();
+				btVector3 origin = transform.getOrigin();
+				btQuaternion rot = transform.getRotation();
+				
+				glm::vec3 rotEuler(0.0f);
+				transform.getRotation().getEulerZYX(rotEuler.z, rotEuler.y, rotEuler.x);
+
+				transformComponent.Translation = glm::vec3(origin.x(), origin.y(), origin.z());
+				transformComponent.Rotation = rotEuler;
+				e.Patch<TransformComponent>();
 			}
 		}
 
-		// Render 2D
-		Camera* PrimaryCamera = nullptr;
+		// Render
+		Camera PrimaryCamera;
 		glm::mat4 cameraTransform;
 		{
 			auto group = m_Registry.group<CameraComponent>(entt::get<TransformComponent>);
@@ -374,17 +375,20 @@ namespace OP
 
 				if (camera.Primary)
 				{
-					PrimaryCamera = &camera.Camera;
+					PrimaryCamera = camera.Camera;
 					cameraTransform = transform.GetTransform();
 					break;
 				}
 			}
 		}
 
-		if (PrimaryCamera)
+		SceneRenderer::Render(camera, this, ts);
+
+		// TODO: IMPLEMENT THIS ASAP!!!
+		/*if (PrimaryCamera)
 		{
 
-
+			SceneRenderer::Render(PrimaryCamera, this, ts);
 			Renderer2D::BeginScene(PrimaryCamera, cameraTransform);
 
 			auto group = m_Registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
@@ -397,7 +401,7 @@ namespace OP
 			}
 
 			Renderer2D::EndScene();
-		}
+		} */
 
 	}
 
@@ -436,6 +440,9 @@ namespace OP
 
 		CopyComponentIfExists<MeshComponent>(newEntity, entity);
 		CopyComponentIfExists<MaterialComponent>(newEntity, entity);
+
+		CopyComponentIfExists<Physics3DMaterial>(newEntity, entity);
+		CopyComponentIfExists<Physics3DCollider>(newEntity, entity);
 	}
 
 	Entity Scene::GetPrimaryCameraEntity()
@@ -456,105 +463,95 @@ namespace OP
 	{
 		static_assert(false);
 	}
-
 	template<>
-	void Scene::OnComponentAdded<RootComponent>(Entity entity, RootComponent& component)
-	{
-
-	}
-
+	void Scene::OnComponentAdded<RootComponent>(Entity entity, RootComponent& component){}
 	template<>
-	void Scene::OnComponentAdded<RelationshipComponent>(Entity entity, RelationshipComponent& component)
-	{
-
-	}
-
+	void Scene::OnComponentAdded<RelationshipComponent>(Entity entity, RelationshipComponent& component){}
 	template<>
-	void Scene::OnComponentAdded<IDComponent>(Entity entity, IDComponent& component)
-	{
-
-	}
-
+	void Scene::OnComponentAdded<IDComponent>(Entity entity, IDComponent& component){}
 	template<>
-	void Scene::OnComponentAdded<TransformComponent>(Entity entity, TransformComponent& component)
-	{
-
-	}
-
+	void Scene::OnComponentAdded<TransformComponent>(Entity entity, TransformComponent& component){}
 	template<>
 	void Scene::OnComponentAdded<CameraComponent>(Entity entity, CameraComponent& component)
 	{
 		if(m_ViewportWidth > 0 && m_ViewportHeight > 0)
 			component.Camera.SetViewportSize(m_ViewportWidth, m_ViewportHeight);
 	}
-
 	template<>
-	void Scene::OnComponentAdded<SpriteRendererComponent>(Entity entity, SpriteRendererComponent& component)
-	{
-
-	}
-
+	void Scene::OnComponentAdded<SpriteRendererComponent>(Entity entity, SpriteRendererComponent& component){}
 	template<>
-	void Scene::OnComponentAdded<TagComponent>(Entity entity, TagComponent& component)
-	{
-
-	}
-
+	void Scene::OnComponentAdded<TagComponent>(Entity entity, TagComponent& component){}
 	template<>
-	void Scene::OnComponentAdded<NativeScriptComponent>(Entity entity, NativeScriptComponent& component)
-	{
-
-	}
-
-
+	void Scene::OnComponentAdded<NativeScriptComponent>(Entity entity, NativeScriptComponent& component){}
 	template<>
 	void Scene::OnComponentAdded<ScriptComponent>(Entity entity, ScriptComponent& component)
 	{
 		uint32_t sceneID = 0;
 		ScriptManager::OnInitEntity(component, (uint32_t)entity, sceneID);
 	}
-
 	template<>
-	void Scene::OnComponentAdded<Rigidbody2DComponent>(Entity entity, Rigidbody2DComponent& component)
-	{
-
-	}
-
-
+	void Scene::OnComponentAdded<Rigidbody2DComponent>(Entity entity, Rigidbody2DComponent& component){}
 	template<>
-	void Scene::OnComponentAdded<BoxCollider2DComponent>(Entity entity, BoxCollider2DComponent& component)
-	{
-
-	}
-
+	void Scene::OnComponentAdded<BoxCollider2DComponent>(Entity entity, BoxCollider2DComponent& component){}
 	template<>
-	void Scene::OnComponentAdded<DirLightComponent>(Entity entity, DirLightComponent& component)
-	{
-
-	}
-
+	void Scene::OnComponentAdded<DirLightComponent>(Entity entity, DirLightComponent& component){}
 	template<>
-	void Scene::OnComponentAdded<SpotLightComponent>(Entity entity, SpotLightComponent& component)
-	{
-
-	}
-
+	void Scene::OnComponentAdded<SpotLightComponent>(Entity entity, SpotLightComponent& component){}
 	template<>
-	void Scene::OnComponentAdded<PointLightComponent>(Entity entity, PointLightComponent& component)
-	{
-
-	}
-
+	void Scene::OnComponentAdded<PointLightComponent>(Entity entity, PointLightComponent& component){}
 	template<>
 	void Scene::OnComponentAdded<MeshComponent>(Entity entity, MeshComponent& component)
 	{
 		entity.AddComponent<MaterialComponent>();
 	}
-
 	template<>
 	void Scene::OnComponentAdded<MaterialComponent>(Entity entity, MaterialComponent& component)
 	{
 		Ref<Material> defaultPbr = ResourceManager::GetMaterial("DefaultPbr");
 		component.MatInstance = MaterialInstance::Create(defaultPbr);
 	}
+	template<>
+	void Scene::OnComponentAdded<Physics3DMaterial>(Entity entity, Physics3DMaterial& component){}
+	template<>
+	void Scene::OnComponentAdded<Physics3DCollider>(Entity enttiy, Physics3DCollider& component){}
+
+
+	template<typename T>
+	void Scene::OnComponentRemoved(Entity entity, T& component){static_assert(false);}
+	template<>
+	void Scene::OnComponentRemoved<RootComponent>(Entity entity, RootComponent& component){}
+	template<>
+	void Scene::OnComponentRemoved<RelationshipComponent>(Entity entity, RelationshipComponent& component){}
+	template<>
+	void Scene::OnComponentRemoved<IDComponent>(Entity entity, IDComponent& component){}
+	template<>
+	void Scene::OnComponentRemoved<TransformComponent>(Entity entity, TransformComponent& component){}
+	template<>
+	void Scene::OnComponentRemoved<CameraComponent>(Entity entity, CameraComponent& component){}
+	template<>
+	void Scene::OnComponentRemoved<SpriteRendererComponent>(Entity entity, SpriteRendererComponent& component){}
+	template<>
+	void Scene::OnComponentRemoved<TagComponent>(Entity entity, TagComponent& component){}
+	template<>
+	void Scene::OnComponentRemoved<NativeScriptComponent>(Entity entity, NativeScriptComponent& component){}
+	template<>
+	void Scene::OnComponentRemoved<ScriptComponent>(Entity entity, ScriptComponent& component){}
+	template<>
+	void Scene::OnComponentRemoved<Rigidbody2DComponent>(Entity entity, Rigidbody2DComponent& component){}
+	template<>
+	void Scene::OnComponentRemoved<BoxCollider2DComponent>(Entity entity, BoxCollider2DComponent& component){}
+	template<>
+	void Scene::OnComponentRemoved<DirLightComponent>(Entity entity, DirLightComponent& component){}
+	template<>
+	void Scene::OnComponentRemoved<SpotLightComponent>(Entity entity, SpotLightComponent& component){}
+	template<>
+	void Scene::OnComponentRemoved<PointLightComponent>(Entity entity, PointLightComponent& component){}
+	template<>
+	void Scene::OnComponentRemoved<MeshComponent>(Entity entity, MeshComponent& component){}
+	template<>
+	void Scene::OnComponentRemoved<MaterialComponent>(Entity entity, MaterialComponent& component){}
+	template<>
+	void Scene::OnComponentRemoved<Physics3DMaterial>(Entity entity, Physics3DMaterial& component){}
+	template<>
+	void Scene::OnComponentRemoved<Physics3DCollider>(Entity enttiy, Physics3DCollider& component){}
 }

@@ -486,7 +486,7 @@ namespace OP
 		return s_SceneRendererData.tShadowMapBlurPass;
 	}
 
-	void SceneRenderer::Render(EditorCamera& camera, Ref<Scene> scene, Timestep ts)
+	void SceneRenderer::Render(EditorCamera& camera, Scene* scene, Timestep ts)
 	{
 		s_SceneRendererData.timer.Reset();
 		// -------------------- CALCULATE CAMERA DATA -------------------------------- //

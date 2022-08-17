@@ -319,6 +319,38 @@ namespace OP
 			out << YAML::EndMap;
 		}
 
+		if (entity.HasComponent<Physics3DMaterial>())
+		{
+			out << YAML::Key << "Physics3DMaterialComponent";
+			out << YAML::BeginMap;
+
+			auto& physics3DMaterial = entity.GetComponent<Physics3DMaterial>();
+			out << YAML::Key << "Mass" << physics3DMaterial.Mass;
+			out << YAML::Key << "Friction" << physics3DMaterial.Friction;
+			out << YAML::Key << "RollingFriction" << physics3DMaterial.RollingFriction;
+			out << YAML::Key << "SpinningFriction" << physics3DMaterial.SpinningFriction;
+			out << YAML::Key << "Restitution" << physics3DMaterial.Restitution;
+
+			out << YAML::EndMap;
+		}
+
+		if (entity.HasComponent<Physics3DCollider>())
+		{
+			out << YAML::Key << "Physics3DColliderComponent";
+			out << YAML::BeginMap;
+
+			auto& physics3DCollider = entity.GetComponent<Physics3DCollider>();
+
+			out << YAML::Key << "Shape" << physics3DCollider.Shape;
+			if (physics3DCollider.Shape == 0)
+				out << YAML::Key << "Scale" << physics3DCollider.Scale;
+			else if (physics3DCollider.Shape == 1)
+				out << YAML::Key << "Radius" << physics3DCollider.Radius;
+			out << YAML::Key << "ContactResponse" << physics3DCollider.ContactResponse;
+
+			out << YAML::EndMap;
+		}
+
 		if (entity.HasComponent<MeshComponent>())
 		{
 			out << YAML::Key << "MeshComponent";
@@ -503,6 +535,29 @@ namespace OP
 					bc2d.Restitution = boxCollider2DComponent["Restitution"].as<float>();
 					bc2d.RestitutionThreshold = boxCollider2DComponent["RestitutionThreshold"].as<float>();
 					
+				}
+
+				auto physics3DMaterialComponent = entity["Physics3DMaterialComponent"];
+				if (physics3DMaterialComponent)
+				{
+					auto& p3DMc            = deserializedEntity.AddComponent<Physics3DMaterial>();
+					p3DMc.Mass             = physics3DMaterialComponent["Mass"].as<float>();
+					p3DMc.Friction         = physics3DMaterialComponent["Friction"].as<float>();
+					p3DMc.RollingFriction  = physics3DMaterialComponent["RollingFriction"].as<float>();
+					p3DMc.SpinningFriction = physics3DMaterialComponent["SpinningFriction"].as<float>();
+					p3DMc.Restitution      = physics3DMaterialComponent["Restitution"].as<float>();
+				}
+
+				auto physics3DColliderComponent = entity["Physics3DColliderComponent"];
+				if (physics3DColliderComponent)
+				{
+					auto& p3DCC = deserializedEntity.AddComponent<Physics3DCollider>();
+					p3DCC.Shape = physics3DColliderComponent["Shape"].as<int>();
+					if (p3DCC.Shape == 0)
+						p3DCC.Scale = physics3DColliderComponent["Scale"].as<glm::vec3>();
+					else if (p3DCC.Shape == 1)
+						p3DCC.Radius = physics3DColliderComponent["Radius"].as<float>();
+					p3DCC.ContactResponse = physics3DColliderComponent["ContactResponse"].as<bool>();
 				}
 
 				auto dirLightComponent = entity["DirLightComponent"];
