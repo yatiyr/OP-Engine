@@ -13,6 +13,7 @@
 
 #include <Math/Math.h>
 
+#include <PhysicsManager/PhysicsManager.h>
 
 // #include <IconsMaterialDesign.h>
 
@@ -179,7 +180,7 @@ namespace OP
 		RenderCommand::SetClearColor({ 0.0f, 0.0f, 0.0f, 1 });
 		RenderCommand::Clear();
 
-
+		// PhysicsManager::StepWorld(ts);
 		// Clear our entity ID attachment to -1
 		//m_Framebuffer->ClearAttachment(1, -1);
 
@@ -191,12 +192,8 @@ namespace OP
 		glm::vec2 viewportSize = m_ViewportComponent.GetViewportSize();
 
 		SceneRenderer::ResizeViewport(viewportSize.x, viewportSize.y);
-		SceneRenderer::Render(m_EditorCamera, m_ActiveScene, ts);
-
-
-		// End Playground Code
 		
-		/*
+		
 		switch (m_SceneState)
 		{
 			case SceneState::Edit:
@@ -209,15 +206,15 @@ namespace OP
 			}
 			case SceneState::Play:
 			{
-				m_ActiveScene->OnUpdateRuntime(ts);
+				m_ActiveScene->OnUpdateRuntime(ts, m_EditorCamera);
 				break;
 			}
 		}
 		
 
-		m_ViewportComponent.SetHoveredEntity();
+		//m_ViewportComponent.SetHoveredEntity();
 		
-		*/
+		
 		m_Framebuffer->Unbind();
 
 		
