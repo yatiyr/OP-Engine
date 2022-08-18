@@ -5,6 +5,13 @@
 namespace OP
 {
 
+	enum class BufferBit : unsigned int
+	{
+		DEPTH_BUFFER_BIT = 0x00000100,
+		STENCIL_BUFFER_BIT = 0x00000400,
+		COLOR_BUFFER_BIT  = 0x00004000
+	};
+
 	enum class FramebufferTextureFormat
 	{
 		None = 0,
@@ -91,6 +98,7 @@ namespace OP
 		virtual void Resize(uint32_t width, uint32_t height) = 0;
 		virtual int ReadPixel(uint32_t attachmentIndex, int x, int y) = 0;
 
+		virtual void BlitFramebuffer(Ref<Framebuffer> dst, uint32_t BufferBit) = 0;
 
 		virtual void ClearAttachment(uint32_t attachmentIndex, int value) = 0;
 

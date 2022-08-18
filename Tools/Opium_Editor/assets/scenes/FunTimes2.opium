@@ -1,0 +1,2127 @@
+Scene: Unitled
+Entities:
+  - Entity: 7115132365249678847
+    TagComponent:
+      Tag: Cube
+    RootComponent:
+      Root: true
+    RelationshipComponent:
+      Children: 0
+      Parent: 15386962303537226748
+      First: 4135655264688823834
+      Prev: 2187847137947334047
+      Next: 13356826731233917402
+      TransformComponent:
+        Translation: [-4.96503258, 12.9415045, 4.81911993]
+        Rotation: [0, 0, 0]
+        Scale: [1, 1, 1]
+      Physics3DMaterialComponent:
+        Mass: 1
+        Friction: 0.100000001
+        RollingFriction: 0.100000001
+        SpinningFriction: 0.100000001
+        Restitution: 0.5
+      Physics3DColliderComponent:
+        Shape: 0
+        Scale: [1, 1, 1]
+        ContactResponse: true
+      MeshComponent:
+        MeshName: ""
+      MaterialComponent:
+        MaterialName: DefaultPbr
+        TilingFactor: 1
+        HeightFactor: 0
+        ClipBorder: false
+        FloatValues:
+          roughness: 0.5
+          metalness: 0.100000001
+        Float2Values:
+          {}
+        Float3Values:
+          albedo: [1, 1, 1]
+        IntValues:
+          {}
+        Textures:
+          albedoMap: WhiteTexture
+          roughnessMap: WhiteTexture
+          metalnessMap: WhiteTexture
+          aoMap: WhiteTexture
+          normalMap: DefaultNormalMap
+          heightMap: WhiteTexture
+    ? Entity: 15507696178466613917
+      TagComponent:
+        Tag: Cube
+      RootComponent:
+        Root: true
+      RelationshipComponent:
+        Children: 0
+        Parent: 15386962303537226748
+        First: 4135655264688823834
+        Prev: 2187847137947334047
+        Next: 13356826731233917402
+        TransformComponent:
+          Translation: [-4.96503258, 12.9415045, -6.4457407]
+          Rotation: [0, 0, 0]
+          Scale: [1, 1, 1]
+        Physics3DMaterialComponent:
+          Mass: 1
+          Friction: 0.100000001
+          RollingFriction: 0.100000001
+          SpinningFriction: 0.100000001
+          Restitution: 0.5
+        Physics3DColliderComponent:
+          Shape: 0
+          Scale: [1, 1, 1]
+          ContactResponse: true
+        MeshComponent:
+          MeshName: ""
+        MaterialComponent:
+          MaterialName: DefaultPbr
+          TilingFactor: 1
+          HeightFactor: 0
+          ClipBorder: false
+          FloatValues:
+            roughness: 0.5
+            metalness: 0.100000001
+          Float2Values:
+            {}
+          Float3Values:
+            albedo: [1, 1, 1]
+          IntValues:
+            {}
+          Textures:
+            albedoMap: WhiteTexture
+            roughnessMap: WhiteTexture
+            metalnessMap: WhiteTexture
+            aoMap: WhiteTexture
+            normalMap: DefaultNormalMap
+            heightMap: WhiteTexture
+      ? Entity: 8636987086410892604
+        TagComponent:
+          Tag: Cube
+        RootComponent:
+          Root: true
+        RelationshipComponent:
+          Children: 0
+          Parent: 15386962303537226748
+          First: 4135655264688823834
+          Prev: 2187847137947334047
+          Next: 13356826731233917402
+          TransformComponent:
+            Translation: [-4.96503258, 10.1904678, -6.4457407]
+            Rotation: [0, 0, 0]
+            Scale: [1, 1, 1]
+          Physics3DMaterialComponent:
+            Mass: 1
+            Friction: 0.100000001
+            RollingFriction: 0.100000001
+            SpinningFriction: 0.100000001
+            Restitution: 0.5
+          Physics3DColliderComponent:
+            Shape: 0
+            Scale: [1, 1, 1]
+            ContactResponse: true
+          MeshComponent:
+            MeshName: ""
+          MaterialComponent:
+            MaterialName: DefaultPbr
+            TilingFactor: 1
+            HeightFactor: 0
+            ClipBorder: false
+            FloatValues:
+              roughness: 0.5
+              metalness: 0.100000001
+            Float2Values:
+              {}
+            Float3Values:
+              albedo: [1, 1, 1]
+            IntValues:
+              {}
+            Textures:
+              albedoMap: WhiteTexture
+              roughnessMap: WhiteTexture
+              metalnessMap: WhiteTexture
+              aoMap: WhiteTexture
+              normalMap: DefaultNormalMap
+              heightMap: WhiteTexture
+        ? Entity: 3765164189588105144
+          TagComponent:
+            Tag: Cube
+          RootComponent:
+            Root: true
+          RelationshipComponent:
+            Children: 0
+            Parent: 15386962303537226748
+            First: 4135655264688823834
+            Prev: 2187847137947334047
+            Next: 13356826731233917402
+            TransformComponent:
+              Translation: [0, 10.1904678, -6.4457407]
+              Rotation: [0, 0, 0]
+              Scale: [1, 1, 1]
+            Physics3DMaterialComponent:
+              Mass: 1
+              Friction: 0.100000001
+              RollingFriction: 0.100000001
+              SpinningFriction: 0.100000001
+              Restitution: 0.5
+            Physics3DColliderComponent:
+              Shape: 0
+              Scale: [1, 1, 1]
+              ContactResponse: true
+            MeshComponent:
+              MeshName: ""
+            MaterialComponent:
+              MaterialName: DefaultPbr
+              TilingFactor: 1
+              HeightFactor: 0
+              ClipBorder: false
+              FloatValues:
+                roughness: 0.5
+                metalness: 0.100000001
+              Float2Values:
+                {}
+              Float3Values:
+                albedo: [1, 1, 1]
+              IntValues:
+                {}
+              Textures:
+                albedoMap: WhiteTexture
+                roughnessMap: WhiteTexture
+                metalnessMap: WhiteTexture
+                aoMap: WhiteTexture
+                normalMap: DefaultNormalMap
+                heightMap: WhiteTexture
+          ? Entity: 7005322199082657825
+            TagComponent:
+              Tag: Cube
+            RootComponent:
+              Root: true
+            RelationshipComponent:
+              Children: 0
+              Parent: 15386962303537226748
+              First: 4135655264688823834
+              Prev: 2187847137947334047
+              Next: 13356826731233917402
+              TransformComponent:
+                Translation: [-3.27463889, 10.1904678, 4.09290266]
+                Rotation: [0, 0, 0]
+                Scale: [1, 1, 1]
+              Physics3DMaterialComponent:
+                Mass: 1
+                Friction: 0.100000001
+                RollingFriction: 0.100000001
+                SpinningFriction: 0.100000001
+                Restitution: 2.36999989
+              Physics3DColliderComponent:
+                Shape: 0
+                Scale: [1, 1, 1]
+                ContactResponse: true
+              MeshComponent:
+                MeshName: ""
+              MaterialComponent:
+                MaterialName: DefaultPbr
+                TilingFactor: 1
+                HeightFactor: 0
+                ClipBorder: false
+                FloatValues:
+                  roughness: 0.5
+                  metalness: 0.100000001
+                Float2Values:
+                  {}
+                Float3Values:
+                  albedo: [1, 1, 1]
+                IntValues:
+                  {}
+                Textures:
+                  albedoMap: WhiteTexture
+                  roughnessMap: WhiteTexture
+                  metalnessMap: WhiteTexture
+                  aoMap: WhiteTexture
+                  normalMap: DefaultNormalMap
+                  heightMap: WhiteTexture
+            ? Entity: 3306363518185797531
+              TagComponent:
+                Tag: Cube
+              RootComponent:
+                Root: true
+              RelationshipComponent:
+                Children: 0
+                Parent: 15386962303537226748
+                First: 4135655264688823834
+                Prev: 2187847137947334047
+                Next: 13356826731233917402
+                TransformComponent:
+                  Translation: [-8.19909477, 10.1904678, 4.09290266]
+                  Rotation: [0, 0, 0]
+                  Scale: [1, 1, 1]
+                Physics3DMaterialComponent:
+                  Mass: 1
+                  Friction: 0.100000001
+                  RollingFriction: 0.100000001
+                  SpinningFriction: 0.100000001
+                  Restitution: 2.36999989
+                Physics3DColliderComponent:
+                  Shape: 0
+                  Scale: [1, 1, 1]
+                  ContactResponse: true
+                MeshComponent:
+                  MeshName: ""
+                MaterialComponent:
+                  MaterialName: DefaultPbr
+                  TilingFactor: 1
+                  HeightFactor: 0
+                  ClipBorder: false
+                  FloatValues:
+                    roughness: 0.5
+                    metalness: 0.100000001
+                  Float2Values:
+                    {}
+                  Float3Values:
+                    albedo: [1, 1, 1]
+                  IntValues:
+                    {}
+                  Textures:
+                    albedoMap: WhiteTexture
+                    roughnessMap: WhiteTexture
+                    metalnessMap: WhiteTexture
+                    aoMap: WhiteTexture
+                    normalMap: DefaultNormalMap
+                    heightMap: WhiteTexture
+              ? Entity: 16088833728409259706
+                TagComponent:
+                  Tag: Cube
+                RootComponent:
+                  Root: true
+                RelationshipComponent:
+                  Children: 0
+                  Parent: 15386962303537226748
+                  First: 4135655264688823834
+                  Prev: 2187847137947334047
+                  Next: 13356826731233917402
+                  TransformComponent:
+                    Translation: [-3.71094584, 10.1904678, -8.22422409]
+                    Rotation: [0, 0, 0]
+                    Scale: [1, 1, 1]
+                  Physics3DMaterialComponent:
+                    Mass: 1
+                    Friction: 0.100000001
+                    RollingFriction: 0.100000001
+                    SpinningFriction: 0.100000001
+                    Restitution: 0.5
+                  Physics3DColliderComponent:
+                    Shape: 0
+                    Scale: [1, 1, 1]
+                    ContactResponse: true
+                  MeshComponent:
+                    MeshName: ""
+                  MaterialComponent:
+                    MaterialName: DefaultPbr
+                    TilingFactor: 1
+                    HeightFactor: 0
+                    ClipBorder: false
+                    FloatValues:
+                      roughness: 0.5
+                      metalness: 0.100000001
+                    Float2Values:
+                      {}
+                    Float3Values:
+                      albedo: [1, 1, 1]
+                    IntValues:
+                      {}
+                    Textures:
+                      albedoMap: WhiteTexture
+                      roughnessMap: WhiteTexture
+                      metalnessMap: WhiteTexture
+                      aoMap: WhiteTexture
+                      normalMap: DefaultNormalMap
+                      heightMap: WhiteTexture
+                ? Entity: 3817738874708493584
+                  TagComponent:
+                    Tag: Cube
+                  RootComponent:
+                    Root: true
+                  RelationshipComponent:
+                    Children: 0
+                    Parent: 15386962303537226748
+                    First: 4135655264688823834
+                    Prev: 2187847137947334047
+                    Next: 13356826731233917402
+                    TransformComponent:
+                      Translation: [-3.12307954, 19.0011082, 11.6990948]
+                      Rotation: [0.547309875, 0, 0]
+                      Scale: [1, 0.999999821, 0.999999821]
+                    Physics3DMaterialComponent:
+                      Mass: 1
+                      Friction: 0.100000001
+                      RollingFriction: 0.100000001
+                      SpinningFriction: 0.100000001
+                      Restitution: 0.920000017
+                    Physics3DColliderComponent:
+                      Shape: 0
+                      Scale: [1, 1, 1]
+                      ContactResponse: true
+                    MeshComponent:
+                      MeshName: ""
+                    MaterialComponent:
+                      MaterialName: DefaultPbr
+                      TilingFactor: 1
+                      HeightFactor: 0
+                      ClipBorder: false
+                      FloatValues:
+                        roughness: 0.5
+                        metalness: 0.100000001
+                      Float2Values:
+                        {}
+                      Float3Values:
+                        albedo: [1, 1, 1]
+                      IntValues:
+                        {}
+                      Textures:
+                        albedoMap: WhiteTexture
+                        roughnessMap: WhiteTexture
+                        metalnessMap: WhiteTexture
+                        aoMap: WhiteTexture
+                        normalMap: DefaultNormalMap
+                        heightMap: WhiteTexture
+                  ? Entity: 9189868106382433751
+                    TagComponent:
+                      Tag: Cube
+                    RootComponent:
+                      Root: true
+                    RelationshipComponent:
+                      Children: 0
+                      Parent: 15386962303537226748
+                      First: 4135655264688823834
+                      Prev: 2187847137947334047
+                      Next: 13356826731233917402
+                      TransformComponent:
+                        Translation: [-8.53567886, 19.0011082, 11.6990948]
+                        Rotation: [0.547309875, 0, 0]
+                        Scale: [1, 0.999999821, 0.999999821]
+                      Physics3DMaterialComponent:
+                        Mass: 1
+                        Friction: 0.100000001
+                        RollingFriction: 0.100000001
+                        SpinningFriction: 0.100000001
+                        Restitution: 0.920000017
+                      Physics3DColliderComponent:
+                        Shape: 0
+                        Scale: [1, 1, 1]
+                        ContactResponse: true
+                      MeshComponent:
+                        MeshName: ""
+                      MaterialComponent:
+                        MaterialName: DefaultPbr
+                        TilingFactor: 1
+                        HeightFactor: 0
+                        ClipBorder: false
+                        FloatValues:
+                          roughness: 0.5
+                          metalness: 0.100000001
+                        Float2Values:
+                          {}
+                        Float3Values:
+                          albedo: [1, 1, 1]
+                        IntValues:
+                          {}
+                        Textures:
+                          albedoMap: WhiteTexture
+                          roughnessMap: WhiteTexture
+                          metalnessMap: WhiteTexture
+                          aoMap: WhiteTexture
+                          normalMap: DefaultNormalMap
+                          heightMap: WhiteTexture
+                    ? Entity: 3795149469537685980
+                      TagComponent:
+                        Tag: Cube
+                      RootComponent:
+                        Root: true
+                      RelationshipComponent:
+                        Children: 0
+                        Parent: 15386962303537226748
+                        First: 4135655264688823834
+                        Prev: 2187847137947334047
+                        Next: 13356826731233917402
+                        TransformComponent:
+                          Translation: [-8.53567886, 17.5532722, 10.8167667]
+                          Rotation: [0.547309875, 0, 0]
+                          Scale: [1, 0.999999821, 0.999999821]
+                        Physics3DMaterialComponent:
+                          Mass: 1
+                          Friction: 0.100000001
+                          RollingFriction: 0.100000001
+                          SpinningFriction: 0.100000001
+                          Restitution: 0.920000017
+                        Physics3DColliderComponent:
+                          Shape: 0
+                          Scale: [1, 1, 1]
+                          ContactResponse: true
+                        MeshComponent:
+                          MeshName: ""
+                        MaterialComponent:
+                          MaterialName: DefaultPbr
+                          TilingFactor: 1
+                          HeightFactor: 0
+                          ClipBorder: false
+                          FloatValues:
+                            roughness: 0.5
+                            metalness: 0.100000001
+                          Float2Values:
+                            {}
+                          Float3Values:
+                            albedo: [1, 1, 1]
+                          IntValues:
+                            {}
+                          Textures:
+                            albedoMap: WhiteTexture
+                            roughnessMap: WhiteTexture
+                            metalnessMap: WhiteTexture
+                            aoMap: WhiteTexture
+                            normalMap: DefaultNormalMap
+                            heightMap: WhiteTexture
+                      ? Entity: 10964474062604807483
+                        TagComponent:
+                          Tag: Cube
+                        RootComponent:
+                          Root: true
+                        RelationshipComponent:
+                          Children: 0
+                          Parent: 15386962303537226748
+                          First: 4135655264688823834
+                          Prev: 2187847137947334047
+                          Next: 13356826731233917402
+                          TransformComponent:
+                            Translation: [-8.53567886, 15.1555977, 9.3555994]
+                            Rotation: [0.547309875, 0, 0]
+                            Scale: [1, 0.999999821, 0.999999821]
+                          Physics3DMaterialComponent:
+                            Mass: 1
+                            Friction: 0.100000001
+                            RollingFriction: 0.100000001
+                            SpinningFriction: 0.100000001
+                            Restitution: 0.920000017
+                          Physics3DColliderComponent:
+                            Shape: 0
+                            Scale: [1, 1, 1]
+                            ContactResponse: true
+                          MeshComponent:
+                            MeshName: ""
+                          MaterialComponent:
+                            MaterialName: DefaultPbr
+                            TilingFactor: 1
+                            HeightFactor: 0
+                            ClipBorder: false
+                            FloatValues:
+                              roughness: 0.5
+                              metalness: 0.100000001
+                            Float2Values:
+                              {}
+                            Float3Values:
+                              albedo: [1, 1, 1]
+                            IntValues:
+                              {}
+                            Textures:
+                              albedoMap: WhiteTexture
+                              roughnessMap: WhiteTexture
+                              metalnessMap: WhiteTexture
+                              aoMap: WhiteTexture
+                              normalMap: DefaultNormalMap
+                              heightMap: WhiteTexture
+                        ? Entity: 10476020577947669090
+                          TagComponent:
+                            Tag: Cube
+                          RootComponent:
+                            Root: true
+                          RelationshipComponent:
+                            Children: 0
+                            Parent: 15386962303537226748
+                            First: 4135655264688823834
+                            Prev: 2187847137947334047
+                            Next: 13356826731233917402
+                            TransformComponent:
+                              Translation: [-8.53567886, 11.7567682, 7.28431511]
+                              Rotation: [0.547309875, 0, 0]
+                              Scale: [1, 0.999999821, 0.999999821]
+                            Physics3DMaterialComponent:
+                              Mass: 1
+                              Friction: 0.100000001
+                              RollingFriction: 0.100000001
+                              SpinningFriction: 0.100000001
+                              Restitution: 0.920000017
+                            Physics3DColliderComponent:
+                              Shape: 0
+                              Scale: [1, 1, 1]
+                              ContactResponse: true
+                            MeshComponent:
+                              MeshName: ""
+                            MaterialComponent:
+                              MaterialName: DefaultPbr
+                              TilingFactor: 1
+                              HeightFactor: 0
+                              ClipBorder: false
+                              FloatValues:
+                                roughness: 0.5
+                                metalness: 0.100000001
+                              Float2Values:
+                                {}
+                              Float3Values:
+                                albedo: [1, 1, 1]
+                              IntValues:
+                                {}
+                              Textures:
+                                albedoMap: WhiteTexture
+                                roughnessMap: WhiteTexture
+                                metalnessMap: WhiteTexture
+                                aoMap: WhiteTexture
+                                normalMap: DefaultNormalMap
+                                heightMap: WhiteTexture
+                          ? Entity: 12700104773182057785
+                            TagComponent:
+                              Tag: Cube
+                            RootComponent:
+                              Root: true
+                            RelationshipComponent:
+                              Children: 0
+                              Parent: 15386962303537226748
+                              First: 4135655264688823834
+                              Prev: 2187847137947334047
+                              Next: 13356826731233917402
+                              TransformComponent:
+                                Translation: [-6.72737312, 11.7567682, 7.28431511]
+                                Rotation: [0.547309875, 0, 0]
+                                Scale: [1, 0.999999821, 0.999999821]
+                              Physics3DMaterialComponent:
+                                Mass: 1
+                                Friction: 0.100000001
+                                RollingFriction: 0.100000001
+                                SpinningFriction: 0.100000001
+                                Restitution: 0.920000017
+                              Physics3DColliderComponent:
+                                Shape: 0
+                                Scale: [1, 1, 1]
+                                ContactResponse: true
+                              MeshComponent:
+                                MeshName: ""
+                              MaterialComponent:
+                                MaterialName: DefaultPbr
+                                TilingFactor: 1
+                                HeightFactor: 0
+                                ClipBorder: false
+                                FloatValues:
+                                  roughness: 0.5
+                                  metalness: 0.100000001
+                                Float2Values:
+                                  {}
+                                Float3Values:
+                                  albedo: [1, 1, 1]
+                                IntValues:
+                                  {}
+                                Textures:
+                                  albedoMap: WhiteTexture
+                                  roughnessMap: WhiteTexture
+                                  metalnessMap: WhiteTexture
+                                  aoMap: WhiteTexture
+                                  normalMap: DefaultNormalMap
+                                  heightMap: WhiteTexture
+                            ? Entity: 3138972238430107835
+                              TagComponent:
+                                Tag: Cube
+                              RootComponent:
+                                Root: true
+                              RelationshipComponent:
+                                Children: 0
+                                Parent: 15386962303537226748
+                                First: 4135655264688823834
+                                Prev: 2187847137947334047
+                                Next: 13356826731233917402
+                                TransformComponent:
+                                  Translation: [-4.06164837, 11.7567682, 7.28431511]
+                                  Rotation: [0.547309875, 0, 0]
+                                  Scale: [1, 0.999999821, 0.999999821]
+                                Physics3DMaterialComponent:
+                                  Mass: 1
+                                  Friction: 0.100000001
+                                  RollingFriction: 0.100000001
+                                  SpinningFriction: 0.100000001
+                                  Restitution: 0.920000017
+                                Physics3DColliderComponent:
+                                  Shape: 0
+                                  Scale: [1, 1, 1]
+                                  ContactResponse: true
+                                MeshComponent:
+                                  MeshName: ""
+                                MaterialComponent:
+                                  MaterialName: DefaultPbr
+                                  TilingFactor: 1
+                                  HeightFactor: 0
+                                  ClipBorder: false
+                                  FloatValues:
+                                    roughness: 0.5
+                                    metalness: 0.100000001
+                                  Float2Values:
+                                    {}
+                                  Float3Values:
+                                    albedo: [1, 1, 1]
+                                  IntValues:
+                                    {}
+                                  Textures:
+                                    albedoMap: WhiteTexture
+                                    roughnessMap: WhiteTexture
+                                    metalnessMap: WhiteTexture
+                                    aoMap: WhiteTexture
+                                    normalMap: DefaultNormalMap
+                                    heightMap: WhiteTexture
+                              ? Entity: 11323003898109416919
+                                TagComponent:
+                                  Tag: Cube
+                                RootComponent:
+                                  Root: true
+                                RelationshipComponent:
+                                  Children: 0
+                                  Parent: 15386962303537226748
+                                  First: 4135655264688823834
+                                  Prev: 2187847137947334047
+                                  Next: 13356826731233917402
+                                  TransformComponent:
+                                    Translation: [-2.75978208, 17.0735035, -1.44008422]
+                                    Rotation: [0.547309875, 0, 0]
+                                    Scale: [1, 0.999999821, 0.999999821]
+                                  Physics3DMaterialComponent:
+                                    Mass: 1
+                                    Friction: 0.100000001
+                                    RollingFriction: 0.100000001
+                                    SpinningFriction: 0.100000001
+                                    Restitution: 0.920000017
+                                  Physics3DColliderComponent:
+                                    Shape: 0
+                                    Scale: [1, 1, 1]
+                                    ContactResponse: true
+                                  MeshComponent:
+                                    MeshName: ""
+                                  MaterialComponent:
+                                    MaterialName: DefaultPbr
+                                    TilingFactor: 1
+                                    HeightFactor: 0
+                                    ClipBorder: false
+                                    FloatValues:
+                                      roughness: 0.5
+                                      metalness: 0.100000001
+                                    Float2Values:
+                                      {}
+                                    Float3Values:
+                                      albedo: [1, 1, 1]
+                                    IntValues:
+                                      {}
+                                    Textures:
+                                      albedoMap: WhiteTexture
+                                      roughnessMap: WhiteTexture
+                                      metalnessMap: WhiteTexture
+                                      aoMap: WhiteTexture
+                                      normalMap: DefaultNormalMap
+                                      heightMap: WhiteTexture
+                                ? Entity: 11057143331154595718
+                                  TagComponent:
+                                    Tag: Cube
+                                  RootComponent:
+                                    Root: true
+                                  RelationshipComponent:
+                                    Children: 0
+                                    Parent: 15386962303537226748
+                                    First: 4135655264688823834
+                                    Prev: 2187847137947334047
+                                    Next: 13356826731233917402
+                                    TransformComponent:
+                                      Translation: [-0.630426407, 17.0735035, -1.44008422]
+                                      Rotation: [0.547309875, 0, 0]
+                                      Scale: [1, 0.999999821, 0.999999821]
+                                    Physics3DMaterialComponent:
+                                      Mass: 1
+                                      Friction: 0.100000001
+                                      RollingFriction: 0.100000001
+                                      SpinningFriction: 0.100000001
+                                      Restitution: 0.920000017
+                                    Physics3DColliderComponent:
+                                      Shape: 0
+                                      Scale: [1, 1, 1]
+                                      ContactResponse: true
+                                    MeshComponent:
+                                      MeshName: ""
+                                    MaterialComponent:
+                                      MaterialName: DefaultPbr
+                                      TilingFactor: 1
+                                      HeightFactor: 0
+                                      ClipBorder: false
+                                      FloatValues:
+                                        roughness: 0.5
+                                        metalness: 0.100000001
+                                      Float2Values:
+                                        {}
+                                      Float3Values:
+                                        albedo: [1, 1, 1]
+                                      IntValues:
+                                        {}
+                                      Textures:
+                                        albedoMap: WhiteTexture
+                                        roughnessMap: WhiteTexture
+                                        metalnessMap: WhiteTexture
+                                        aoMap: WhiteTexture
+                                        normalMap: DefaultNormalMap
+                                        heightMap: WhiteTexture
+                                  ? Entity: 12962169978670795278
+                                    TagComponent:
+                                      Tag: Cube
+                                    RootComponent:
+                                      Root: true
+                                    RelationshipComponent:
+                                      Children: 0
+                                      Parent: 15386962303537226748
+                                      First: 4135655264688823834
+                                      Prev: 2187847137947334047
+                                      Next: 13356826731233917402
+                                      TransformComponent:
+                                        Translation: [1.56224144, 17.0735035, -1.44008422]
+                                        Rotation: [0.547309875, 0, 0]
+                                        Scale: [1, 0.999999821, 0.999999821]
+                                      Physics3DMaterialComponent:
+                                        Mass: 1
+                                        Friction: 0.100000001
+                                        RollingFriction: 0.100000001
+                                        SpinningFriction: 0.100000001
+                                        Restitution: 0.920000017
+                                      Physics3DColliderComponent:
+                                        Shape: 0
+                                        Scale: [1, 1, 1]
+                                        ContactResponse: true
+                                      MeshComponent:
+                                        MeshName: ""
+                                      MaterialComponent:
+                                        MaterialName: DefaultPbr
+                                        TilingFactor: 1
+                                        HeightFactor: 0
+                                        ClipBorder: false
+                                        FloatValues:
+                                          roughness: 0.5
+                                          metalness: 0.100000001
+                                        Float2Values:
+                                          {}
+                                        Float3Values:
+                                          albedo: [1, 1, 1]
+                                        IntValues:
+                                          {}
+                                        Textures:
+                                          albedoMap: WhiteTexture
+                                          roughnessMap: WhiteTexture
+                                          metalnessMap: WhiteTexture
+                                          aoMap: WhiteTexture
+                                          normalMap: DefaultNormalMap
+                                          heightMap: WhiteTexture
+                                    ? Entity: 17126749890190182481
+                                      TagComponent:
+                                        Tag: Cube
+                                      RootComponent:
+                                        Root: true
+                                      RelationshipComponent:
+                                        Children: 0
+                                        Parent: 15386962303537226748
+                                        First: 4135655264688823834
+                                        Prev: 2187847137947334047
+                                        Next: 13356826731233917402
+                                        TransformComponent:
+                                          Translation: [1.56224144, 15.994463, 0.330555826]
+                                          Rotation: [0.547309875, 0, 0]
+                                          Scale: [1, 0.999999821, 0.999999821]
+                                        Physics3DMaterialComponent:
+                                          Mass: 1
+                                          Friction: 0.100000001
+                                          RollingFriction: 0.100000001
+                                          SpinningFriction: 0.100000001
+                                          Restitution: 0.920000017
+                                        Physics3DColliderComponent:
+                                          Shape: 0
+                                          Scale: [1, 1, 1]
+                                          ContactResponse: true
+                                        MeshComponent:
+                                          MeshName: ""
+                                        MaterialComponent:
+                                          MaterialName: DefaultPbr
+                                          TilingFactor: 1
+                                          HeightFactor: 0
+                                          ClipBorder: false
+                                          FloatValues:
+                                            roughness: 0.5
+                                            metalness: 0.100000001
+                                          Float2Values:
+                                            {}
+                                          Float3Values:
+                                            albedo: [1, 1, 1]
+                                          IntValues:
+                                            {}
+                                          Textures:
+                                            albedoMap: WhiteTexture
+                                            roughnessMap: WhiteTexture
+                                            metalnessMap: WhiteTexture
+                                            aoMap: WhiteTexture
+                                            normalMap: DefaultNormalMap
+                                            heightMap: WhiteTexture
+                                      ? Entity: 13749293817898402775
+                                        TagComponent:
+                                          Tag: Cube
+                                        RootComponent:
+                                          Root: true
+                                        RelationshipComponent:
+                                          Children: 0
+                                          Parent: 15386962303537226748
+                                          First: 4135655264688823834
+                                          Prev: 2187847137947334047
+                                          Next: 13356826731233917402
+                                          TransformComponent:
+                                            Translation: [1.56224144, 13.499506, -1.18989551]
+                                            Rotation: [0.547309875, 0, 0]
+                                            Scale: [1, 0.999999821, 0.999999821]
+                                          Physics3DMaterialComponent:
+                                            Mass: 1
+                                            Friction: 0.100000001
+                                            RollingFriction: 0.100000001
+                                            SpinningFriction: 0.100000001
+                                            Restitution: 0.920000017
+                                          Physics3DColliderComponent:
+                                            Shape: 0
+                                            Scale: [1, 1, 1]
+                                            ContactResponse: true
+                                          MeshComponent:
+                                            MeshName: ""
+                                          MaterialComponent:
+                                            MaterialName: DefaultPbr
+                                            TilingFactor: 1
+                                            HeightFactor: 0
+                                            ClipBorder: false
+                                            FloatValues:
+                                              roughness: 0.5
+                                              metalness: 0.100000001
+                                            Float2Values:
+                                              {}
+                                            Float3Values:
+                                              albedo: [1, 1, 1]
+                                            IntValues:
+                                              {}
+                                            Textures:
+                                              albedoMap: WhiteTexture
+                                              roughnessMap: WhiteTexture
+                                              metalnessMap: WhiteTexture
+                                              aoMap: WhiteTexture
+                                              normalMap: DefaultNormalMap
+                                              heightMap: WhiteTexture
+                                        ? Entity: 7756647294808280909
+                                          TagComponent:
+                                            Tag: Cube
+                                          RootComponent:
+                                            Root: true
+                                          RelationshipComponent:
+                                            Children: 0
+                                            Parent: 15386962303537226748
+                                            First: 4135655264688823834
+                                            Prev: 2187847137947334047
+                                            Next: 13356826731233917402
+                                            TransformComponent:
+                                              Translation: [-0.972077847, 13.499506, -1.18989551]
+                                              Rotation: [0.547309875, 0, 0]
+                                              Scale: [1, 0.999999821, 0.999999821]
+                                            Physics3DMaterialComponent:
+                                              Mass: 1
+                                              Friction: 0.100000001
+                                              RollingFriction: 0.100000001
+                                              SpinningFriction: 0.100000001
+                                              Restitution: 0.920000017
+                                            Physics3DColliderComponent:
+                                              Shape: 0
+                                              Scale: [1, 1, 1]
+                                              ContactResponse: true
+                                            MeshComponent:
+                                              MeshName: ""
+                                            MaterialComponent:
+                                              MaterialName: DefaultPbr
+                                              TilingFactor: 1
+                                              HeightFactor: 0
+                                              ClipBorder: false
+                                              FloatValues:
+                                                roughness: 0.5
+                                                metalness: 0.100000001
+                                              Float2Values:
+                                                {}
+                                              Float3Values:
+                                                albedo: [1, 1, 1]
+                                              IntValues:
+                                                {}
+                                              Textures:
+                                                albedoMap: WhiteTexture
+                                                roughnessMap: WhiteTexture
+                                                metalnessMap: WhiteTexture
+                                                aoMap: WhiteTexture
+                                                normalMap: DefaultNormalMap
+                                                heightMap: WhiteTexture
+                                          ? Entity: 15708257586357520584
+                                            TagComponent:
+                                              Tag: Cube
+                                            RootComponent:
+                                              Root: true
+                                            RelationshipComponent:
+                                              Children: 0
+                                              Parent: 15386962303537226748
+                                              First: 4135655264688823834
+                                              Prev: 2187847137947334047
+                                              Next: 13356826731233917402
+                                              TransformComponent:
+                                                Translation: [-3.49664831, 13.499506, -1.18989551]
+                                                Rotation: [0.547309875, 0, 0]
+                                                Scale: [1, 0.999999821, 0.999999821]
+                                              Physics3DMaterialComponent:
+                                                Mass: 1
+                                                Friction: 0.100000001
+                                                RollingFriction: 0.100000001
+                                                SpinningFriction: 0.100000001
+                                                Restitution: 0.920000017
+                                              Physics3DColliderComponent:
+                                                Shape: 0
+                                                Scale: [1, 1, 1]
+                                                ContactResponse: true
+                                              MeshComponent:
+                                                MeshName: ""
+                                              MaterialComponent:
+                                                MaterialName: DefaultPbr
+                                                TilingFactor: 1
+                                                HeightFactor: 0
+                                                ClipBorder: false
+                                                FloatValues:
+                                                  roughness: 0.5
+                                                  metalness: 0.100000001
+                                                Float2Values:
+                                                  {}
+                                                Float3Values:
+                                                  albedo: [1, 1, 1]
+                                                IntValues:
+                                                  {}
+                                                Textures:
+                                                  albedoMap: WhiteTexture
+                                                  roughnessMap: WhiteTexture
+                                                  metalnessMap: WhiteTexture
+                                                  aoMap: WhiteTexture
+                                                  normalMap: DefaultNormalMap
+                                                  heightMap: WhiteTexture
+                                            ? Entity: 15679746649070091636
+                                              TagComponent:
+                                                Tag: Cube
+                                              RootComponent:
+                                                Root: true
+                                              RelationshipComponent:
+                                                Children: 0
+                                                Parent: 15386962303537226748
+                                                First: 4135655264688823834
+                                                Prev: 2187847137947334047
+                                                Next: 13356826731233917402
+                                                TransformComponent:
+                                                  Translation: [-5.06416082, 13.499506, -1.18989551]
+                                                  Rotation: [0.547309875, 0, 0]
+                                                  Scale: [1, 0.999999821, 0.999999821]
+                                                Physics3DMaterialComponent:
+                                                  Mass: 1
+                                                  Friction: 0.100000001
+                                                  RollingFriction: 0.100000001
+                                                  SpinningFriction: 0.100000001
+                                                  Restitution: 0.920000017
+                                                Physics3DColliderComponent:
+                                                  Shape: 0
+                                                  Scale: [1, 1, 1]
+                                                  ContactResponse: true
+                                                MeshComponent:
+                                                  MeshName: ""
+                                                MaterialComponent:
+                                                  MaterialName: DefaultPbr
+                                                  TilingFactor: 1
+                                                  HeightFactor: 0
+                                                  ClipBorder: false
+                                                  FloatValues:
+                                                    roughness: 0.5
+                                                    metalness: 0.100000001
+                                                  Float2Values:
+                                                    {}
+                                                  Float3Values:
+                                                    albedo: [1, 1, 1]
+                                                  IntValues:
+                                                    {}
+                                                  Textures:
+                                                    albedoMap: WhiteTexture
+                                                    roughnessMap: WhiteTexture
+                                                    metalnessMap: WhiteTexture
+                                                    aoMap: WhiteTexture
+                                                    normalMap: DefaultNormalMap
+                                                    heightMap: WhiteTexture
+                                              ? Entity: 14171224185370497167
+                                                TagComponent:
+                                                  Tag: Cube
+                                                RootComponent:
+                                                  Root: true
+                                                RelationshipComponent:
+                                                  Children: 0
+                                                  Parent: 15386962303537226748
+                                                  First: 4135655264688823834
+                                                  Prev: 2187847137947334047
+                                                  Next: 13356826731233917402
+                                                  TransformComponent:
+                                                    Translation: [-5.06416082, 11.5085573, -2.40320063]
+                                                    Rotation: [0.547309875, 0, 0]
+                                                    Scale: [1, 0.999999821, 0.999999821]
+                                                  Physics3DMaterialComponent:
+                                                    Mass: 1
+                                                    Friction: 0.100000001
+                                                    RollingFriction: 0.100000001
+                                                    SpinningFriction: 0.100000001
+                                                    Restitution: 0.920000017
+                                                  Physics3DColliderComponent:
+                                                    Shape: 0
+                                                    Scale: [1, 1, 1]
+                                                    ContactResponse: true
+                                                  MeshComponent:
+                                                    MeshName: ""
+                                                  MaterialComponent:
+                                                    MaterialName: DefaultPbr
+                                                    TilingFactor: 1
+                                                    HeightFactor: 0
+                                                    ClipBorder: false
+                                                    FloatValues:
+                                                      roughness: 0.5
+                                                      metalness: 0.100000001
+                                                    Float2Values:
+                                                      {}
+                                                    Float3Values:
+                                                      albedo: [1, 1, 1]
+                                                    IntValues:
+                                                      {}
+                                                    Textures:
+                                                      albedoMap: WhiteTexture
+                                                      roughnessMap: WhiteTexture
+                                                      metalnessMap: WhiteTexture
+                                                      aoMap: WhiteTexture
+                                                      normalMap: DefaultNormalMap
+                                                      heightMap: WhiteTexture
+                                                ? Entity: 14741676682368973009
+                                                  TagComponent:
+                                                    Tag: Cube
+                                                  RootComponent:
+                                                    Root: true
+                                                  RelationshipComponent:
+                                                    Children: 0
+                                                    Parent: 15386962303537226748
+                                                    First: 4135655264688823834
+                                                    Prev: 2187847137947334047
+                                                    Next: 13356826731233917402
+                                                    TransformComponent:
+                                                      Translation: [-5.06416082, 12.3896894, -3.84907937]
+                                                      Rotation: [0.547309875, 0, 0]
+                                                      Scale: [1, 0.999999821, 0.999999821]
+                                                    Physics3DMaterialComponent:
+                                                      Mass: 1
+                                                      Friction: 0.100000001
+                                                      RollingFriction: 0.100000001
+                                                      SpinningFriction: 0.100000001
+                                                      Restitution: 0.920000017
+                                                    Physics3DColliderComponent:
+                                                      Shape: 0
+                                                      Scale: [1, 1, 1]
+                                                      ContactResponse: true
+                                                    MeshComponent:
+                                                      MeshName: ""
+                                                    MaterialComponent:
+                                                      MaterialName: DefaultPbr
+                                                      TilingFactor: 1
+                                                      HeightFactor: 0
+                                                      ClipBorder: false
+                                                      FloatValues:
+                                                        roughness: 0.5
+                                                        metalness: 0.100000001
+                                                      Float2Values:
+                                                        {}
+                                                      Float3Values:
+                                                        albedo: [1, 1, 1]
+                                                      IntValues:
+                                                        {}
+                                                      Textures:
+                                                        albedoMap: WhiteTexture
+                                                        roughnessMap: WhiteTexture
+                                                        metalnessMap: WhiteTexture
+                                                        aoMap: WhiteTexture
+                                                        normalMap: DefaultNormalMap
+                                                        heightMap: WhiteTexture
+                                                  ? Entity: 75907903261619292
+                                                    TagComponent:
+                                                      Tag: Cube
+                                                    RootComponent:
+                                                      Root: true
+                                                    RelationshipComponent:
+                                                      Children: 0
+                                                      Parent: 15386962303537226748
+                                                      First: 4135655264688823834
+                                                      Prev: 2187847137947334047
+                                                      Next: 13356826731233917402
+                                                      TransformComponent:
+                                                        Translation: [-5.06416082, 10.7106724, -4.87228823]
+                                                        Rotation: [0.547309875, 0, 0]
+                                                        Scale: [1, 0.999999821, 0.999999821]
+                                                      Physics3DMaterialComponent:
+                                                        Mass: 1
+                                                        Friction: 0.100000001
+                                                        RollingFriction: 0.100000001
+                                                        SpinningFriction: 0.100000001
+                                                        Restitution: 0.920000017
+                                                      Physics3DColliderComponent:
+                                                        Shape: 0
+                                                        Scale: [1, 1, 1]
+                                                        ContactResponse: true
+                                                      MeshComponent:
+                                                        MeshName: ""
+                                                      MaterialComponent:
+                                                        MaterialName: DefaultPbr
+                                                        TilingFactor: 1
+                                                        HeightFactor: 0
+                                                        ClipBorder: false
+                                                        FloatValues:
+                                                          roughness: 0.5
+                                                          metalness: 0.100000001
+                                                        Float2Values:
+                                                          {}
+                                                        Float3Values:
+                                                          albedo: [1, 1, 1]
+                                                        IntValues:
+                                                          {}
+                                                        Textures:
+                                                          albedoMap: WhiteTexture
+                                                          roughnessMap: WhiteTexture
+                                                          metalnessMap: WhiteTexture
+                                                          aoMap: WhiteTexture
+                                                          normalMap: DefaultNormalMap
+                                                          heightMap: WhiteTexture
+                                                    ? Entity: 8209655080364904762
+                                                      TagComponent:
+                                                        Tag: Cube
+                                                      RootComponent:
+                                                        Root: true
+                                                      RelationshipComponent:
+                                                        Children: 0
+                                                        Parent: 15386962303537226748
+                                                        First: 4135655264688823834
+                                                        Prev: 2187847137947334047
+                                                        Next: 13356826731233917402
+                                                        TransformComponent:
+                                                          Translation: [-5.06416082, 9.4480238, -5.64175892]
+                                                          Rotation: [0.547309875, 0, 0]
+                                                          Scale: [1, 0.999999821, 0.999999821]
+                                                        Physics3DMaterialComponent:
+                                                          Mass: 1
+                                                          Friction: 0.100000001
+                                                          RollingFriction: 0.100000001
+                                                          SpinningFriction: 0.100000001
+                                                          Restitution: 0.920000017
+                                                        Physics3DColliderComponent:
+                                                          Shape: 0
+                                                          Scale: [1, 1, 1]
+                                                          ContactResponse: true
+                                                        MeshComponent:
+                                                          MeshName: ""
+                                                        MaterialComponent:
+                                                          MaterialName: DefaultPbr
+                                                          TilingFactor: 1
+                                                          HeightFactor: 0
+                                                          ClipBorder: false
+                                                          FloatValues:
+                                                            roughness: 0.5
+                                                            metalness: 0.100000001
+                                                          Float2Values:
+                                                            {}
+                                                          Float3Values:
+                                                            albedo: [1, 1, 1]
+                                                          IntValues:
+                                                            {}
+                                                          Textures:
+                                                            albedoMap: WhiteTexture
+                                                            roughnessMap: WhiteTexture
+                                                            metalnessMap: WhiteTexture
+                                                            aoMap: WhiteTexture
+                                                            normalMap: DefaultNormalMap
+                                                            heightMap: WhiteTexture
+                                                      ? Entity: 3337822607901669404
+                                                        TagComponent:
+                                                          Tag: Cube
+                                                        RootComponent:
+                                                          Root: true
+                                                        RelationshipComponent:
+                                                          Children: 0
+                                                          Parent: 15386962303537226748
+                                                          First: 4135655264688823834
+                                                          Prev: 2187847137947334047
+                                                          Next: 13356826731233917402
+                                                          TransformComponent:
+                                                            Translation: [-5.06416082, 8.12874699, -6.4457407]
+                                                            Rotation: [0.547309875, 0, 0]
+                                                            Scale: [1, 0.999999821, 0.999999821]
+                                                          Physics3DMaterialComponent:
+                                                            Mass: 1
+                                                            Friction: 0.100000001
+                                                            RollingFriction: 0.100000001
+                                                            SpinningFriction: 0.100000001
+                                                            Restitution: 0.920000017
+                                                          Physics3DColliderComponent:
+                                                            Shape: 0
+                                                            Scale: [1, 1, 1]
+                                                            ContactResponse: true
+                                                          MeshComponent:
+                                                            MeshName: ""
+                                                          MaterialComponent:
+                                                            MaterialName: DefaultPbr
+                                                            TilingFactor: 1
+                                                            HeightFactor: 0
+                                                            ClipBorder: false
+                                                            FloatValues:
+                                                              roughness: 0.5
+                                                              metalness: 0.100000001
+                                                            Float2Values:
+                                                              {}
+                                                            Float3Values:
+                                                              albedo: [1, 1, 1]
+                                                            IntValues:
+                                                              {}
+                                                            Textures:
+                                                              albedoMap: WhiteTexture
+                                                              roughnessMap: WhiteTexture
+                                                              metalnessMap: WhiteTexture
+                                                              aoMap: WhiteTexture
+                                                              normalMap: DefaultNormalMap
+                                                              heightMap: WhiteTexture
+                                                        ? Entity: 11859366475767134416
+                                                          TagComponent:
+                                                            Tag: Cube
+                                                          RootComponent:
+                                                            Root: true
+                                                          RelationshipComponent:
+                                                            Children: 0
+                                                            Parent: 15386962303537226748
+                                                            First: 4135655264688823834
+                                                            Prev: 2187847137947334047
+                                                            Next: 13356826731233917402
+                                                            TransformComponent:
+                                                              Translation: [-3.16668129, 8.12874699, -6.4457407]
+                                                              Rotation: [0.547309875, 0, 0]
+                                                              Scale: [1, 0.999999821, 0.999999821]
+                                                            Physics3DMaterialComponent:
+                                                              Mass: 1
+                                                              Friction: 0.100000001
+                                                              RollingFriction: 0.100000001
+                                                              SpinningFriction: 0.100000001
+                                                              Restitution: 0.920000017
+                                                            Physics3DColliderComponent:
+                                                              Shape: 0
+                                                              Scale: [1, 1, 1]
+                                                              ContactResponse: true
+                                                            MeshComponent:
+                                                              MeshName: ""
+                                                            MaterialComponent:
+                                                              MaterialName: DefaultPbr
+                                                              TilingFactor: 1
+                                                              HeightFactor: 0
+                                                              ClipBorder: false
+                                                              FloatValues:
+                                                                roughness: 0.5
+                                                                metalness: 0.100000001
+                                                              Float2Values:
+                                                                {}
+                                                              Float3Values:
+                                                                albedo: [1, 1, 1]
+                                                              IntValues:
+                                                                {}
+                                                              Textures:
+                                                                albedoMap: WhiteTexture
+                                                                roughnessMap: WhiteTexture
+                                                                metalnessMap: WhiteTexture
+                                                                aoMap: WhiteTexture
+                                                                normalMap: DefaultNormalMap
+                                                                heightMap: WhiteTexture
+                                                          ? Entity: 17666427922211439780
+                                                            TagComponent:
+                                                              Tag: Cube
+                                                            RootComponent:
+                                                              Root: true
+                                                            RelationshipComponent:
+                                                              Children: 0
+                                                              Parent: 15386962303537226748
+                                                              First: 4135655264688823834
+                                                              Prev: 2187847137947334047
+                                                              Next: 13356826731233917402
+                                                              TransformComponent:
+                                                                Translation: [0, 8.12874699, -6.4457407]
+                                                                Rotation: [0.547309875, 0, 0]
+                                                                Scale: [1, 0.999999821, 0.999999821]
+                                                              Physics3DMaterialComponent:
+                                                                Mass: 1
+                                                                Friction: 0.100000001
+                                                                RollingFriction: 0.100000001
+                                                                SpinningFriction: 0.100000001
+                                                                Restitution: 0.920000017
+                                                              Physics3DColliderComponent:
+                                                                Shape: 0
+                                                                Scale: [1, 1, 1]
+                                                                ContactResponse: true
+                                                              MeshComponent:
+                                                                MeshName: ""
+                                                              MaterialComponent:
+                                                                MaterialName: DefaultPbr
+                                                                TilingFactor: 1
+                                                                HeightFactor: 0
+                                                                ClipBorder: false
+                                                                FloatValues:
+                                                                  roughness: 0.5
+                                                                  metalness: 0.100000001
+                                                                Float2Values:
+                                                                  {}
+                                                                Float3Values:
+                                                                  albedo: [1, 1, 1]
+                                                                IntValues:
+                                                                  {}
+                                                                Textures:
+                                                                  albedoMap: WhiteTexture
+                                                                  roughnessMap: WhiteTexture
+                                                                  metalnessMap: WhiteTexture
+                                                                  aoMap: WhiteTexture
+                                                                  normalMap: DefaultNormalMap
+                                                                  heightMap: WhiteTexture
+                                                            ? Entity: 8553894796155788211
+                                                              TagComponent:
+                                                                Tag: Cube
+                                                              RootComponent:
+                                                                Root: true
+                                                              RelationshipComponent:
+                                                                Children: 0
+                                                                Parent: 15386962303537226748
+                                                                First: 4135655264688823834
+                                                                Prev: 2187847137947334047
+                                                                Next: 13356826731233917402
+                                                                TransformComponent:
+                                                                  Translation: [0, 12.5171347, -8.87280178]
+                                                                  Rotation: [0, 0, 0]
+                                                                  Scale: [1, 1, 1]
+                                                                Physics3DMaterialComponent:
+                                                                  Mass: 1
+                                                                  Friction: 0.100000001
+                                                                  RollingFriction: 0.100000001
+                                                                  SpinningFriction: 0.100000001
+                                                                  Restitution: 0.5
+                                                                Physics3DColliderComponent:
+                                                                  Shape: 0
+                                                                  Scale: [1, 1, 1]
+                                                                  ContactResponse: true
+                                                                MeshComponent:
+                                                                  MeshName: ""
+                                                                MaterialComponent:
+                                                                  MaterialName: DefaultPbr
+                                                                  TilingFactor: 1
+                                                                  HeightFactor: 0
+                                                                  ClipBorder: false
+                                                                  FloatValues:
+                                                                    roughness: 0.5
+                                                                    metalness: 0.100000001
+                                                                  Float2Values:
+                                                                    {}
+                                                                  Float3Values:
+                                                                    albedo: [1, 1, 1]
+                                                                  IntValues:
+                                                                    {}
+                                                                  Textures:
+                                                                    albedoMap: WhiteTexture
+                                                                    roughnessMap: WhiteTexture
+                                                                    metalnessMap: WhiteTexture
+                                                                    aoMap: WhiteTexture
+                                                                    normalMap: DefaultNormalMap
+                                                                    heightMap: WhiteTexture
+                                                              ? Entity: 11958140115331153372
+                                                                TagComponent:
+                                                                  Tag: Cube
+                                                                RootComponent:
+                                                                  Root: true
+                                                                RelationshipComponent:
+                                                                  Children: 0
+                                                                  Parent: 15386962303537226748
+                                                                  First: 4135655264688823834
+                                                                  Prev: 2187847137947334047
+                                                                  Next: 13356826731233917402
+                                                                  TransformComponent:
+                                                                    Translation: [0, 12.5171347, -4.64897728]
+                                                                    Rotation: [0, 0, 0]
+                                                                    Scale: [1, 1, 1]
+                                                                  Physics3DMaterialComponent:
+                                                                    Mass: 1
+                                                                    Friction: 0.100000001
+                                                                    RollingFriction: 0.100000001
+                                                                    SpinningFriction: 0.100000001
+                                                                    Restitution: 0.5
+                                                                  Physics3DColliderComponent:
+                                                                    Shape: 0
+                                                                    Scale: [1, 1, 1]
+                                                                    ContactResponse: true
+                                                                  MeshComponent:
+                                                                    MeshName: ""
+                                                                  MaterialComponent:
+                                                                    MaterialName: DefaultPbr
+                                                                    TilingFactor: 1
+                                                                    HeightFactor: 0
+                                                                    ClipBorder: false
+                                                                    FloatValues:
+                                                                      roughness: 0.5
+                                                                      metalness: 0.100000001
+                                                                    Float2Values:
+                                                                      {}
+                                                                    Float3Values:
+                                                                      albedo: [1, 1, 1]
+                                                                    IntValues:
+                                                                      {}
+                                                                    Textures:
+                                                                      albedoMap: WhiteTexture
+                                                                      roughnessMap: WhiteTexture
+                                                                      metalnessMap: WhiteTexture
+                                                                      aoMap: WhiteTexture
+                                                                      normalMap: DefaultNormalMap
+                                                                      heightMap: WhiteTexture
+                                                                ? Entity: 6644526517469423497
+                                                                  TagComponent:
+                                                                    Tag: Cube
+                                                                  RootComponent:
+                                                                    Root: true
+                                                                  RelationshipComponent:
+                                                                    Children: 0
+                                                                    Parent: 15386962303537226748
+                                                                    First: 4135655264688823834
+                                                                    Prev: 2187847137947334047
+                                                                    Next: 13356826731233917402
+                                                                    TransformComponent:
+                                                                      Translation: [0, 10.1904678, -4.64897728]
+                                                                      Rotation: [0, 0, 0]
+                                                                      Scale: [1, 1, 1]
+                                                                    Physics3DMaterialComponent:
+                                                                      Mass: 1
+                                                                      Friction: 0.100000001
+                                                                      RollingFriction: 0.100000001
+                                                                      SpinningFriction: 0.100000001
+                                                                      Restitution: 1.84000003
+                                                                    Physics3DColliderComponent:
+                                                                      Shape: 0
+                                                                      Scale: [1, 1, 1]
+                                                                      ContactResponse: true
+                                                                    MeshComponent:
+                                                                      MeshName: ""
+                                                                    MaterialComponent:
+                                                                      MaterialName: DefaultPbr
+                                                                      TilingFactor: 1
+                                                                      HeightFactor: 0
+                                                                      ClipBorder: false
+                                                                      FloatValues:
+                                                                        roughness: 0.5
+                                                                        metalness: 0.100000001
+                                                                      Float2Values:
+                                                                        {}
+                                                                      Float3Values:
+                                                                        albedo: [1, 1, 1]
+                                                                      IntValues:
+                                                                        {}
+                                                                      Textures:
+                                                                        albedoMap: WhiteTexture
+                                                                        roughnessMap: WhiteTexture
+                                                                        metalnessMap: WhiteTexture
+                                                                        aoMap: WhiteTexture
+                                                                        normalMap: DefaultNormalMap
+                                                                        heightMap: WhiteTexture
+                                                                  ? Entity: 10325123738149398288
+                                                                    TagComponent:
+                                                                      Tag: Cube
+                                                                    RootComponent:
+                                                                      Root: true
+                                                                    RelationshipComponent:
+                                                                      Children: 0
+                                                                      Parent: 15386962303537226748
+                                                                      First: 4135655264688823834
+                                                                      Prev: 2187847137947334047
+                                                                      Next: 13356826731233917402
+                                                                      TransformComponent:
+                                                                        Translation: [-4.96503258, 16.221384, 4.81911993]
+                                                                        Rotation: [0, 0, 0]
+                                                                        Scale: [1, 1, 1]
+                                                                      Physics3DMaterialComponent:
+                                                                        Mass: 1
+                                                                        Friction: 0.100000001
+                                                                        RollingFriction: 0.100000001
+                                                                        SpinningFriction: 0.100000001
+                                                                        Restitution: 0.5
+                                                                      Physics3DColliderComponent:
+                                                                        Shape: 0
+                                                                        Scale: [1, 1, 1]
+                                                                        ContactResponse: true
+                                                                      MeshComponent:
+                                                                        MeshName: ""
+                                                                      MaterialComponent:
+                                                                        MaterialName: DefaultPbr
+                                                                        TilingFactor: 1
+                                                                        HeightFactor: 0
+                                                                        ClipBorder: false
+                                                                        FloatValues:
+                                                                          roughness: 0.5
+                                                                          metalness: 0.100000001
+                                                                        Float2Values:
+                                                                          {}
+                                                                        Float3Values:
+                                                                          albedo: [1, 1, 1]
+                                                                        IntValues:
+                                                                          {}
+                                                                        Textures:
+                                                                          albedoMap: WhiteTexture
+                                                                          roughnessMap: WhiteTexture
+                                                                          metalnessMap: WhiteTexture
+                                                                          aoMap: WhiteTexture
+                                                                          normalMap: DefaultNormalMap
+                                                                          heightMap: WhiteTexture
+                                                                    ? Entity: 11718849489610090603
+                                                                      TagComponent:
+                                                                        Tag: Empty Entity
+                                                                      RootComponent:
+                                                                        Root: true
+                                                                      RelationshipComponent:
+                                                                        Children: 0
+                                                                        Parent: 3522015765684467247
+                                                                        First: 14114798648013067910
+                                                                        Prev: 411653419347293137
+                                                                        Next: 13327651911175612869
+                                                                        TransformComponent:
+                                                                          Translation: [-1.53471029, 7.76960039, -8.65153027]
+                                                                          Rotation: [0.577682257, 0, 0]
+                                                                          Scale: [14.2102156, 1, 16.362711]
+                                                                        Physics3DMaterialComponent:
+                                                                          Mass: 0
+                                                                          Friction: 0.100000001
+                                                                          RollingFriction: 0.100000001
+                                                                          SpinningFriction: 0.100000001
+                                                                          Restitution: 0.5
+                                                                        Physics3DColliderComponent:
+                                                                          Shape: 0
+                                                                          Scale: [1, 1, 1]
+                                                                          ContactResponse: true
+                                                                        MeshComponent:
+                                                                          MeshName: ""
+                                                                        MaterialComponent:
+                                                                          MaterialName: DefaultPbr
+                                                                          TilingFactor: 1
+                                                                          HeightFactor: 0
+                                                                          ClipBorder: false
+                                                                          FloatValues:
+                                                                            roughness: 0.5
+                                                                            metalness: 0.100000001
+                                                                          Float2Values:
+                                                                            {}
+                                                                          Float3Values:
+                                                                            albedo: [0.407665551, 0.407665551, 0.407665551]
+                                                                          IntValues:
+                                                                            {}
+                                                                          Textures:
+                                                                            albedoMap: WhiteTexture
+                                                                            roughnessMap: WhiteTexture
+                                                                            metalnessMap: WhiteTexture
+                                                                            aoMap: WhiteTexture
+                                                                            normalMap: DefaultNormalMap
+                                                                            heightMap: WhiteTexture
+                                                                      ? Entity: 6291981197207650706
+                                                                        TagComponent:
+                                                                          Tag: Cube
+                                                                        RootComponent:
+                                                                          Root: true
+                                                                        RelationshipComponent:
+                                                                          Children: 0
+                                                                          Parent: 15386962303537226748
+                                                                          First: 4135655264688823834
+                                                                          Prev: 2187847137947334047
+                                                                          Next: 13356826731233917402
+                                                                          TransformComponent:
+                                                                            Translation: [0, 13.5671864, 7.29092026]
+                                                                            Rotation: [-0.418282866, 0, 0]
+                                                                            Scale: [1, 1, 1]
+                                                                          Physics3DMaterialComponent:
+                                                                            Mass: 1
+                                                                            Friction: 0.100000001
+                                                                            RollingFriction: 0.100000001
+                                                                            SpinningFriction: 0.100000001
+                                                                            Restitution: 1.90999997
+                                                                          Physics3DColliderComponent:
+                                                                            Shape: 0
+                                                                            Scale: [1, 1, 1]
+                                                                            ContactResponse: true
+                                                                          MeshComponent:
+                                                                            MeshName: ""
+                                                                          MaterialComponent:
+                                                                            MaterialName: DefaultPbr
+                                                                            TilingFactor: 1
+                                                                            HeightFactor: 0
+                                                                            ClipBorder: false
+                                                                            FloatValues:
+                                                                              roughness: 0.5
+                                                                              metalness: 0.100000001
+                                                                            Float2Values:
+                                                                              {}
+                                                                            Float3Values:
+                                                                              albedo: [1, 0, 0.40766573]
+                                                                            IntValues:
+                                                                              {}
+                                                                            Textures:
+                                                                              albedoMap: WhiteTexture
+                                                                              roughnessMap: WhiteTexture
+                                                                              metalnessMap: WhiteTexture
+                                                                              aoMap: WhiteTexture
+                                                                              normalMap: DefaultNormalMap
+                                                                              heightMap: WhiteTexture
+                                                                        ? Entity: 13597651420992109143
+                                                                          TagComponent:
+                                                                            Tag: Empty Entity
+                                                                          RootComponent:
+                                                                            Root: true
+                                                                          RelationshipComponent:
+                                                                            Children: 0
+                                                                            Parent: 3522015765684467247
+                                                                            First: 14114798648013067910
+                                                                            Prev: 411653419347293137
+                                                                            Next: 13327651911175612869
+                                                                            TransformComponent:
+                                                                              Translation: [-1.53471029, 7.43694639, 7.23357725]
+                                                                              Rotation: [-0.627393425, 0, 0]
+                                                                              Scale: [14.2102156, 0.999999821, 16.5695572]
+                                                                            Physics3DMaterialComponent:
+                                                                              Mass: 0
+                                                                              Friction: 0.100000001
+                                                                              RollingFriction: 0.100000001
+                                                                              SpinningFriction: 0.100000001
+                                                                              Restitution: 0.5
+                                                                            Physics3DColliderComponent:
+                                                                              Shape: 0
+                                                                              Scale: [1, 1, 1]
+                                                                              ContactResponse: true
+                                                                            MeshComponent:
+                                                                              MeshName: ""
+                                                                            MaterialComponent:
+                                                                              MaterialName: DefaultPbr
+                                                                              TilingFactor: 1
+                                                                              HeightFactor: 0
+                                                                              ClipBorder: false
+                                                                              FloatValues:
+                                                                                roughness: 0.5
+                                                                                metalness: 0.100000001
+                                                                              Float2Values:
+                                                                                {}
+                                                                              Float3Values:
+                                                                                albedo: [0.342334509, 0.342334509, 0.342334509]
+                                                                              IntValues:
+                                                                                {}
+                                                                              Textures:
+                                                                                albedoMap: WhiteTexture
+                                                                                roughnessMap: WhiteTexture
+                                                                                metalnessMap: WhiteTexture
+                                                                                aoMap: WhiteTexture
+                                                                                normalMap: DefaultNormalMap
+                                                                                heightMap: WhiteTexture
+                                                                          ? Entity: 7808263434663534917
+                                                                            TagComponent:
+                                                                              Tag: Cube
+                                                                            RootComponent:
+                                                                              Root: true
+                                                                            RelationshipComponent:
+                                                                              Children: 0
+                                                                              Parent: 15386962303537226748
+                                                                              First: 4135655264688823834
+                                                                              Prev: 2187847137947334047
+                                                                              Next: 13356826731233917402
+                                                                              TransformComponent:
+                                                                                Translation: [-3.12307954, 26.0215569, 0.179015145]
+                                                                                Rotation: [0.547309875, 0, 0]
+                                                                                Scale: [1, 0.999999821, 0.999999821]
+                                                                              Physics3DMaterialComponent:
+                                                                                Mass: 1
+                                                                                Friction: 0.100000001
+                                                                                RollingFriction: 0.100000001
+                                                                                SpinningFriction: 0.100000001
+                                                                                Restitution: 0.920000017
+                                                                              Physics3DColliderComponent:
+                                                                                Shape: 0
+                                                                                Scale: [1, 1, 1]
+                                                                                ContactResponse: true
+                                                                              MeshComponent:
+                                                                                MeshName: ""
+                                                                              MaterialComponent:
+                                                                                MaterialName: DefaultPbr
+                                                                                TilingFactor: 1
+                                                                                HeightFactor: 0
+                                                                                ClipBorder: false
+                                                                                FloatValues:
+                                                                                  roughness: 0.5
+                                                                                  metalness: 0.100000001
+                                                                                Float2Values:
+                                                                                  {}
+                                                                                Float3Values:
+                                                                                  albedo: [0, 1, 0.665504932]
+                                                                                IntValues:
+                                                                                  {}
+                                                                                Textures:
+                                                                                  albedoMap: WhiteTexture
+                                                                                  roughnessMap: WhiteTexture
+                                                                                  metalnessMap: WhiteTexture
+                                                                                  aoMap: WhiteTexture
+                                                                                  normalMap: DefaultNormalMap
+                                                                                  heightMap: WhiteTexture
+                                                                            ? Entity: 8174814133603037503
+                                                                              TagComponent:
+                                                                                Tag: Cube
+                                                                              RootComponent:
+                                                                                Root: true
+                                                                              RelationshipComponent:
+                                                                                Children: 0
+                                                                                Parent: 15386962303537226748
+                                                                                First: 4135655264688823834
+                                                                                Prev: 2187847137947334047
+                                                                                Next: 13356826731233917402
+                                                                                TransformComponent:
+                                                                                  Translation: [0, 8.12874699, 5.25932217]
+                                                                                  Rotation: [0, 0, 0]
+                                                                                  Scale: [1, 1, 1]
+                                                                                Physics3DMaterialComponent:
+                                                                                  Mass: 1
+                                                                                  Friction: 0.100000001
+                                                                                  RollingFriction: 0.100000001
+                                                                                  SpinningFriction: 0.100000001
+                                                                                  Restitution: 0.5
+                                                                                Physics3DColliderComponent:
+                                                                                  Shape: 0
+                                                                                  Scale: [1, 1, 1]
+                                                                                  ContactResponse: true
+                                                                                MeshComponent:
+                                                                                  MeshName: ""
+                                                                                MaterialComponent:
+                                                                                  MaterialName: DefaultPbr
+                                                                                  TilingFactor: 1
+                                                                                  HeightFactor: 0
+                                                                                  ClipBorder: false
+                                                                                  FloatValues:
+                                                                                    roughness: 0.5
+                                                                                    metalness: 0.100000001
+                                                                                  Float2Values:
+                                                                                    {}
+                                                                                  Float3Values:
+                                                                                    albedo: [0.625435352, 0, 1]
+                                                                                  IntValues:
+                                                                                    {}
+                                                                                  Textures:
+                                                                                    albedoMap: WhiteTexture
+                                                                                    roughnessMap: WhiteTexture
+                                                                                    metalnessMap: WhiteTexture
+                                                                                    aoMap: WhiteTexture
+                                                                                    normalMap: DefaultNormalMap
+                                                                                    heightMap: WhiteTexture
+                                                                              ? Entity: 17398617126010842271
+                                                                                TagComponent:
+                                                                                  Tag: Cube
+                                                                                RootComponent:
+                                                                                  Root: true
+                                                                                RelationshipComponent:
+                                                                                  Children: 0
+                                                                                  Parent: 15386962303537226748
+                                                                                  First: 4135655264688823834
+                                                                                  Prev: 2187847137947334047
+                                                                                  Next: 13356826731233917402
+                                                                                  TransformComponent:
+                                                                                    Translation: [-3.71094584, 13.2511921, -8.22422409]
+                                                                                    Rotation: [0, 0, 0]
+                                                                                    Scale: [1, 1, 1]
+                                                                                  Physics3DMaterialComponent:
+                                                                                    Mass: 1
+                                                                                    Friction: 0.100000001
+                                                                                    RollingFriction: 0.100000001
+                                                                                    SpinningFriction: 0.100000001
+                                                                                    Restitution: 0.5
+                                                                                  Physics3DColliderComponent:
+                                                                                    Shape: 0
+                                                                                    Scale: [1, 1, 1]
+                                                                                    ContactResponse: true
+                                                                                  MeshComponent:
+                                                                                    MeshName: ""
+                                                                                  MaterialComponent:
+                                                                                    MaterialName: DefaultPbr
+                                                                                    TilingFactor: 1
+                                                                                    HeightFactor: 0
+                                                                                    ClipBorder: false
+                                                                                    FloatValues:
+                                                                                      roughness: 0.5
+                                                                                      metalness: 0.100000001
+                                                                                    Float2Values:
+                                                                                      {}
+                                                                                    Float3Values:
+                                                                                      albedo: [0.986933827, 0.00687762303, 0.00687762303]
+                                                                                    IntValues:
+                                                                                      {}
+                                                                                    Textures:
+                                                                                      albedoMap: WhiteTexture
+                                                                                      roughnessMap: WhiteTexture
+                                                                                      metalnessMap: WhiteTexture
+                                                                                      aoMap: WhiteTexture
+                                                                                      normalMap: DefaultNormalMap
+                                                                                      heightMap: WhiteTexture
+                                                                                ? Entity: 9057747923252663869
+                                                                                  TagComponent:
+                                                                                    Tag: PointLight
+                                                                                  RootComponent:
+                                                                                    Root: true
+                                                                                  RelationshipComponent:
+                                                                                    Children: 0
+                                                                                    Parent: 14354792472027845308
+                                                                                    First: 2285243404422437027
+                                                                                    Prev: 9738557065106542513
+                                                                                    Next: 18332735558182128760
+                                                                                    TransformComponent:
+                                                                                      Translation: [-4.27619982, 15.4276047, -2.67851543]
+                                                                                      Rotation: [0, 0, 0]
+                                                                                      Scale: [1, 1, 1]
+                                                                                    PointLightComponent:
+                                                                                      Color: [0, 0.995644569, 0.37640208]
+                                                                                      Intensity: 48.4799995
+                                                                                      NearDist: 0.00999999978
+                                                                                      FarDist: 100
+                                                                                      Kq: 0.00749999983
+                                                                                      Kl: 0.0450000018
+                                                                                      CastShadows: false
+                                                                                  ? Entity: 6721149557664821433
+                                                                                    TagComponent:
+                                                                                      Tag: Cube
+                                                                                    RootComponent:
+                                                                                      Root: true
+                                                                                    RelationshipComponent:
+                                                                                      Children: 0
+                                                                                      Parent: 15386962303537226748
+                                                                                      First: 4135655264688823834
+                                                                                      Prev: 2187847137947334047
+                                                                                      Next: 13356826731233917402
+                                                                                      TransformComponent:
+                                                                                        Translation: [0, 14.3245754, -8.87280178]
+                                                                                        Rotation: [0, 0, 0]
+                                                                                        Scale: [1, 1, 1]
+                                                                                      Physics3DMaterialComponent:
+                                                                                        Mass: 1
+                                                                                        Friction: 0.100000001
+                                                                                        RollingFriction: 0.100000001
+                                                                                        SpinningFriction: 0.100000001
+                                                                                        Restitution: 0.5
+                                                                                      Physics3DColliderComponent:
+                                                                                        Shape: 0
+                                                                                        Scale: [1, 1, 1]
+                                                                                        ContactResponse: true
+                                                                                      MeshComponent:
+                                                                                        MeshName: ""
+                                                                                      MaterialComponent:
+                                                                                        MaterialName: DefaultPbr
+                                                                                        TilingFactor: 1
+                                                                                        HeightFactor: 0
+                                                                                        ClipBorder: false
+                                                                                        FloatValues:
+                                                                                          roughness: 0.5
+                                                                                          metalness: 0.100000001
+                                                                                        Float2Values:
+                                                                                          {}
+                                                                                        Float3Values:
+                                                                                          albedo: [0, 0.550522566, 1]
+                                                                                        IntValues:
+                                                                                          {}
+                                                                                        Textures:
+                                                                                          albedoMap: WhiteTexture
+                                                                                          roughnessMap: WhiteTexture
+                                                                                          metalnessMap: WhiteTexture
+                                                                                          aoMap: WhiteTexture
+                                                                                          normalMap: DefaultNormalMap
+                                                                                          heightMap: WhiteTexture
+                                                                                    ? Entity: 13221006089380810965
+                                                                                      TagComponent:
+                                                                                        Tag: Cube
+                                                                                      RootComponent:
+                                                                                        Root: true
+                                                                                      RelationshipComponent:
+                                                                                        Children: 0
+                                                                                        Parent: 15386962303537226748
+                                                                                        First: 4135655264688823834
+                                                                                        Prev: 2187847137947334047
+                                                                                        Next: 13356826731233917402
+                                                                                        TransformComponent:
+                                                                                          Translation: [-3.71094584, 10.1904678, 6.18917322]
+                                                                                          Rotation: [0, 0, 0]
+                                                                                          Scale: [1, 1, 1]
+                                                                                        Physics3DMaterialComponent:
+                                                                                          Mass: 1
+                                                                                          Friction: 0.100000001
+                                                                                          RollingFriction: 0.100000001
+                                                                                          SpinningFriction: 0.100000001
+                                                                                          Restitution: 0.5
+                                                                                        Physics3DColliderComponent:
+                                                                                          Shape: 0
+                                                                                          Scale: [1, 1, 1]
+                                                                                          ContactResponse: true
+                                                                                        MeshComponent:
+                                                                                          MeshName: ""
+                                                                                        MaterialComponent:
+                                                                                          MaterialName: DefaultPbr
+                                                                                          TilingFactor: 1
+                                                                                          HeightFactor: 0
+                                                                                          ClipBorder: false
+                                                                                          FloatValues:
+                                                                                            roughness: 0.5
+                                                                                            metalness: 0.100000001
+                                                                                          Float2Values:
+                                                                                            {}
+                                                                                          Float3Values:
+                                                                                            albedo: [0, 0.0540070534, 1]
+                                                                                          IntValues:
+                                                                                            {}
+                                                                                          Textures:
+                                                                                            albedoMap: WhiteTexture
+                                                                                            roughnessMap: WhiteTexture
+                                                                                            metalnessMap: WhiteTexture
+                                                                                            aoMap: WhiteTexture
+                                                                                            normalMap: DefaultNormalMap
+                                                                                            heightMap: WhiteTexture
+                                                                                      ? Entity: 11035907353352530389
+                                                                                        TagComponent:
+                                                                                          Tag: PointLight
+                                                                                        RootComponent:
+                                                                                          Root: true
+                                                                                        RelationshipComponent:
+                                                                                          Children: 0
+                                                                                          Parent: 14354792472027845308
+                                                                                          First: 2285243404422437027
+                                                                                          Prev: 9738557065106542513
+                                                                                          Next: 18332735558182128760
+                                                                                          TransformComponent:
+                                                                                            Translation: [0.548959494, 7.90910387, -0.637953997]
+                                                                                            Rotation: [0, 0, 0]
+                                                                                            Scale: [1, 1, 1]
+                                                                                          PointLightComponent:
+                                                                                            Color: [1, 0.444250822, 0]
+                                                                                            Intensity: 42.3800011
+                                                                                            NearDist: 0.00999999978
+                                                                                            FarDist: 1000
+                                                                                            Kq: 0.00749999983
+                                                                                            Kl: 0.0450000018
+                                                                                            CastShadows: false
+                                                                                        ? Entity: 10228155835418395662
+                                                                                          TagComponent:
+                                                                                            Tag: Cube
+                                                                                          RootComponent:
+                                                                                            Root: true
+                                                                                          RelationshipComponent:
+                                                                                            Children: 0
+                                                                                            Parent: 15386962303537226748
+                                                                                            First: 4135655264688823834
+                                                                                            Prev: 2187847137947334047
+                                                                                            Next: 13356826731233917402
+                                                                                            TransformComponent:
+                                                                                              Translation: [1.22174025, 10.1904678, 4.09290266]
+                                                                                              Rotation: [0, 0, 0]
+                                                                                              Scale: [1, 1, 1]
+                                                                                            Physics3DMaterialComponent:
+                                                                                              Mass: 1
+                                                                                              Friction: 0.100000001
+                                                                                              RollingFriction: 0.100000001
+                                                                                              SpinningFriction: 0.100000001
+                                                                                              Restitution: 2.36999989
+                                                                                            Physics3DColliderComponent:
+                                                                                              Shape: 0
+                                                                                              Scale: [1, 1, 1]
+                                                                                              ContactResponse: true
+                                                                                            MeshComponent:
+                                                                                              MeshName: ""
+                                                                                            MaterialComponent:
+                                                                                              MaterialName: DefaultPbr
+                                                                                              TilingFactor: 1
+                                                                                              HeightFactor: 0
+                                                                                              ClipBorder: false
+                                                                                              FloatValues:
+                                                                                                roughness: 0.5
+                                                                                                metalness: 0.100000001
+                                                                                              Float2Values:
+                                                                                                {}
+                                                                                              Float3Values:
+                                                                                                albedo: [1, 0.810104549, 0]
+                                                                                              IntValues:
+                                                                                                {}
+                                                                                              Textures:
+                                                                                                albedoMap: WhiteTexture
+                                                                                                roughnessMap: WhiteTexture
+                                                                                                metalnessMap: WhiteTexture
+                                                                                                aoMap: WhiteTexture
+                                                                                                normalMap: DefaultNormalMap
+                                                                                                heightMap: WhiteTexture
+                                                                                          ? Entity: 6619094771024015447
+                                                                                            TagComponent:
+                                                                                              Tag: Empty Entity
+                                                                                            RootComponent:
+                                                                                              Root: true
+                                                                                            RelationshipComponent:
+                                                                                              Children: 0
+                                                                                              Parent: 2347925647201121711
+                                                                                              First: 7153358850754958424
+                                                                                              Prev: 1551221151962045718
+                                                                                              Next: 8894323039495500870
+                                                                                              TransformComponent:
+                                                                                                Translation: [0, -0.265127301, 0]
+                                                                                                Rotation: [0, 0, 0]
+                                                                                                Scale: [23.3263454, 1, 24.6994572]
+                                                                                              Physics3DMaterialComponent:
+                                                                                                Mass: 0
+                                                                                                Friction: 0.730000019
+                                                                                                RollingFriction: 0.100000001
+                                                                                                SpinningFriction: 0.100000001
+                                                                                                Restitution: 0.5
+                                                                                              Physics3DColliderComponent:
+                                                                                                Shape: 0
+                                                                                                Scale: [1, 1, 1]
+                                                                                                ContactResponse: true
+                                                                                              MeshComponent:
+                                                                                                MeshName: ""
+                                                                                              MaterialComponent:
+                                                                                                MaterialName: DefaultPbr
+                                                                                                TilingFactor: 1
+                                                                                                HeightFactor: 0
+                                                                                                ClipBorder: false
+                                                                                                FloatValues:
+                                                                                                  roughness: 0.5
+                                                                                                  metalness: 0.100000001
+                                                                                                Float2Values:
+                                                                                                  {}
+                                                                                                Float3Values:
+                                                                                                  albedo: [0.459930301, 0.459930301, 0.459930301]
+                                                                                                IntValues:
+                                                                                                  {}
+                                                                                                Textures:
+                                                                                                  albedoMap: WhiteTexture
+                                                                                                  roughnessMap: WhiteTexture
+                                                                                                  metalnessMap: WhiteTexture
+                                                                                                  aoMap: WhiteTexture
+                                                                                                  normalMap: DefaultNormalMap
+                                                                                                  heightMap: WhiteTexture
+                                                                                            ? Entity: 10862784091954853662
+                                                                                              TagComponent:
+                                                                                                Tag: ScriptedEntity
+                                                                                              RootComponent:
+                                                                                                Root: true
+                                                                                              RelationshipComponent:
+                                                                                                Children: 0
+                                                                                                Parent: 16674897852200748365
+                                                                                                First: 17031938014332760050
+                                                                                                Prev: 2634556847497679683
+                                                                                                Next: 11382950621981935586
+                                                                                                TransformComponent:
+                                                                                                  Translation: [0, 0, 0]
+                                                                                                  Rotation: [0, 0, 0]
+                                                                                                  Scale: [1, 1, 1]

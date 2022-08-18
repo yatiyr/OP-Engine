@@ -26,12 +26,15 @@ namespace OP
 		static void ResizeViewport(float width, float height);
 
 		static Ref<Framebuffer> GetFinalFramebuffer();
+		static Ref<Framebuffer> GetMainRenderFramebuffer();
 
 		static void SetScene(Ref<Scene> scene);
 
 		static float* GetExposure();
 
 		static bool* GetHdr();
+
+		static bool* GetShowGrid();
 
 		static void ChangeEnvironmentMap(std::string newMapName);
 

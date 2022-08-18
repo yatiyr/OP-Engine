@@ -11,6 +11,8 @@
 
 #include <Scene/SceneRenderer.h>
 
+#include <Geometry/Plane.h>
+
 namespace OP
 {
 	class EditorLayer : public Layer
@@ -73,6 +75,11 @@ namespace OP
 		glm::vec2 m_ViewportSize = { 0.0f, 0.0f };
 		glm::vec2 m_ViewportBounds[2];
 		Ref<Framebuffer> m_Framebuffer;
+		Ref<Framebuffer> m_RenderFramebuffer;
+		Ref<Framebuffer> m_FinalFramebuffer;
+
+		Ref<Shader> m_GridShader;
+		Ref<Plane> m_Plane;
 
 		Ref<Scene> m_ActiveScene;
 		Ref<Scene> m_EditorScene;

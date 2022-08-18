@@ -60,6 +60,8 @@ namespace OP
 				glm::mat4 View;
 				glm::mat4 Projection;
 				alignas(16) glm::vec3 ViewPos;
+				float Near;
+				float Far;
 			} CameraBuffer;
 
 			Ref<UniformBuffer> CameraUniformBuffer;
@@ -240,6 +242,7 @@ namespace OP
 		Ref<Shader> pointLightSMBlurShader;
 		Ref<Shader> postProcessingShader;
 
+		Ref<Shader> gridShader;
 
 
 		Ref<Cube> cube;
@@ -268,10 +271,6 @@ namespace OP
 
 		Ref<MaterialInstance> defaultPbrMaterialInstance;
 
-
-
-
-
 		Ref<EnvironmentMap> environmentMap;
 
 		Timer timer;
@@ -284,6 +283,9 @@ namespace OP
 		float tPostProcessingPass = 0.0;
 
 		float tShadowMapBlurPass = 0.0;
+
+
+		bool ShowGrid = true;
 	};
 
 
@@ -321,6 +323,7 @@ namespace OP
 		s_SceneRendererData.pointLightDepthShaderAnimated = ResourceManager::GetShader("PointShadowMappingAnimated.glsl");
 		s_SceneRendererData.postProcessingShader = ResourceManager::GetShader("PostProcessing.glsl");
 		
+		s_SceneRendererData.gridShader = ResourceManager::GetShader("Grid.glsl");
 
 		s_SceneRendererData.animatedModel = ResourceManager::GetModel("Swing Dancing");
 
@@ -435,6 +438,11 @@ namespace OP
 		return s_SceneRendererData.postProcessingPass->GetFramebuffer();
 	}
 
+	Ref<Framebuffer> SceneRenderer::GetMainRenderFramebuffer()
+	{
+		return s_SceneRendererData.finalRenderPass->GetFramebuffer();
+	}
+
 	void SceneRenderer::SetScene(Ref<Scene> scene)
 	{
 		s_SceneRendererData.m_Context = scene;
@@ -448,6 +456,11 @@ namespace OP
 	bool* SceneRenderer::GetHdr()
 	{
 		return &s_SceneRendererData.ToneMappingSettingsBuffer.hdr;
+	}
+
+	bool* SceneRenderer::GetShowGrid()
+	{
+		return &s_SceneRendererData.ShowGrid;
 	}
 
 	void SceneRenderer::ChangeEnvironmentMap(std::string newMapName)
@@ -494,6 +507,8 @@ namespace OP
 			s_SceneRendererData.CameraBuffer.ViewPos = camera.GetPosition();
 			s_SceneRendererData.CameraBuffer.View = camera.GetViewMatrix();
 			s_SceneRendererData.CameraBuffer.Projection = camera.GetProjection();
+			s_SceneRendererData.CameraBuffer.Near = camera.GetNearClip();
+			s_SceneRendererData.CameraBuffer.Far = camera.GetFarClip();
 			s_SceneRendererData.CameraUniformBuffer->SetData(&s_SceneRendererData.CameraBuffer, sizeof(SceneRendererData::CameraData));
 		// ---------------------- END CALCULATE CAMERA DATA -------------------------- //
 
@@ -764,7 +779,6 @@ namespace OP
 
 				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-
 				s_SceneRendererData.mainShader->Bind();
 
 				uint32_t depthMap = s_SceneRendererData.depthBlurDSLRenderPass->GetColorAttachmentPP(0);
@@ -773,15 +787,6 @@ namespace OP
 				uint32_t depthMap2 = s_SceneRendererData.pointLightDepthRenderPass->GetDepthAttachment(0);
 				glBindTextureUnit(1, depthMap2);
 				// ------------ DRAW SCENE ------------
-
-				/*uint32_t environmentMap = s_SceneRendererData.irradianceMapGenerationRenderPass->GetColorAttachment(0);
-				glBindTextureUnit(2, environmentMap);
-
-				uint32_t prefilterMap = s_SceneRendererData.prefilterGenerationRenderPass->GetColorAttachment(0);
-				glBindTextureUnit(3, prefilterMap);
-
-				uint32_t brdfLUT = s_SceneRendererData.brdfLUTGenerationPass->GetColorAttachment(0);
-				glBindTextureUnit(4, brdfLUT);*/
 
 				s_SceneRendererData.environmentMap->BindIrradianceMap(2);
 				s_SceneRendererData.environmentMap->BindPrefilterMap(3);
@@ -814,55 +819,10 @@ namespace OP
 					if (mC.Mesh)
 						mC.Mesh->Draw();
 
-
-					/*s_SceneRendererData.MaterialBuffer.Color = glm::vec3(0.9f, 0.3f, 0.2f);
-					s_SceneRendererData.MaterialUniformBuffer->SetData(&s_SceneRendererData.MaterialBuffer, sizeof(SceneRendererData::MaterialData));*/
 				}
 
 				s_SceneRendererData.environmentMap->RenderSkybox();
 
-				/*RenderCommand::DepthFunc(DEPTHFUNC::LEQUAL);
-				// Render Skybox last
-				glCullFace(GL_FRONT);
-				s_SceneRendererData.skyboxShader->Bind();
-
-				//environmentMap = s_SceneRendererData.cubemapCaptureRenderPass->GetColorAttachment(0);
-				//glBindTextureUnit(0, environmentMap);
-				s_SceneRendererData.environmentMap->BindEnvironmentCubemap(0);
-
-				s_SceneRendererData.skybox->Draw();
-				glCullFace(GL_BACK);
-				RenderCommand::DepthFunc(DEPTHFUNC::LESS); */
-				/*s_SceneRendererData.equirectangularToCubeShader->Bind();
-				glBindTextureUnit(1, s_SceneRendererData.cubemap->GetRendererID());
-				s_SceneRendererData.cube->Draw();*/
-
-				/*s_SceneRendererData.mainShaderAnimated->Bind();
-
-				model = glm::mat4(1.0f);
-				model = glm::translate(model, glm::vec3(-10.0f, 20.0f, 2.0f));
-				model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
-				s_SceneRendererData.TransformBuffer.Model = model;
-				s_SceneRendererData.TransformUniformBuffer->SetData(&s_SceneRendererData.TransformBuffer, sizeof(SceneRendererData::TransformData));
-				//s_SceneRendererData.BoneMatricesUniformBuffer->SetData(&s_SceneRendererData.animatedModel->GetFinalBoneMatrices(), sizeof(SceneRendererData::BoneMatricesData));
-				s_SceneRendererData.MaterialUniformBuffer->SetData(&s_SceneRendererData.MaterialBuffer, sizeof(SceneRendererData::MaterialData));
-				s_SceneRendererData.animatedModel->Draw(); */
-
-				// ---------- DRAW SCENE END ----------
-
-				/*s_SceneRendererData.depthDebugShader->Bind();
-				uint32_t depthMapDbg = s_SceneRendererData.brdfLUTGenerationPass->GetColorAttachment(0);
-
-				glBindTextureUnit(1, depthMapDbg);
-				glDisable(GL_DEPTH_TEST);
-				model = glm::mat4(1.0f);
-				model = glm::translate(model, glm::vec3(0.75f, 0.75f, 0.0f));
-				model = glm::scale(model, glm::vec3(0.25f, 0.25f, 1.0f));
-				s_SceneRendererData.TransformBuffer.Model = model;
-				s_SceneRendererData.TransformUniformBuffer->SetData(&s_SceneRendererData.TransformBuffer, sizeof(SceneRendererData::TransformData));
-				s_SceneRendererData.plane->Draw();
-				glEnable(GL_DEPTH_TEST); */
-				// ---------- DRAW SCENE END ----------
 			}
 		);
 

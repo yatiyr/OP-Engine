@@ -15,6 +15,7 @@
 
 #include <PhysicsManager/PhysicsManager.h>
 
+#include <Opium/ResourceManager.h>
 // #include <IconsMaterialDesign.h>
 
 #include <Gui/Font/Font.h>
@@ -62,10 +63,23 @@ namespace OP
 
 
 		SceneRenderer::Init(1280, 720, m_Framebuffer);
+		// We will get color buffer bit from this framebuffer
 		m_Framebuffer = SceneRenderer::GetFinalFramebuffer();
+		// We will get depth/stencil buffer bit from this framebuffer
+		m_RenderFramebuffer = SceneRenderer::GetMainRenderFramebuffer();
+
+		// Debug Framebuffer
+		FramebufferSpecification debugFBSpec;
+		debugFBSpec.Attachments = { FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::Depth };
+		debugFBSpec.Width = 1280;
+		debugFBSpec.Height = 720;
+
+		m_FinalFramebuffer = Framebuffer::Create(debugFBSpec);
+		m_GridShader = ResourceManager::GetShader("Grid.glsl");
+		m_Plane = Plane::Create();
 
 		// Temp
-		m_ViewportComponent.SetFramebuffer(m_Framebuffer);
+		m_ViewportComponent.SetFramebuffer(m_FinalFramebuffer);
 		m_ActiveScene = CreateRef<Scene>();
 
 		auto commandLineArguments = Application::Get().GetCommandLineArguments();
@@ -193,7 +207,6 @@ namespace OP
 
 		SceneRenderer::ResizeViewport(viewportSize.x, viewportSize.y);
 		
-		
 		switch (m_SceneState)
 		{
 			case SceneState::Edit:
@@ -216,6 +229,17 @@ namespace OP
 		
 		
 		m_Framebuffer->Unbind();
+
+		m_Framebuffer->BlitFramebuffer(m_FinalFramebuffer, (uint32_t)BufferBit::COLOR_BUFFER_BIT);
+		m_RenderFramebuffer->BlitFramebuffer(m_FinalFramebuffer, (uint32_t)BufferBit::DEPTH_BUFFER_BIT);
+
+
+		m_FinalFramebuffer->Bind();
+		//RenderCommand::Disable(MODE::DEPTH_TEST);
+		m_GridShader->Bind();
+		m_Plane->Draw();
+		//RenderCommand::Enable(MODE::DEPTH_TEST);
+		m_FinalFramebuffer->Unbind();
 
 		
 	}
@@ -342,7 +366,7 @@ namespace OP
 	void EditorLayer::UI_Toolbar()
 	{
 
-		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 2));
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 1));
 		ImGui::PushStyleVar(ImGuiStyleVar_ItemInnerSpacing, ImVec2(0, 0));
 		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0 , 0));
 		auto& colors = ImGui::GetStyle().Colors;
@@ -354,7 +378,7 @@ namespace OP
 		ImGui::Begin("##toolbar", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoResize);
 
 
-		float size = ImGui::GetWindowHeight() - 4.0f;
+		float size = ImGui::GetWindowHeight() - 3.0f;
 
 		Ref<Texture2D> icon = m_SceneState == SceneState::Edit ? m_IconPlay : m_IconStop;
 		ImGui::SetCursorPosX((ImGui::GetWindowContentRegionMax().x * 0.5f) - (size * 0.5f));

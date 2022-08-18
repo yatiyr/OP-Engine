@@ -472,6 +472,13 @@ namespace OP
 		return pixelData;
 	}
 
+	void OpenGLFramebuffer::BlitFramebuffer(Ref<Framebuffer> dst, uint32_t BufferBit)
+	{
+		glBindFramebuffer(GL_READ_FRAMEBUFFER, m_RendererID);
+		dst->BindDraw();
+		glBlitFramebuffer(0, 0, m_Specification.Width, m_Specification.Height, 0, 0, m_Specification.Width, m_Specification.Height, BufferBit, GL_NEAREST);
+	}
+
 	void OpenGLFramebuffer::ClearAttachment(uint32_t attachmentIndex, int value)
 	{
 		OP_ENGINE_ASSERT(attachmentIndex < m_ColorAttachments.size());
