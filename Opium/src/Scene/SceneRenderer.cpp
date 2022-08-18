@@ -96,10 +96,10 @@ namespace OP
 			float blurAmount = 1;
 			struct ShadowMapSettings
 			{
-				float shadowMapResX = 256.0f;
-				float shadowMapResY = 256.0f;
-				float pointLightSMResX = 512.0f;
-				float pointLightSMResY = 512.0f;
+				float shadowMapResX = 512.0f;
+				float shadowMapResY = 512.0f;
+				float pointLightSMResX = 1024.0f;
+				float pointLightSMResY = 1024.0f;
 				glm::vec2 blurScale = glm::vec2(0.0f);
 			} ShadowMapSettingsBuffer;
 
@@ -292,7 +292,7 @@ namespace OP
 	void SceneRenderer::Init(float width, float height, Ref<Framebuffer> fB)
 	{
 
-		s_SceneRendererData.environmentMap = ResourceManager::GetEnvironmentMap("belfast_sunset_4k");
+		s_SceneRendererData.environmentMap = ResourceManager::GetEnvironmentMap("sky1");
 		s_SceneRendererData.environmentMap->GenerateMaps();
 
 		
@@ -645,7 +645,7 @@ namespace OP
 				s_SceneRendererData.depthShader->Bind();
 
 				glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-				glCullFace(GL_FRONT);
+				//glCullFace(GL_FRONT);
 				// ------------ DRAW SCENE ------------
 
 				auto meshes = scene->m_Registry.group<MeshComponent>(entt::get<TransformComponent>);
@@ -671,7 +671,7 @@ namespace OP
 				s_SceneRendererData.animatedModel->Draw(); */
 				
 				// ---------- DRAW SCENE END ----------
-				glCullFace(GL_BACK);
+				//glCullFace(GL_BACK);
 
 			}
 		);
@@ -683,7 +683,7 @@ namespace OP
 				s_SceneRendererData.pointLightDepthShader->Bind();
 
 				glClear(GL_DEPTH_BUFFER_BIT);
-				glCullFace(GL_FRONT);
+				//glCullFace(GL_FRONT);
 				// ------------ DRAW SCENE ------------
 
 				auto meshes = scene->m_Registry.group<MeshComponent>(entt::get<TransformComponent>);
@@ -708,7 +708,7 @@ namespace OP
 				s_SceneRendererData.animatedModel->Draw(); */
 
 				// ---------- DRAW SCENE END ----------
-				glCullFace(GL_BACK);
+				//glCullFace(GL_BACK);
 
 			}
 		);
@@ -721,7 +721,7 @@ namespace OP
 		float firstTime = true;
 		RenderCommand::Disable(MODE::DEPTH_TEST);
 		//glDisable(GL_DEPTH_TEST);
-		for (int i = 0; i < 2; i++)
+		for (int i = 0; i < 4; i++)
 		{
 			s_SceneRendererData.depthBlurDSLRenderPass->InvokeCommandsPP(
 				[&]()-> void {

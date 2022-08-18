@@ -536,7 +536,33 @@ namespace OP
 				if (entry.is_regular_file())
 				{
 					std::filesystem::path entryPath = entry.path();
-					if (entry.path().extension() == ".hdr")
+					if (entry.path().extension() == ".jpg")
+					{
+						std::filesystem::path entryPath = entry.path();
+
+						int width, height, channels;
+						stbi_uc* data = stbi_load(entryPath.string().c_str(), &width, &height, &channels, 0);
+						Ref<Texture> equirectangularTex;
+						if (data)
+						{
+							equirectangularTex = Texture2D::Create(width, height, data, channels);
+						}
+						else
+						{
+							OP_ENGINE_ERROR("Could not load Texture {0}", entry.path().filename());
+							continue;
+						}
+
+						eMSpec.Name = entryPath.stem().string();
+						eMSpec.EquirectangularTex = equirectangularTex;
+
+						uint32_t id = Allocate(entryPath.stem().string());
+						s_ResourceManagerData.EnvironmentMaps[id] = EnvironmentMap::Create(eMSpec);
+
+						OP_ENGINE_INFO("\t\tFileName {0}", entryPath.filename());
+						count++;
+					}
+					else if (entry.path().extension() == ".hdr")
 					{
 						int width, height, channels;
 						float* data = stbi_loadf(entryPath.string().c_str(), &width, &height, &channels, 0);

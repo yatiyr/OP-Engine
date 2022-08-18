@@ -127,7 +127,7 @@ namespace OP
 				//Ref<Mesh> mesh = m;
 			}
 
-			const char* comboPreviewValue = "belfast_sunset_4k";
+			const char* comboPreviewValue = "sky1";
 
 			if (ImGui::BeginCombo("Environment", comboPreviewValue, ImGuiComboFlags_PopupAlignLeft))
 			{
