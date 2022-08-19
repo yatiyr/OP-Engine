@@ -27,7 +27,11 @@ namespace OP
 
 		// cp.m_index0
 
-		//OP_ENGINE_WARN("COLLISION");
+		PhysicsObject* o1 = (PhysicsObject*)cObj1->getUserPointer();
+		PhysicsObject* o2 = (PhysicsObject*)cObj1->getUserPointer();
+
+
+		OP_ENGINE_WARN("Obj1 id: {0}, Obj2 id: {1}", o1->id, o2->id);
 		return false;
 	}
 
