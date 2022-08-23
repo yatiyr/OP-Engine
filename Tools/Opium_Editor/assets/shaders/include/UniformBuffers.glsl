@@ -9,6 +9,8 @@ layout(std140, binding = 1) uniform Camera
 	mat4 u_View;
 	mat4 u_Projection;
 	vec3 u_ViewPos;
+	float u_Near;
+	float u_Far;
 };
 
 layout(std140, binding = 2)  uniform Transform

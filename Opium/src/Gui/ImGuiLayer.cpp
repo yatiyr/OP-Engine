@@ -49,11 +49,11 @@ namespace OP
 		// io.ConfigViewportsNoTaskBarIcon = true;
 
 		LoadFonts("Inter");
-		// LoadFonts("Ubuntu");
-		// LoadFonts("OpenSans");
+		LoadFonts("Ubuntu");
+		LoadFonts("OpenSans");
 		LoadIconFonts();
 
-		io.FontDefault = (ImFont*)ImGuiFontTable["Inter-Light-14"];
+		io.FontDefault = (ImFont*)ImGuiFontTable["Inter-Light-12"];
 		
 
 		// Setup Dear ImGui styles
@@ -85,8 +85,6 @@ namespace OP
 
 	void ImGuiLayer::OnDetach()
 	{
-		OP_PROFILE_FUNCTION();
-
 		ImGui_ImplOpenGL3_Shutdown();
 		ImGui_ImplGlfw_Shutdown();
 		ImPlot::DestroyContext();
@@ -105,8 +103,6 @@ namespace OP
 
 	void ImGuiLayer::Begin()
 	{
-		OP_PROFILE_FUNCTION();
-
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
@@ -116,8 +112,6 @@ namespace OP
 
 	void ImGuiLayer::End()
 	{
-		OP_PROFILE_FUNCTION();
-
 		ImGuiIO& io = ImGui::GetIO();
 		Application& app = Application::Get();
 		io.DisplaySize = ImVec2((float)app.GetWindow().GetWidth(), (float)app.GetWindow().GetHeight());
@@ -280,9 +274,9 @@ namespace OP
 		std::string fontStyles[4] = { "Light", "Regular", "Medium", "Bold" };
 		int fontSizes[8] = { 6, 8, 10, 12, 14, 16, 18, 20 };
 
-		for (int i = 0; i < 1; i++)
+		for (int i = 0; i < 4; i++)
 		{
-			for (int j = 0; j < 1; j++)
+			for (int j = 0; j < 8; j++)
 			{
 				ImFontConfig fontCfg;
 				fontCfg.OversampleH = 8;
@@ -290,8 +284,8 @@ namespace OP
 				fontCfg.RasterizerMultiply = 1.2f;
 
 				std::string path = std::string("assets/fonts/") + fontName + "/" + fontName + "-" + fontStyles[1] + ".ttf";
-				std::string finalName = fontName + "-" + fontStyles[1] + "-" + std::to_string(fontSizes[4]);
-				ImGuiFontTable[finalName] = (void*)io.Fonts->AddFontFromFileTTF(path.c_str(), fontSizes[4] * dpiScale * 1.1f, &fontCfg);
+				std::string finalName = fontName + "-" + fontStyles[i] + "-" + std::to_string(fontSizes[j]);
+				ImGuiFontTable[finalName] = (void*)io.Fonts->AddFontFromFileTTF(path.c_str(), fontSizes[j] * dpiScale * 1.2f, &fontCfg);
 			}
 		}
 	}

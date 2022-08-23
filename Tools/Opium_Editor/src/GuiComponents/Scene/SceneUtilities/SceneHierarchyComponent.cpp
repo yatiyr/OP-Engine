@@ -42,36 +42,27 @@ namespace OP
 		if (m_Context)
 		{
 			auto windowWidth = ImGui::GetWindowSize().x;
-			auto textWidth = ImGui::CalcTextSize(OP_ICON_TRANSFORM " Scene Graph").x;
+			auto textWidth = ImGui::CalcTextSize(OP_ICON_INVENTORY " Scene Graph").x;
 
 			ImGui::SetCursorPosX((windowWidth - textWidth) * 0.1f);
 
 			ImGui::PushFont(ImGuiIconFontText);
 			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.3f, 1.0f, 0.6f, 1.0f));
-			ImGui::Text(OP_ICON_TRANSFORM_2);
+			ImGui::Text(OP_ICON_INVENTORY);
 			ImGui::PopStyleColor();
 			ImGui::PopFont();
 			ImGui::SameLine();
 			ImGui::Text("Scene Graph");
 			ImGui::Separator();
 
-
-
-			ImGui::BeginTable("sceneGraph", 3, ImGuiTableFlags_RowBg | ImGuiTableFlags_SizingFixedFit);
+			ImGui::BeginTable("sceneGraph", 1, ImGuiTableFlags_RowBg | ImGuiTableFlags_SizingFixedFit);
 
 			auto view = m_Context->m_Registry.view<RootComponent>();
-
 			for (auto e : view)
 			{
 				Entity entity{ e, m_Context.get() };
 				DrawEntityNode(entity);
 			}
-
-			/*m_Context->m_Registry.each([&](auto entityID)
-				{""""""""""""""""""""""""""""""""""""""""""""""""""""
-					Entity entity{ entityID, m_Context.get() };
-					DrawEntityNode(entity);
-				});*/
 
 			ImGui::EndTable();
 
@@ -98,7 +89,7 @@ namespace OP
 
 
 
-		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(20, 40));
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(10, 10));
 		ImGui::Begin("Properties", nullptr, ImGuiWindowFlags_NoTitleBar);
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(5, 5));
 		if (m_SelectionContext)
@@ -124,12 +115,11 @@ namespace OP
 			{
 				std::string envMapName = ResourceManager::GetNameFromID(id);
 				envMapNames.push_back(envMapName);
-				//Ref<Mesh> mesh = m;
 			}
 
-			const char* comboPreviewValue = "sky1";
+			std::string comboPreviewValue = "sky1";
 
-			if (ImGui::BeginCombo("Environment", comboPreviewValue, ImGuiComboFlags_PopupAlignLeft))
+			if (ImGui::BeginCombo("Environment", comboPreviewValue.c_str(), ImGuiComboFlags_PopupAlignLeft))
 			{
 				for (int i = 0; i < envMapNames.size(); i++)
 				{
@@ -138,6 +128,7 @@ namespace OP
 					{
 						currentSelectedID = i;
 						SceneRenderer::ChangeEnvironmentMap(envMapNames[i]);
+						comboPreviewValue = envMapNames[i];
 					}
 
 					if (isSelected)
@@ -207,33 +198,8 @@ namespace OP
 			ImGui::EndPopup();
 		}
 
-		ImGui::TableNextColumn();
-		ImGui::PushFont(ImGuiIconFontText);
-		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
-		ImGui::Selectable(OP_ICON_EYE);
-		ImGui::PopStyleColor();
-		ImGui::PopFont();
-		if (ImGui::IsItemClicked())
-		{
-			m_SelectionContext = entity;
-		}
-		ImGui::TableNextColumn();
-		ImGui::PushFont(ImGuiIconFontText);
-		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.7f, 0.0f, 1.0f));
-		ImGui::Selectable(OP_ICON_STAR_FILLED);
-		ImGui::PopStyleColor();
-		ImGui::PopFont();
-		if (ImGui::IsItemClicked())
-		{
-			m_SelectionContext = entity;
-		}
-
 		if (opened)
 		{
-			//ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
-			//bool opened = ImGui::TreeNodeEx((void*)123213213, flags, tag.c_str());
-			//if (opened)
-				//ImGui::TreePop();
 			auto relComp = entity.GetComponent<RelationshipComponent>();
 			Entity first = m_Context->GetEntityWithUUID(relComp.first);
 			if (entt::entity(first) != entt::null)
@@ -275,14 +241,16 @@ namespace OP
 	static void DrawVec3Control(const std::string& label, glm::vec3& values, Entity& entity, float resetValue = 0.0f, float columnWidth = 100.0f)
 	{
 
-		ImFont* InterBoldFont = (ImFont*)Application::Get().GetImGuiLayer()->GetFontPtr("Inter-Bold-14");
+		ImFont* InterBoldFont = (ImFont*)Application::Get().GetImGuiLayer()->GetFontPtr("Inter-Bold-12");
 
 		ImGui::PushID(label.c_str());
 
-		ImGui::Columns(2);
-		ImGui::SetColumnWidth(0, columnWidth);
+		auto windowWidth = ImGui::GetWindowSize().x;
+		auto textWidth = ImGui::CalcTextSize(label.c_str()).x;
+
+		ImGui::SetCursorPosX((windowWidth - textWidth) * 0.2f);
 		ImGui::Text(label.c_str());
-		ImGui::NextColumn();
+		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 5.0);
 
 		ImGui::PushMultiItemsWidths(3, ImGui::CalcItemWidth());
 		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
@@ -290,9 +258,9 @@ namespace OP
 		float lineHeight = GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f;
 		ImVec2 buttonSize = { lineHeight + 3.0f, lineHeight };
 
-		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.8f, 0.1f, 0.15f, 1.0f });
-		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.9f, 0.2f, 0.2f, 1.0f });
-		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.8f, 0.1f, 0.15f, 1.0f });
+		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.8f, 0.1f, 0.6f, 1.0f });
+		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.9f, 0.2f, 0.8f, 1.0f });
+		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.8f, 0.1f, 0.6f, 1.0f });
 
 		ImGui::PushFont(InterBoldFont);
 		if (ImGui::Button("X", buttonSize))
@@ -312,9 +280,9 @@ namespace OP
 		ImGui::PopItemWidth();
 		ImGui::SameLine();
 
-		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.2f, 0.7f, 0.2f, 1.0f });
-		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.3f, 0.8f, 0.3f, 1.0f });
-		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.2f, 0.7f, 0.2f, 1.0f });
+		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.6f, 0.7f, 0.2f, 1.0f });
+		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.7f, 0.8f, 0.3f, 1.0f });
+		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.6f, 0.7f, 0.2f, 1.0f });
 
 		ImGui::PushFont(InterBoldFont);
 		if (ImGui::Button("Y", buttonSize))
@@ -334,9 +302,9 @@ namespace OP
 		ImGui::PopItemWidth();
 		ImGui::SameLine();
 
-		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.1f, 0.25f, 0.8f, 1.0f });
-		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.2f, 0.35f, 0.9f, 1.0f });
-		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.1f, 0.25f, 0.8f, 1.0f });
+		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.1f, 0.7f, 0.8f, 1.0f });
+		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.2f, 0.8f, 0.9f, 1.0f });
+		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.1f, 0.7f, 0.8f, 1.0f });
 
 		ImGui::PushFont(InterBoldFont);
 		if (ImGui::Button("Z", buttonSize))
@@ -373,10 +341,12 @@ namespace OP
 
 		ImGui::PushID(label.c_str());
 
-		ImGui::Columns(2);
-		ImGui::SetColumnWidth(0, columnWidth);
+		auto windowWidth = ImGui::GetWindowSize().x;
+		auto textWidth = ImGui::CalcTextSize(label.c_str()).x;
+
+		ImGui::SetCursorPosX((windowWidth - textWidth) * 0.2f);
 		ImGui::Text(label.c_str());
-		ImGui::NextColumn();
+		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 5.0);
 
 		ImGui::PushMultiItemsWidths(3, ImGui::CalcItemWidth());
 		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
@@ -384,9 +354,9 @@ namespace OP
 		float lineHeight = GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f;
 		ImVec2 buttonSize = { lineHeight + 3.0f, lineHeight };
 
-		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.8f, 0.1f, 0.15f, 1.0f });
-		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.9f, 0.2f, 0.2f, 1.0f });
-		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.8f, 0.1f, 0.15f, 1.0f });
+		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.8f, 0.1f, 0.6f, 1.0f });
+		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.9f, 0.2f, 0.8f, 1.0f });
+		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.8f, 0.1f, 0.6f, 1.0f });
 
 		ImGui::PushFont(InterBoldFont);
 		if (ImGui::Button("X", buttonSize))
@@ -407,9 +377,9 @@ namespace OP
 		ImGui::PopItemWidth();
 		ImGui::SameLine();
 
-		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.2f, 0.7f, 0.2f, 1.0f });
-		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.3f, 0.8f, 0.3f, 1.0f });
-		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.2f, 0.7f, 0.2f, 1.0f });
+		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.6f, 0.7f, 0.2f, 1.0f });
+		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.7f, 0.8f, 0.3f, 1.0f });
+		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.6f, 0.7f, 0.2f, 1.0f });
 
 		ImGui::PushFont(InterBoldFont);
 		if (ImGui::Button("Y", buttonSize))
@@ -430,9 +400,9 @@ namespace OP
 		ImGui::PopItemWidth();
 		ImGui::SameLine();
 
-		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.1f, 0.25f, 0.8f, 1.0f });
-		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.2f, 0.35f, 0.9f, 1.0f });
-		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.1f, 0.25f, 0.8f, 1.0f });
+		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.1f, 0.7f, 0.8f, 1.0f });
+		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.2f, 0.8f, 0.9f, 1.0f });
+		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.1f, 0.7f, 0.8f, 1.0f });
 
 		ImGui::PushFont(InterBoldFont);
 		if (ImGui::Button("Z", buttonSize))
@@ -502,12 +472,29 @@ namespace OP
 			if (removeComponent)
 				entity.RemoveComponent<T>();
 		}
+
+		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2.5f);
 	}
 
 	void SceneHierarchyComponent::DrawComponents(Entity entity)
 	{
 
 		// Tag Field
+		auto windowWidth = ImGui::GetWindowSize().x;
+		auto textWidth = ImGui::CalcTextSize(OP_ICON_TRANSFORM " Object Properties").x;
+
+		ImGui::SetCursorPosX((windowWidth - textWidth) * 0.1f);
+
+		ImGui::PushFont(ImGuiIconFontText);
+		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.3f, 0.6f, 1.0f));
+		ImGui::Text(OP_ICON_TRANSFORM);
+		ImGui::PopStyleColor();
+		ImGui::PopFont();
+		ImGui::SameLine();
+		ImGui::Text("Object Properties");
+		// ImGui::Separator();
+
+		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 10.0f);
 
 		if (entity.HasComponent<TagComponent>())
 		{
@@ -523,10 +510,12 @@ namespace OP
 		}
 
 		ImGui::SameLine();
+
+		if (ImGui::Button("Add"))
+			ImGui::OpenPopup("AddComponent");
+
 		ImGui::PushItemWidth(-1);
 
-		if (ImGui::Button("Add Component"))
-			ImGui::OpenPopup("AddComponent");
 
 		if (ImGui::BeginPopup("AddComponent"))
 		{
@@ -648,7 +637,9 @@ namespace OP
 		DrawComponent<TransformComponent>("Transform", entity, [&](auto& component)
 			{
 				DrawVec3Control("Translation", component.Translation, entity);
+				ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 5.0);
 				DrawVec3RotationControl("Rotation", component, entity);
+				ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 5.0);
 				DrawVec3Control("Scale", component.Scale, entity, 1.0f);
 			});
 
