@@ -95,7 +95,7 @@ namespace OP
 		{
 			UUID uuid = srcSceneRegistry.get<IDComponent>(e).ID;
 			const auto& name = srcSceneRegistry.get<TagComponent>(e).Tag;
-			Entity newEntity = newScene->CreateEntityWithUUID(uuid, name);
+			Entity newEntity = newScene->CreateEntityWithUUID(uuid, (uint32_t)e, name);
 			enttMap[uuid] = (entt::entity)newEntity;
 		}
 
@@ -119,6 +119,7 @@ namespace OP
 
 		CopyComponent<Physics3DMaterial>(dstSceneRegistry, srcSceneRegistry, enttMap);
 		CopyComponent<Physics3DCollider>(dstSceneRegistry, srcSceneRegistry, enttMap);
+		CopyComponent<ScriptComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
 
 
 		return newScene;
@@ -199,6 +200,18 @@ namespace OP
 	Entity Scene::CreateEntityWithUUID(UUID uuid, const std::string& name)
 	{
 		Entity entity = { m_Registry.create(), this };
+		entity.AddComponent<IDComponent>(uuid);
+		entity.AddComponent<TransformComponent>();
+		entity.AddComponent<RelationshipComponent>();
+		auto& tag = entity.AddComponent<TagComponent>();
+		tag.Tag = name.empty() ? tag.Tag = "Entity" : name;
+		return entity;
+	}
+
+
+	Entity Scene::CreateEntityWithUUID(UUID uuid, uint32_t identifier, const std::string& name)
+	{
+		Entity entity = { m_Registry.create((entt::entity)identifier), this };
 		entity.AddComponent<IDComponent>(uuid);
 		entity.AddComponent<TransformComponent>();
 		entity.AddComponent<RelationshipComponent>();
@@ -331,11 +344,11 @@ namespace OP
 	void Scene::OnUpdateRuntime(Timestep ts, EditorCamera& camera)
 	{
 		// Update scripts
-		auto group = m_Registry.group<ScriptComponent>(entt::get<TransformComponent>);
-		for (auto entity : group)
+		auto scriptView = m_Registry.view<ScriptComponent>();
+		for (auto entity : scriptView)
 		{
 			Entity e = { entity, this };
-			//ScriptManager::OnUpdateEntity((uint32_t)e, ts);
+			ScriptManager::OnUpdateEntity((uint32_t)e, ts);
 		}
 
 		// Physics
@@ -487,7 +500,7 @@ namespace OP
 	void Scene::OnComponentAdded<ScriptComponent>(Entity entity, ScriptComponent& component)
 	{
 		uint32_t sceneID = 0;
-		ScriptManager::OnInitEntity(component, (uint32_t)entity, sceneID);
+		component.PublicFields = ScriptManager::OnInitEntity(component, (uint32_t)entity, sceneID);
 	}
 	template<>
 	void Scene::OnComponentAdded<Rigidbody2DComponent>(Entity entity, Rigidbody2DComponent& component){}

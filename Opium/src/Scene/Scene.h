@@ -22,7 +22,7 @@ namespace OP
 
 		Entity CreateEntity(const std::string& name = std::string());
 		Entity CreateEntityWithUUID(UUID uuid, const std::string& name = std::string());
-
+		Entity CreateEntityWithUUID(UUID uuid, uint32_t identifier, const std::string& name = std::string());
 		// Creates a new entity under a parent
 		Entity CreateChildEntity(Entity parent, const std::string& name = std::string());
 

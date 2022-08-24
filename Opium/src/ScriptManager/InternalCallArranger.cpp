@@ -44,12 +44,12 @@ namespace OP
 	{
 		InitComponentTypes();
 
-		mono_add_internal_call("Opium.Input::IsKeyPressed_Native", OP::Script::Opium_Input_IsKeyPressed);
+		mono_add_internal_call("OP.Input::IsKeyPressed_Native", OP::Script::Opium_Input_IsKeyPressed);
 
-		mono_add_internal_call("Opium.Entity::GetTransform_Native", OP::Script::Opium_Entity_GetTransform);
-		mono_add_internal_call("Opium.Entity::SetTransform_Native", OP::Script::Opium_Entity_SetTransform);
-		mono_add_internal_call("Opium.Entity::CreateComponent_Native", OP::Script::Opium_Entity_CreateComponent);
-		mono_add_internal_call("Opium.Entity::HasComponent_Native", OP::Script::Opium_Entity_HasComponent);
+		mono_add_internal_call("OP.Entity::GetTransform_Native", OP::Script::Opium_Entity_GetTransform);
+		mono_add_internal_call("OP.Entity::SetTransform_Native", OP::Script::Opium_Entity_SetTransform);
+		mono_add_internal_call("OP.Entity::CreateComponent_Native", OP::Script::Opium_Entity_CreateComponent);
+		mono_add_internal_call("OP.Entity::HasComponent_Native", OP::Script::Opium_Entity_HasComponent);
 
 		//mono_add_internal_call("Opium.Entity::GetTransform_Native", 
 	}

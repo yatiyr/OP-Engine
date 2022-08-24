@@ -36,7 +36,7 @@ namespace OP
 		ResourceManager::Init(std::filesystem::current_path());
 		PhysicsManager::Init();
 		Renderer::Init();
-		ScriptManager::InitializeManager("assets/scripts/ExampleOpiumApp.dll");
+		ScriptManager::InitializeManager("assets/scripts/bin/RuntimeScripts.dll");
 
 		m_ImGuiLayer = new ImGuiLayer();
 		PushOverlay(m_ImGuiLayer);

@@ -44,6 +44,7 @@ namespace OP
 		std::unordered_map<std::string, uint32_t> StringLookupTable;
 		std::unordered_map<uint32_t, std::string> IDLookupTable;
 
+
 		uint32_t counter = 0;
 
 		std::filesystem::path root;

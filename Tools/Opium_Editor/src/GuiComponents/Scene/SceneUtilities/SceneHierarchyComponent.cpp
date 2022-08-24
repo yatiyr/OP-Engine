@@ -11,6 +11,7 @@
 #include <Gui/Font/Font.h>
 
 #include <Opium/ResourceManager.h>
+#include <ScriptManager/ScriptManager.h>
 
 namespace OP
 {
@@ -921,6 +922,79 @@ namespace OP
 					ImGui::EndCombo();
 				}
 		});
+
+		DrawComponent<ScriptComponent>("Script", entity, [&](auto& component)
+			{
+				ImGui::Text("%s", component.ModuleName.c_str());
+
+				if (ImGui::BeginDragDropTarget())
+				{
+					if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
+					{
+						const wchar_t* path = (const wchar_t*)payload->Data;
+						std::filesystem::path scriptPath = std::filesystem::path(g_AssetPath) / path;
+						std::string fileName = scriptPath.filename().string();
+						component = entity.AddOrReplaceComponent<ScriptComponent>(fileName);
+					}
+					ImGui::EndDragDropTarget();
+				}
+
+
+				for (auto& [name, field] : component.PublicFields)
+				{
+					PublicField* pField = (PublicField*)field;
+
+					if (pField->Type == FieldType::Int)
+					{
+						int val = pField->GetValue<int>();
+						if (ImGui::DragInt(name.c_str(), &val))
+						{
+							pField->SetValue<int>(val);
+						}
+					}
+					else if (pField->Type == FieldType::Float)
+					{
+						float val = pField->GetValue<float>();
+						if (ImGui::DragFloat(name.c_str(), &val))
+						{
+							pField->SetValue<float>(val);
+						}
+					}
+					else if (pField->Type == FieldType::UnsignedInt)
+					{
+						int val = pField->GetValue<uint32_t>();
+						if (ImGui::DragInt(name.c_str(), &val, 1.0f, 0))
+						{
+							pField->SetValue<uint32_t>(val);
+						}
+					}
+					else if (pField->Type == FieldType::Vec2)
+					{
+						glm::vec2 val = pField->GetValue<glm::vec2>();
+						if (ImGui::DragFloat2(name.c_str(), glm::value_ptr(val)))
+						{
+							pField->SetValue<glm::vec2>(val);
+						}
+					}
+					else if (pField->Type == FieldType::Vec3)
+					{
+						glm::vec3 val = pField->GetValue<glm::vec3>();
+						if (ImGui::DragFloat2(name.c_str(), glm::value_ptr(val)))
+						{
+							pField->SetValue<glm::vec3>(val);
+						}
+					}
+					else if (pField->Type == FieldType::Vec4)
+					{
+						glm::vec4 val = pField->GetValue<glm::vec4>();
+						if (ImGui::DragFloat2(name.c_str(), glm::value_ptr(val)))
+						{
+							pField->SetValue<glm::vec4>(val);
+						}
+					}
+				}
+
+			});
 
 		DrawComponent<MaterialComponent>("Material", entity, [](auto& component)
 		{

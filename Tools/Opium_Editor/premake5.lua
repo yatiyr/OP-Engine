@@ -27,6 +27,7 @@ project "Opium_Editor"
         "%{IncludeDir.ImGuizmo}",
 	"%{IncludeDir.Assimp}",
 	"%{IncludeDir.Bullet}",
+	"%{IncludeDir.Mono}",
 	    "src"
     }
 

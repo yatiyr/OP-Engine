@@ -8,6 +8,8 @@
 
 #include <Opium/ResourceManager.h>
 
+#include <ScriptManager/ScriptManager.h>
+
 namespace YAML
 {
 
@@ -187,6 +189,62 @@ namespace OP
 			out << YAML::Key << "First" << YAML::Value << static_cast<uint64_t>(comp.first);
 			out << YAML::Key << "Prev" << YAML::Value << static_cast<uint64_t>(comp.prev);
 			out << YAML::Key << "Next" << YAML::Value << static_cast<uint64_t>(comp.next);
+		}
+
+		if (entity.HasComponent<ScriptComponent>())
+		{
+			out << YAML::Key << "ScriptComponent";
+			out << YAML::BeginMap;
+
+			auto& sC = entity.GetComponent<ScriptComponent>();
+
+			out << YAML::Key << "Name" << YAML::Value << sC.ModuleName;
+
+			out << YAML::Key << "Fields";
+			out << YAML::BeginMap;
+			for (auto& [name, field] : sC.PublicFields)
+			{
+				PublicField* pField = (PublicField*)field;
+
+				if (pField->Type == FieldType::Int)
+				{
+
+					int val = pField->GetValue<int>();
+					out << YAML::Key << name + "_Int" << YAML::Value << val;
+				}
+				else if (pField->Type == FieldType::Float)
+				{
+					float val = pField->GetValue<float>();
+					out << YAML::Key << name + "_Float" << YAML::Value << val;
+				}
+				else if (pField->Type == FieldType::String)
+				{
+					std::string val = pField->GetValue<std::string>();
+					out << YAML::Key << name + "_String" << YAML::Value << val;
+				}
+				else if (pField->Type == FieldType::UnsignedInt)
+				{
+					uint32_t val = pField->GetValue<uint32_t>();
+					out << YAML::Key << name + "_Uint" << YAML::Value << val;
+				}
+				else if (pField->Type == FieldType::Vec2)
+				{
+					glm::vec2 val = pField->GetValue<glm::vec2>();
+					out << YAML::Key << name + "_Vec2" << YAML::Value << val;
+				}
+				else if (pField->Type == FieldType::Vec3)
+				{
+					glm::vec3 val = pField->GetValue<glm::vec3>();
+					out << YAML::Key << name + "_Vec3" << YAML::Value << val;
+				}
+				else if (pField->Type == FieldType::Vec4)
+				{
+					glm::vec4 val = pField->GetValue<glm::vec4>();
+					out << YAML::Key << name + "_Vec4" << YAML::Value << val;
+				}
+			}
+			out << YAML::EndMap;
+			out << YAML::EndMap;
 		}
 
 		if (entity.HasComponent<TransformComponent>())
@@ -605,6 +663,64 @@ namespace OP
 					auto& mC = deserializedEntity.AddComponent<MeshComponent>();
 					mC.MeshName = meshComponent["MeshName"].as<std::string>();
 					mC.Mesh = ResourceManager::GetMesh(mC.MeshName);
+				}
+
+				auto scriptComponent = entity["ScriptComponent"];
+				if (scriptComponent)
+				{
+					std::string moduleName = scriptComponent["Name"].as<std::string>();
+					auto& sC = deserializedEntity.AddComponent<ScriptComponent>(moduleName);
+
+					// set field values
+					auto fields = scriptComponent["Fields"];
+					for (const auto& element : fields)
+					{
+						std::string fullFieldName = element.first.as<std::string>();
+						std::string fieldName = fullFieldName.substr(0, fullFieldName.find_first_of('_'));
+						std::string typeName = fullFieldName.substr(fullFieldName.find_first_of('_'), fullFieldName.size() - 1);
+						if (typeName == "Int")
+						{
+							int val = element.second.as<int>();
+							PublicField* pField = (PublicField*)sC.PublicFields[fieldName];
+							pField->SetValue<int>(val);
+						}
+						else if (typeName == "Float")
+						{
+							float val = element.second.as<float>();
+							PublicField* pField = (PublicField*)sC.PublicFields[fieldName];
+							pField->SetValue<float>(val);
+						}
+						else if (typeName == "String")
+						{
+							std::string val = element.second.as<std::string>();
+							PublicField* pField = (PublicField*)sC.PublicFields[fieldName];
+							pField->SetValue<std::string>(val);
+						}
+						else if (typeName == "Uint")
+						{
+							uint32_t val = element.second.as<uint32_t>();
+							PublicField* pField = (PublicField*)sC.PublicFields[fieldName];
+							pField->SetValue<uint32_t>(val);
+						}
+						else if (typeName == "Vec2")
+						{
+							glm::vec2 val = element.second.as<glm::vec2>();
+							PublicField* pField = (PublicField*)sC.PublicFields[fieldName];
+							pField->SetValue<glm::vec2>(val);
+						}
+						else if (typeName == "Vec3")
+						{
+							glm::vec3 val = element.second.as<glm::vec3>();
+							PublicField* pField = (PublicField*)sC.PublicFields[fieldName];
+							pField->SetValue<glm::vec3>(val);
+						}
+						else if (typeName == "Vec4")
+						{
+							glm::vec4 val = element.second.as<glm::vec4>();
+							PublicField* pField = (PublicField*)sC.PublicFields[fieldName];
+							pField->SetValue<glm::vec4>(val);
+						}
+					}
 				}
 
 				auto materialComponent = entity["MaterialComponent"];

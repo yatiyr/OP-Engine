@@ -1,16 +1,10 @@
 #include <Precomp.h>
 #include <ScriptManager/ScriptManager.h>
 
-#include <mono/jit/jit.h>
-#include <mono/metadata/assembly.h>
-#include <mono/metadata/debug-helpers.h>
-#include <mono/metadata/attrdefs.h>
-
 #include <Windows.h>
 #include <winioctl.h>
 
 #include <ScriptManager/InternalCallArranger.h>
-#include <Scene/Scene.h>
 
 namespace OP
 {
@@ -20,27 +14,9 @@ namespace OP
 
 	static ScriptModuleFieldMap s_PublicFields;
 
-	static MonoMethod* GetMethod(MonoImage* image, const std::string& methodDesc);
+	//static MonoMethod* GetMethod(MonoImage* image, const std::string& methodDesc);
 
-	struct EntityScriptClass
-	{
-		std::string FullName;
-		std::string ClassName;
-		std::string NamespaceName;
-
-		MonoClass* Class;
-		MonoMethod* OnCreateMethod;
-		MonoMethod* OnDestroyMethod;
-		MonoMethod* OnUpdateMethod;
-
-		void InitClassMethods(MonoImage* image)
-		{
-			OnCreateMethod = GetMethod(image, FullName + ":OnCreate()");
-			OnUpdateMethod = GetMethod(image, FullName + ":OnUpdate(single)");
-		}
-	};
-
-	struct EntityInstance
+	/*struct EntityInstance
 	{
 		EntityScriptClass* ScriptClass;
 
@@ -51,7 +27,7 @@ namespace OP
 		{
 			return mono_gchandle_get_target(Handle);
 		}
-	};
+	};*/
 
 	static std::unordered_map<std::string, EntityScriptClass> s_EntityClassMap;
 	static std::unordered_map<uint32_t, EntityInstance> s_EntityInstanceMap;
@@ -140,16 +116,6 @@ namespace OP
 		return handle;
 	}
 
-	static MonoMethod* GetMethod(MonoImage* image, const std::string& methodDesc)
-	{
-		MonoMethodDesc* desc = mono_method_desc_new(methodDesc.c_str(), NULL);
-		if (!desc) OP_ENGINE_ERROR("mono_method_desc_new has been failed");
-
-		MonoMethod* method = mono_method_desc_search_in_image(desc, image);
-		if (!method) OP_ENGINE_ERROR("mono_method_desc_search_in_image has been failed");
-
-		return method;
-	}
 
 	static MonoObject* CallMethod(MonoObject* object, MonoMethod* method, void** params = nullptr)
 	{
@@ -222,7 +188,7 @@ namespace OP
 			s_MonoDomain = mono_domain_create_appdomain(name, nullptr);
 		}
 
-		s_CoreAssembly = InitializeAssembly("assets/scripts/Opium-Script.dll");
+		s_CoreAssembly = InitializeAssembly("assets/scripts/bin/Opium-Script.dll");
 		s_CoreAssemblyImage = GetAssemblyImage(s_CoreAssembly);
 
 
@@ -240,14 +206,21 @@ namespace OP
 		LoadRuntimeAssembly(s_AssemblyPath);
 	}
 
+	void ScriptManager::ReloadAssembly()
+	{
+		OP_ENGINE_INFO("Reloading Assembly");
+		LoadRuntimeAssembly(s_AssemblyPath);
+		OP_ENGINE_INFO("Assembly has been reloaded");
+	}
+
 	void ScriptManager::ShutdownManager()
 	{
 		// shutdown
 	}
 
-	void ScriptManager::OnCreateEntity(Entity entity)
+	void ScriptManager::OnCreateEntity(uint32_t entity)
 	{
-		EntityInstance& entityInstance = s_EntityInstanceMap[(uint32_t)entity.m_EntityHandle];
+		EntityInstance& entityInstance = s_EntityInstanceMap[entity];
 		if (entityInstance.ScriptClass->OnCreateMethod)
 			CallMethod(entityInstance.GetInstance(), entityInstance.ScriptClass->OnCreateMethod);
 	}
@@ -287,7 +260,7 @@ namespace OP
 		return FieldType::None;
 	}
 
-	void ScriptManager::OnInitEntity(ScriptComponent& script, uint32_t entityID, uint32_t sceneID)
+	std::unordered_map<std::string, void*> ScriptManager::OnInitEntity(ScriptComponent& script, uint32_t entityID, uint32_t sceneID)
 	{
 		EntityScriptClass& scriptClass = s_EntityClassMap[script.ModuleName];
 		scriptClass.FullName = script.ModuleName;
@@ -320,9 +293,10 @@ namespace OP
 		param[0] = { &sceneID };
 		CallMethod(entityInstance.GetInstance(), sceneIDSetMethod, param);
 
-		if (scriptClass.OnCreateMethod)
-			CallMethod(entityInstance.GetInstance(), scriptClass.OnCreateMethod);
+		//if (scriptClass.OnCreateMethod)
+			// CallMethod(entityInstance.GetInstance(), scriptClass.OnCreateMethod);
 
+		std::unordered_map<std::string, void*> fields;
 		// Get public fields
 		{
 			MonoClassField* iter;
@@ -341,11 +315,17 @@ namespace OP
 				MonoCustomAttrInfo* attr = mono_custom_attrs_from_field(scriptClass.Class, iter);
 
 				auto& publicField = s_PublicFields[script.ModuleName].emplace_back(name, opiumFieldType);
+				PublicField* publicFieldHandlerPtr = new PublicField(name, opiumFieldType);
+				publicFieldHandlerPtr->m_EntityInstance = &entityInstance;
+				publicFieldHandlerPtr->m_MonoClassField = iter;
 				publicField.m_EntityInstance = &entityInstance;
 				publicField.m_MonoClassField = iter;
+				fields[name] = publicFieldHandlerPtr;
 				// mono_field_set_value(entityInstance.Instance, iter, );
 			}
 		}
+
+		return fields;
 	}
 
 	const OP::ScriptModuleFieldMap& ScriptManager::GetFieldMap()
@@ -353,7 +333,7 @@ namespace OP
 		return s_PublicFields;
 	}
 
-	void PublicField::SetValue_Internal(void* value) const
+	/*void PublicField::SetValue_Internal(void* value) const
 	{
 		mono_field_set_value(m_EntityInstance->GetInstance(), m_MonoClassField, value);
 	}
@@ -361,5 +341,5 @@ namespace OP
 	void PublicField::GetValue_Internal(void* outValue) const
 	{
 		mono_field_get_value(m_EntityInstance->GetInstance(), m_MonoClassField, outValue);
-	}
+	}*/
 }
