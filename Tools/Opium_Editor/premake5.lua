@@ -26,6 +26,7 @@ project "Opium_Editor"
 	"%{IncludeDir.FontAwesome}",
         "%{IncludeDir.ImGuizmo}",
 	"%{IncludeDir.Assimp}",
+	"%{IncludeDir.Bullet}",
 	    "src"
     }
 

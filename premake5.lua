@@ -33,7 +33,7 @@ group ""
 
 
 group "OpiumApps"
-        include "Apps/ExampleOpiumApp"
+        include "Apps/RuntimeScripts"
 group ""
 
 

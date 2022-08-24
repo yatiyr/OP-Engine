@@ -9,8 +9,12 @@ ConfigureScripts/__pycache__
 **.log
 **.sln
 **.vcxproj
+**.csproj
 **.vcxproj.filters
+**.csproj.filters
 **.vcxproj.user
+**.csproj.user
+
 
 **/**.log
 **/**.sln
