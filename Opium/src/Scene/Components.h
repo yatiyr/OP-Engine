@@ -125,6 +125,11 @@ namespace OP
 				* glm::scale(glm::mat4(1.0f), LocalScale);
 		}
 
+		void SetTransform(glm::mat4 transform)
+		{
+			Math::DecomposeTransform(transform, Translation, Rotation, Scale);
+		}
+
 		glm::mat4 GetTransform() const
 		{
 			glm::mat4 rotation = glm::toMat4(glm::quat(Rotation));

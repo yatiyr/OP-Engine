@@ -63,9 +63,15 @@
     <Compile Include="src\Opium\Entity.cs" />
     <Compile Include="src\Opium\Input\Input.cs" />
     <Compile Include="src\Opium\Input\KeyCodes.cs" />
+    <Compile Include="src\Opium\Math\Vec2.cs" />
+    <Compile Include="src\Opium\Math\Vec4.cs" />
     <Compile Include="src\Opium\Math\Mat4.cs" />
     <Compile Include="src\Opium\Math\Vec3.cs" />
-    <Compile Include="src\Opium\Scene\Component.cs" />
+    <Compile Include="src\Opium\Scene\Components\CameraComponent.cs" />
+    <Compile Include="src\Opium\Scene\Components\Component.cs" />
+    <Compile Include="src\Opium\Scene\Components\SpriteRendererComponent.cs" />
+    <Compile Include="src\Opium\Scene\Components\TagComponent.cs" />
+    <Compile Include="src\Opium\Scene\Components\TransformComponent.cs" />
   </ItemGroup>
   <ItemGroup>
   </ItemGroup>

@@ -9,6 +9,8 @@ namespace Example
         public float publicField1 = 15.0f;
         public int publicField2 = 0;
 
+        private TransformComponent tC;
+
         public async Task func()
         {
             await Task.Delay(10000);
@@ -20,6 +22,7 @@ namespace Example
             Console.WriteLine("Script.OnCreate has been invoked");
             func();
             Console.WriteLine("Life moves on and on and on!");
+            tC = GetComponent<TransformComponent>();
         }
 
         public void OnUpdate(float ts)
@@ -34,7 +37,8 @@ namespace Example
                 Console.WriteLine("Entera basildi.");
             }
 
-            Console.WriteLine(publicField2);
+            tC.Translation = new Vec3(5.0f, 5.0f, 5.0f);
+            Console.WriteLine(tC.Translation.x);
             //SetTransform(newTransform);
         }
     }

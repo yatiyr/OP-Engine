@@ -502,7 +502,7 @@ namespace OP
 		m_ActiveScene = CreateRef<Scene>();
 		m_ActiveScene->OnViewportResize((uint32_t)m_ViewportComponent.m_ViewportSize.x, (uint32_t)m_ViewportComponent.m_ViewportSize.y);
 		m_SceneGraph.SetContext(m_ActiveScene);
-
+		s_ActiveScene = m_ActiveScene.get();
 		m_EditorScenePath = std::filesystem::path();
 	}
 
@@ -576,7 +576,7 @@ namespace OP
 
 		m_ActiveScene = Scene::Copy(m_EditorScene);
 		m_ActiveScene->OnRuntimeStart();
-
+		s_ActiveScene = m_ActiveScene.get();
 		m_SceneGraph.SetContext(m_ActiveScene);
 	}
 
@@ -586,7 +586,7 @@ namespace OP
 
 		m_ActiveScene->OnRuntimeStop();
 		m_ActiveScene = m_EditorScene;
-
+		s_ActiveScene = m_ActiveScene.get();
 		m_SceneGraph.SetContext(m_ActiveScene);
 	}
 

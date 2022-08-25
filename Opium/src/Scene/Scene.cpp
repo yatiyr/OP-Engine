@@ -279,6 +279,14 @@ namespace OP
 
 	void Scene::OnRuntimeStart()
 	{
+		// OnCreate entity function is being triggered for 
+		// the Entities having script component
+		auto view = m_Registry.view<ScriptComponent>();
+		for (auto& entity : view)
+		{
+			ScriptManager::OnCreateEntity((uint32_t)entity);
+		}
+
 		// We tell physics manager ot start the physics world
 		PhysicsManager::StartWorld();
 

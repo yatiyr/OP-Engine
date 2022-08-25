@@ -35,7 +35,99 @@ namespace OP
 			return Input::IsKeyPressed(key);
 		}
 
+		//////////////////////////////////// TRANSFORM COMPONENT WRAPPERS ///////////////////////////////////////////
+		void OP_Get_Transform(uint32_t sceneID, uint32_t entityID, glm::mat4* outTransform)
+		{
+			Scene* scene = s_ActiveScene;
+			Entity entity((entt::entity)entityID, scene);
+			auto& transformComponent = entity.GetComponent<TransformComponent>();
+			glm::mat4 transform = transformComponent.GetTransform();
+			memcpy(outTransform, glm::value_ptr(transform), sizeof(glm::mat4));
+		}
 
+		void OP_Set_Transform(uint32_t sceneID, uint32_t entityID, glm::mat4* inTransform)
+		{
+			Scene* scene = s_ActiveScene;
+			Entity entity((entt::entity)entityID, scene);
+			auto& transformComponent = entity.GetComponent<TransformComponent>();
+			transformComponent.SetTransform(*inTransform);
+			entity.Patch<TransformComponent>();
+		}
+
+		void OP_Get_Translation(uint32_t sceneID, uint32_t entityID, glm::vec3* outTranslation)
+		{
+			Scene* scene = s_ActiveScene;
+			Entity entity((entt::entity)entityID, scene);
+			auto& transformComponent = entity.GetComponent<TransformComponent>();
+			glm::vec3 translation = transformComponent.Translation;
+			memcpy(outTranslation, glm::value_ptr(translation), sizeof(glm::vec3));
+		}
+
+		void OP_Set_Translation(uint32_t sceneID, uint32_t entityID, glm::vec3* inTranslation)
+		{
+			Scene* scene = s_ActiveScene;
+			Entity entity((entt::entity)entityID, scene);
+			auto& transformComponent = entity.GetComponent<TransformComponent>();
+			transformComponent.Translation = *inTranslation;
+			entity.Patch<TransformComponent>();
+		}
+
+		void OP_Get_RotationEuler(uint32_t sceneID, uint32_t entityID, glm::vec3* outRotationEuler)
+		{
+			Scene* scene = s_ActiveScene;
+			Entity entity((entt::entity)entityID, scene);
+			auto& transformComponent = entity.GetComponent<TransformComponent>();
+			glm::vec3 rotEuler = transformComponent.Rotation;
+			memcpy(outRotationEuler, glm::value_ptr(rotEuler), sizeof(glm::vec3));
+		}
+
+		void OP_Set_RotationEuler(uint32_t sceneID, uint32_t entityID, glm::vec3* inRotationEuler)
+		{
+			Scene* scene = s_ActiveScene;
+			Entity entity((entt::entity)entityID, scene);
+			auto& transformComponent = entity.GetComponent<TransformComponent>();
+			transformComponent.Rotation = *inRotationEuler;
+			entity.Patch<TransformComponent>();
+		}
+
+		void OP_Get_RotationQuat(uint32_t sceneID, uint32_t entityID, glm::quat* outRotationQuat)
+		{
+			Scene* scene = s_ActiveScene;
+			Entity entity((entt::entity)entityID, scene);
+			auto& transformComponent = entity.GetComponent<TransformComponent>();
+			glm::quat rotQuat = glm::quat(transformComponent.Rotation);
+			memcpy(outRotationQuat, glm::value_ptr(rotQuat), sizeof(glm::quat));
+
+		}
+
+		void OP_Set_RotationQuat(uint32_t sceneID, uint32_t entityID, glm::quat* inRotationQuat)
+		{
+			Scene* scene = s_ActiveScene;
+			Entity entity((entt::entity)entityID, scene);
+			auto& transformComponent = entity.GetComponent<TransformComponent>();
+			transformComponent.Rotation = glm::eulerAngles(*inRotationQuat);
+			entity.Patch<TransformComponent>();
+		}
+
+		void OP_Get_Scale(uint32_t sceneID, uint32_t entityID, glm::vec3* outScale)
+		{
+			Scene* scene = s_ActiveScene;
+			Entity entity((entt::entity)entityID, scene);
+			auto& transformComponent = entity.GetComponent<TransformComponent>();
+			glm::vec3 scale = transformComponent.Scale;
+			memcpy(outScale, glm::value_ptr(scale), sizeof(glm::vec3));
+		}
+		
+		void OP_Set_Scale(uint32_t sceneID, uint32_t entityID, glm::vec3* inScale)
+		{
+			Scene* scene = s_ActiveScene;
+			Entity entity((entt::entity)entityID, scene);
+			auto& transformComponent = entity.GetComponent<TransformComponent>();
+			transformComponent.Scale = *inScale;
+			entity.Patch<TransformComponent>();
+		}
+		 
+		
 		// Entity wrappers
 		void Opium_Entity_GetTransform(uint32_t sceneID, uint32_t entityID, glm::mat4* outTransform)
 		{

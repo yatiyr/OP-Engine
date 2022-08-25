@@ -46,11 +46,25 @@ namespace OP
 
 		mono_add_internal_call("OP.Input::IsKeyPressed_Native", OP::Script::Opium_Input_IsKeyPressed);
 
+		/////////////////////// ARRANGE TRANSFORM COMPONENT FUNCTIONS ///////////////////////////////////////////
+			mono_add_internal_call("OP.TransformComponent::GetTransform_Native",     OP::Script::OP_Get_Transform);
+			mono_add_internal_call("OP.TransformComponent::SetTransform_Native",     OP::Script::OP_Set_Transform);
+			mono_add_internal_call("OP.TransformComponent::GetTranslation_Native",   OP::Script::OP_Get_Translation);
+			mono_add_internal_call("OP.TransformComponent::SetTranslation_Native",   OP::Script::OP_Set_Translation);
+			mono_add_internal_call("OP.TransformComponent::GetRotationEuler_Native", OP::Script::OP_Get_RotationEuler);
+			mono_add_internal_call("OP.TransformComponent::SetRotationEuler_Native", OP::Script::OP_Set_RotationEuler);
+			mono_add_internal_call("OP.TransformComponent::GetRotationQuat_Native",  OP::Script::OP_Get_RotationQuat);
+			mono_add_internal_call("OP.TransformComponent::SetRotationQuat_Native",  OP::Script::OP_Set_RotationQuat);
+			mono_add_internal_call("OP.TransformComponent::GetScale_Native",         OP::Script::OP_Get_Scale);
+			mono_add_internal_call("OP.TransformComponent::SetScale_Native",         OP::Script::OP_Set_Scale);
+
+
+		// OLD PART
 		mono_add_internal_call("OP.Entity::GetTransform_Native", OP::Script::Opium_Entity_GetTransform);
 		mono_add_internal_call("OP.Entity::SetTransform_Native", OP::Script::Opium_Entity_SetTransform);
 		mono_add_internal_call("OP.Entity::CreateComponent_Native", OP::Script::Opium_Entity_CreateComponent);
 		mono_add_internal_call("OP.Entity::HasComponent_Native", OP::Script::Opium_Entity_HasComponent);
 
-		//mono_add_internal_call("Opium.Entity::GetTransform_Native", 
+	
 	}
 }
