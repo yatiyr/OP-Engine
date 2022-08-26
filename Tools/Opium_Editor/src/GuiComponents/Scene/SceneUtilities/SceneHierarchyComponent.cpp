@@ -933,8 +933,10 @@ namespace OP
 					{
 						const wchar_t* path = (const wchar_t*)payload->Data;
 						std::filesystem::path scriptPath = std::filesystem::path(g_AssetPath) / path;
-						std::string fileName = scriptPath.filename().string();
-						component = entity.AddOrReplaceComponent<ScriptComponent>(fileName);
+						std::string fileName = scriptPath.stem().string();
+						std::string extension = scriptPath.extension().string();
+						if(extension == ".cs")
+							component = entity.AddOrReplaceComponent<ScriptComponent>(fileName);
 					}
 					ImGui::EndDragDropTarget();
 				}

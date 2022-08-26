@@ -32,6 +32,9 @@ namespace OP
 		// Detaches the child entity from its former parent, if parent does not exist, no op
 		void DetachChild(Entity child);
 
+		// Give all children of an entity inside a list
+		void GiveAllChildren(Entity parent, std::vector<Entity>& childList);
+
 		// Detach the child and then remove it from the scene
 		void RemoveEntity(Entity entity);
 
@@ -50,7 +53,7 @@ namespace OP
 		void OnViewportResize(uint32_t width, uint32_t height);
 
 		void DuplicateEntity(Entity entity);
-
+		void DuplicateRecursiveChildren(Entity newParent, Entity originalParent);
 		Entity GetPrimaryCameraEntity();
 
 		Entity GetEntityWithUUID(UUID id);

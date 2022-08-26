@@ -274,8 +274,17 @@ namespace OP
 			scriptClass.ClassName = script.ModuleName;
 		}
 
-		scriptClass.Class = GetClass(s_AppAssemblyImage, scriptClass);
-		scriptClass.InitClassMethods(s_AppAssemblyImage);
+		if (scriptClass.ClassName != "NullScript")
+		{
+			scriptClass.Class = GetClass(s_AppAssemblyImage, scriptClass);
+			scriptClass.InitClassMethods(s_AppAssemblyImage);
+		}
+		else
+		{
+			scriptClass.Class = GetClass(s_CoreAssemblyImage, scriptClass);
+			scriptClass.InitClassMethods(s_CoreAssemblyImage);
+		}
+
 
 		EntityInstance& entityInstance = s_EntityInstanceMap[entityID];
 		entityInstance.ScriptClass = &scriptClass;

@@ -189,6 +189,8 @@ namespace OP
 			out << YAML::Key << "First" << YAML::Value << static_cast<uint64_t>(comp.first);
 			out << YAML::Key << "Prev" << YAML::Value << static_cast<uint64_t>(comp.prev);
 			out << YAML::Key << "Next" << YAML::Value << static_cast<uint64_t>(comp.next);
+
+			out << YAML::EndMap; // Relationship Component
 		}
 
 		if (entity.HasComponent<ScriptComponent>())
@@ -201,7 +203,7 @@ namespace OP
 			out << YAML::Key << "Name" << YAML::Value << sC.ModuleName;
 
 			out << YAML::Key << "Fields";
-			out << YAML::BeginMap;
+			out << YAML::BeginMap; // Fields
 			for (auto& [name, field] : sC.PublicFields)
 			{
 				PublicField* pField = (PublicField*)field;
@@ -243,8 +245,9 @@ namespace OP
 					out << YAML::Key << name + "_Vec4" << YAML::Value << val;
 				}
 			}
-			out << YAML::EndMap;
-			out << YAML::EndMap;
+			out << YAML::EndMap; // Fields
+
+			out << YAML::EndMap; // ScriptComponent
 		}
 
 		if (entity.HasComponent<TransformComponent>())
@@ -306,7 +309,7 @@ namespace OP
 			out << YAML::Key << "BodyType" << YAML::Value << RigidBody2DBodyTypeToString(rb2dComponent.Type);
 			out << YAML::Key << "FixedRotation" << YAML::Value << rb2dComponent.FixedRotation;
 
-			out << YAML::EndMap;
+			out << YAML::EndMap; // Rigidbody2DComponent
 		}
 
 		if (entity.HasComponent<BoxCollider2DComponent>())
@@ -324,13 +327,13 @@ namespace OP
 			out << YAML::Key << "RestitutionThreshold" << YAML::Value << bc2dComponent.RestitutionThreshold;
 
 
-			out << YAML::EndMap;
+			out << YAML::EndMap; // BoxCollider2D Component
 		}
 
 		if (entity.HasComponent<DirLightComponent>())
 		{
 			out << YAML::Key << "DirLightComponent";
-			out << YAML::BeginMap;
+			out << YAML::BeginMap; // DirLightComponent
 
 			auto& dirLightComponent = entity.GetComponent<DirLightComponent>();
 			out << YAML::Key << "Color" << YAML::Value << dirLightComponent.Color;
@@ -338,13 +341,14 @@ namespace OP
 			out << YAML::Key << "CascadeSize" << YAML::Value << dirLightComponent.CascadeSize;
 			out << YAML::Key << "FrustaDistFactor" << YAML::Value << dirLightComponent.FrustaDistFactor;
 			out << YAML::Key << "CastShadows" << YAML::Value << dirLightComponent.CastShadows;
-			out << YAML::EndMap;
+
+			out << YAML::EndMap; // DirLightComponent
 		}
 
 		if (entity.HasComponent<SpotLightComponent>())
 		{
 			out << YAML::Key << "SpotLightComponent";
-			out << YAML::BeginMap;
+			out << YAML::BeginMap; // SpotLightComponent
 
 			auto& spotLightComponent = entity.GetComponent<SpotLightComponent>();
 			out << YAML::Key << "Color" << YAML::Value << spotLightComponent.Color;
@@ -357,13 +361,13 @@ namespace OP
 			out << YAML::Key << "OuterCutoff" << YAML::Value << spotLightComponent.OuterCutoff;
 			out << YAML::Key << "CastShadows" << YAML::Value << spotLightComponent.CastShadows;
 
-			out << YAML::EndMap;
+			out << YAML::EndMap; // SpotLightComponent
 		}
 
 		if (entity.HasComponent<PointLightComponent>())
 		{
 			out << YAML::Key << "PointLightComponent";
-			out << YAML::BeginMap;
+			out << YAML::BeginMap; // PointLightComponent
 
 			auto& pointLightComponent = entity.GetComponent<PointLightComponent>();
 			out << YAML::Key << "Color" << YAML::Value << pointLightComponent.Color;
@@ -374,13 +378,13 @@ namespace OP
 			out << YAML::Key << "Kl" << YAML::Value << pointLightComponent.Kl;
 			out << YAML::Key << "CastShadows" << YAML::Value << pointLightComponent.CastShadows;
 
-			out << YAML::EndMap;
+			out << YAML::EndMap; // PointLightComponent
 		}
 
 		if (entity.HasComponent<Physics3DMaterial>())
 		{
 			out << YAML::Key << "Physics3DMaterialComponent";
-			out << YAML::BeginMap;
+			out << YAML::BeginMap; // Physics3DMaterialComponent
 
 			auto& physics3DMaterial = entity.GetComponent<Physics3DMaterial>();
 			out << YAML::Key << "Mass" << physics3DMaterial.Mass;
@@ -389,13 +393,13 @@ namespace OP
 			out << YAML::Key << "SpinningFriction" << physics3DMaterial.SpinningFriction;
 			out << YAML::Key << "Restitution" << physics3DMaterial.Restitution;
 
-			out << YAML::EndMap;
+			out << YAML::EndMap; // Physics3DMaterialComponent
 		}
 
 		if (entity.HasComponent<Physics3DCollider>())
 		{
 			out << YAML::Key << "Physics3DColliderComponent";
-			out << YAML::BeginMap;
+			out << YAML::BeginMap; // Physics3DColliderComponent
 
 			auto& physics3DCollider = entity.GetComponent<Physics3DCollider>();
 
@@ -406,24 +410,24 @@ namespace OP
 				out << YAML::Key << "Radius" << physics3DCollider.Radius;
 			out << YAML::Key << "ContactResponse" << physics3DCollider.ContactResponse;
 
-			out << YAML::EndMap;
+			out << YAML::EndMap; // Physics3DColliderComponent
 		}
 
 		if (entity.HasComponent<MeshComponent>())
 		{
 			out << YAML::Key << "MeshComponent";
-			out << YAML::BeginMap;
+			out << YAML::BeginMap; // MeshComponent
 
 			auto& meshComponent = entity.GetComponent<MeshComponent>();
 			out << YAML::Key << "MeshName" << YAML::Value << meshComponent.MeshName;
 
-			out << YAML::EndMap;
+			out << YAML::EndMap; // MeshComponent
 		}
 
 		if (entity.HasComponent<MaterialComponent>())
 		{
 			out << YAML::Key << "MaterialComponent";
-			out << YAML::BeginMap;
+			out << YAML::BeginMap; // MaterialComponent
 
 			auto& materialComponent = entity.GetComponent<MaterialComponent>();
 			Ref<MaterialInstance> matInstance = materialComponent.MatInstance;
@@ -434,51 +438,51 @@ namespace OP
 			out << YAML::Key << "ClipBorder" << YAML::Value << matInstance->ClipBorder;
 			// Write float values
 			out << YAML::Key << "FloatValues";
-			out << YAML::BeginMap;
+			out << YAML::BeginMap; // FloatValues
 			for (auto& [name, val] : matInstance->Floats)
 			{
 				out << YAML::Key << name << YAML::Value << val;
 			}
-			out << YAML::EndMap;
+			out << YAML::EndMap; // FloatValues
 
 			// Write float2 values
 			out << YAML::Key << "Float2Values";
-			out << YAML::BeginMap;
+			out << YAML::BeginMap; // Float2 Values
 			for (auto& [name, val] : matInstance->Float2s)
 			{
 				out << YAML::Key << name << YAML::Value << val;
 			}
-			out << YAML::EndMap;
+			out << YAML::EndMap; // Float2 Values
 
 			// Write float3 values
 			out << YAML::Key << "Float3Values";
-			out << YAML::BeginMap;
+			out << YAML::BeginMap; // Float3 Values
 			for (auto& [name, val] : matInstance->Float3s)
 			{
 				out << YAML::Key << name << YAML::Value << val;
 			}
-			out << YAML::EndMap;
+			out << YAML::EndMap; // Float3 Values
 
 			// Write int values
 			out << YAML::Key << "IntValues";
-			out << YAML::BeginMap;
+			out << YAML::BeginMap; // IntValues
 			for (auto& [name, val] : matInstance->Ints)
 			{
 				out << YAML::Key << name << YAML::Value << val;
 			}
-			out << YAML::EndMap;
+			out << YAML::EndMap; // IntValues
 
 			// Write textures
 			out << YAML::Key << "Textures";
-			out << YAML::BeginMap;
+			out << YAML::BeginMap; // Textures
 			for (auto& [name, tex] : matInstance->Textures)
 			{
 				out << YAML::Key << name << YAML::Value << tex->m_Name;
 			}
-			out << YAML::EndMap;
+			out << YAML::EndMap; // Textures
 
 
-			out << YAML::EndMap;
+			out << YAML::EndMap; // MaterialComponent
 		}
 
 		out << YAML::EndMap; // Entity

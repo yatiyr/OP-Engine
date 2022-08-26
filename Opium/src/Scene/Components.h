@@ -193,7 +193,7 @@ namespace OP
 
 	struct ScriptComponent
 	{
-		std::string ModuleName;
+		std::string ModuleName = "NullScript";
 		std::unordered_map<std::string, void*> PublicFields;
 
 		ScriptComponent() = default;

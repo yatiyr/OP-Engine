@@ -96,7 +96,7 @@ namespace OP
 
 		// For testing C# integration
 		auto scriptedEntity = m_ActiveScene->CreateEntity("ScriptedEntity");
-		scriptedEntity.AddComponent<ScriptComponent>("Example.Script");
+		scriptedEntity.AddComponent<ScriptComponent>();
 		bool x = scriptedEntity.HasComponent<ScriptComponent>();
 
 

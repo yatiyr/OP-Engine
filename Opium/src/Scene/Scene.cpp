@@ -259,9 +259,30 @@ namespace OP
 			child.AddComponent<RootComponent>();
 	}
 
+	void Scene::GiveAllChildren(Entity parent, std::vector<Entity>& childList)
+	{
+		auto& relC = parent.GetComponent<RelationshipComponent>();
+		Entity childIterator = GetEntityWithUUID(relC.first);
+		while (entt::entity(childIterator) != entt::null)
+		{
+			auto& childRelC = childIterator.GetComponent<RelationshipComponent>();
+			childList.push_back(childIterator);
+			childIterator = GetEntityWithUUID(childRelC.next);
+		}
+	}
+
 	void Scene::RemoveEntity(Entity entity)
 	{
-		
+		// Recursively remove its children as well
+		std::vector<Entity> childList;
+		GiveAllChildren(entity, childList);
+
+		for (int i = 0; i < childList.size(); i++)
+		{
+			DetachChild(childList[i]);
+			m_Registry.destroy(childList[i]);
+		}
+
 		// If the entity is being removed during runtime and has physical properties
 		// we also need to remove the entity from the physical world.
 		if (entity.HasComponent<Physics3DMaterial>() && entity.HasComponent<Physics3DCollider>())
@@ -272,6 +293,8 @@ namespace OP
 			if(physics3DMaterial.RuntimeBody)
 				PhysicsManager::DeleteRigidBody(physics3DMaterial.RuntimeBody, physics3DCollider.runtimeShapeIndex);
 		}
+
+
 		DetachChild(entity);
 		m_Registry.destroy(entity);
 
@@ -443,27 +466,106 @@ namespace OP
 		}
 	}
 
+
+	void Scene::DuplicateRecursiveChildren(Entity newParent, Entity originalParent)
+	{
+		auto& relC = originalParent.GetComponent<RelationshipComponent>();
+
+		// We recursively traverse every child inside the original entity and
+		// add them to the new entity
+		Entity childIterator = GetEntityWithUUID(relC.first);
+		// Original entity has children
+		while (entt::entity(childIterator) != entt::null)
+		{
+			auto& childRelC = childIterator.GetComponent<RelationshipComponent>();
+
+			Entity newChild = CreateEntity(childIterator.GetName());
+			CopyComponentIfExists<TagComponent>(newChild, childIterator);
+			CopyComponentIfExists<TransformComponent>(newChild, childIterator);
+			CopyComponentIfExists<SpriteRendererComponent>(newChild, childIterator);
+			CopyComponentIfExists<CameraComponent>(newChild, childIterator);
+			CopyComponentIfExists<Rigidbody2DComponent>(newChild, childIterator);
+			CopyComponentIfExists<BoxCollider2DComponent>(newChild, childIterator);
+			CopyComponentIfExists<ScriptComponent>(newChild, childIterator);
+			CopyComponentIfExists<NativeScriptComponent>(newChild, childIterator);
+			CopyComponentIfExists<DirLightComponent>(newChild, childIterator);
+			CopyComponentIfExists<SpotLightComponent>(newChild, childIterator);
+			CopyComponentIfExists<MeshComponent>(newChild, childIterator);
+			CopyComponentIfExists<MaterialComponent>(newChild, childIterator);
+			CopyComponentIfExists<Physics3DMaterial>(newChild, childIterator);
+			CopyComponentIfExists<Physics3DCollider>(newChild, childIterator);
+
+			// Add duplicated child to new entity
+			this->AddChildEntity(newParent, newChild);
+
+			DuplicateRecursiveChildren(newChild, childIterator);
+
+			// Get to next child
+			childIterator = GetEntityWithUUID(childRelC.next);
+		}
+	}
+
 	void Scene::DuplicateEntity(Entity entity)
 	{
 		Entity newEntity = CreateEntity(entity.GetName());
 
-		CopyComponentIfExists<TransformComponent>(newEntity, entity);
-		CopyComponentIfExists<RelationshipComponent>(newEntity, entity);
-		CopyComponentIfExists<SpriteRendererComponent>(newEntity, entity);
-		CopyComponentIfExists<CameraComponent>(newEntity, entity);
-		CopyComponentIfExists<Rigidbody2DComponent>(newEntity, entity);
-		CopyComponentIfExists<BoxCollider2DComponent>(newEntity, entity);
-		CopyComponentIfExists<ScriptComponent>(newEntity, entity);
-		CopyComponentIfExists<NativeScriptComponent>(newEntity, entity);
+		auto& relC = entity.GetComponent<RelationshipComponent>();
+		CopyComponentIfExists<TagComponent>            (newEntity, entity);
+		CopyComponentIfExists<TransformComponent>      (newEntity, entity);
+		CopyComponentIfExists<SpriteRendererComponent> (newEntity, entity);
+		CopyComponentIfExists<CameraComponent>         (newEntity, entity);
+		CopyComponentIfExists<Rigidbody2DComponent>    (newEntity, entity);
+		CopyComponentIfExists<BoxCollider2DComponent>  (newEntity, entity);
+		CopyComponentIfExists<ScriptComponent>         (newEntity, entity);
+		CopyComponentIfExists<NativeScriptComponent>   (newEntity, entity);
+		CopyComponentIfExists<DirLightComponent>       (newEntity, entity);
+		CopyComponentIfExists<SpotLightComponent>      (newEntity, entity);
+		CopyComponentIfExists<MeshComponent>           (newEntity, entity);
+		CopyComponentIfExists<MaterialComponent>       (newEntity, entity);
+		CopyComponentIfExists<Physics3DMaterial>       (newEntity, entity);
+		CopyComponentIfExists<Physics3DCollider>       (newEntity, entity);
 
-		CopyComponentIfExists<DirLightComponent>(newEntity, entity);
-		CopyComponentIfExists<SpotLightComponent>(newEntity, entity);
+		Entity parent = GetEntityWithUUID(relC.parent);
 
-		CopyComponentIfExists<MeshComponent>(newEntity, entity);
-		CopyComponentIfExists<MaterialComponent>(newEntity, entity);
+		// We check whether the entity has a parent
+		// and if it does, we add it to the children list
+		// of the parent
+		if (entt::entity(parent) != entt::null)
+			this->AddChildEntity(parent, newEntity);
 
-		CopyComponentIfExists<Physics3DMaterial>(newEntity, entity);
-		CopyComponentIfExists<Physics3DCollider>(newEntity, entity);
+
+		// We recursively traverse every child inside the original entity and
+		// add them to the new entity
+		Entity childIterator = GetEntityWithUUID(relC.first);
+		// Original entity has children
+		while (entt::entity(childIterator) != entt::null)
+		{
+			auto& childRelC = childIterator.GetComponent<RelationshipComponent>();
+
+			Entity newChild = CreateEntity(childIterator.GetName());
+			CopyComponentIfExists<TagComponent>            (newChild, childIterator);
+			CopyComponentIfExists<TransformComponent>      (newChild, childIterator);
+			CopyComponentIfExists<SpriteRendererComponent> (newChild, childIterator);
+			CopyComponentIfExists<CameraComponent>         (newChild, childIterator);
+			CopyComponentIfExists<Rigidbody2DComponent>    (newChild, childIterator);
+			CopyComponentIfExists<BoxCollider2DComponent>  (newChild, childIterator);
+			CopyComponentIfExists<ScriptComponent>         (newChild, childIterator);
+			CopyComponentIfExists<NativeScriptComponent>   (newChild, childIterator);
+			CopyComponentIfExists<DirLightComponent>       (newChild, childIterator);
+			CopyComponentIfExists<SpotLightComponent>      (newChild, childIterator);
+			CopyComponentIfExists<MeshComponent>           (newChild, childIterator);
+			CopyComponentIfExists<MaterialComponent>       (newChild, childIterator);
+			CopyComponentIfExists<Physics3DMaterial>       (newChild, childIterator);
+			CopyComponentIfExists<Physics3DCollider>       (newChild, childIterator);
+
+			// Add duplicated child to new entity
+			this->AddChildEntity(newEntity, newChild);
+
+			DuplicateRecursiveChildren(newChild, childIterator);
+
+			// Get to next child
+			childIterator = GetEntityWithUUID(childRelC.next);
+		}
 	}
 
 	Entity Scene::GetPrimaryCameraEntity()
