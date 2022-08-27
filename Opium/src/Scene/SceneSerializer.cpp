@@ -492,7 +492,11 @@ namespace OP
 	{
 		YAML::Emitter out;
 		out << YAML::BeginMap;
-		out << YAML::Key << "Scene" << YAML::Value << "Unitled";
+		out << YAML::Key << "Scene" << YAML::Value << m_Scene->m_Name;
+		out << YAML::Key << "Skybox" << YAML::Value << m_Scene->m_Skybox;
+		out << YAML::Key << "ToneMap" << YAML::Value << m_Scene->m_ToneMap;
+		out << YAML::Key << "Exposure" << YAML::Value << m_Scene->m_Exposure;
+
 		out << YAML::Key << "Entities" << YAML::Value << YAML::BeginSeq;
 		m_Scene->m_Registry.each([&](auto entityID)
 			{
@@ -524,6 +528,15 @@ namespace OP
 			return false;
 
 		std::string sceneName = data["Scene"].as<std::string>();
+		std::string skybox    = data["Skybox"].as<std::string>();
+		bool tonemap          = data["ToneMap"].as<bool>();
+		float exposure        = data["Exposure"].as<float>();
+		
+		m_Scene->m_Name = sceneName;
+		m_Scene->m_Skybox = skybox;
+		m_Scene->m_ToneMap = tonemap;
+		m_Scene->m_Exposure = exposure;
+
 		OP_ENGINE_TRACE("Deserializing scene '{0}'", sceneName);
 
 		auto entities = data["Entities"];
@@ -549,6 +562,12 @@ namespace OP
 					tc.Translation = transformComponent["Translation"].as<glm::vec3>();
 					tc.Rotation = transformComponent["Rotation"].as<glm::vec3>();
 					tc.Scale = transformComponent["Scale"].as<glm::vec3>();
+				}
+
+				auto rootComponent = entity["RootComponent"];
+				if (rootComponent)
+				{
+					deserializedEntity.AddComponent<RootComponent>();
 				}
 
 				auto cameraComponent = entity["CameraComponent"];
@@ -641,7 +660,7 @@ namespace OP
 					sLC.Intensity = spotLightComponent["Intensity"].as<float>();
 					sLC.Cutoff = spotLightComponent["Cutoff"].as<float>();
 					sLC.OuterCutoff = spotLightComponent["OuterCutoff"].as<float>();
-					sLC.CastShadows = spotLightComponent["CastShadows"].as<float>();
+					sLC.CastShadows = spotLightComponent["CastShadows"].as<bool>();
 					sLC.FarDist = spotLightComponent["FarDist"].as<float>();
 					sLC.NearDist = spotLightComponent["NearDist"].as<float>();
 					sLC.Kq = spotLightComponent["Kq"].as<float>();
@@ -730,7 +749,7 @@ namespace OP
 				auto materialComponent = entity["MaterialComponent"];
 				if (materialComponent)
 				{
-					auto& mC = deserializedEntity.AddComponent<MaterialComponent>();
+					auto& mC = deserializedEntity.AddOrReplaceComponent<MaterialComponent>();
 					Ref<Material> mat = ResourceManager::GetMaterial(materialComponent["MaterialName"].as<std::string>());
 					mC.MatInstance = MaterialInstance::Create(mat);
 					mC.MatInstance->TilingFactor = materialComponent["TilingFactor"].as<float>();
@@ -738,39 +757,50 @@ namespace OP
 					mC.MatInstance->ClipBorder = materialComponent["ClipBorder"].as<bool>();
 					// Read float values
 					auto floatValues = materialComponent["FloatValues"];
+					uint32_t floatValCounter = 0;
 					for (const auto& element : floatValues)
 					{
-						mC.MatInstance->Floats.push_back({ element.first.as<std::string>(), element.second.as<float>() });
+						mC.MatInstance->Floats[floatValCounter] = {element.first.as<std::string>(), element.second.as<float>()};
+						floatValCounter++;
 					}
 
 					// Read float2 values
 					auto float2Values = materialComponent["Float2Values"];
+					uint32_t float2ValCounter = 0;
 					for (const auto& element : float2Values)
 					{
-						mC.MatInstance->Float2s.push_back({ element.first.as<std::string>(), element.second.as<glm::vec2>() });
+						mC.MatInstance->Float2s[float2ValCounter] = { element.first.as<std::string>(), element.second.as<glm::vec2>() };
+						float2ValCounter++;
 					}
 
 					// Read float3 values
 					auto float3Values = materialComponent["Float3Values"];
+					uint32_t float3ValCounter = 0;
 					for (const auto& element : float3Values)
 					{
-						mC.MatInstance->Float3s.push_back({ element.first.as<std::string>(), element.second.as<glm::vec3>() });
+						mC.MatInstance->Float3s[float3ValCounter] = {element.first.as<std::string>(), element.second.as<glm::vec3>()};
+						float3ValCounter++;
 					}
 
 					// Read Int values
 					auto intValues = materialComponent["IntValues"];
+					uint32_t intValCounter = 0;
 					for (const auto& element : intValues)
 					{
-						mC.MatInstance->Ints.push_back({ element.first.as<std::string>(), element.second.as<int>() });
+						mC.MatInstance->Ints[intValCounter] = {element.first.as<std::string>(), element.second.as<int>()};
+						intValCounter++;
 					}
 
 					// Read Textures
 					auto textures = materialComponent["Textures"];
+					uint32_t texCounter = 0;
 					for (const auto& element : textures)
 					{
-						std::string textureName = element.first.as<std::string>();
+						std::string textureType = element.first.as<std::string>();
+						std::string textureName = element.second.as<std::string>();
 						Ref<Texture> texture = ResourceManager::GetTexture(textureName);
-						mC.MatInstance->Textures.push_back({ textureName, texture });
+						mC.MatInstance->Textures[texCounter] = { textureType, texture };
+						texCounter++;
 					}
 
 				}

@@ -53,6 +53,49 @@ namespace OP
 
 	}
 
+	std::string Scene::GetSceneName()
+	{
+		return m_Name;
+	}
+
+	void Scene::SetSceneName(std::string name)
+	{
+		m_Name = name;
+	}
+
+	void Scene::SetSkybox(std::string SkyboxName)
+	{
+		m_Skybox = SkyboxName;
+		SceneRenderer::ChangeEnvironmentMap(SkyboxName);
+	}
+
+	void Scene::SetToneMap(bool ToneMap)
+	{
+		m_ToneMap = ToneMap;
+		SceneRenderer::SetHdr(ToneMap);
+	}
+
+	void Scene::SetExposure(float Exposure)
+	{
+		m_Exposure = Exposure;
+		SceneRenderer::SetExposure(Exposure);
+	}
+
+	std::string Scene::GetSkybox()
+	{
+		return m_Skybox;
+	}
+
+	bool Scene::GetToneMap()
+	{
+		return m_ToneMap;
+	}
+
+	float Scene::GetExposure()
+	{
+		return m_Exposure;
+	}
+
 	template<typename Component>
 	static void CopyComponent(entt::registry& dst, entt::registry& src, const std::unordered_map<UUID, entt::entity>& enttMap)
 	{
@@ -489,6 +532,7 @@ namespace OP
 			CopyComponentIfExists<ScriptComponent>(newChild, childIterator);
 			CopyComponentIfExists<NativeScriptComponent>(newChild, childIterator);
 			CopyComponentIfExists<DirLightComponent>(newChild, childIterator);
+			CopyComponentIfExists<PointLightComponent>(newChild, childIterator);
 			CopyComponentIfExists<SpotLightComponent>(newChild, childIterator);
 			CopyComponentIfExists<MeshComponent>(newChild, childIterator);
 			CopyComponentIfExists<MaterialComponent>(newChild, childIterator);
@@ -520,6 +564,7 @@ namespace OP
 		CopyComponentIfExists<NativeScriptComponent>   (newEntity, entity);
 		CopyComponentIfExists<DirLightComponent>       (newEntity, entity);
 		CopyComponentIfExists<SpotLightComponent>      (newEntity, entity);
+		CopyComponentIfExists<PointLightComponent>	   (newEntity, entity);
 		CopyComponentIfExists<MeshComponent>           (newEntity, entity);
 		CopyComponentIfExists<MaterialComponent>       (newEntity, entity);
 		CopyComponentIfExists<Physics3DMaterial>       (newEntity, entity);
@@ -553,6 +598,7 @@ namespace OP
 			CopyComponentIfExists<NativeScriptComponent>   (newChild, childIterator);
 			CopyComponentIfExists<DirLightComponent>       (newChild, childIterator);
 			CopyComponentIfExists<SpotLightComponent>      (newChild, childIterator);
+			CopyComponentIfExists<PointLightComponent>	   (newChild, childIterator);
 			CopyComponentIfExists<MeshComponent>           (newChild, childIterator);
 			CopyComponentIfExists<MaterialComponent>       (newChild, childIterator);
 			CopyComponentIfExists<Physics3DMaterial>       (newChild, childIterator);

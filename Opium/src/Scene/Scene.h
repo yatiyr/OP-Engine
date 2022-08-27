@@ -57,6 +57,17 @@ namespace OP
 		Entity GetPrimaryCameraEntity();
 
 		Entity GetEntityWithUUID(UUID id);
+
+		void SetSkybox(std::string SkyboxName);
+		void SetToneMap(bool ToneMap);
+		void SetExposure(float Exposure);
+
+		std::string GetSkybox();
+		bool GetToneMap();
+		float GetExposure();
+
+		std::string GetSceneName();
+		void SetSceneName(std::string name);
 	private:
 		template<typename T>
 		void OnComponentAdded(Entity entity, T& component);
@@ -68,6 +79,12 @@ namespace OP
 		uint32_t m_ViewportWidth = 0, m_ViewportHeight = 0;
 
 		b2World* m_PhysicsWorld = nullptr;
+
+		std::string m_Name = "Unitled";
+		// Scene Renderer Settings
+		std::string m_Skybox = "space";
+		bool m_ToneMap = false;
+		float m_Exposure = 2.0f;
 
 		friend class Entity;
 		friend class SceneSerializer;

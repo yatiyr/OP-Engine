@@ -502,6 +502,9 @@ namespace OP
 		m_ActiveScene = CreateRef<Scene>();
 		m_ActiveScene->OnViewportResize((uint32_t)m_ViewportComponent.m_ViewportSize.x, (uint32_t)m_ViewportComponent.m_ViewportSize.y);
 		m_SceneGraph.SetContext(m_ActiveScene);
+		SceneRenderer::ChangeEnvironmentMap(m_ActiveScene->GetSkybox());
+		SceneRenderer::SetHdr(m_ActiveScene->GetToneMap());
+		SceneRenderer::SetExposure(m_ActiveScene->GetExposure());
 		s_ActiveScene = m_ActiveScene.get();
 		m_EditorScenePath = std::filesystem::path();
 	}
@@ -536,6 +539,9 @@ namespace OP
 			m_SceneGraph.SetContext(m_EditorScene);
 
 			m_ActiveScene = m_EditorScene;
+			SceneRenderer::ChangeEnvironmentMap(m_ActiveScene->GetSkybox());
+			SceneRenderer::SetHdr(m_ActiveScene->GetToneMap());
+			SceneRenderer::SetExposure(m_ActiveScene->GetExposure());
 			m_EditorScenePath = path;
 
 		}

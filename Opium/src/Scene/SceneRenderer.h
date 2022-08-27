@@ -31,8 +31,10 @@ namespace OP
 		static void SetScene(Ref<Scene> scene);
 
 		static float* GetExposure();
+		static void SetExposure(float Exposure);
 
 		static bool* GetHdr();
+		static void SetHdr(bool Hdr);
 
 		static bool* GetShowGrid();
 

@@ -453,9 +453,19 @@ namespace OP
 		return &s_SceneRendererData.ToneMappingSettingsBuffer.exposure;
 	}
 
+	void SceneRenderer::SetExposure(float Exposure)
+	{
+		s_SceneRendererData.ToneMappingSettingsBuffer.exposure = Exposure;
+	}
+
 	bool* SceneRenderer::GetHdr()
 	{
 		return &s_SceneRendererData.ToneMappingSettingsBuffer.hdr;
+	}
+
+	void SceneRenderer::SetHdr(bool Hdr)
+	{
+		s_SceneRendererData.ToneMappingSettingsBuffer.hdr = Hdr;
 	}
 
 	bool* SceneRenderer::GetShowGrid()

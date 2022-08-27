@@ -128,7 +128,8 @@ namespace OP
 					if (ImGui::Selectable(envMapNames[i].c_str(), isSelected))
 					{
 						currentSelectedID = i;
-						SceneRenderer::ChangeEnvironmentMap(envMapNames[i]);
+						m_Context->SetSkybox(envMapNames[i]);
+						//SceneRenderer::ChangeEnvironmentMap(envMapNames[i]);
 						comboPreviewValue = envMapNames[i];
 					}
 
@@ -140,8 +141,18 @@ namespace OP
 				ImGui::EndCombo();
 			}
 
-			ImGui::DragFloat("Exposure", SceneRenderer::GetExposure(), 0.01f, 0.0f, 20.0f);
-			ImGui::Checkbox("ToneMap", SceneRenderer::GetHdr());
+			float exposure = m_Context->GetExposure();
+			bool toneMap = m_Context->GetToneMap();
+
+			if (ImGui::DragFloat("Exposure", &exposure, 0.01f, 0.0f, 20.0f))
+			{
+				m_Context->SetExposure(exposure);
+			}
+			
+			if (ImGui::Checkbox("ToneMap", &toneMap))
+			{
+				m_Context->SetToneMap(toneMap);
+			}
 
 			ImGui::Text("SM Dir Time: %.1f", SceneRenderer::GetShadowMapDirPassMiliseconds());
 			ImGui::Text("SM Point Time: %.1f", SceneRenderer::GetShadowMapPointPassMiliseconds());
@@ -629,6 +640,15 @@ namespace OP
 				}
 			}
 
+			if (!m_SelectionContext.HasComponent<ScriptComponent>())
+			{
+				if (ImGui::MenuItem("Script Component"))
+				{
+					m_SelectionContext.AddComponent<ScriptComponent>();
+					ImGui::CloseCurrentPopup();
+				}
+			}
+
 			ImGui::EndPopup();
 		}
 
@@ -912,6 +932,7 @@ namespace OP
 						{
 							currentSelectedID = i;
 							component.Mesh = ResourceManager::GetMesh(meshNames[i]);
+							component.MeshName = meshNames[i];
 						}
 
 						if (isSelected)
