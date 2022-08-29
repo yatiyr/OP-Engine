@@ -31,11 +31,20 @@ internal class Script : Entity
         Mat4 translationMatrix = Mat4.Translate(translationVec);
         Mat4 newTransform = transform + translationMatrix;
 
-        if(OP.Input.IsKeyPressed(KeyCode.Enter))
+        if(OP.Input.IsKeyPressed(KeyCode.Q))
         {
-            Console.WriteLine("Entera basildi.");
+            Scene.Exposure += 0.5f * ts;
         }
 
+        if(OP.Input.IsKeyPressed(KeyCode.E))
+        {
+            Scene.Exposure -= 0.5f * ts;
+        }
+
+        if(OP.Input.IsKeyPressed(KeyCode.Z))
+        {
+            Console.WriteLine(Scene.Skybox);
+        }
         // tC.Translation = new Vec3(5.0f, 5.0f, 5.0f);
         // Console.WriteLine(tC.Translation.x);
         //SetTransform(newTransform);

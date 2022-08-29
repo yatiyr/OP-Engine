@@ -59,6 +59,17 @@ namespace OP
 			mono_add_internal_call("OP.TransformComponent::SetScale_Native",         OP::Script::OP_Set_Scale);
 
 
+		///////////////////////////////////// ARRANGE SCENE FUNCTIONS //////////////////////////////////////////////
+			mono_add_internal_call("OP.Scene::GetSkybox_Native",   OP::Script::OP_Get_Skybox);
+			mono_add_internal_call("OP.Scene::SetSkybox_Native",   OP::Script::OP_Set_Skybox);
+			mono_add_internal_call("OP.Scene::GetToneMap_Native",  OP::Script::OP_Get_ToneMap);
+			mono_add_internal_call("OP.Scene::SetToneMap_Native",  OP::Script::OP_Set_ToneMap);
+			mono_add_internal_call("OP.Scene::GetExposure_Native", OP::Script::OP_Get_Exposure);
+			mono_add_internal_call("OP.Scene::SetExposure_Native", OP::Script::OP_Set_Exposure);
+			mono_add_internal_call("OP.Scene::GetScene_Native",    OP::Script::OP_Get_Scene);
+			mono_add_internal_call("OP.Scene::SetScene_Native",    OP::Script::OP_Set_Scene);
+
+
 		// OLD PART
 		mono_add_internal_call("OP.Entity::GetTransform_Native", OP::Script::Opium_Entity_GetTransform);
 		mono_add_internal_call("OP.Entity::SetTransform_Native", OP::Script::Opium_Entity_SetTransform);

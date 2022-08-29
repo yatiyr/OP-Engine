@@ -126,6 +126,54 @@ namespace OP
 			transformComponent.Scale = *inScale;
 			entity.Patch<TransformComponent>();
 		}
+
+		///////////////////////////////////////// SCENE WRAPPERS //////////////////////////////////////////
+		void OP_Get_Skybox(char* SkyboxName)
+		{
+			std::string sNameStdStr = s_ActiveScene->GetSkybox();
+			uint32_t size = sNameStdStr.size();
+
+			const char* sName = sNameStdStr.c_str();
+			memcpy(SkyboxName, sName, size * sizeof(char));
+		}
+		
+		void OP_Set_Skybox(char* SkyboxName)
+		{
+			char buffer[256];
+			memcpy(&buffer, SkyboxName, 256);
+			std::string str(buffer);
+			s_ActiveScene->SetSkybox(str);
+		}
+
+		void OP_Get_ToneMap(bool* result)
+		{
+			*result = s_ActiveScene->GetToneMap();
+		}
+
+		void OP_Set_ToneMap(bool result)
+		{
+			s_ActiveScene->SetToneMap(result);
+		}
+
+		void OP_Get_Exposure(float* result)
+		{
+			*result = s_ActiveScene->GetExposure();
+		}
+
+		void OP_Set_Exposure(float result)
+		{
+			s_ActiveScene->SetExposure(result);
+		}
+
+		void OP_Get_Scene(char* SceneName)
+		{
+			// TODO: TO BE IMPLEMENTED
+		}
+
+		void OP_Set_Scene(char* SceneName)
+		{
+			// TODO: TO BE IMPLEMENTED
+		}
 		 
 		
 		// Entity wrappers

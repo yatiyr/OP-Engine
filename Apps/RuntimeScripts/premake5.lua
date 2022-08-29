@@ -1,6 +1,7 @@
 project "RuntimeScripts"
 	kind "SharedLib"
 	language "C#"
+	clr "Unsafe"
 
 	targetdir ("%{wks.location}/Tools/Opium_Editor/assets/scripts/bin")
 	objdir ("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.name}")
