@@ -33,6 +33,19 @@ namespace OP
 		return method;
 	}
 
+	struct EntityStruct
+	{
+		uint32_t sceneID;
+		uint32_t EntityID;
+	};
+
+	struct CollisionPointStruct
+	{
+		float x;
+		float y;
+		float z;
+	};
+
 	struct EntityScriptClass
 	{
 		std::string FullName;
@@ -43,11 +56,17 @@ namespace OP
 		MonoMethod* OnCreateMethod;
 		MonoMethod* OnDestroyMethod;
 		MonoMethod* OnUpdateMethod;
+		MonoMethod* OnCollisionMethod;
+		MonoMethod* OnCollisionStartedMethod;
+		MonoMethod* OnCollisionEndedMethod;
 
 		void InitClassMethods(MonoImage* image)
 		{
 			OnCreateMethod = GetMethod(image, FullName + ":OnCreate()");
 			OnUpdateMethod = GetMethod(image, FullName + ":OnUpdate(single)");
+			OnCollisionMethod = GetMethod(image, FullName + ":OnCollision_Native(uint,uint,single,single,single)");
+			OnCollisionStartedMethod = GetMethod(image, FullName + ":OnCollisionStarted_Native(uint,uint)");
+			OnCollisionEndedMethod = GetMethod(image, FullName + ":OnCollisionEnded_Native(uint,uint)");
 		}
 
 	};
@@ -111,6 +130,9 @@ namespace OP
 
 		static void OnCreateEntity(uint32_t entity);
 		static void OnUpdateEntity(uint32_t entityID, Timestep ts);
+		static void OnCollision(uint32_t entityID, uint32_t otherEntityID, glm::vec3 collisionPoint);
+		static void OnCollisionStarted(uint32_t entityID, uint32_t otherEntityID);
+		static void OnCollisionEnded(uint32_t entityID, uint32_t otherEntityID);
 
 		static std::unordered_map<std::string, void*> OnInitEntity(ScriptComponent& script, uint32_t entityID, uint32_t sceneID);
 

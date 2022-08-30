@@ -24,6 +24,22 @@ internal class Script : Entity
         tC = GetComponent<TransformComponent>();
     }
 
+    public void OnCollisionStarted(Entity otherEntity)
+    {
+        Console.WriteLine("CollisionStarted");
+    }
+
+    public void OnCollisionEnded(Entity otherEntity)
+    {
+        Console.WriteLine("CollisionEnded");
+    }
+
+    public void OnCollision(Entity otherEntity, Vec3 collisionPoint)
+    {
+        Console.WriteLine("Collision");
+    }
+
+
     public void OnUpdate(float ts)
     {
         Mat4 transform = GetTransform();

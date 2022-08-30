@@ -1,6 +1,8 @@
 #include <Precomp.h>
 #include <PhysicsManager/PhysicsManager.h>
+#include <ScriptManager/ScriptManager.h>
 
+#include <Scene/Entity.h>
 
 namespace OP
 {
@@ -27,42 +29,45 @@ namespace OP
 
 		// cp.m_index0
 
-		PhysicsObject* o1 = (PhysicsObject*)cObj1->getUserPointer();
-		PhysicsObject* o2 = (PhysicsObject*)cObj1->getUserPointer();
+		Entity* o1 = (Entity*)cObj1->getUserPointer();
+		Entity* o2 = (Entity*)cObj2->getUserPointer();
 
+		btVector3 worldA = cp.getPositionWorldOnA();
+		btVector3 worldB = cp.getPositionWorldOnB();
 
-		OP_ENGINE_WARN("Obj1 id: {0}, Obj2 id: {1}", o1->id, o2->id);
+		ScriptManager::OnCollision((uint32_t)*o1, (uint32_t)*o2, glm::vec3(worldA.x(), worldA.y(), worldA.z()));
+		ScriptManager::OnCollision((uint32_t)*o2, (uint32_t)*o1, glm::vec3(worldB.x(), worldB.y(), worldB.z()));
 		return false;
 	}
 
 	static void CollisionStartedCallbackFunc(btPersistentManifold* const& manifold)
 	{
-		OP_ENGINE_WARN("CollisionStarted");
 
 		const btCollisionObject* b1 = manifold->getBody0();
 		const btCollisionObject* b2 = manifold->getBody1();
 
-		PhysicsObject* o1 = (PhysicsObject*)b1->getUserPointer();
-		PhysicsObject* o2 = (PhysicsObject*)b2->getUserPointer();
+		Entity* o1 = (Entity*)b1->getUserPointer();
+		Entity* o2 = (Entity*)b2->getUserPointer();
 
 
-		OP_ENGINE_WARN("Obj1 id: {0}, Obj2 id: {1}", o1->id, o2->id);
+		ScriptManager::OnCollisionStarted((uint32_t)o1, (uint32_t)o2);
+		ScriptManager::OnCollisionStarted((uint32_t)o2, (uint32_t)o1);
 
 	}
 
 
 	static void CollisionEndedCallbackFunc(btPersistentManifold* const& manifold)
 	{
-		OP_ENGINE_WARN("CollisionEnded");
-
 		const btCollisionObject* b1 = manifold->getBody0();
 		const btCollisionObject* b2 = manifold->getBody1();
 
-		PhysicsObject* o1 = (PhysicsObject*)b1->getUserPointer();
-		PhysicsObject* o2 = (PhysicsObject*)b2->getUserPointer();
+		Entity* o1 = (Entity*)b1->getUserPointer();
+		Entity* o2 = (Entity*)b2->getUserPointer();
 
 
-		OP_ENGINE_WARN("Obj1 id: {0}, Obj2 id: {1}", o1->id, o2->id);
+		ScriptManager::OnCollisionEnded((uint32_t)o1, (uint32_t)o2);
+		ScriptManager::OnCollisionEnded((uint32_t)o2, (uint32_t)o1);
+
 	}
 
 	void PhysicsManager::Init()

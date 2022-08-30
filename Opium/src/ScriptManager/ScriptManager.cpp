@@ -239,6 +239,70 @@ namespace OP
 		}
 	}
 
+	void ScriptManager::OnCollision(uint32_t entityID, uint32_t otherEntityID, glm::vec3 collisionPoint)
+	{
+		if (s_EntityInstanceMap.find(entityID) != s_EntityInstanceMap.end())
+		{
+			auto& entity = s_EntityInstanceMap[entityID];
+
+			if (entity.ScriptClass->OnCollisionMethod)
+			{
+				
+				uint32_t EntityID = otherEntityID;
+				uint32_t SceneID = 0; // for now TODO: Figure it out
+
+				
+				float x = collisionPoint.x;
+				float y = collisionPoint.y;
+				float z = collisionPoint.z;
+				
+				
+				void* args[] = { &EntityID, &SceneID, &x, &y, &z};
+				CallMethod(entity.GetInstance(), entity.ScriptClass->OnCollisionMethod, args);
+			}
+		}
+
+	}
+
+	void ScriptManager::OnCollisionStarted(uint32_t entityID, uint32_t otherEntityID)
+	{
+
+		if (s_EntityInstanceMap.find(entityID) != s_EntityInstanceMap.end())
+		{
+
+			auto& entity = s_EntityInstanceMap[entityID];
+
+			if (entity.ScriptClass->OnCollisionStartedMethod)
+			{
+				uint32_t EntityID = otherEntityID;
+				uint32_t SceneID = 0; // for now TODO: Figure it out
+
+				void* args[] = { &EntityID, &SceneID };
+				CallMethod(entity.GetInstance(), entity.ScriptClass->OnCollisionStartedMethod, args);
+			}
+		}
+	}
+
+	void ScriptManager::OnCollisionEnded(uint32_t entityID, uint32_t otherEntityID)
+	{
+
+		if (s_EntityInstanceMap.find(entityID) != s_EntityInstanceMap.end())
+		{
+
+			auto& entity = s_EntityInstanceMap[entityID];
+
+			if (entity.ScriptClass->OnCollisionEndedMethod)
+			{
+				uint32_t EntityID = otherEntityID;
+				uint32_t SceneID = 0; // for now TODO: Figure it out
+
+				void* args[] = { &EntityID, &SceneID };
+
+				CallMethod(entity.GetInstance(), entity.ScriptClass->OnCollisionEndedMethod, args);
+			}
+		}
+	}
+
 	static FieldType GetOpiumFieldType(MonoType* monoType)
 	{
 		int type = mono_type_get_type(monoType);

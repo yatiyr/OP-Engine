@@ -9,6 +9,13 @@ namespace OP
 {
     public class Entity
     {
+        
+
+        void OnCreate()
+        {
+
+        }
+
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern void CreateComponent_Native(uint sceneID, uint entityID, Type type);
@@ -23,8 +30,8 @@ namespace OP
         private static extern void SetTransform_Native(uint sceneID, uint entityID, ref Mat4 matrix);
 
 
-        public uint SceneID { get; private set; }
-        public uint EntityID { get; private set; }
+        public uint SceneID { get; set; }
+        public uint EntityID { get; set; }
 
         ~Entity()
         {
