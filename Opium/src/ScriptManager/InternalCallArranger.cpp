@@ -38,6 +38,7 @@ namespace OP
 		Component_RegisterType(TagComponent);
 		Component_RegisterType(TransformComponent);
 		Component_RegisterType(SpriteRendererComponent);
+		Component_RegisterType(Physics3DMaterial);
 	}
 
 	void InternalCallArranger::Arrange()
@@ -68,6 +69,31 @@ namespace OP
 			mono_add_internal_call("OP.Scene::SetExposure_Native", OP::Script::OP_Set_Exposure);
 			mono_add_internal_call("OP.Scene::GetScene_Native",    OP::Script::OP_Get_Scene);
 			mono_add_internal_call("OP.Scene::SetScene_Native",    OP::Script::OP_Set_Scene);
+
+
+		//////////////////////////// ARRANGE PHYSICS 3D MATERIAL COMPONENT FUNCTIONS ///////////////////////////////
+			mono_add_internal_call("OP.Physics3DMaterial::GetMass_Native",             OP::Script::OP_Get_Mass);
+			mono_add_internal_call("OP.Physics3DMaterial::SetMass_Native",             OP::Script::OP_Set_Mass);
+			mono_add_internal_call("OP.Physics3DMaterial::GetFriction_Native",         OP::Script::OP_Get_Friction);
+			mono_add_internal_call("OP.Physics3DMaterial::SetFriction_Native",         OP::Script::OP_Set_Friction);
+			mono_add_internal_call("OP.Physics3DMaterial::GetRollingFriction_Native",  OP::Script::OP_Get_RollingFriction);
+			mono_add_internal_call("OP.Physics3DMaterial::SetRollingFriction_Native",  OP::Script::OP_Set_RollingFriction);
+			mono_add_internal_call("OP.Physics3DMaterial::GetSpinningFriction_Native", OP::Script::OP_Get_SpinningFriction);
+			mono_add_internal_call("OP.Physics3DMaterial::SetSpinningFriction_Native", OP::Script::OP_Set_SpinningFriction);
+			mono_add_internal_call("OP.Physics3DMaterial::GetRestitution_Native",      OP::Script::OP_Get_Restitution);
+			mono_add_internal_call("OP.Physics3DMaterial::SetRestitution_Native",      OP::Script::OP_Set_Restitution);
+			mono_add_internal_call("OP.Physics3DMaterial::GetAngularVelocity_Native",  OP::Script::OP_Get_AngularVelocity);
+			mono_add_internal_call("OP.Physics3DMaterial::SetAngularVelocity_Native",  OP::Script::OP_Set_AngularVelocity);
+			mono_add_internal_call("OP.Physics3DMaterial::GetLinearVelocity_Native",   OP::Script::OP_Get_LinearVelocity);
+			mono_add_internal_call("OP.Physics3DMaterial::SetLinearVelocity_Native",   OP::Script::OP_Set_LinearVelocity);
+			mono_add_internal_call("OP.Physics3DMaterial::ApplyCentralForce_Native",   OP::Script::OP_ApplyCentralForce);
+			mono_add_internal_call("OP.Physics3DMaterial::ApplyCentralImpulse_Native", OP::Script::OP_ApplyCentralImpulse);
+			mono_add_internal_call("OP.Physics3DMaterial::ApplyForce_Native",          OP::Script::OP_ApplyForce);
+			mono_add_internal_call("OP.Physics3DMaterial::ApplyGravity_Native",        OP::Script::OP_ApplyGravity);
+			mono_add_internal_call("OP.Physics3DMaterial::ApplyImpulse_Native",        OP::Script::OP_ApplyImpulse);
+			mono_add_internal_call("OP.Physics3DMaterial::ApplyTorque_Native",         OP::Script::OP_ApplyTorque);
+			mono_add_internal_call("OP.Physics3DMaterial::ApplyTorqueImpulse_Native",  OP::Script::OP_ApplyTorqueImpulse);
+			mono_add_internal_call("OP.Physics3DMaterial::ClearForces_Native",         OP::Script::OP_ClearForces);							
 
 
 		// OLD PART

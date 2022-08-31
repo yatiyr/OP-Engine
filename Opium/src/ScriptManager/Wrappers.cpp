@@ -174,6 +174,215 @@ namespace OP
 		{
 			// TODO: TO BE IMPLEMENTED
 		}
+
+		void OP_Get_Mass(uint32_t sceneID, uint32_t entityID, float* mass)
+		{
+			Scene* scene = s_ActiveScene;
+			Entity entity((entt::entity)entityID, scene);
+			auto& physics3DMaterial = entity.GetComponent<Physics3DMaterial>();
+			*mass = physics3DMaterial.Mass;
+		}
+
+		void OP_Set_Mass(uint32_t sceneID, uint32_t entityID, float* mass)
+		{
+			Scene* scene = s_ActiveScene;
+			Entity entity((entt::entity)entityID, scene);
+			auto& physics3DMaterial = entity.GetComponent<Physics3DMaterial>();
+			physics3DMaterial.Mass = *mass;
+			physics3DMaterial.OnMassChanged();
+		}
+
+		void OP_Get_Friction(uint32_t sceneID, uint32_t entityID, float* friction)
+		{
+			Scene* scene = s_ActiveScene;
+			Entity entity((entt::entity)entityID, scene);
+			auto& physics3DMaterial = entity.GetComponent<Physics3DMaterial>();
+			*friction = physics3DMaterial.Friction;
+		}
+
+		void OP_Set_Friction(uint32_t sceneID, uint32_t entityID, float* friction)
+		{
+			Scene* scene = s_ActiveScene;
+			Entity entity((entt::entity)entityID, scene);
+			auto& physics3DMaterial = entity.GetComponent<Physics3DMaterial>();
+			physics3DMaterial.Friction = *friction;
+			physics3DMaterial.OnFrictionChanged();
+		}
+
+		void OP_Get_RollingFriction(uint32_t sceneID, uint32_t entityID, float* rollingFriction)
+		{
+			Scene* scene = s_ActiveScene;
+			Entity entity((entt::entity)entityID, scene);
+			auto& physics3DMaterial = entity.GetComponent<Physics3DMaterial>();
+			*rollingFriction = physics3DMaterial.RollingFriction;
+		}
+
+		void OP_Set_RollingFriction(uint32_t sceneID, uint32_t entityID, float* rollingFriction)
+		{
+			Scene* scene = s_ActiveScene;
+			Entity entity((entt::entity)entityID, scene);
+			auto& physics3DMaterial = entity.GetComponent<Physics3DMaterial>();
+			physics3DMaterial.RollingFriction = *rollingFriction;
+			physics3DMaterial.OnRollingFrictionChanged();
+		}
+
+		void OP_Get_SpinningFriction(uint32_t sceneID, uint32_t entityID, float* spinningFriction)
+		{
+			Scene* scene = s_ActiveScene;
+			Entity entity((entt::entity)entityID, scene);
+			auto& physics3DMaterial = entity.GetComponent<Physics3DMaterial>();
+			*spinningFriction = physics3DMaterial.SpinningFriction;
+		}
+
+		void OP_Set_SpinningFriction(uint32_t sceneID, uint32_t entityID, float* spinningFriction)
+		{
+			Scene* scene = s_ActiveScene;
+			Entity entity((entt::entity)entityID, scene);
+			auto& physics3DMaterial = entity.GetComponent<Physics3DMaterial>();
+			physics3DMaterial.SpinningFriction = *spinningFriction;
+			physics3DMaterial.OnSpinningFrictionChanged();
+		}
+
+		void OP_Get_Restitution(uint32_t sceneID, uint32_t entityID, float* restitution)
+		{
+			Scene* scene = s_ActiveScene;
+			Entity entity((entt::entity)entityID, scene);
+			auto& physics3DMaterial = entity.GetComponent<Physics3DMaterial>();
+			*restitution = physics3DMaterial.Restitution;
+		}
+
+		void OP_Set_Restitution(uint32_t sceneID, uint32_t entityID, float* restitution)
+		{
+			Scene* scene = s_ActiveScene;
+			Entity entity((entt::entity)entityID, scene);
+			auto& physics3DMaterial = entity.GetComponent<Physics3DMaterial>();
+			physics3DMaterial.Restitution = *restitution;
+			physics3DMaterial.OnRestitutionChanged();
+		}
+
+		void OP_Get_AngularVelocity(uint32_t sceneID, uint32_t entityID, glm::vec3* outAngularVel)
+		{
+			Scene* scene = s_ActiveScene;
+			Entity entity((entt::entity)entityID, scene);
+			auto& physics3DMaterial = entity.GetComponent<Physics3DMaterial>();
+			btRigidBody* body = (btRigidBody*)physics3DMaterial.RuntimeBody;
+			btVector3 vel = body->getAngularVelocity();
+			glm::vec3 velGlm = glm::vec3(vel.x(), vel.y(), vel.z());
+
+			memcpy(outAngularVel, glm::value_ptr(velGlm), sizeof(glm::vec3));
+		}
+
+		void OP_Set_AngularVelocity(uint32_t sceneID, uint32_t entityID, glm::vec3* inAngularVel)
+		{
+			Scene* scene = s_ActiveScene;
+			Entity entity((entt::entity)entityID, scene);
+			auto& physics3DMaterial = entity.GetComponent<Physics3DMaterial>();
+			btRigidBody* body = (btRigidBody*)physics3DMaterial.RuntimeBody;
+			btVector3 newVel(inAngularVel->x, inAngularVel->y, inAngularVel->z);
+			body->setAngularVelocity(newVel);
+		}
+
+		void OP_Get_LinearVelocity(uint32_t sceneID, uint32_t entityID, glm::vec3* outLinearVel)
+		{
+			Scene* scene = s_ActiveScene;
+			Entity entity((entt::entity)entityID, scene);
+			auto& physics3DMaterial = entity.GetComponent<Physics3DMaterial>();
+			btRigidBody* body = (btRigidBody*)physics3DMaterial.RuntimeBody;
+			btVector3 vel = body->getLinearVelocity();
+			glm::vec3 velGlm = glm::vec3(vel.x(), vel.y(), vel.z());
+
+			memcpy(outLinearVel, glm::value_ptr(velGlm), sizeof(glm::vec3));
+		}
+
+		void OP_Set_LinearVelocity(uint32_t sceneID, uint32_t entityID, glm::vec3* inLinearVel)
+		{
+			Scene* scene = s_ActiveScene;
+			Entity entity((entt::entity)entityID, scene);
+			auto& physics3DMaterial = entity.GetComponent<Physics3DMaterial>();
+			btRigidBody* body = (btRigidBody*)physics3DMaterial.RuntimeBody;
+			btVector3 newVel(inLinearVel->x, inLinearVel->y, inLinearVel->z);
+			body->setLinearVelocity(newVel);
+		}
+
+		void OP_ApplyCentralForce(uint32_t sceneID, uint32_t entityID, float fX, float fY, float fZ)
+		{
+			Scene* scene = s_ActiveScene;
+			Entity entity((entt::entity)entityID, scene);
+			auto& physics3DMaterial = entity.GetComponent<Physics3DMaterial>();
+			btRigidBody* body = (btRigidBody*)physics3DMaterial.RuntimeBody;
+			btVector3 force(fX, fY, fZ);
+			body->applyCentralForce(force);
+		}
+
+		void OP_ApplyCentralImpulse(uint32_t sceneID, uint32_t entityID, float iX, float iY, float iZ)
+		{
+			Scene* scene = s_ActiveScene;
+			Entity entity((entt::entity)entityID, scene);
+			auto& physics3DMaterial = entity.GetComponent<Physics3DMaterial>();
+			btRigidBody* body = (btRigidBody*)physics3DMaterial.RuntimeBody;
+			btVector3 impulse(iX, iY, iZ);
+			body->applyCentralImpulse(impulse);
+		}
+
+		void OP_ApplyForce(uint32_t sceneID, uint32_t entityID, float fX, float fY, float fZ, float pX, float pY, float pZ)
+		{
+			Scene* scene = s_ActiveScene;
+			Entity entity((entt::entity)entityID, scene);
+			auto& physics3DMaterial = entity.GetComponent<Physics3DMaterial>();
+			btRigidBody* body = (btRigidBody*)physics3DMaterial.RuntimeBody;
+			btVector3 force(fX, fY, fZ);
+			btVector3 point(pX, pY, pZ);
+			body->applyForce(force, point);
+		}
+
+		void OP_ApplyGravity(uint32_t sceneID, uint32_t entityID)
+		{
+			Scene* scene = s_ActiveScene;
+			Entity entity((entt::entity)entityID, scene);
+			auto& physics3DMaterial = entity.GetComponent<Physics3DMaterial>();
+			btRigidBody* body = (btRigidBody*)physics3DMaterial.RuntimeBody;
+			body->applyGravity();
+		}
+
+		void OP_ApplyImpulse(uint32_t sceneID, uint32_t entityID, float iX, float iY, float iZ, float pX, float pY, float pZ)
+		{
+			Scene* scene = s_ActiveScene;
+			Entity entity((entt::entity)entityID, scene);
+			auto& physics3DMaterial = entity.GetComponent<Physics3DMaterial>();
+			btRigidBody* body = (btRigidBody*)physics3DMaterial.RuntimeBody;
+			btVector3 impulse(iX, iY, iZ);
+			btVector3 point(pX, pY, pZ);
+			body->applyImpulse(impulse, point);
+		}
+
+		void OP_ApplyTorque(uint32_t sceneID, uint32_t entityID, float tX, float tY, float tZ)
+		{
+			Scene* scene = s_ActiveScene;
+			Entity entity((entt::entity)entityID, scene);
+			auto& physics3DMaterial = entity.GetComponent<Physics3DMaterial>();
+			btRigidBody* body = (btRigidBody*)physics3DMaterial.RuntimeBody;
+			btVector3 torque(tX, tY, tZ);
+			body->applyTorque(torque);
+		}
+
+		void OP_ApplyTorqueImpulse(uint32_t sceneID, uint32_t entityID, float tX, float tY, float tZ)
+		{
+			Scene* scene = s_ActiveScene;
+			Entity entity((entt::entity)entityID, scene);
+			auto& physics3DMaterial = entity.GetComponent<Physics3DMaterial>();
+			btRigidBody* body = (btRigidBody*)physics3DMaterial.RuntimeBody;
+			btVector3 torqueImpulse(tX, tY, tZ);
+			body->applyTorqueImpulse(torqueImpulse);
+		}
+
+		void OP_ClearForces(uint32_t sceneID, uint32_t entityID)
+		{
+			Scene* scene = s_ActiveScene;
+			Entity entity((entt::entity)entityID, scene);
+			auto& physics3DMaterial = entity.GetComponent<Physics3DMaterial>();
+			btRigidBody* body = (btRigidBody*)physics3DMaterial.RuntimeBody;
+			body->clearForces();
+		}
 		 
 		
 		// Entity wrappers

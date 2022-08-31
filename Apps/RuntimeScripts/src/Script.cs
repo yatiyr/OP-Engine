@@ -9,6 +9,7 @@ internal class Script : Entity
     public int publicField2 = 0;
 
     private TransformComponent tC;
+    private Physics3DMaterial pC;
 
     public async Task func()
     {
@@ -22,6 +23,7 @@ internal class Script : Entity
         func();
         Console.WriteLine("Life moves on and on and on!");
         tC = GetComponent<TransformComponent>();
+        pC = GetComponent<Physics3DMaterial>();
     }
 
     public void OnCollisionStarted(Entity otherEntity)
@@ -60,6 +62,11 @@ internal class Script : Entity
         if(OP.Input.IsKeyPressed(KeyCode.Z))
         {
             Console.WriteLine(Scene.Skybox);
+        }
+
+        if(OP.Input.IsKeyPressed(KeyCode.W))
+        {
+            pC.LinearVelocity = new Vec3(0.0f, 5.0f, 0.0f);
         }
         // tC.Translation = new Vec3(5.0f, 5.0f, 5.0f);
         // Console.WriteLine(tC.Translation.x);

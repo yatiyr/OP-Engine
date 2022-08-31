@@ -48,6 +48,34 @@ namespace OP
 		void OP_Set_Exposure(float result);
 		void OP_Get_Scene(char* SceneName);
 		void OP_Set_Scene(char* SceneName);
+
+		// Physics3DMaterial Component
+		void OP_Get_Mass(uint32_t sceneID, uint32_t entityID, float* mass);
+		void OP_Set_Mass(uint32_t sceneID, uint32_t entityID, float* mass);
+		void OP_Get_Friction(uint32_t sceneID, uint32_t entityID, float* friction);
+		void OP_Set_Friction(uint32_t sceneID, uint32_t entityID, float* friction);
+		void OP_Get_RollingFriction(uint32_t sceneID, uint32_t entityID, float* rollingFriction);
+		void OP_Set_RollingFriction(uint32_t sceneID, uint32_t entityID, float* rollingFriction);
+		void OP_Get_SpinningFriction(uint32_t sceneID, uint32_t entityID, float* spinningFriction);
+		void OP_Set_SpinningFriction(uint32_t sceneID, uint32_t entityID, float* spinningFriction);
+		void OP_Get_Restitution(uint32_t sceneID, uint32_t entityID, float* restitution);
+		void OP_Set_Restitution(uint32_t sceneID, uint32_t entityID, float* restitution);
+		void OP_Get_AngularVelocity(uint32_t sceneID, uint32_t entityID, glm::vec3* outAngularVel);
+		void OP_Set_AngularVelocity(uint32_t sceneID, uint32_t entityID, glm::vec3* inAngularVel);
+		void OP_Get_LinearVelocity(uint32_t sceneID, uint32_t entityID, glm::vec3* outLinearVel);
+		void OP_Set_LinearVelocity(uint32_t sceneID, uint32_t entityID, glm::vec3* inLinearVel);
+
+		void OP_ApplyCentralForce(uint32_t sceneID, uint32_t entityID, float fX, float fY, float fZ);
+		void OP_ApplyCentralImpulse(uint32_t sceneID, uint32_t entityID, float iX, float iY, float iZ);
+		void OP_ApplyForce(uint32_t sceneID, uint32_t entityID, float fX, float fY, float fZ,
+																float pX, float pY, float pZ);
+		void OP_ApplyGravity(uint32_t sceneID, uint32_t entityID);
+		void OP_ApplyImpulse(uint32_t sceneID, uint32_t entityID, float iX, float iY, float iZ,
+																  float pX, float pY, float pZ);
+		void OP_ApplyTorque(uint32_t sceneID, uint32_t entityID, float tX, float tY, float tZ);
+		void OP_ApplyTorqueImpulse(uint32_t sceneID, uint32_t entityID, float tX, float tY, float tZ);
+		void OP_ClearForces(uint32_t sceneID, uint32_t entityID);
+
 		
 		
 	}
