@@ -10,6 +10,8 @@ namespace OP
 {
 
 	static MonoDomain* s_MonoDomain = nullptr;
+	static MonoDomain* s_RootDomain = nullptr;
+	static MonoDomain* s_DeletedDomain = nullptr;
 	static std::string s_AssemblyPath;
 
 	static ScriptModuleFieldMap s_PublicFields;
@@ -98,9 +100,16 @@ namespace OP
 		return image;
 	}
 
-	static MonoClass* GetClass(MonoImage* image, const EntityScriptClass& scriptClass)
+	static void ReloadEntityScripts()
 	{
-		MonoClass* monoClass = mono_class_from_name(image, scriptClass.NamespaceName.c_str(), scriptClass.ClassName.c_str());
+
+	}
+
+	static MonoClass* GetClass(MonoImage* coreImage, MonoImage* appImage, const EntityScriptClass& scriptClass)
+	{
+		MonoClass* monoClass = mono_class_from_name(appImage, scriptClass.NamespaceName.c_str(), scriptClass.ClassName.c_str());
+		if (!monoClass)
+			monoClass = mono_class_from_name(coreImage, scriptClass.NamespaceName.c_str(), scriptClass.ClassName.c_str());
 		if (!monoClass) OP_ENGINE_ERROR("mono_class_from_name function has been failed: {0},  {1}", scriptClass.NamespaceName, scriptClass.ClassName);
 
 		return monoClass;
@@ -160,9 +169,11 @@ namespace OP
 		mono_set_assemblies_path("mono/lib");
 
 		MonoDomain* domain = mono_jit_init("Opium");
-
+		s_RootDomain = domain;
 		char* name = (char*)"OpiumRuntime";
+
 		s_MonoDomain = mono_domain_create_appdomain(name, nullptr);
+		mono_domain_set(s_MonoDomain, 0);
 	}
 
 	static MonoAssembly* s_AppAssembly = nullptr;
@@ -188,6 +199,7 @@ namespace OP
 			s_MonoDomain = mono_domain_create_appdomain(name, nullptr);
 		}
 
+		
 		s_CoreAssembly = InitializeAssembly("assets/scripts/bin/Opium-Script.dll");
 		s_CoreAssemblyImage = GetAssemblyImage(s_CoreAssembly);
 
@@ -206,11 +218,43 @@ namespace OP
 		LoadRuntimeAssembly(s_AssemblyPath);
 	}
 
-	void ScriptManager::ReloadAssembly()
+
+
+	void ScriptManager::ReloadManager()
 	{
+
 		OP_ENGINE_INFO("Reloading Assembly");
+
+		mono_domain_set(s_RootDomain, 0);
+		//mono_assembly_close(s_AppAssembly);
+		//mono_assembly_close(s_CoreAssembly);
+
+		//s_DeletedDomain = s_MonoDomain;
+		//mono_domain_unload(s_MonoDomain);
+
+		
+
+	
+
+		s_MonoDomain = nullptr;
+		s_AppAssembly = nullptr;
+		s_AppAssemblyImage = nullptr;		
+		s_CoreAssembly = nullptr;
+		s_CoreAssemblyImage = nullptr;
+		s_EntityClassMap.clear();
+		s_EntityInstanceMap.clear();
+		s_PublicFields.clear();
+		
+
+		char* name = (char*)"OpiumRuntime";
+		s_MonoDomain = mono_domain_create_appdomain(name, nullptr);
+		mono_domain_set(s_MonoDomain, 0);
+
 		LoadRuntimeAssembly(s_AssemblyPath);
 		OP_ENGINE_INFO("Assembly has been reloaded");
+
+		//mono_domain_set(s_DeletedDomain, 0);
+		//mono_domain_unload(s_DeletedDomain);
 	}
 
 	void ScriptManager::ShutdownManager()
@@ -338,16 +382,9 @@ namespace OP
 			scriptClass.ClassName = script.ModuleName;
 		}
 
-		if (scriptClass.ClassName != "NullScript")
-		{
-			scriptClass.Class = GetClass(s_AppAssemblyImage, scriptClass);
-			scriptClass.InitClassMethods(s_AppAssemblyImage);
-		}
-		else
-		{
-			scriptClass.Class = GetClass(s_CoreAssemblyImage, scriptClass);
-			scriptClass.InitClassMethods(s_CoreAssemblyImage);
-		}
+		
+		scriptClass.Class = GetClass(s_CoreAssemblyImage, s_AppAssemblyImage, scriptClass);
+		scriptClass.InitClassMethods(s_CoreAssemblyImage, s_AppAssemblyImage);
 
 
 		EntityInstance& entityInstance = s_EntityInstanceMap[entityID];

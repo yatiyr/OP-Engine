@@ -50,38 +50,45 @@ namespace OP
 
 		ImGui::Columns(columnCount, 0, false);
 
-		for (auto& directoryEntry : std::filesystem::directory_iterator(m_CurrentDirectory))
+		try
 		{
-			const auto& path = directoryEntry.path();
-			auto relativePath = std::filesystem::relative(path, g_AssetPath);
-			std::string filenameString = relativePath.filename().string();
-
-			ImGui::PushID(filenameString.c_str());
-			char* type = directoryEntry.is_directory() ? OP_ICON_FOLDER : OP_ICON_FILE_EMPTY;
-			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.0f, 0.0f, 0.0f, 0.0f));
-			ImGui::PushFont(ImGuiIconFontBg);
-			ImGui::Button(type);
-			// ImGui::ImageButton((ImTextureID)icon->GetRendererID(), { thumbnailSize, thumbnailSize }, { 0, 1 }, { 1, 0 });
-			ImGui::PopFont();
-			if (ImGui::BeginDragDropSource())
+			for (auto& directoryEntry : std::filesystem::directory_iterator(m_CurrentDirectory))
 			{
-				const wchar_t* itemPath = relativePath.c_str();
-				ImGui::SetDragDropPayload("CONTENT_BROWSER_ITEM", itemPath, (wcslen(itemPath) + 1) * sizeof(wchar_t));
-				ImGui::EndDragDropSource();
+				const auto& path = directoryEntry.path();
+				auto relativePath = std::filesystem::relative(path, g_AssetPath);
+				std::string filenameString = relativePath.filename().string();
+
+				ImGui::PushID(filenameString.c_str());
+				char* type = directoryEntry.is_directory() ? OP_ICON_FOLDER : OP_ICON_FILE_EMPTY;
+				ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.0f, 0.0f, 0.0f, 0.0f));
+				ImGui::PushFont(ImGuiIconFontBg);
+				ImGui::Button(type);
+				// ImGui::ImageButton((ImTextureID)icon->GetRendererID(), { thumbnailSize, thumbnailSize }, { 0, 1 }, { 1, 0 });
+				ImGui::PopFont();
+				if (ImGui::BeginDragDropSource())
+				{
+					const wchar_t* itemPath = relativePath.c_str();
+					ImGui::SetDragDropPayload("CONTENT_BROWSER_ITEM", itemPath, (wcslen(itemPath) + 1) * sizeof(wchar_t));
+					ImGui::EndDragDropSource();
+				}
+
+				ImGui::PopStyleColor();
+
+				if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
+				{
+					if (directoryEntry.is_directory())
+						m_CurrentDirectory /= path.filename();
+				}
+
+				ImGui::TextWrapped(filenameString.c_str());
+				ImGui::NextColumn();
+
+				ImGui::PopID();
 			}
+		}
+		catch (const std::exception&)
+		{
 
-			ImGui::PopStyleColor();
-
-			if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
-			{
-				if (directoryEntry.is_directory())
-					m_CurrentDirectory /= path.filename();
-			}
-			
-			ImGui::TextWrapped(filenameString.c_str());
-			ImGui::NextColumn();
-
-			ImGui::PopID();
 		}
 
 		ImGui::Columns(1);

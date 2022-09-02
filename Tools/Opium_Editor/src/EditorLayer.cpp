@@ -21,6 +21,8 @@
 #include <Gui/Font/Font.h>
 #include <GuiComponents/GuiBlocks/GuiBlockGenerator.h>
 
+#include <ScriptManager/ScriptManager.h>
+
 namespace OP
 {
 
@@ -40,9 +42,9 @@ namespace OP
 	}
 
 	EditorLayer::EditorLayer()
-		: Layer("EditorLayer")
+		: Layer("EditorLayer"), m_EditorScriptMonitor()
 	{
-
+		
 	}
 
 	void EditorLayer::OnAttach()
@@ -206,6 +208,19 @@ namespace OP
 		glm::vec2 viewportSize = m_ViewportComponent.GetViewportSize();
 
 		SceneRenderer::ResizeViewport(viewportSize.x, viewportSize.y);
+
+		if (m_EditorScriptMonitor.IsUpdated())
+		{
+			ScriptManager::ReloadManager();
+			auto view = m_ActiveScene->m_Registry.view<ScriptComponent>();
+			for (auto entity : view)
+			{
+				auto& sC = view.get<ScriptComponent>(entity);
+				Entity e =  Entity{ entity, m_ActiveScene.get() };
+				ScriptManager::OnInitEntity(sC, (uint32_t)entity, 0);
+			}
+			m_EditorScriptMonitor.SetUpdated(false);
+		}
 		
 		switch (m_SceneState)
 		{
@@ -577,7 +592,7 @@ namespace OP
 
 	void EditorLayer::OnScenePlay()
 	{
-
+		m_EditorScriptMonitor.Stop();
 		m_SceneState = SceneState::Play;
 
 		m_ActiveScene = Scene::Copy(m_EditorScene);
@@ -588,6 +603,8 @@ namespace OP
 
 	void EditorLayer::OnSceneStop()
 	{
+
+		m_EditorScriptMonitor.Start();
 		m_SceneState = SceneState::Edit;
 
 		m_ActiveScene->OnRuntimeStop();

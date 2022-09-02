@@ -6,12 +6,14 @@
 
 // Temp
 #include <GuiComponents/Scene/SceneUtilities/ViewportComponent.h>
+#include <EditorResMonitor/EditorScriptMonitor.h>
 
 #include <Renderer/EditorCamera.h>
 
 #include <Scene/SceneRenderer.h>
 
 #include <Geometry/Plane.h>
+
 
 namespace OP
 {
@@ -102,6 +104,7 @@ namespace OP
 
 		SceneState m_SceneState = SceneState::Edit;
 
+		EditorScriptMonitor m_EditorScriptMonitor;
 	private:
 		static EditorLayer* s_Instance;
 

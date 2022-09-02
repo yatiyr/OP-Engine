@@ -22,12 +22,14 @@ namespace OP
 		None = 0, Float, Int, UnsignedInt, String, Vec2, Vec3, Vec4
 	};
 
-	static MonoMethod* GetMethod(MonoImage* image, const std::string& methodDesc)
+	static MonoMethod* GetMethod(MonoImage* coreImage, MonoImage* appImage, const std::string& methodDesc)
 	{
 		MonoMethodDesc* desc = mono_method_desc_new(methodDesc.c_str(), NULL);
 		if (!desc) OP_ENGINE_ERROR("mono_method_desc_new has been failed");
 
-		MonoMethod* method = mono_method_desc_search_in_image(desc, image);
+		MonoMethod* method = mono_method_desc_search_in_image(desc, appImage);
+		if (!method)
+			method = mono_method_desc_search_in_image(desc, coreImage);
 		if (!method) OP_ENGINE_ERROR("mono_method_desc_search_in_image has been failed");
 
 		return method;
@@ -60,13 +62,13 @@ namespace OP
 		MonoMethod* OnCollisionStartedMethod;
 		MonoMethod* OnCollisionEndedMethod;
 
-		void InitClassMethods(MonoImage* image)
+		void InitClassMethods(MonoImage* coreImage, MonoImage* appImage)
 		{
-			OnCreateMethod = GetMethod(image, FullName + ":OnCreate()");
-			OnUpdateMethod = GetMethod(image, FullName + ":OnUpdate(single)");
-			OnCollisionMethod = GetMethod(image, FullName + ":OnCollision_Native(uint,uint,single,single,single)");
-			OnCollisionStartedMethod = GetMethod(image, FullName + ":OnCollisionStarted_Native(uint,uint)");
-			OnCollisionEndedMethod = GetMethod(image, FullName + ":OnCollisionEnded_Native(uint,uint)");
+			OnCreateMethod = GetMethod(coreImage, appImage, FullName + ":OnCreate()");
+			OnUpdateMethod = GetMethod(coreImage, appImage, FullName + ":OnUpdate(single)");
+			OnCollisionMethod = GetMethod(coreImage, appImage, FullName + ":OnCollision_Native(uint,uint,single,single,single)");
+			OnCollisionStartedMethod = GetMethod(coreImage, appImage, FullName + ":OnCollisionStarted_Native(uint,uint)");
+			OnCollisionEndedMethod = GetMethod(coreImage, appImage, FullName + ":OnCollisionEnded_Native(uint,uint)");
 		}
 
 	};
@@ -125,7 +127,7 @@ namespace OP
 	{
 	public:
 		static void ScriptManager::InitializeManager(const std::string& assemblyPath);
-		static void ScriptManager::ReloadAssembly();
+		static void ScriptManager::ReloadManager();
 		static void ScriptManager::ShutdownManager();
 
 		static void OnCreateEntity(uint32_t entity);

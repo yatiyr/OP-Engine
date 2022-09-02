@@ -7,6 +7,8 @@ internal class Script : Entity
 {
     public float publicField1 = 15.0f;
     public int publicField2 = 0;
+    public int publicField3 = 0;
+    public int publicField4 = 0;
 
     private TransformComponent tC;
     private Physics3DMaterial pC;
@@ -66,7 +68,7 @@ internal class Script : Entity
 
         if(OP.Input.IsKeyPressed(KeyCode.W))
         {
-            pC.LinearVelocity = new Vec3(0.0f, 5.0f, 0.0f);
+            pC.LinearVelocity = new Vec3(0.0f, 10.5f, 0.0f);
         }
         // tC.Translation = new Vec3(5.0f, 5.0f, 5.0f);
         // Console.WriteLine(tC.Translation.x);

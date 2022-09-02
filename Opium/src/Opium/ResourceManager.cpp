@@ -561,6 +561,8 @@ namespace OP
 						s_ResourceManagerData.EnvironmentMaps[id] = EnvironmentMap::Create(eMSpec);
 
 						OP_ENGINE_INFO("\t\tFileName {0}", entryPath.filename());
+
+						free(data);
 						count++;
 					}
 					else if (entry.path().extension() == ".hdr")
@@ -583,6 +585,7 @@ namespace OP
 
 						uint32_t id = Allocate(entryPath.stem().string());
 						s_ResourceManagerData.EnvironmentMaps[id] = EnvironmentMap::Create(eMSpec);
+						stbi_image_free(data);
 						OP_ENGINE_INFO("\t\tFileName {0}", entryPath.filename());
 						count++;
 					}
@@ -728,7 +731,7 @@ namespace OP
 
 					uint32_t id = Allocate(entryPath.stem().string());
 					s_ResourceManagerData.Textures[id] = texture;
-
+					stbi_image_free(data);
 					OP_ENGINE_INFO("\t\tFileName {0}", entryPath.filename());
 					count++;
 				}

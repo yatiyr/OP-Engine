@@ -145,8 +145,17 @@ namespace OP
 		rB->setRollingFriction(rollingFriction);
 		rB->setSpinningFriction(spinningFriction);
 		rB->setAnisotropicFriction(rB->getAnisotropicFriction(), btCollisionObject::CF_ANISOTROPIC_FRICTION);
-		rB->setCollisionFlags(rB->getCollisionFlags() | btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK
-													 );
+		if (spec.ContactResponse)
+		{
+			rB->setCollisionFlags(rB->getCollisionFlags() | btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK
+			);
+		}
+		else
+		{
+			rB->setCollisionFlags(rB->getCollisionFlags() | btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK |
+			btCollisionObject::CF_NO_CONTACT_RESPONSE);
+		}
+
 
 		rB->setUserPointer(EntityPointer);
 
