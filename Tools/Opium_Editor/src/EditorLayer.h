@@ -21,7 +21,7 @@ namespace OP
 	{
 	public:
 		EditorLayer();
-		virtual ~EditorLayer() {}
+		virtual ~EditorLayer() { m_EditorScriptMonitor.Terminate(); m_EditorScriptMonitor.m_Thread.join(); }
 		virtual void OnAttach() override;
 		virtual void OnDetach() override;
 

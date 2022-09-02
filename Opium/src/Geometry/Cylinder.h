@@ -7,6 +7,7 @@ namespace OP
 {
 	class Cylinder : public Mesh
 	{
+	public:
 		Cylinder(float baseRadius = 1.0f, float topRadius = 1.0f, float height = 1.0f,
 			     int sectorCount = 36, int stackCount = 1, bool smooth = true);
 
@@ -27,6 +28,9 @@ namespace OP
 		void SetSectorCount(int sectorCount);
 		void SetStackCount(int stackCount);
 		void SetSmooth(bool smooth);
+
+		static Ref<Cylinder> Create(float baseRadius = 1.0f, float topRadius = 1.0f, float height = 1.0f,
+			int sectorCount = 36, int stackCount = 1, bool smooth = true);
 
 	private:
 		virtual void BuildVertices();

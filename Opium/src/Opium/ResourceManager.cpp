@@ -7,7 +7,7 @@
 #include <Geometry/RadialSphere.h>
 #include <Geometry/Cube.h>
 #include <Geometry/Model.h>
-
+#include <Geometry/Cylinder.h>
 
 #include <Renderer/Texture.h>
 
@@ -417,6 +417,15 @@ namespace OP
 
 			uint32_t radialSphere_s3_flat = Allocate("RadialSphere_s3_flat");
 			s_ResourceManagerData.Meshes[radialSphere_s3_flat] = RadialSphere::Create(1.0f, 128, 128, false);
+
+			uint32_t pyramid = Allocate("Pyramid");
+			s_ResourceManagerData.Meshes[pyramid] = Cylinder::Create(1.0f, 0.0f, 1.0f, 4, 5, false);
+
+			uint32_t cylinder = Allocate("Cylinder");
+			s_ResourceManagerData.Meshes[cylinder] = Cylinder::Create(1.0f, 1.0f, 1.0, 36, 1, true);
+
+			uint32_t cylinderFlat = Allocate("FlatCylinder");
+			s_ResourceManagerData.Meshes[cylinderFlat] = Cylinder::Create(1.0f, 1.0f, 1.0, 36, 1, false);
 
 
 

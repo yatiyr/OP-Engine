@@ -8,12 +8,11 @@ namespace OP
 	class EditorScriptMonitor
 	{
 	public:
-		EditorScriptMonitor()
+		EditorScriptMonitor() : m_FM(std::string("assets/scripts/bin/"), std::chrono::milliseconds(1000))
 		{
 			m_Thread = std::thread([&]()-> void
 			{
-				FileMonitor fM(std::string("assets/scripts/bin/"), std::chrono::milliseconds(1000));
-				fM.StartWatching([&](std::string path, FileStatus status) -> void
+				m_FM.StartWatching([&](std::string path, FileStatus status) -> void
 					{
 						if (m_Work)
 						{
@@ -23,6 +22,7 @@ namespace OP
 						}
 					});
 			});
+
 		}
 
 		void Stop()
@@ -40,11 +40,17 @@ namespace OP
 			m_Updated = newUpdated;
 		}
 
+		void Terminate()
+		{
+			m_FM.Stop();
+		}
+
 		bool IsUpdated()
 		{
 			return m_Updated;
 		}
 
+		FileMonitor m_FM;
 		bool m_Updated = false;
 		std::thread m_Thread;
 		bool m_Work = true;

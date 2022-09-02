@@ -148,7 +148,7 @@ namespace OP
 		}
 
 		// base indices
-		baseVertexIndex = (uint32_t)m_Indices.size();
+		uint32_t baseIndex = (uint32_t)m_Indices.size();
 
 		// put indices for base
 		for (int i = 0, k = baseVertexIndex + 1; i < m_SectorCount; i++, k++)
@@ -160,7 +160,7 @@ namespace OP
 		}
 
 		// top indices
-		topVertexIndex = (uint32_t)m_Indices.size();
+		uint32_t topIndex = (uint32_t)m_Indices.size();
 
 		// put indices for top
 		for (int i = 0, k = topVertexIndex + 1; i < m_SectorCount; i++, k++)
@@ -219,6 +219,7 @@ namespace OP
 			{
 				x = m_UnitCircleVertices[k];
 				z = m_UnitCircleVertices[k + 2];
+				s = (float)j / m_SectorCount;
 
 				Vertex vertex;
 				vertex.x = x * radius;
@@ -312,7 +313,7 @@ namespace OP
 		uint32_t topIndex = (uint32_t)m_Indices.size();
 		uint32_t topVertexIndex = (uint32_t)m_Vertices.size();
 
-		// put vertices of base cylinder
+		// put vertices of top cylinder
 		y = m_Height * 0.5f;
 		m_Vertices.push_back(glm::vec3(0.0f, y, 0.0f));
 		m_Normals.push_back(glm::vec3(0.0f, 1.0f, 0.0f));
@@ -330,9 +331,9 @@ namespace OP
 		for (int i = 0, k = topVertexIndex + 1; i < m_SectorCount; i++, k++)
 		{
 			if (i < m_SectorCount - 1)
-				AddIndices(topVertexIndex, k + 1, k);
+				AddIndices(topVertexIndex, k, k + 1);
 			else
-				AddIndices(topVertexIndex, baseVertexIndex + 1, k);
+				AddIndices(topVertexIndex, k, topVertexIndex + 1);
 		}
 
 	}
@@ -438,6 +439,11 @@ namespace OP
 		SetupTangentBitangents(true);
 		SetupArrayBuffer();
 		SetupMesh();
+	}
+
+	Ref<Cylinder> Cylinder::Create(float baseRadius, float topRadius, float height, int sectorCount, int stackCount, bool smooth)
+	{
+		return std::make_shared<Cylinder>(baseRadius, topRadius, height, sectorCount, stackCount, smooth);
 	}
 
 	void Cylinder::BuildVertices()
