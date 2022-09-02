@@ -7,7 +7,6 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#pragma once
 
 #include <glm/gtc/matrix_transform.hpp>
 
