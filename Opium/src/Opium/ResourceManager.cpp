@@ -8,6 +8,7 @@
 #include <Geometry/Cube.h>
 #include <Geometry/Model.h>
 #include <Geometry/Cylinder.h>
+#include <Geometry/Capsule.h>
 
 #include <Renderer/Texture.h>
 
@@ -422,12 +423,16 @@ namespace OP
 			s_ResourceManagerData.Meshes[pyramid] = Cylinder::Create(1.0f, 0.0f, 1.0f, 4, 5, false);
 
 			uint32_t cylinder = Allocate("Cylinder");
-			s_ResourceManagerData.Meshes[cylinder] = Cylinder::Create(1.0f, 1.0f, 1.0, 36, 1, true);
+			s_ResourceManagerData.Meshes[cylinder] = Cylinder::Create(0.5f, 0.5f, 1.0, 36, 1, true);
 
 			uint32_t cylinderFlat = Allocate("FlatCylinder");
-			s_ResourceManagerData.Meshes[cylinderFlat] = Cylinder::Create(1.0f, 1.0f, 1.0, 36, 1, false);
+			s_ResourceManagerData.Meshes[cylinderFlat] = Cylinder::Create(0.5f, 0.5f, 1.0, 36, 1, false);
 
+			uint32_t capsule = Allocate("Capsule");
+			s_ResourceManagerData.Meshes[capsule] = Capsule::Create(0.5f, 0.5f, 1.0f, 36, 18, 1, true);
 
+			uint32_t capsuleFlat = Allocate("FlatCapsule");
+			s_ResourceManagerData.Meshes[capsuleFlat] = Capsule::Create(0.5f, 0.5f, 1.0f, 36, 9, 1, false);
 
 			// GENERIC TEXTURES
 

@@ -4,8 +4,8 @@ float parallaxShadowMultiplier(in sampler2D heightMap, in vec3 normal, in vec3 l
 {
     float shadowMultiplier = 1;
 
-    const float minLayers = 32;
-    const float maxLayers = 64;
+    const float minLayers = 128;
+    const float maxLayers = 256;
 
     if(dot(normal, lightDir) >= 0)
     {
@@ -62,8 +62,8 @@ float parallaxShadowMultiplier(in sampler2D heightMap, in vec3 normal, in vec3 l
 vec2 ParallaxMapping(in sampler2D heightMap, in vec3 normal, in vec2 texCoords, in vec3 viewDir, out float parallaxHeight, in float TilingFactor, in float HeightFactor)
 {
     // number of depth layers
-    const float minLayers = 32;
-    const float maxLayers = 64;
+    const float minLayers = 128;
+    const float maxLayers = 256;
     float numLayers = mix(maxLayers, minLayers, abs(dot(normal, viewDir)));
     // calculate the size of each layer
     float layerDepth = 1.0 / numLayers;
