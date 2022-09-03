@@ -535,7 +535,7 @@ namespace OP
 			CopyComponentIfExists<PointLightComponent>(newChild, childIterator);
 			CopyComponentIfExists<SpotLightComponent>(newChild, childIterator);
 			CopyComponentIfExists<MeshComponent>(newChild, childIterator);
-			CopyComponentIfExists<MaterialComponent>(newChild, childIterator);
+			CopyMaterialIfExists(newChild, childIterator);
 			CopyComponentIfExists<Physics3DMaterial>(newChild, childIterator);
 			CopyComponentIfExists<Physics3DCollider>(newChild, childIterator);
 
@@ -546,6 +546,60 @@ namespace OP
 
 			// Get to next child
 			childIterator = GetEntityWithUUID(childRelC.next);
+		}
+	}
+
+	void Scene::CopyMaterialIfExists(Entity newEntity, Entity entity)
+	{
+		if (entity.HasComponent<MaterialComponent>())
+		{
+			auto& entityMaterialComponent = entity.GetComponent<MaterialComponent>();
+			Ref<MaterialInstance> entityMaterialInstance = entityMaterialComponent.MatInstance;
+			Ref<Material> entityMaterial = entityMaterialInstance->Mat;
+
+			// new Entity Material Component
+			auto& nEMC = newEntity.AddOrReplaceComponent<MaterialComponent>();
+			nEMC.MatInstance = MaterialInstance::Create(entityMaterial);
+			nEMC.MatInstance->TilingFactor = entityMaterialInstance->TilingFactor;
+			nEMC.MatInstance->HeightFactor = entityMaterialInstance->HeightFactor;
+			nEMC.MatInstance->ClipBorder   = entityMaterialInstance->ClipBorder;
+
+			uint32_t floatValCounter = 0;
+			for (const auto element : entityMaterialInstance->Floats)
+			{
+				nEMC.MatInstance->Floats[floatValCounter] = element;
+				floatValCounter++;
+			}
+
+			uint32_t float2ValCounter = 0;
+			for (const auto element : entityMaterialInstance->Float2s)
+			{
+				nEMC.MatInstance->Float2s[float2ValCounter] = element;
+				float2ValCounter++;
+			}
+
+		
+			uint32_t float3ValCounter = 0;
+			for (const auto element : entityMaterialInstance->Float3s)
+			{
+				nEMC.MatInstance->Float3s[float3ValCounter] = element;
+				float3ValCounter++;
+			}
+
+			uint32_t intValCounter = 0;
+			for (const auto element : entityMaterialInstance->Ints)
+			{
+				nEMC.MatInstance->Ints[intValCounter] = element;
+				intValCounter++;
+			}
+
+			uint32_t texCounter = 0;
+			for (const auto element : entityMaterialInstance->Textures)
+			{
+				nEMC.MatInstance->Textures[texCounter] = element;
+				texCounter++;
+			}
+
 		}
 	}
 
@@ -566,7 +620,7 @@ namespace OP
 		CopyComponentIfExists<SpotLightComponent>      (newEntity, entity);
 		CopyComponentIfExists<PointLightComponent>	   (newEntity, entity);
 		CopyComponentIfExists<MeshComponent>           (newEntity, entity);
-		CopyComponentIfExists<MaterialComponent>       (newEntity, entity);
+		CopyMaterialIfExists(newEntity, entity);
 		CopyComponentIfExists<Physics3DMaterial>       (newEntity, entity);
 		CopyComponentIfExists<Physics3DCollider>       (newEntity, entity);
 
@@ -600,7 +654,7 @@ namespace OP
 			CopyComponentIfExists<SpotLightComponent>      (newChild, childIterator);
 			CopyComponentIfExists<PointLightComponent>	   (newChild, childIterator);
 			CopyComponentIfExists<MeshComponent>           (newChild, childIterator);
-			CopyComponentIfExists<MaterialComponent>       (newChild, childIterator);
+			CopyMaterialIfExists(newChild, childIterator);
 			CopyComponentIfExists<Physics3DMaterial>       (newChild, childIterator);
 			CopyComponentIfExists<Physics3DCollider>       (newChild, childIterator);
 

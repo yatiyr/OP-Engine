@@ -54,6 +54,7 @@ namespace OP
 
 		void DuplicateEntity(Entity entity);
 		void DuplicateRecursiveChildren(Entity newParent, Entity originalParent);
+		void CopyMaterialIfExists(Entity newEntity, Entity entity);
 		Entity GetPrimaryCameraEntity();
 
 		Entity GetEntityWithUUID(UUID id);
