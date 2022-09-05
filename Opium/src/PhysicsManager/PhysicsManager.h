@@ -19,6 +19,10 @@ namespace OP
 		float SpinningFriction;
 		float Restitution;
 
+		bool FixRotX = false;
+		bool FixRotY = false;
+		bool FixRotZ = false;
+
 		// Shape = 0 -> Box
 		// Shape = 1 -> Sphere
 		int Shape = 0;
@@ -30,6 +34,8 @@ namespace OP
 
 		btQuaternion Orientation;
 		btVector3 Origin;
+
+
 	};
 
 	struct PhysicsObject

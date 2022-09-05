@@ -50,24 +50,31 @@ public:
 				}
 			}
 
-			for (auto& file : std::filesystem::recursive_directory_iterator(watchPath))
+			try
 			{
-				auto current_file_last_write_time = std::filesystem::last_write_time(file);
-
-				if (!contains(file.path().string()))
+				for (auto& file : std::filesystem::recursive_directory_iterator(watchPath))
 				{
-					m_Paths[file.path().string()] = current_file_last_write_time;
-					action(file.path().string(), FileStatus::created);
-				}
+					auto current_file_last_write_time = std::filesystem::last_write_time(file);
 
-				else
-				{
-					if (m_Paths[file.path().string()] != current_file_last_write_time)
+					if (!contains(file.path().string()))
 					{
 						m_Paths[file.path().string()] = current_file_last_write_time;
-						action(file.path().string(), FileStatus::modified);
+						action(file.path().string(), FileStatus::created);
+					}
+
+					else
+					{
+						if (m_Paths[file.path().string()] != current_file_last_write_time)
+						{
+							m_Paths[file.path().string()] = current_file_last_write_time;
+							action(file.path().string(), FileStatus::modified);
+						}
 					}
 				}
+			}
+			catch (const std::exception&)
+			{
+
 			}
 		}
 	}

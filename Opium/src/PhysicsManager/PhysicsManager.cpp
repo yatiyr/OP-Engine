@@ -117,8 +117,11 @@ namespace OP
 		bool contactResponse = spec.ContactResponse;
 
 		btCollisionShape* colShape = nullptr;
-		if      (shape == 0) {colShape = new btBoxShape(scale/2);}
-		else if (shape == 1) {colShape = new btSphereShape(radius);}
+		if      (shape == 0) { colShape = new btBoxShape(scale/2); }
+		else if (shape == 1) { colShape = new btSphereShape(radius); }
+		else if (shape == 2) { colShape = new btCylinderShape(btVector3(1.0f, 0.5f, 0.5f)); }
+		else if (shape == 3) { colShape = new btCapsuleShape(0.5f, 1.0f); }
+
 		s_PMD.CollisionShapes.push_back(colShape);
 
 		btTransform transform;
@@ -153,11 +156,15 @@ namespace OP
 		else
 		{
 			rB->setCollisionFlags(rB->getCollisionFlags() | btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK |
-			btCollisionObject::CF_NO_CONTACT_RESPONSE);
+			                                                btCollisionObject::CF_NO_CONTACT_RESPONSE);
 		}
 
 
 		rB->setUserPointer(EntityPointer);
+
+		rB->setAngularFactor(btVector3(spec.FixRotX ? 0.0f : 1.0f,
+									   spec.FixRotY ? 0.0f : 1.0f,
+									   spec.FixRotZ ? 0.0f : 1.0f));
 
 		s_PMD.DynamicsWorld->addRigidBody(rB);
 

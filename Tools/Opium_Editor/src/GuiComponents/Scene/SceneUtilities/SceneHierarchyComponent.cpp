@@ -245,7 +245,11 @@ namespace OP
 		{
 			m_Context->RemoveEntity(entity);
 			if (m_SelectionContext == entity)
+			{
 				m_SelectionContext = {};
+				m_ViewportComponent.SetSelectionContext({});
+			}
+				
 		}
 
 		if (entityAdded)
@@ -826,6 +830,18 @@ namespace OP
 				{
 					component.OnRestitutionChanged();
 				}
+				if (ImGui::Checkbox("FixRotX", &component.FixRotX))
+				{
+					component.OnFixRotChanged();
+				}
+				if (ImGui::Checkbox("FixRotY", &component.FixRotY))
+				{
+					component.OnFixRotChanged();
+				}
+				if (ImGui::Checkbox("FixRotY", &component.FixRotZ))
+				{
+					component.OnFixRotChanged();
+				}
 			});
 
 		DrawComponent<Physics3DCollider>("3D Physics Collider", entity, [](auto& component)
@@ -839,7 +855,7 @@ namespace OP
 				else if (currentSelected == 1)
 					curSelectedName = "Sphere";
 
-				std::vector<std::string> shapeNames = { "Box", "Sphere" };
+				std::vector<std::string> shapeNames = { "Box", "Sphere", "Cylinder", "Capsule"};
 
 				if (ImGui::BeginCombo("Collider", curSelectedName.c_str(), ImGuiComboFlags_PopupAlignLeft))
 				{

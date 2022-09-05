@@ -376,6 +376,10 @@ namespace OP
 			spec.Shape = physics3DCollider.Shape;
 			spec.Radius = physics3DCollider.Radius;
 
+			spec.FixRotX = physics3DMaterial.FixRotX;
+			spec.FixRotY = physics3DMaterial.FixRotY;
+			spec.FixRotZ = physics3DMaterial.FixRotZ;
+
 			glm::quat orientation = glm::quat(transformComponent.Rotation);
 			glm::vec3 translation = transformComponent.Translation;
 			glm::vec3 scale       = transformComponent.Scale;

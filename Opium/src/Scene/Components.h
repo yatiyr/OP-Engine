@@ -322,6 +322,21 @@ namespace OP
 		float SpinningFriction = 0.1f;
 		float Restitution = 0.5f;
 
+		bool FixRotX = false;
+		bool FixRotY = false;
+		bool FixRotZ = false;
+
+		void OnFixRotChanged()
+		{
+			if (RuntimeBody != nullptr)
+			{
+				btRigidBody* rB = (btRigidBody*)RuntimeBody;
+				rB->setAngularFactor(btVector3(FixRotX ? 0.0f : 1.0f,
+											   FixRotY ? 0.0f : 1.0f,
+									           FixRotZ ? 0.0f : 1.0f));
+			}
+		}
+
 		void OnMassChanged()
 		{
 			if (RuntimeBody != nullptr)
@@ -376,6 +391,8 @@ namespace OP
 	{
 		// Shape = 0 -> Box
 		// Shape = 1 -> Sphere
+		// Shape = 2 -> Cylinder
+		// Shape = 3 -> Capsule
 		int Shape = 0;
 
 		// Scale for box, radius for sphere

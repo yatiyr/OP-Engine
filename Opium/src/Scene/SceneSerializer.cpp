@@ -392,6 +392,9 @@ namespace OP
 			out << YAML::Key << "RollingFriction" << physics3DMaterial.RollingFriction;
 			out << YAML::Key << "SpinningFriction" << physics3DMaterial.SpinningFriction;
 			out << YAML::Key << "Restitution" << physics3DMaterial.Restitution;
+			out << YAML::Key << "FixRotX" << physics3DMaterial.FixRotX;
+			out << YAML::Key << "FixRotY" << physics3DMaterial.FixRotY;
+			out << YAML::Key << "FixRotZ" << physics3DMaterial.FixRotZ;
 
 			out << YAML::EndMap; // Physics3DMaterialComponent
 		}
@@ -627,6 +630,9 @@ namespace OP
 					p3DMc.RollingFriction  = physics3DMaterialComponent["RollingFriction"].as<float>();
 					p3DMc.SpinningFriction = physics3DMaterialComponent["SpinningFriction"].as<float>();
 					p3DMc.Restitution      = physics3DMaterialComponent["Restitution"].as<float>();
+					p3DMc.FixRotX          = physics3DMaterialComponent["FixRotX"].as<bool>();
+					p3DMc.FixRotY		   = physics3DMaterialComponent["FixRotY"].as<bool>();
+					p3DMc.FixRotZ		   = physics3DMaterialComponent["FixRotZ"].as<bool>();
 				}
 
 				auto physics3DColliderComponent = entity["Physics3DColliderComponent"];
