@@ -113,5 +113,5 @@ void main()
 
 	FragColor = (grid(FragPos3D, 10, true) + grid(FragPos3D, 1, true)) * float(t > 0);//vec4(1.0, 0.0, 0.0, 1.0 * float(t > 0));
     FragColor.w *= fading;
-    FragColor.w *= 0.25;
+    FragColor.w *= 0.7;
 }
