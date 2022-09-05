@@ -10,17 +10,19 @@ namespace OP
 	{
 	public:
 		ViewportComponent() = default;
-		ViewportComponent(const Ref<Framebuffer>& framebuffer)
-			: m_Framebuffer(framebuffer) {}
+		ViewportComponent(const Ref<Framebuffer>& framebuffer, const Ref<Framebuffer>& entityIDFramebuffer)
+			: m_Framebuffer(framebuffer), m_EntityIDFramebuffer(entityIDFramebuffer) {}
 
 		void OnImGuiRender();
-		void SetFramebuffer(Ref<Framebuffer> framebuffer) { m_Framebuffer = framebuffer; }
+		void SetFramebuffer(Ref<Framebuffer> framebuffer, Ref<Framebuffer> entityIDFramebuffer) { m_Framebuffer = framebuffer; m_EntityIDFramebuffer = entityIDFramebuffer; }
 
 		void OnAttach();
 		void ResizeFramebuffer();
 
+		void ChangeSelection(Entity newSelection);
 
 		// Make them private maybe?
+		void SetSelectionContext(Entity entity);
 		void SetHoveredEntity();
 		bool OnMouseButtonPressed(MouseButtonPressedEvent& e);
 
@@ -33,6 +35,7 @@ namespace OP
 	private:
 		Ref<Scene> m_Context;
 		Ref<Framebuffer> m_Framebuffer;
+		Ref<Framebuffer> m_EntityIDFramebuffer;
 		Entity m_SelectionContext;
 
 		bool m_ViewportFocused = false;
@@ -42,6 +45,7 @@ namespace OP
 
 
 		friend class EditorLayer;
+		friend class SceneHierarchyComponent;
 
 	};
 }

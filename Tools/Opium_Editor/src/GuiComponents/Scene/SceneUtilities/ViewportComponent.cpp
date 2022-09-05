@@ -42,6 +42,21 @@ namespace OP
 		}
 	}
 
+	void ViewportComponent::ChangeSelection(Entity newSelection)
+	{
+		if (m_SelectionContext && m_SelectionContext.GetScene() == newSelection.GetScene() && m_SelectionContext.HasComponent<OutlineComponent>())
+			m_SelectionContext.RemoveComponent<OutlineComponent>();
+		m_SelectionContext = newSelection;
+		m_SelectionContext.AddOrReplaceComponent<OutlineComponent>();
+	}
+
+	void ViewportComponent::SetSelectionContext(Entity entity)
+	{
+		if (m_SelectionContext && m_SelectionContext.GetScene() == entity.GetScene() && m_SelectionContext.HasComponent<OutlineComponent>())
+			m_SelectionContext.RemoveComponent<OutlineComponent>();
+		m_SelectionContext = entity;
+	}
+
 	void ViewportComponent::SetHoveredEntity()
 	{
 		auto [mx, my] = ImGui::GetMousePos();
@@ -57,7 +72,8 @@ namespace OP
 			mouseY < (int)viewportSize.y)
 		{
 			EditorLayer* elInstance = EditorLayer::GetEditor();
-			int pixelData = m_Framebuffer->ReadPixel(1, mouseX, mouseY);
+			m_EntityIDFramebuffer->Bind();
+			int pixelData = m_EntityIDFramebuffer->ReadPixel(0, mouseX, mouseY);
 			elInstance->m_HoveredEntity = pixelData == -1 ? Entity() : Entity((entt::entity)pixelData, elInstance->m_ActiveScene.get());
 		}
 	}
@@ -67,7 +83,12 @@ namespace OP
 		if (e.GetMouseButton() == (int)MouseButton::ButtonLeft)
 		{
 			if (m_ViewportHovered && !ImGuizmo::IsOver() && !Input::IsKeyPressed(KeyCode::LeftAlt))
+			{
+				if(m_SelectionContext && m_SelectionContext.HasComponent<OutlineComponent>())
+					m_SelectionContext.RemoveComponent<OutlineComponent>();
 				EditorLayer::GetEditor()->SetSelectedEntity();
+			}
+				
 		}
 
 		return false;

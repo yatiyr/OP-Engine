@@ -98,8 +98,8 @@ namespace OP
 			float blurAmount = 1;
 			struct ShadowMapSettings
 			{
-				float shadowMapResX = 512.0f;
-				float shadowMapResY = 512.0f;
+				float shadowMapResX = 128.0f;
+				float shadowMapResY = 128.0f;
 				float pointLightSMResX = 1024.0f;
 				float pointLightSMResY = 1024.0f;
 				glm::vec2 blurScale = glm::vec2(0.0f);
@@ -241,9 +241,9 @@ namespace OP
 		Ref<Shader> shadowMapDirSpotBlur;
 		Ref<Shader> pointLightSMBlurShader;
 		Ref<Shader> postProcessingShader;
-
+		Ref<Shader> entityIDShader;
 		Ref<Shader> gridShader;
-
+		Ref<Shader> outlineShader;
 
 		Ref<Cube> cube;
 		Ref<Plane> plane;
@@ -266,7 +266,7 @@ namespace OP
 		Ref<PingPongRenderPass> depthBlurDSLRenderPass;
 		Ref<RenderPass> finalRenderPass;
 		Ref<RenderPass> postProcessingPass;
-
+		Ref<RenderPass> entityIDFramebufferPass;
 
 
 		Ref<MaterialInstance> defaultPbrMaterialInstance;
@@ -308,6 +308,10 @@ namespace OP
 		RenderCommand::Enable(MODE::DEPTH_TEST);
 		RenderCommand::Enable(MODE::CULL_FACE);
 		glCullFace(GL_BACK);
+		glEnable(GL_STENCIL_TEST);
+		glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+		glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+		glStencilMask(0x00);
 
 		s_SceneRendererData.cube = Cube::Create();
 		s_SceneRendererData.plane = Plane::Create();
@@ -322,7 +326,10 @@ namespace OP
 		s_SceneRendererData.pointLightDepthShader = ResourceManager::GetShader("PointShadowMapping.glsl");
 		s_SceneRendererData.pointLightDepthShaderAnimated = ResourceManager::GetShader("PointShadowMappingAnimated.glsl");
 		s_SceneRendererData.postProcessingShader = ResourceManager::GetShader("PostProcessing.glsl");
-		
+		s_SceneRendererData.outlineShader = ResourceManager::GetShader("OutlineShader.glsl");
+
+		s_SceneRendererData.entityIDShader = ResourceManager::GetShader("EntityID.glsl");
+
 		s_SceneRendererData.gridShader = ResourceManager::GetShader("Grid.glsl");
 
 		s_SceneRendererData.animatedModel = ResourceManager::GetModel("Swing Dancing");
@@ -382,6 +389,14 @@ namespace OP
 
 		s_SceneRendererData.pointLightDepthRenderPass = RenderPass::Create(std::string("Point Light Depth Pass"), depthFBPointLight, s_SceneRendererData.depthShader);
 
+		// EntityID Framebuffer Pass
+		FramebufferSpecification entityIDFBSpec;
+		entityIDFBSpec.Attachments = { FramebufferTextureFormat::RED_INTEGER, FramebufferTextureFormat::Depth };
+		entityIDFBSpec.Width = s_SceneRendererData.ViewportSize.x;
+		entityIDFBSpec.Height = s_SceneRendererData.ViewportSize.y;
+
+		s_SceneRendererData.entityIDFramebufferPass = RenderPass::Create(std::string("EntityID Pass"), entityIDFBSpec);
+
 		// Final Framebuffer
 		FramebufferSpecification finalFBSpec;
 		finalFBSpec.Attachments = { FramebufferTextureFormat::RGBA32F, FramebufferTextureFormat::Depth };
@@ -391,7 +406,6 @@ namespace OP
 		s_SceneRendererData.finalFramebuffer = Framebuffer::Create(finalFBSpec);
 
 		s_SceneRendererData.finalRenderPass = RenderPass::Create(std::string("Final Pass"), finalFBSpec);
-
 
 		// Sample Resolve Framebuffer - Intermediate
 		FramebufferSpecification sampleResolveFB;
@@ -426,7 +440,7 @@ namespace OP
 			s_SceneRendererData.postProcessingPass->GetFramebuffer()->Resize(width, height);
 			s_SceneRendererData.sampleResolveFramebuffer->Resize(width, height);
 			s_SceneRendererData.finalRenderPass->GetFramebuffer()->Resize(width, height);
-
+			s_SceneRendererData.entityIDFramebufferPass->GetFramebuffer()->Resize(width, height);
 			// s_SceneRendererData.finalFramebuffer->Resize(width, height);
 
 			// s_SceneRendererData.depthRenderPass->ResizeFramebuffer(width, height);
@@ -441,6 +455,11 @@ namespace OP
 	Ref<Framebuffer> SceneRenderer::GetMainRenderFramebuffer()
 	{
 		return s_SceneRendererData.finalRenderPass->GetFramebuffer();
+	}
+
+	Ref<Framebuffer> SceneRenderer::GetEntityIDFramebuffer()
+	{
+		return s_SceneRendererData.entityIDFramebufferPass->GetFramebuffer();
 	}
 
 	void SceneRenderer::SetScene(Ref<Scene> scene)
@@ -782,12 +801,34 @@ namespace OP
 
 		// POINT LIGHT ICIN PCF UYGULA SADECE!!!!!
 		
-		// FINAL RENDERING - (FOR NOW!)
-		
-		s_SceneRendererData.finalRenderPass->InvokeCommands(
+		s_SceneRendererData.entityIDFramebufferPass->InvokeCommands(
 			[&]()-> void {
 
 				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+				s_SceneRendererData.entityIDFramebufferPass->GetFramebuffer()->ClearAttachment(0, -1);
+
+				s_SceneRendererData.entityIDShader->Bind();
+
+				// ------------ DRAW SCENE ------------
+				auto meshes = scene->m_Registry.group<MeshComponent>(entt::get<TransformComponent>);
+				for (auto mesh : meshes)
+				{
+					s_SceneRendererData.entityIDShader->SetInt(0, (uint32_t)mesh);
+					auto [tC, mC] = meshes.get<TransformComponent, MeshComponent>(mesh);
+					s_SceneRendererData.TransformBuffer.Model = tC.GetTransform();
+					s_SceneRendererData.TransformUniformBuffer->SetData(&s_SceneRendererData.TransformBuffer, sizeof(SceneRendererData::TransformData));
+					if (mC.Mesh)
+						mC.Mesh->Draw();
+				}
+			}
+		);
+
+		// FINAL RENDERING - (FOR NOW!)
+		s_SceneRendererData.finalRenderPass->InvokeCommands(
+			[&]()-> void {
+
+				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+				glStencilMask(0x00);
 
 				s_SceneRendererData.mainShader->Bind();
 
@@ -833,6 +874,39 @@ namespace OP
 
 				s_SceneRendererData.environmentMap->RenderSkybox();
 
+				auto outlineView = scene->m_Registry.view<OutlineComponent>();
+				for (auto outlined : outlineView)
+				{
+					bool hasMesh = scene->m_Registry.any_of<MeshComponent>(outlined);
+					if (hasMesh)
+					{
+						auto [tC, mC] = scene->m_Registry.get<TransformComponent, MeshComponent>(outlined);
+
+						if (mC.Mesh)
+						{
+							s_SceneRendererData.mainShader->Bind();
+							s_SceneRendererData.TransformBuffer.Model = tC.GetTransform();
+							s_SceneRendererData.TransformUniformBuffer->SetData(&s_SceneRendererData.TransformBuffer, sizeof(SceneRendererData::TransformData));
+
+							glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+							glDisable(GL_DEPTH_TEST);
+							glStencilFunc(GL_ALWAYS, 1, 0xFF);
+							glStencilMask(0xFF);
+							mC.Mesh->Draw();
+
+							glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+							glStencilMask(0x00);
+							glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+							s_SceneRendererData.outlineShader->Bind();
+							s_SceneRendererData.outlineShader->SetFloat3(0, glm::vec3(0.2f, 0.7f, 1.0f));
+							mC.Mesh->Draw();
+							glStencilMask(0xFF);
+							glStencilFunc(GL_ALWAYS, 0, 0xFF);
+							glEnable(GL_DEPTH_TEST);
+						}
+
+					}
+				}
 			}
 		);
 

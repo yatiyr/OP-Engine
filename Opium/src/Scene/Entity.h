@@ -114,6 +114,8 @@ namespace OP
 			return !(*this == other);
 		}
 
+		Scene* GetScene() { return m_Scene; }
+
 	private:
 		entt::entity m_EntityHandle{ entt::null };
 		Scene* m_Scene = nullptr;

@@ -70,6 +70,8 @@ namespace OP
 		// We will get depth/stencil buffer bit from this framebuffer
 		m_RenderFramebuffer = SceneRenderer::GetMainRenderFramebuffer();
 
+		m_EntityIDFramebuffer = SceneRenderer::GetEntityIDFramebuffer();
+
 		// Debug Framebuffer
 		FramebufferSpecification debugFBSpec;
 		debugFBSpec.Attachments = { FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::Depth };
@@ -81,7 +83,7 @@ namespace OP
 		m_Plane = Plane::Create();
 
 		// Temp
-		m_ViewportComponent.SetFramebuffer(m_FinalFramebuffer);
+		m_ViewportComponent.SetFramebuffer(m_FinalFramebuffer, m_EntityIDFramebuffer);
 		m_ActiveScene = CreateRef<Scene>();
 
 		auto commandLineArguments = Application::Get().GetCommandLineArguments();
@@ -111,6 +113,8 @@ namespace OP
 		comp.FrustaDistFactor = 2.0f;
 
 		m_SceneGraph.SetContext(m_ActiveScene);
+
+		m_SceneGraph.SetViewportComponent(m_ViewportComponent);
 
 	}
 
@@ -196,9 +200,9 @@ namespace OP
 		RenderCommand::SetClearColor({ 0.0f, 0.0f, 0.0f, 1 });
 		RenderCommand::Clear();
 
-		// PhysicsManager::StepWorld(ts);
 		// Clear our entity ID attachment to -1
-		//m_Framebuffer->ClearAttachment(1, -1);
+		m_EntityIDFramebuffer->Bind();
+		m_EntityIDFramebuffer->ClearAttachment(0, -1);
 
 
 		// Playground code
@@ -240,7 +244,7 @@ namespace OP
 		}
 		
 
-		//m_ViewportComponent.SetHoveredEntity();
+		m_ViewportComponent.SetHoveredEntity();
 		
 		
 		m_Framebuffer->Unbind();
@@ -419,10 +423,15 @@ namespace OP
 
 	void EditorLayer::SetSelectedEntity()
 	{
-		if(m_HoveredEntity)
+		if (m_HoveredEntity)
+		{
+			m_HoveredEntity.AddOrReplaceComponent<OutlineComponent>();
 			m_SceneGraph.SetSelectedEntity(m_HoveredEntity);
+			m_ViewportComponent.SetSelectionContext(m_HoveredEntity);
+		}
+			
 	}
-
+	
 	void EditorLayer::OnEvent(Event& e)
 	{
 		m_EditorCamera.OnEvent(e);
@@ -611,6 +620,7 @@ namespace OP
 		m_ActiveScene = m_EditorScene;
 		s_ActiveScene = m_ActiveScene.get();
 		m_SceneGraph.SetContext(m_ActiveScene);
+		m_ViewportComponent.SetSelectionContext({});
 	}
 
 	void EditorLayer::OnDuplicateEntity()

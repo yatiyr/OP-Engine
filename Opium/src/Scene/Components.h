@@ -22,6 +22,14 @@
 namespace OP
 {
 
+	struct OutlineComponent
+	{
+		bool _outlined;
+
+		OutlineComponent() = default;
+		OutlineComponent(const OutlineComponent&) = default;
+	};
+
 	struct IDComponent
 	{
 		UUID ID;

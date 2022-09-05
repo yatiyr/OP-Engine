@@ -73,15 +73,15 @@ vec4 grid(vec3 fragPos3D, float scale, bool drawAxis) {
     // z axis
     if(fragPos3D.x > -0.1 * minimumx && fragPos3D.x < 0.1 * minimumx)
     {
-        color.y = 1.0;
-        color.z = 0.6;
+        color.y = 0.5;
+        color.z = 1.0;
     }
         
     // x axis
     if(fragPos3D.z > -0.1 * minimumz && fragPos3D.z < 0.1 * minimumz)
     {
         color.x = 1.0;
-        color.z = 0.6;
+        color.z = 0.3;
     }
    
     return color;
@@ -96,9 +96,9 @@ float computeLinearDepth(vec3 pos)
 {
     vec4 clip_space_pos = u_Projection * u_View * vec4(pos.xyz, 1.0);
     float clip_space_depth = (clip_space_pos.z / clip_space_pos.w) * 2.0 - 1.0;
-    float linearDepth = ( 2.0 * 0.1 * 50.0) / (50.0 + 0.1 - clip_space_depth * (50.0 - 0.1));
+    float linearDepth = ( 2.0 * 0.1 * 10.0) / (10.0 + 0.1 - clip_space_depth * (10.0 - 0.1));
 
-    return linearDepth / 50.0;
+    return linearDepth / 10.0;
 }
 
 void main()
@@ -113,4 +113,5 @@ void main()
 
 	FragColor = (grid(FragPos3D, 10, true) + grid(FragPos3D, 1, true)) * float(t > 0);//vec4(1.0, 0.0, 0.0, 1.0 * float(t > 0));
     FragColor.w *= fading;
+    FragColor.w *= 0.25;
 }

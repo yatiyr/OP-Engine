@@ -687,6 +687,8 @@ namespace OP
 		static_assert(false);
 	}
 	template<>
+	void Scene::OnComponentAdded<OutlineComponent>(Entity entity, OutlineComponent& component) {}
+	template<>
 	void Scene::OnComponentAdded<RootComponent>(Entity entity, RootComponent& component){}
 	template<>
 	void Scene::OnComponentAdded<RelationshipComponent>(Entity entity, RelationshipComponent& component){}
@@ -741,6 +743,8 @@ namespace OP
 
 	template<typename T>
 	void Scene::OnComponentRemoved(Entity entity, T& component){static_assert(false);}
+	template<>
+	void Scene::OnComponentRemoved<OutlineComponent>(Entity entity, OutlineComponent& component) {}
 	template<>
 	void Scene::OnComponentRemoved<RootComponent>(Entity entity, RootComponent& component){}
 	template<>

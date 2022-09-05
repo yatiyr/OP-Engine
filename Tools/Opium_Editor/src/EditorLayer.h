@@ -79,6 +79,7 @@ namespace OP
 		Ref<Framebuffer> m_Framebuffer;
 		Ref<Framebuffer> m_RenderFramebuffer;
 		Ref<Framebuffer> m_FinalFramebuffer;
+		Ref<Framebuffer> m_EntityIDFramebuffer;
 
 		Ref<Shader> m_GridShader;
 		Ref<Plane> m_Plane;

@@ -69,7 +69,8 @@ namespace OP
 
 			if (ImGui::IsMouseDown(0) && ImGui::IsWindowHovered())
 			{
-				// m_SelectionContext = {};
+				m_SelectionContext = {};
+				m_ViewportComponent.SetSelectionContext({});
 			}
 
 			// Right-click on blank space
@@ -166,7 +167,14 @@ namespace OP
 
 	void SceneHierarchyComponent::SetSelectedEntity(Entity entity)
 	{
+		if (m_SelectionContext && m_SelectionContext.HasComponent<OutlineComponent>())
+			m_SelectionContext.RemoveComponent<OutlineComponent>();
 		m_SelectionContext = entity;
+	}
+
+	void SceneHierarchyComponent::SetViewportComponent(ViewportComponent vC)
+	{
+		m_ViewportComponent = vC;
 	}
 
 	void SceneHierarchyComponent::DrawEntityNode(Entity entity)
@@ -184,7 +192,10 @@ namespace OP
 		bool opened = ImGui::TreeNodeEx((void*)(uint64_t)(uint32_t)entity, flags, tag.c_str());
 		if (ImGui::IsItemClicked())
 		{
+			if (m_SelectionContext && m_SelectionContext.GetScene() == entity.GetScene() && m_SelectionContext.HasComponent<OutlineComponent>())
+				m_SelectionContext.RemoveComponent<OutlineComponent>();
 			m_SelectionContext = entity;
+			m_ViewportComponent.ChangeSelection(m_SelectionContext);
 		}
 		bool entityDeleted = false;
 		bool entityAdded = false;

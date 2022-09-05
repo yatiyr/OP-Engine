@@ -27,6 +27,7 @@ namespace OP
 
 		static Ref<Framebuffer> GetFinalFramebuffer();
 		static Ref<Framebuffer> GetMainRenderFramebuffer();
+		static Ref<Framebuffer> GetEntityIDFramebuffer();
 
 		static void SetScene(Ref<Scene> scene);
 

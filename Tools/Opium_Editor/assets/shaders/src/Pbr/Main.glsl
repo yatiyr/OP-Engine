@@ -78,6 +78,7 @@ layout (location = 3) uniform float u_TilingFactor;
 layout (location = 4) uniform float u_HeightFactor;
 layout (location = 5) uniform int u_ClipBorder;
 
+
 // TEXTURES
 layout (binding = 0) uniform sampler2DArray u_ShadowMapDirSpot;
 layout (binding = 1) uniform samplerCubeArray u_ShadowMapPoint;
