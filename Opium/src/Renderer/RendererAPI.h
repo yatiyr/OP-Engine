@@ -6,6 +6,20 @@
 namespace OP
 {
 
+	enum class FACE
+	{
+		FRONT,
+		BACK,
+		FRONT_AND_BACK
+	};
+
+	enum class POLYGONMODE
+	{
+		POINT,
+		LINE,
+		FILL
+	};
+
 	enum class MODE
 	{
 		TEXTURE_CUBE_MAP_SEAMLESS,
@@ -46,6 +60,8 @@ namespace OP
 		virtual void Disable(MODE mode) = 0;
 
 		virtual void DepthFunc(DEPTHFUNC func) = 0;
+
+		virtual void PolygonMode(FACE face, POLYGONMODE mode) = 0;
 
 		inline static API GetAPI() { return s_API; }
 	private:

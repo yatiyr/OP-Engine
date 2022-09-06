@@ -382,7 +382,7 @@ namespace OP
 
 			glm::quat orientation = glm::quat(transformComponent.Rotation);
 			glm::vec3 translation = transformComponent.Translation;
-			glm::vec3 scale       = transformComponent.Scale;
+			glm::vec3 scale       = transformComponent.Scale * physics3DCollider.Scale;
 
 			spec.scale       = btVector3(scale.x, scale.y, scale.z);
 			spec.Orientation = btQuaternion(orientation.x, orientation.y, orientation.z, orientation.w);

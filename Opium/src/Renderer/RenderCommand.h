@@ -39,6 +39,11 @@ namespace OP
 			s_RendererAPI->DrawIndexedBinded(vertexArray, count);
 		}
 
+		inline static void PolygonMode(FACE face, POLYGONMODE mode)
+		{
+			s_RendererAPI->PolygonMode(face, mode);
+		}
+
 		inline static void Enable(MODE mode)
 		{
 			s_RendererAPI->Enable(mode);

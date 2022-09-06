@@ -20,5 +20,7 @@ namespace OP
 		virtual void Disable(MODE mode) override;
 
 		virtual void DepthFunc(DEPTHFUNC func) override;
+		virtual void PolygonMode(FACE face, POLYGONMODE mode) override;
+
 	};
 }

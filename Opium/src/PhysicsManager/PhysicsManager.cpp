@@ -117,10 +117,10 @@ namespace OP
 		bool contactResponse = spec.ContactResponse;
 
 		btCollisionShape* colShape = nullptr;
-		if      (shape == 0) { colShape = new btBoxShape(scale/2); }
-		else if (shape == 1) { colShape = new btSphereShape(radius); }
-		else if (shape == 2) { colShape = new btCylinderShape(btVector3(1.0f, 0.5f, 0.5f)); }
-		else if (shape == 3) { colShape = new btCapsuleShape(0.5f, 1.0f); }
+		if      (shape == 0) { colShape = new btBoxShape(scale/2);}
+		else if (shape == 1) { colShape = new btSphereShape(radius); colShape->setLocalScaling(scale); }
+		else if (shape == 2) { colShape = new btCylinderShape(btVector3(0.5f, 0.5f, 0.5f)); colShape->setLocalScaling(scale); }
+		else if (shape == 3) { colShape = new btCapsuleShape(0.5f, 1.0f); colShape->setLocalScaling(scale); }
 
 		s_PMD.CollisionShapes.push_back(colShape);
 

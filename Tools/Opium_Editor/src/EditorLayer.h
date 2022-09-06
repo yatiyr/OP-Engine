@@ -13,6 +13,10 @@
 #include <Scene/SceneRenderer.h>
 
 #include <Geometry/Plane.h>
+#include <Geometry/Cube.h>
+#include <Geometry/Capsule.h>
+#include <Geometry/Cylinder.h>
+#include <Geometry/Icosphere.h>
 
 
 namespace OP
@@ -57,7 +61,7 @@ namespace OP
 		// Temp
 		void SetSelectedEntity();
 
-
+		void SetShowPhysicalColliders(bool show) { m_ShowPhysicalColliders = show; }
 
 	private:
 		void RenderDockspace();
@@ -106,6 +110,16 @@ namespace OP
 		SceneState m_SceneState = SceneState::Edit;
 
 		EditorScriptMonitor m_EditorScriptMonitor;
+
+
+
+		bool m_ShowPhysicalColliders = true;
+		Ref<Shader> m_CollisionShapeVisualizer;
+		Ref<Cube> m_Cube;
+		Ref<Icosphere> m_Sphere;
+		Ref<Cylinder> m_Cylinder;
+		Ref<Capsule> m_Capsule;
+
 	private:
 		static EditorLayer* s_Instance;
 

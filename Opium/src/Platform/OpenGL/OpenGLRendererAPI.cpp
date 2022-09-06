@@ -6,6 +6,32 @@
 namespace OP
 {
 
+	static int OPFaceToGL(FACE face)
+	{
+		switch (face)
+		{
+			case OP::FACE::FRONT:
+				return GL_FRONT;
+			case OP::FACE::BACK:
+				return GL_BACK;
+			case OP::FACE::FRONT_AND_BACK:
+				return GL_FRONT_AND_BACK;
+		}
+	}
+
+	static int OPPolygonModeToGL(POLYGONMODE mode)
+	{
+		switch (mode)
+		{
+			case OP::POLYGONMODE::POINT:
+				return GL_POINT;
+			case OP::POLYGONMODE::LINE:
+				return GL_LINE;
+			case OP::POLYGONMODE::FILL:
+				return GL_FILL;
+		}
+	}
+
 	static int OPModeToGL(MODE mode)
 	{
 		switch (mode)
@@ -102,6 +128,11 @@ namespace OP
 	void OpenGLRendererAPI::DepthFunc(DEPTHFUNC func)
 	{
 		glDepthFunc(OPDepthFuncToGL(func));
+	}
+
+	void OpenGLRendererAPI::PolygonMode(FACE face, POLYGONMODE mode)
+	{
+		glPolygonMode(OPFaceToGL(face), OPPolygonModeToGL(mode));
 	}
 
 }

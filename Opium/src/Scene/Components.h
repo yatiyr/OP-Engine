@@ -389,6 +389,7 @@ namespace OP
 
 	struct Physics3DCollider
 	{
+		bool ShowCollider = false;
 		// Shape = 0 -> Box
 		// Shape = 1 -> Sphere
 		// Shape = 2 -> Cylinder

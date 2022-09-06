@@ -23,6 +23,8 @@
 
 #include <ScriptManager/ScriptManager.h>
 
+
+
 namespace OP
 {
 
@@ -81,6 +83,12 @@ namespace OP
 		m_FinalFramebuffer = Framebuffer::Create(debugFBSpec);
 		m_GridShader = ResourceManager::GetShader("Grid.glsl");
 		m_Plane = Plane::Create();
+
+		m_CollisionShapeVisualizer = ResourceManager::GetShader("CollisionShapeVisualizer.glsl");
+		m_Cube = Cube::Create();
+		m_Sphere = Icosphere::Create(1.0f, 2, false);
+		m_Cylinder = Cylinder::Create(0.5f, 0.5f, 1.0f, 36, 1, false);
+		m_Capsule = Capsule::Create(0.5f, 0.5f, 1.0f, 36, 18, 1, false);
 
 		// Temp
 		m_ViewportComponent.SetFramebuffer(m_FinalFramebuffer, m_EntityIDFramebuffer);
@@ -231,7 +239,10 @@ namespace OP
 			case SceneState::Edit:
 			{
 
-				m_EditorCamera.OnUpdate(ts);
+				if (m_ViewportHovered)
+				{
+					m_EditorCamera.OnUpdate(ts);
+				}
 
 				m_ActiveScene->OnUpdateEditor(ts, m_EditorCamera);
 				break;
@@ -254,10 +265,49 @@ namespace OP
 
 
 		m_FinalFramebuffer->Bind();
+		RenderCommand::PolygonMode(FACE::FRONT_AND_BACK, POLYGONMODE::LINE);
+		m_CollisionShapeVisualizer->Bind();
+		auto view = m_ActiveScene->m_Registry.view<Physics3DCollider>();
+		for (auto entity : view)
+		{
+			Entity e = { entity, m_ActiveScene.get() };
+
+			auto tC = e.GetComponent<TransformComponent>();
+			auto pC = view.get<Physics3DCollider>(entity);
+
+			if (pC.ShowCollider)
+			{
+				glm::mat4 model = tC.GetTransform();
+				model = glm::scale(model, pC.Scale);
+				m_CollisionShapeVisualizer->SetMat4(0, model);
+
+				// color of collision shape ->  RED
+				m_CollisionShapeVisualizer->SetFloat3(1, glm::vec3(1.0f, 0.0f, 0.0f));
+				if (pC.Shape == 0)
+				{
+					m_Cube->Draw();
+				}
+				else if (pC.Shape == 1)
+				{
+					m_Sphere->Draw();
+				}
+				else if (pC.Shape == 2)
+				{
+					m_Cylinder->Draw();
+				}
+				else if (pC.Shape == 3)
+				{
+					m_Capsule->Draw();
+				}
+			}
+		}
+
+		RenderCommand::PolygonMode(FACE::FRONT_AND_BACK, POLYGONMODE::FILL);
 		//RenderCommand::Disable(MODE::DEPTH_TEST);
 		m_GridShader->Bind();
 		m_Plane->Draw();
 		//RenderCommand::Enable(MODE::DEPTH_TEST);
+
 		m_FinalFramebuffer->Unbind();
 
 		

@@ -887,6 +887,8 @@ namespace OP
 					component.OnContactResponseChanged();
 				}
 
+				ImGui::Checkbox("Show Collider", &component.ShowCollider);
+
 			});
 
 		DrawComponent<BoxCollider2DComponent>("2D Box Collider", entity, [](auto& component)
