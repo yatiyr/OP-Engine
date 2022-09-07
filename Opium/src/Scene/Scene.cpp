@@ -278,7 +278,16 @@ namespace OP
 			{
 				Entity nullEntity;
 				auto& parentRelComp = parent.GetComponent<RelationshipComponent>();
-				parentRelComp.first = UINT64_MAX;
+				// if entity has a next sibling
+				if (entt::entity(next) != entt::null)
+				{
+					parentRelComp.first = next.GetUUID();
+					auto& nextRelComp = next.GetComponent<RelationshipComponent>();
+					nextRelComp.prev = UINT64_MAX;
+				}
+					
+				else
+					parentRelComp.first = UINT64_MAX;
 			}
 			// Entity is the last child
 			else if (entt::entity(next) == entt::null)

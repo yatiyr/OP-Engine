@@ -223,19 +223,30 @@ namespace OP
 
 		if (opened)
 		{
-			auto relComp = entity.GetComponent<RelationshipComponent>();
+			auto& relComp = entity.GetComponent<RelationshipComponent>();
 			Entity first = m_Context->GetEntityWithUUID(relComp.first);
 			if (entt::entity(first) != entt::null)
 			{
 				DrawEntityNode(first);
-				auto firstRelComp = first.GetComponent<RelationshipComponent>();
-				Entity next = m_Context->GetEntityWithUUID(firstRelComp.next);
-				while (entt::entity(next) != entt::null)
+				first = m_Context->GetEntityWithUUID(relComp.first);
+				if (entt::entity(first) != entt::null)
 				{
-					DrawEntityNode(next);
-					auto nextRelComp = next.GetComponent<RelationshipComponent>();
-					next = m_Context->GetEntityWithUUID(nextRelComp.next);
+					auto firstRelComp = first.GetComponent<RelationshipComponent>();
+					Entity next = m_Context->GetEntityWithUUID(firstRelComp.next);
+					UUID iteratorUUID;
+					while (entt::entity(next) != entt::null)
+					{
+						iteratorUUID = next.GetUUID();
+						DrawEntityNode(next);
+						next = m_Context->GetEntityWithUUID(iteratorUUID);
+						if (entt::entity(next) != entt::null)
+						{
+							auto nextRelComp = next.GetComponent<RelationshipComponent>();
+							next = m_Context->GetEntityWithUUID(nextRelComp.next);
+						}
+					}
 				}
+
 			}
 			ImGui::TreePop();
 		}

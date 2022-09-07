@@ -53,47 +53,85 @@ namespace OP
 		template<typename T, typename... Args>
 		T& AddComponent(Args&&... args)
 		{
-
-			OP_ENGINE_ASSERT(!HasComponent<T>(), "Entity already has a component");
-			T& component = m_Scene->m_Registry.emplace<T>(m_EntityHandle, std::forward<Args>(args)...);
-			m_Scene->OnComponentAdded<T>(*this, component); // TODO: SORT THIS OUT
-			return component;
+			try
+			{
+				T& component = m_Scene->m_Registry.emplace<T>(m_EntityHandle, std::forward<Args>(args)...);
+				m_Scene->OnComponentAdded<T>(*this, component); // TODO: SORT THIS OUT
+				return component;
+			}
+			catch (const std::exception&)
+			{
+				//OP_ENGINE_ERROR("Could not add Component to {0}", m_EntityHandle);
+			}
 		}
 
 		template<typename T, typename... Args>
 		T& AddOrReplaceComponent(Args&&... args)
 		{
-			T& component = m_Scene->m_Registry.emplace_or_replace<T>(m_EntityHandle, std::forward<Args>(args)...);
-			m_Scene->OnComponentAdded<T>(*this, component); // TODO: SORT THIS OUT
-			return component;
+			try
+			{
+				T& component = m_Scene->m_Registry.emplace_or_replace<T>(m_EntityHandle, std::forward<Args>(args)...);
+				m_Scene->OnComponentAdded<T>(*this, component); // TODO: SORT THIS OUT
+				return component;
+			}
+			catch (const std::exception&)
+			{
+
+			}
 		}
 
 		template<typename T>
 		void Patch()
 		{
-			m_Scene->Patch<T>(m_EntityHandle);
+			try
+			{
+				m_Scene->Patch<T>(m_EntityHandle);
+			}
+			catch (const std::exception&)
+			{
+
+			}
 		}
 
 		template<typename T>
 		T& GetComponent()
 		{
-			OP_ENGINE_ASSERT(HasComponent<T>(), "Entity does not have this component");
-			return m_Scene->m_Registry.get<T>(m_EntityHandle);
+			try
+			{
+				return m_Scene->m_Registry.get<T>(m_EntityHandle);
+			}
+			catch (const std::exception&)
+			{
+
+			}
 		}
 
 		template<typename T>
 		void RemoveComponent()
 		{
-			OP_ENGINE_ASSERT(HasComponent<T>(), "Entity does not have this component");
-			T& component = m_Scene->m_Registry.get<T>(m_EntityHandle);
-			m_Scene->OnComponentRemoved<T>(*this, component);
-			m_Scene->m_Registry.remove<T>(m_EntityHandle);
+			try
+			{
+				T& component = m_Scene->m_Registry.get<T>(m_EntityHandle);
+				m_Scene->OnComponentRemoved<T>(*this, component);
+				m_Scene->m_Registry.remove<T>(m_EntityHandle);
+			}
+			catch (const std::exception&)
+			{
+
+			}
 		}
 
 		template<typename T>
 		bool HasComponent()
 		{
-			return m_Scene->m_Registry.any_of<T>(m_EntityHandle);
+			try
+			{
+				return m_Scene->m_Registry.any_of<T>(m_EntityHandle);
+			}
+			catch (const std::exception&)
+			{
+
+			}
 		}
 
 		operator bool() const { return m_EntityHandle != entt::null; }

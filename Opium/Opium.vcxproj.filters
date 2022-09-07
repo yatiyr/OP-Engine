@@ -34,6 +34,9 @@
     <Filter Include="external\stb_image">
       <UniqueIdentifier>{C27B45E0-AE5F-0636-17C0-008903C3F0B7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="external\tinyexr">
+      <UniqueIdentifier>{CAC6FF46-B6BF-1E99-DFF1-031ECB49FEA4}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src">
       <UniqueIdentifier>{2DAB880B-99B4-887C-2230-9F7C8E38947C}</UniqueIdentifier>
     </Filter>
@@ -63,6 +66,9 @@
     </Filter>
     <Filter Include="src\Opium">
       <UniqueIdentifier>{E6D690B3-5241-452A-9B7F-F6CF0729237F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\PhysicsManager">
+      <UniqueIdentifier>{9A893220-866D-F375-EFCD-EDC8DBD0DDF7}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\Platform">
       <UniqueIdentifier>{21CA02E5-0D2D-9289-B6B2-CA3FA2F45D0C}</UniqueIdentifier>
@@ -1362,6 +1368,12 @@
     <ClInclude Include="external\stb_image\stb_image.h">
       <Filter>external\stb_image</Filter>
     </ClInclude>
+    <ClInclude Include="external\tinyexr\miniz.h">
+      <Filter>external\tinyexr</Filter>
+    </ClInclude>
+    <ClInclude Include="external\tinyexr\tinyexr.h">
+      <Filter>external\tinyexr</Filter>
+    </ClInclude>
     <ClInclude Include="src\Animation\Animation.h">
       <Filter>src\Animation</Filter>
     </ClInclude>
@@ -1410,6 +1422,9 @@
     <ClInclude Include="src\Geometry\RadialSphere.h">
       <Filter>src\Geometry</Filter>
     </ClInclude>
+    <ClInclude Include="src\Geometry\Skybox.h">
+      <Filter>src\Geometry</Filter>
+    </ClInclude>
     <ClInclude Include="src\Gui\Font\Font.h">
       <Filter>src\Gui\Font</Filter>
     </ClInclude>
@@ -1455,6 +1470,9 @@
     <ClInclude Include="src\Opium\UUID.h">
       <Filter>src\Opium</Filter>
     </ClInclude>
+    <ClInclude Include="src\PhysicsManager\PhysicsManager.h">
+      <Filter>src\PhysicsManager</Filter>
+    </ClInclude>
     <ClInclude Include="src\Platform\OpenGL\OpenGLBuffer.h">
       <Filter>src\Platform\OpenGL</Filter>
     </ClInclude>
@@ -1495,6 +1513,9 @@
       <Filter>src\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Renderer\EditorCamera.h">
+      <Filter>src\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Renderer\EnvironmentMap.h">
       <Filter>src\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Renderer\Framebuffer.h">
@@ -1578,6 +1599,9 @@
     <ClInclude Include="src\Utils\AssimpGLMHelpers.h">
       <Filter>src\Utils</Filter>
     </ClInclude>
+    <ClInclude Include="src\Utils\CSMHelpers.h">
+      <Filter>src\Utils</Filter>
+    </ClInclude>
     <ClInclude Include="src\Utils\PlatformUtils.h">
       <Filter>src\Utils</Filter>
     </ClInclude>
@@ -1587,6 +1611,9 @@
     <ClInclude Include="src\Window\Window.h">
       <Filter>src\Window</Filter>
     </ClInclude>
+    <ClInclude Include="src\Utils\FileMonitor.h" />
+    <ClInclude Include="src\Geometry\Cylinder.h" />
+    <ClInclude Include="src\Geometry\Capsule.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="external\ImGuizmo\GraphEditor.cpp">
@@ -1606,6 +1633,12 @@
     </ClCompile>
     <ClCompile Include="external\stb_image\stb_image.cpp">
       <Filter>external\stb_image</Filter>
+    </ClCompile>
+    <ClCompile Include="external\tinyexr\miniz.cpp">
+      <Filter>external\tinyexr</Filter>
+    </ClCompile>
+    <ClCompile Include="external\tinyexr\tinyexr.cpp">
+      <Filter>external\tinyexr</Filter>
     </ClCompile>
     <ClCompile Include="src\Config\Precomp.cpp">
       <Filter>src\Config</Filter>
@@ -1629,6 +1662,9 @@
       <Filter>src\Geometry</Filter>
     </ClCompile>
     <ClCompile Include="src\Geometry\RadialSphere.cpp">
+      <Filter>src\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Geometry\Skybox.cpp">
       <Filter>src\Geometry</Filter>
     </ClCompile>
     <ClCompile Include="src\Gui\ImGuiBuild.cpp">
@@ -1657,6 +1693,9 @@
     </ClCompile>
     <ClCompile Include="src\Opium\UUID.cpp">
       <Filter>src\Opium</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PhysicsManager\PhysicsManager.cpp">
+      <Filter>src\PhysicsManager</Filter>
     </ClCompile>
     <ClCompile Include="src\Platform\OpenGL\OpenGLBuffer.cpp">
       <Filter>src\Platform\OpenGL</Filter>
@@ -1697,7 +1736,13 @@
     <ClCompile Include="src\Renderer\EditorCamera.cpp">
       <Filter>src\Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="src\Renderer\EnvironmentMap.cpp">
+      <Filter>src\Renderer</Filter>
+    </ClCompile>
     <ClCompile Include="src\Renderer\Framebuffer.cpp">
+      <Filter>src\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Renderer\Material.cpp">
       <Filter>src\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\Renderer\OrthographicCamera.cpp">
@@ -1766,6 +1811,7 @@
     <ClCompile Include="src\Utils\ShaderIncludeUtils.cpp">
       <Filter>src\Utils</Filter>
     </ClCompile>
-    <ClCompile Include="src\Renderer\Material.cpp" />
+    <ClCompile Include="src\Geometry\Cylinder.cpp" />
+    <ClCompile Include="src\Geometry\Capsule.cpp" />
   </ItemGroup>
 </Project>
