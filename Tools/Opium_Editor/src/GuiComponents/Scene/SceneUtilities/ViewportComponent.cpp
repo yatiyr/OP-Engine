@@ -84,7 +84,7 @@ namespace OP
 		{
 			if (m_ViewportHovered && !ImGuizmo::IsOver() && !Input::IsKeyPressed(KeyCode::LeftAlt))
 			{
-				if(m_SelectionContext && m_SelectionContext.HasComponent<OutlineComponent>())
+				if(m_SelectionContext && m_SelectionContext.GetScene() == m_Context.get() && m_SelectionContext.HasComponent<OutlineComponent>())
 					m_SelectionContext.RemoveComponent<OutlineComponent>();
 				EditorLayer::GetEditor()->SetSelectedEntity();
 			}

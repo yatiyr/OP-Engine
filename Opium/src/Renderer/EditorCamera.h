@@ -7,7 +7,8 @@
 
 #include <glm/glm.hpp>
 
-
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/quaternion.hpp>
 
 namespace OP
 {
@@ -43,9 +44,14 @@ namespace OP
 		float GetPitch() const { return m_Pitch; }
 		float GetYaw() const { return m_Yaw; }
 
+
+		glm::quat GetTargetOrientation() const;
+		glm::vec3 CalculateTargetPosition() const;
+		glm::vec3 GetTargetForwardDirection() const;
+
 	private:
 		void UpdateProjection();
-		void UpdateView();
+		void UpdateView(Timestep ts);
 
 		bool OnMouseScroll(MouseScrolledEvent& e);
 
@@ -66,14 +72,27 @@ namespace OP
 		glm::vec3 m_Position = { 0.0f, 0.0f, 0.0f };
 		glm::vec3 m_FocalPoint = { 0.0f, 0.0f, 0.0f };
 
+		glm::quat m_Orientation;
+
 		glm::vec2 m_InitialMousePosition;
 
 		float m_Distance = 10.0f;
 		float m_Pitch = 0.0f;
 		float m_Yaw = 0.0f;
 
+		float m_TargetPitch = 0.0f;
+		float m_TargetYaw = 0.0f;
+		float m_TargetDistance = 10.0f;
+
+		glm::vec3 m_TargetPosition = { 0.0f, 0.0f, 0.0f };
+		glm::vec3 m_TargetFocalPoint = { 0.0f, 0.0f, 0.0f };
+
+		float m_SmoothTransitionTime = 10.0f;
+
 		float m_ViewportWidth = 1280;
 		float m_ViewportHeight = 720;
+
+		
 
 	};
 }

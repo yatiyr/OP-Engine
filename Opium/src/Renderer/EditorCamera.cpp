@@ -9,6 +9,7 @@
 
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/quaternion.hpp>
+#include <glm/gtx/rotate_vector.hpp>
 
 namespace OP
 {
@@ -19,6 +20,8 @@ namespace OP
 	{
 		m_FarClip = farClip;
 		m_NearClip = nearClip;
+
+		m_Orientation = glm::quat(glm::vec3(-m_Pitch, -m_Yaw, 0.0f));
 	}
 
 	void EditorCamera::UpdateProjection()
@@ -27,12 +30,22 @@ namespace OP
 		m_Projection = glm::perspective(glm::radians(m_FOV), m_AspectRatio, m_NearClip, m_FarClip);
 	}
 
-	void EditorCamera::UpdateView()
+	void EditorCamera::UpdateView(Timestep ts)
 	{
-		m_Position = CalculatePosition();
+		//m_Position = CalculatePosition();
+		float interpolationVal = std::clamp(m_SmoothTransitionTime * ts, 0.0f, 1.0f);
 
-		glm::quat orientation = GetOrientation();
-		m_ViewMatrix = glm::translate(glm::mat4(1.0f), m_Position) * glm::toMat4(orientation);
+		m_FocalPoint = glm::mix(m_FocalPoint, m_TargetFocalPoint, interpolationVal);
+		m_Yaw = m_Yaw * (1 - interpolationVal) + m_TargetYaw * interpolationVal;
+		m_Pitch = m_Pitch * (1 - interpolationVal) + m_TargetPitch * interpolationVal;
+		m_Distance = m_Distance * (1 - interpolationVal) + m_TargetDistance * interpolationVal;
+
+		m_Orientation = GetOrientation();
+		m_Position = m_FocalPoint - GetForwardDirection() * m_Distance;
+
+		
+
+		m_ViewMatrix = glm::translate(glm::mat4(1.0f), m_Position) * glm::toMat4(m_Orientation);
 		m_ViewMatrix = glm::inverse(m_ViewMatrix);
 	}
 
@@ -79,7 +92,7 @@ namespace OP
 				MouseZoom(delta.y);
 		}
 
-		UpdateView();
+		UpdateView(ts);
 	}
 
 	void EditorCamera::OnEvent(Event& e)
@@ -92,7 +105,7 @@ namespace OP
 	{
 		float delta = e.GetYOffset() * 0.1f;
 		MouseZoom(delta);
-		UpdateView();
+		//UpdateView();
 		return false;
 	}
 
@@ -100,40 +113,52 @@ namespace OP
 	void EditorCamera::MousePan(const glm::vec2& delta)
 	{
 		auto [xSpeed, ySpeed] = PanSpeed();
-		m_FocalPoint += -GetRightDirection() * delta.x * xSpeed * m_Distance;
-		m_FocalPoint += GetUpDirection() * delta.y * ySpeed * m_Distance;
+		//m_FocalPoint += -GetRightDirection() * delta.x * xSpeed * m_Distance;
+		//m_FocalPoint += GetUpDirection() * delta.y * ySpeed * m_Distance;
+		m_TargetFocalPoint += -GetRightDirection() * delta.x * xSpeed * m_TargetDistance;
+		m_TargetFocalPoint += GetUpDirection() * delta.y * ySpeed * m_TargetDistance;
 	}
 
 	void EditorCamera::MouseRotate(const glm::vec2 delta)
 	{
 		float yawSign = GetUpDirection().y < 0 ? -1.0f : 1.0f;
-		m_Yaw += yawSign * delta.x * RotationSpeed();
-		m_Pitch += delta.y * RotationSpeed();
+		//m_Yaw += yawSign * delta.x * RotationSpeed();
+		//m_Pitch += delta.y * RotationSpeed();
+
+		m_TargetYaw   += yawSign * delta.x * RotationSpeed();
+		m_TargetPitch += delta.y * RotationSpeed();
 	}
 
 	void EditorCamera::MouseZoom(float delta)
 	{
-		m_Distance -= delta * ZoomSpeed();
-		if (m_Distance < 1.0f)
-		{
+		// m_Distance -= delta * ZoomSpeed();
+		// if (m_Distance < 1.0f)
+		//{
 			//m_FocalPoint += GetForwardDirection();
-			m_Distance = 1.0f;
+			//m_Distance = 1.0f;
+		//}
+
+		m_TargetDistance -= delta * ZoomSpeed();
+		if (m_TargetDistance < 1.0f)
+		{
+			// m_TargetFocalPoint += GetForwardDirection();
+			m_TargetDistance = 1.0f;
 		}
 	}
 
 	glm::vec3 EditorCamera::GetUpDirection() const
 	{
-		return glm::rotate(GetOrientation(), glm::vec3(0.0f, 1.0f, 0.0f));
+		return glm::rotate(m_Orientation, glm::vec3(0.0f, 1.0f, 0.0f));
 	}
 
 	glm::vec3 EditorCamera::GetRightDirection() const
 	{
-		return glm::rotate(GetOrientation(), glm::vec3(1.0f, 0.0f, 0.0f));
+		return glm::rotate(m_Orientation, glm::vec3(1.0f, 0.0f, 0.0f));
 	}
 
 	glm::vec3 EditorCamera::GetForwardDirection() const
 	{
-		return glm::rotate(GetOrientation(), glm::vec3(0.0f, 0.0f, -1.0f));
+		return glm::rotate(m_Orientation, glm::vec3(0.0f, 0.0f, -1.0f));
 	}
 
 	glm::vec3 EditorCamera::CalculatePosition() const
@@ -144,6 +169,21 @@ namespace OP
 	glm::quat EditorCamera::GetOrientation() const
 	{
 		return glm::quat(glm::vec3(-m_Pitch, -m_Yaw, 0.0f));
+	}
+
+	glm::vec3 EditorCamera::CalculateTargetPosition() const
+	{
+		return m_TargetFocalPoint - GetTargetForwardDirection() * m_TargetDistance;
+	}
+
+	glm::vec3 EditorCamera::GetTargetForwardDirection() const
+	{
+		return glm::rotate(GetTargetOrientation(), glm::vec3(0.0f, 0.0f, -1.0f));
+	}
+
+	glm::quat EditorCamera::GetTargetOrientation() const
+	{
+		return glm::quat(glm::vec3(-m_TargetPitch, -m_TargetYaw, 0.0f));
 	}
 
 

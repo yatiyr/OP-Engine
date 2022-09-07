@@ -121,6 +121,7 @@ namespace OP
 		comp.FrustaDistFactor = 2.0f;
 
 		m_SceneGraph.SetContext(m_ActiveScene);
+		m_ViewportComponent.SetContext(m_ActiveScene);
 
 		m_SceneGraph.SetViewportComponent(m_ViewportComponent);
 
@@ -576,6 +577,7 @@ namespace OP
 		m_ActiveScene = CreateRef<Scene>();
 		m_ActiveScene->OnViewportResize((uint32_t)m_ViewportComponent.m_ViewportSize.x, (uint32_t)m_ViewportComponent.m_ViewportSize.y);
 		m_SceneGraph.SetContext(m_ActiveScene);
+		m_ViewportComponent.SetContext(m_ActiveScene);
 		SceneRenderer::ChangeEnvironmentMap(m_ActiveScene->GetSkybox());
 		SceneRenderer::SetHdr(m_ActiveScene->GetToneMap());
 		SceneRenderer::SetExposure(m_ActiveScene->GetExposure());
@@ -611,7 +613,7 @@ namespace OP
 			m_EditorScene = newScene;
 			m_EditorScene->OnViewportResize((uint32_t)m_ViewportComponent.m_ViewportSize.x, (uint32_t)m_ViewportComponent.m_ViewportSize.y);
 			m_SceneGraph.SetContext(m_EditorScene);
-
+			m_ViewportComponent.SetContext(m_EditorScene);
 			m_ActiveScene = m_EditorScene;
 			SceneRenderer::ChangeEnvironmentMap(m_ActiveScene->GetSkybox());
 			SceneRenderer::SetHdr(m_ActiveScene->GetToneMap());

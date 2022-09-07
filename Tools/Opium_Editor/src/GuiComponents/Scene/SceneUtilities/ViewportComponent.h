@@ -28,6 +28,8 @@ namespace OP
 
 		glm::vec2 GetViewportSize() { return m_ViewportSize; }
 
+		void SetContext(Ref<Scene> scene) { m_Context = scene; }
+
 	private:
 		void HandleDragAndDrop();
 		void HandleImGuizmo();
