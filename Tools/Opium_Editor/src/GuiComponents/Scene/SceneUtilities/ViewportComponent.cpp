@@ -44,7 +44,7 @@ namespace OP
 
 	void ViewportComponent::ChangeSelection(Entity newSelection)
 	{
-		if (m_SelectionContext && m_SelectionContext.GetScene() == newSelection.GetScene() && m_SelectionContext.HasComponent<OutlineComponent>())
+		if (m_Context->IsValid(m_SelectionContext) && m_SelectionContext && m_SelectionContext != newSelection && m_SelectionContext.GetScene() == newSelection.GetScene() && m_SelectionContext.HasComponent<OutlineComponent>())
 			m_SelectionContext.RemoveComponent<OutlineComponent>();
 		m_SelectionContext = newSelection;
 		m_SelectionContext.AddOrReplaceComponent<OutlineComponent>();
@@ -52,7 +52,7 @@ namespace OP
 
 	void ViewportComponent::SetSelectionContext(Entity entity)
 	{
-		if (m_SelectionContext && m_SelectionContext.GetScene() == entity.GetScene() && m_SelectionContext.HasComponent<OutlineComponent>())
+		if (m_Context->IsValid(m_SelectionContext) && m_SelectionContext && m_SelectionContext != entity && m_SelectionContext.GetScene() == entity.GetScene() && m_SelectionContext.HasComponent<OutlineComponent>())
 			m_SelectionContext.RemoveComponent<OutlineComponent>();
 		m_SelectionContext = entity;
 	}
@@ -84,7 +84,7 @@ namespace OP
 		{
 			if (m_ViewportHovered && !ImGuizmo::IsOver() && !Input::IsKeyPressed(KeyCode::LeftAlt))
 			{
-				if(m_SelectionContext && m_SelectionContext.GetScene() == m_Context.get() && m_SelectionContext.HasComponent<OutlineComponent>())
+				if(m_Context->IsValid(m_SelectionContext) && m_SelectionContext && m_SelectionContext.GetScene() == m_Context.get() && m_SelectionContext.HasComponent<OutlineComponent>())
 					m_SelectionContext.RemoveComponent<OutlineComponent>();
 				EditorLayer::GetEditor()->SetSelectedEntity();
 			}

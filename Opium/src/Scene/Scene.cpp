@@ -96,6 +96,11 @@ namespace OP
 		return m_Exposure;
 	}
 
+	bool Scene::IsValid(Entity entity)
+	{		
+		return m_Registry.valid(entt::entity(entity));
+	}
+
 	template<typename Component>
 	static void CopyComponent(entt::registry& dst, entt::registry& src, const std::unordered_map<UUID, entt::entity>& enttMap)
 	{

@@ -71,6 +71,9 @@ namespace OP
 		void SetSceneName(std::string name);
 
 		entt::registry m_Registry;
+
+		bool IsValid(Entity entity);
+
 	private:
 		template<typename T>
 		void OnComponentAdded(Entity entity, T& component);

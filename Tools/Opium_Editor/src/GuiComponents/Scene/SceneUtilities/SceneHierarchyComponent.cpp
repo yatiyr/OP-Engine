@@ -167,7 +167,7 @@ namespace OP
 
 	void SceneHierarchyComponent::SetSelectedEntity(Entity entity)
 	{
-		if (m_SelectionContext && m_SelectionContext.HasComponent<OutlineComponent>())
+		if (m_SelectionContext && m_SelectionContext != entity && m_SelectionContext.HasComponent<OutlineComponent>())
 			m_SelectionContext.RemoveComponent<OutlineComponent>();
 		m_SelectionContext = entity;
 	}
@@ -192,7 +192,7 @@ namespace OP
 		bool opened = ImGui::TreeNodeEx((void*)(uint64_t)(uint32_t)entity, flags, tag.c_str());
 		if (ImGui::IsItemClicked())
 		{
-			if (m_SelectionContext && m_SelectionContext.GetScene() == entity.GetScene() && m_SelectionContext.HasComponent<OutlineComponent>())
+			if (m_SelectionContext && m_SelectionContext != entity && m_SelectionContext.GetScene() == entity.GetScene() && m_SelectionContext.HasComponent<OutlineComponent>())
 				m_SelectionContext.RemoveComponent<OutlineComponent>();
 			m_SelectionContext = entity;
 			m_ViewportComponent.ChangeSelection(m_SelectionContext);
