@@ -27,6 +27,9 @@ namespace OP
 		virtual float GetTime() const override;
 
 		virtual float GetDpiScale() const override;
+
+		virtual void HideMouseCursor() const override;
+		virtual void ShowMouseCursor() const override;
 	private:
 		virtual void Init(const WinProperties& props);
 		virtual void Shutdown();

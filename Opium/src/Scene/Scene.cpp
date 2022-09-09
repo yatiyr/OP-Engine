@@ -403,6 +403,7 @@ namespace OP
 			spec.Origin      = btVector3(translation.x, translation.y, translation.z);
 
 			spec.ContactResponse = physics3DCollider.ContactResponse;
+			spec.IsKinematic = physics3DMaterial.IsKinematic;
 
 			Entity* entityPointer = new Entity(entity, this);
 
@@ -456,7 +457,7 @@ namespace OP
 
 				btTransform transform;
 				mS->getWorldTransform(transform);
-
+				
 				btVector3 origin = transform.getOrigin();
 				btQuaternion rot = transform.getRotation();
 				

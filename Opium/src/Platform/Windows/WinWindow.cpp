@@ -197,5 +197,15 @@ namespace OP
 		return xscale;
 	}
 
+	void WinWindow::HideMouseCursor() const
+	{
+		glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	}
+
+	void WinWindow::ShowMouseCursor() const
+	{
+		glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+	}
+
 
 }

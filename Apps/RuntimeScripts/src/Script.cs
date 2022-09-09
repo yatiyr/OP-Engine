@@ -70,9 +70,37 @@ internal class Script : Entity
         {
             pC.LinearVelocity = new Vec3(0.0f, 10.5f, 0.0f);
         }
+
+        if(OP.Input.IsKeyPressed(KeyCode.C))
+        {
+            OP.Window.HideCursor();
+        }
+
+        if (OP.Input.IsKeyPressed(KeyCode.V))
+        {
+            OP.Window.ShowCursor();
+        }
         // tC.Translation = new Vec3(5.0f, 5.0f, 5.0f);
         // Console.WriteLine(tC.Translation.x);
         //SetTransform(newTransform);
+
+        if(OP.Input.IsMouseButtonPressed(MouseButtonCode.ButtonLeft))
+        {
+            (float x, float y) = OP.Window.GetMousePos();
+            Console.WriteLine("MousePos: {0} {1}", x, y);
+        }
+
+        if (OP.Input.IsMouseButtonPressed(MouseButtonCode.ButtonMiddle))
+        {
+            (float x, float y) = OP.Window.GetMousePos();
+            Console.WriteLine("MousePos: {0} {1}", x, y);
+        }
+
+        if (OP.Input.IsMouseButtonPressed(MouseButtonCode.ButtonRight))
+        {
+            (float x, float y) = OP.Window.GetMousePos();
+            Console.WriteLine("MousePos: {0} {1}", x, y);
+        }
     }
 }
 

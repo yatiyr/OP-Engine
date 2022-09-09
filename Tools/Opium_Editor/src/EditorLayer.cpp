@@ -553,6 +553,23 @@ namespace OP
 				break;
 			}
 
+			case Key::F:
+			{
+				if (m_ViewportComponent.m_SelectionContext && m_ActiveScene->IsValid(m_ViewportComponent.m_SelectionContext))
+				{
+					auto& tC = m_ViewportComponent.m_SelectionContext.GetComponent<TransformComponent>();
+					glm::vec3 selectedEntityPosition = tC.Translation;
+					m_EditorCamera.FocusOn(selectedEntityPosition);
+				}
+				break;
+			}
+
+			case Key::G:
+			{
+				m_EditorCamera.FocusOn(glm::vec3(0.0f, 0.0f, 0.0f));
+				break;
+			}
+
 			// Gizmo stuff
 			case Key::Q:
 				m_GizmoType = -1;

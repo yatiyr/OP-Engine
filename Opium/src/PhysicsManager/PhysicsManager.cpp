@@ -159,6 +159,10 @@ namespace OP
 			                                                btCollisionObject::CF_NO_CONTACT_RESPONSE);
 		}
 
+		if (spec.IsKinematic)
+		{
+			rB->setCollisionFlags(rB->getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT);
+		}
 
 		rB->setUserPointer(EntityPointer);
 

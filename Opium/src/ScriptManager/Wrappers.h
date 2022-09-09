@@ -2,6 +2,7 @@
 
 #include <ScriptManager/ScriptManager.h>
 #include <Input/KeyCodes.h>
+#include <Input/MouseButtonCodes.h>
 
 #include <glm/glm.hpp>
 
@@ -19,13 +20,19 @@ namespace OP
 	{
 
 		// Input wrapper
-		bool Opium_Input_IsKeyPressed(KeyCode key);
+		bool OP_Input_IsKeyPressed(KeyCode key);
+		bool OP_Input_IsMouseButtonPressed(MouseButtonCode mouseCode);
+
+		// Cursor settings
+		void OP_HideCursor();
+		void OP_ShowCursor();
+		void OP_GetMousePos(float* x, float* y);
 
 		// Entity
-		void Opium_Entity_GetTransform(uint32_t sceneID, uint32_t entityID, glm::mat4* outTransform);
-		void Opium_Entity_SetTransform(uint32_t sceneID, uint32_t entityID, glm::mat4* inTransform);
-		void Opium_Entity_CreateComponent(uint32_t sceneID, uint32_t entityID, void* type);
-		bool Opium_Entity_HasComponent(uint32_t sceneID, uint32_t entityID, void* type);
+		void OP_Entity_GetTransform(uint32_t sceneID, uint32_t entityID, glm::mat4* outTransform);
+		void OP_Entity_SetTransform(uint32_t sceneID, uint32_t entityID, glm::mat4* inTransform);
+		void OP_Entity_CreateComponent(uint32_t sceneID, uint32_t entityID, void* type);
+		bool OP_Entity_HasComponent(uint32_t sceneID, uint32_t entityID, void* type);
 
 		// Transform Component
 		void OP_Get_Transform(uint32_t sceneID, uint32_t entityID, glm::mat4* outTransform);
@@ -76,7 +83,6 @@ namespace OP
 		void OP_ApplyTorqueImpulse(uint32_t sceneID, uint32_t entityID, float tX, float tY, float tZ);
 		void OP_ClearForces(uint32_t sceneID, uint32_t entityID);
 
-		
 		
 	}
 }

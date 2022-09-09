@@ -40,6 +40,9 @@ namespace OP
 
 		virtual float GetDpiScale() const = 0;
 
+		virtual void HideMouseCursor() const = 0;
+		virtual void ShowMouseCursor() const = 0;
+
 		static Window* Create(const WinProperties& props = WinProperties());
 	};
 }

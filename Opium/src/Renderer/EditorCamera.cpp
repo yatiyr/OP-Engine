@@ -181,6 +181,11 @@ namespace OP
 		return glm::rotate(GetTargetOrientation(), glm::vec3(0.0f, 0.0f, -1.0f));
 	}
 
+	void EditorCamera::FocusOn(glm::vec3 pos)
+	{
+		m_TargetFocalPoint = pos;
+	}
+
 	glm::quat EditorCamera::GetTargetOrientation() const
 	{
 		return glm::quat(glm::vec3(-m_TargetPitch, -m_TargetYaw, 0.0f));

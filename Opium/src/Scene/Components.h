@@ -107,6 +107,7 @@ namespace OP
 			{
 				globalTransformation = GetTransform();
 				globalTransformationInv = glm::inverse(globalTransformation);
+				Math::DecomposeTransform(globalTransformation, Translation, Rotation, Scale);
 				computeLocalTransform(parentGlobalTransformInv);
 				dirty = false;
 			}
@@ -322,6 +323,8 @@ namespace OP
 		float SpinningFriction = 0.1f;
 		float Restitution = 0.5f;
 
+		bool IsKinematic = false;
+
 		bool FixRotX = false;
 		bool FixRotY = false;
 		bool FixRotZ = false;
@@ -334,6 +337,23 @@ namespace OP
 				rB->setAngularFactor(btVector3(FixRotX ? 0.0f : 1.0f,
 											   FixRotY ? 0.0f : 1.0f,
 									           FixRotZ ? 0.0f : 1.0f));
+			}
+		}
+
+		void OnIsKinematicChanged()
+		{
+			if (RuntimeBody != nullptr)
+			{
+				btRigidBody* rB = (btRigidBody*)RuntimeBody;
+				
+				if (IsKinematic)
+				{
+					rB->setCollisionFlags(rB->getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT);
+				}
+				else
+				{
+					rB->setCollisionFlags(rB->getCollisionFlags() & ~btCollisionObject::CF_KINEMATIC_OBJECT);
+				}
 			}
 		}
 

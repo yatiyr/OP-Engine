@@ -841,6 +841,10 @@ namespace OP
 				{
 					component.OnRestitutionChanged();
 				}
+				if (ImGui::Checkbox("IsKinematic", &component.IsKinematic))
+				{
+					component.OnIsKinematicChanged();
+				}
 				if (ImGui::Checkbox("FixRotX", &component.FixRotX))
 				{
 					component.OnFixRotChanged();
@@ -849,7 +853,7 @@ namespace OP
 				{
 					component.OnFixRotChanged();
 				}
-				if (ImGui::Checkbox("FixRotY", &component.FixRotZ))
+				if (ImGui::Checkbox("FixRotZ", &component.FixRotZ))
 				{
 					component.OnFixRotChanged();
 				}
@@ -1042,7 +1046,7 @@ namespace OP
 					else if (pField->Type == FieldType::Vec3)
 					{
 						glm::vec3 val = pField->GetValue<glm::vec3>();
-						if (ImGui::DragFloat2(name.c_str(), glm::value_ptr(val)))
+						if (ImGui::DragFloat3(name.c_str(), glm::value_ptr(val)))
 						{
 							pField->SetValue<glm::vec3>(val);
 						}
@@ -1050,7 +1054,7 @@ namespace OP
 					else if (pField->Type == FieldType::Vec4)
 					{
 						glm::vec4 val = pField->GetValue<glm::vec4>();
-						if (ImGui::DragFloat2(name.c_str(), glm::value_ptr(val)))
+						if (ImGui::DragFloat4(name.c_str(), glm::value_ptr(val)))
 						{
 							pField->SetValue<glm::vec4>(val);
 						}

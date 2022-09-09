@@ -1,0 +1,422 @@
+Scene: Unitled
+Skybox: space
+ToneMap: false
+Exposure: 2
+Entities:
+  - Entity: 10486551997322121513
+    TagComponent:
+      Tag: Sensor
+    RootComponent:
+      Root: false
+    RelationshipComponent:
+      Children: 0
+      Parent: 8072189314744262193
+      First: 4906265728962551905
+      Prev: 17369128672725398990
+      Next: 18446744073709551615
+    TransformComponent:
+      Translation: [-0.880220175, 1.09667778, -1.57582927]
+      Rotation: [0, -0, 0]
+      Scale: [0.0500000119, 0.0500000119, 0.0500000119]
+    Physics3DMaterialComponent:
+      Mass: 0
+      Friction: 0.100000001
+      RollingFriction: 0.100000001
+      SpinningFriction: 0.100000001
+      Restitution: 0.5
+      FixRotX: false
+      FixRotY: false
+      FixRotZ: false
+    Physics3DColliderComponent:
+      Shape: 1
+      Radius: 1
+      ContactResponse: false
+  - Entity: 8072189314744262193
+    TagComponent:
+      Tag: Robot
+    RootComponent:
+      Root: true
+    RelationshipComponent:
+      Children: 0
+      Parent: 1750268815327874538
+      First: 10486551997322121513
+      Prev: 4423923469447831560
+      Next: 5761229169376310807
+    TransformComponent:
+      Translation: [-0.880220175, 1.09667778, -1.57582927]
+      Rotation: [0, 0, 0]
+      Scale: [0.0500000119, 0.0500000119, 0.0500000119]
+    Physics3DMaterialComponent:
+      Mass: 1
+      Friction: 0.100000001
+      RollingFriction: 0.100000001
+      SpinningFriction: 0.100000001
+      Restitution: 2
+      FixRotX: false
+      FixRotY: false
+      FixRotZ: false
+    Physics3DColliderComponent:
+      Shape: 1
+      Radius: 1
+      ContactResponse: true
+    MeshComponent:
+      MeshName: Icosphere_s0_flat
+    MaterialComponent:
+      MaterialName: DefaultPbr
+      TilingFactor: 1
+      HeightFactor: 0
+      ClipBorder: false
+      FloatValues:
+        roughness: 0.5
+        metalness: 0.100000001
+      Float2Values:
+        {}
+      Float3Values:
+        albedo: [1, 1, 1]
+      IntValues:
+        {}
+      Textures:
+        albedoMap: WhiteTexture
+        roughnessMap: WhiteTexture
+        metalnessMap: WhiteTexture
+        aoMap: WhiteTexture
+        normalMap: DefaultNormalMap
+        heightMap: WhiteTexture
+  - Entity: 17080284192505496026
+    TagComponent:
+      Tag: RedLight
+    RootComponent:
+      Root: true
+    RelationshipComponent:
+      Children: 0
+      Parent: 7916460111353855847
+      First: 17603888390488959339
+      Prev: 7987442533402128876
+      Next: 2567988607881791341
+    TransformComponent:
+      Translation: [-4.4215889, 1.81952405, 3.99402547]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    PointLightComponent:
+      Color: [1, 0, 0]
+      Intensity: 5
+      NearDist: 0.00999999978
+      FarDist: 100
+      Kq: 0.00749999983
+      Kl: 0.0450000018
+      CastShadows: false
+  - Entity: 7625109848921045424
+    TagComponent:
+      Tag: Empty Entity
+    RootComponent:
+      Root: true
+    RelationshipComponent:
+      Children: 0
+      Parent: 14971100190074562644
+      First: 18280862374195831820
+      Prev: 10056152845551215605
+      Next: 162049138679676481
+    TransformComponent:
+      Translation: [2.0230248, 5.77179146, 1.09889817]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    PointLightComponent:
+      Color: [0.982915699, 0.808654606, 0.0145534333]
+      Intensity: 10
+      NearDist: 0.00999999978
+      FarDist: 100
+      Kq: 0.00749999983
+      Kl: 0.0450000018
+      CastShadows: false
+  - Entity: 437782425857255374
+    TagComponent:
+      Tag: WhiteLight
+    RootComponent:
+      Root: true
+    RelationshipComponent:
+      Children: 0
+      Parent: 15784649151439720348
+      First: 4078980218385808677
+      Prev: 7349066208289212866
+      Next: 6651863303063920722
+    TransformComponent:
+      Translation: [-3.02249289, 5.66715765, -1.76296997]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    PointLightComponent:
+      Color: [1, 1, 1]
+      Intensity: 10
+      NearDist: 0.00999999978
+      FarDist: 100
+      Kq: 0.00749999983
+      Kl: 0.0450000018
+      CastShadows: false
+  - Entity: 3404570303186834284
+    TagComponent:
+      Tag: BlueLight
+    RootComponent:
+      Root: true
+    RelationshipComponent:
+      Children: 0
+      Parent: 16362023782246289403
+      First: 7733004990755338636
+      Prev: 6848619372373325232
+      Next: 13668284648637161114
+    TransformComponent:
+      Translation: [3.04460526, 1.8194828, -3.94190097]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    PointLightComponent:
+      Color: [0, 0.719817877, 1]
+      Intensity: 5
+      NearDist: 0.00999999978
+      FarDist: 100
+      Kq: 0.00749999983
+      Kl: 0.0450000018
+      CastShadows: false
+  - Entity: 1688373599669379570
+    TagComponent:
+      Tag: Cylinder
+    RootComponent:
+      Root: false
+    RelationshipComponent:
+      Children: 0
+      Parent: 5763252420250193133
+      First: 15576778810050983678
+      Prev: 15910205780048681571
+      Next: 8454309630862540035
+    TransformComponent:
+      Translation: [-2.04509449, 2.52697754, 2.14637947]
+      Rotation: [0, 0, 0]
+      Scale: [0.200000003, 5, 0.200000003]
+    MeshComponent:
+      MeshName: Cylinder
+    MaterialComponent:
+      MaterialName: DefaultPbr
+      TilingFactor: 1
+      HeightFactor: 0
+      ClipBorder: false
+      FloatValues:
+        roughness: 0.5
+        metalness: 0.100000001
+      Float2Values:
+        {}
+      Float3Values:
+        albedo: [1, 1, 1]
+      IntValues:
+        {}
+      Textures:
+        albedoMap: WhiteTexture
+        roughnessMap: WhiteTexture
+        metalnessMap: WhiteTexture
+        aoMap: WhiteTexture
+        normalMap: DefaultNormalMap
+        heightMap: WhiteTexture
+  - Entity: 15998852534555394822
+    TagComponent:
+      Tag: Cylinder
+    RootComponent:
+      Root: false
+    RelationshipComponent:
+      Children: 0
+      Parent: 2841908824686402200
+      First: 17193128217835882557
+      Prev: 2626309694375727072
+      Next: 10362567546076833334
+    TransformComponent:
+      Translation: [-0.075776875, 2.52686071, 0.332616806]
+      Rotation: [0, -0, 0]
+      Scale: [0.200000003, 5, 0.200000003]
+    MeshComponent:
+      MeshName: Cylinder
+    MaterialComponent:
+      MaterialName: DefaultPbr
+      TilingFactor: 1
+      HeightFactor: 0
+      ClipBorder: false
+      FloatValues:
+        roughness: 0.5
+        metalness: 0.100000001
+      Float2Values:
+        {}
+      Float3Values:
+        albedo: [1, 1, 1]
+      IntValues:
+        {}
+      Textures:
+        albedoMap: WhiteTexture
+        roughnessMap: WhiteTexture
+        metalnessMap: WhiteTexture
+        aoMap: WhiteTexture
+        normalMap: DefaultNormalMap
+        heightMap: WhiteTexture
+  - Entity: 2841908824686402200
+    TagComponent:
+      Tag: Obstacle
+    RootComponent:
+      Root: true
+    RelationshipComponent:
+      Children: 0
+      Parent: 10418741093947281735
+      First: 15998852534555394822
+      Prev: 569934191743386968
+      Next: 13486899343153744423
+    TransformComponent:
+      Translation: [-0.075776875, 2.54555702, 0.332616806]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    Physics3DMaterialComponent:
+      Mass: 0
+      Friction: 0.100000001
+      RollingFriction: 0.100000001
+      SpinningFriction: 0.100000001
+      Restitution: 0.5
+      FixRotX: false
+      FixRotY: false
+      FixRotZ: false
+    Physics3DColliderComponent:
+      Shape: 2
+      ContactResponse: false
+  - Entity: 1129865988567280456
+    TagComponent:
+      Tag: Cylinder
+    RootComponent:
+      Root: false
+    RelationshipComponent:
+      Children: 0
+      Parent: 1880751475188154543
+      First: 18347350147681081740
+      Prev: 1914005689979947171
+      Next: 4585422345606730080
+    TransformComponent:
+      Translation: [1.98150337, 2.52698278, -1.53156376]
+      Rotation: [0, -0, 0]
+      Scale: [0.200000003, 5, 0.200000003]
+    MeshComponent:
+      MeshName: Cylinder
+    MaterialComponent:
+      MaterialName: DefaultPbr
+      TilingFactor: 1
+      HeightFactor: 0
+      ClipBorder: false
+      FloatValues:
+        roughness: 0.5
+        metalness: 0.100000001
+      Float2Values:
+        {}
+      Float3Values:
+        albedo: [1, 1, 1]
+      IntValues:
+        {}
+      Textures:
+        albedoMap: WhiteTexture
+        roughnessMap: WhiteTexture
+        metalnessMap: WhiteTexture
+        aoMap: WhiteTexture
+        normalMap: DefaultNormalMap
+        heightMap: WhiteTexture
+  - Entity: 1880751475188154543
+    TagComponent:
+      Tag: Obstacle
+    RootComponent:
+      Root: true
+    RelationshipComponent:
+      Children: 0
+      Parent: 12477388288779239890
+      First: 1129865988567280456
+      Prev: 7203448056337620583
+      Next: 1898100055844725843
+    TransformComponent:
+      Translation: [1.98150337, 2.54567909, -1.53156376]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    Physics3DMaterialComponent:
+      Mass: 0
+      Friction: 0.100000001
+      RollingFriction: 0.100000001
+      SpinningFriction: 0.100000001
+      Restitution: 0.5
+      FixRotX: false
+      FixRotY: false
+      FixRotZ: false
+    Physics3DColliderComponent:
+      Shape: 2
+      ContactResponse: false
+  - Entity: 12465135155371202758
+    TagComponent:
+      Tag: Ground
+    RootComponent:
+      Root: true
+    RelationshipComponent:
+      Children: 0
+      Parent: 10094851485135108591
+      First: 18446744073709551615
+      Prev: 15642955641534345799
+      Next: 577111348394669602
+    TransformComponent:
+      Translation: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [10, 0.107246771, 10]
+    Physics3DMaterialComponent:
+      Mass: 0
+      Friction: 0.100000001
+      RollingFriction: 0.100000001
+      SpinningFriction: 0.100000001
+      Restitution: 0.5
+      FixRotX: false
+      FixRotY: false
+      FixRotZ: false
+    Physics3DColliderComponent:
+      Shape: 0
+      Scale: [1, 1, 10]
+      ContactResponse: true
+    MeshComponent:
+      MeshName: Cube
+    MaterialComponent:
+      MaterialName: DefaultPbr
+      TilingFactor: 1
+      HeightFactor: 0
+      ClipBorder: false
+      FloatValues:
+        roughness: 0.5
+        metalness: 0.100000001
+      Float2Values:
+        {}
+      Float3Values:
+        albedo: [1, 1, 1]
+      IntValues:
+        {}
+      Textures:
+        albedoMap: WhiteTexture
+        roughnessMap: WhiteTexture
+        metalnessMap: WhiteTexture
+        aoMap: WhiteTexture
+        normalMap: DefaultNormalMap
+        heightMap: WhiteTexture
+  - Entity: 5763252420250193133
+    TagComponent:
+      Tag: Obstacle
+    RootComponent:
+      Root: true
+    RelationshipComponent:
+      Children: 0
+      Parent: 3571658494119807948
+      First: 1688373599669379570
+      Prev: 6686736509991660966
+      Next: 2565825656724505902
+    TransformComponent:
+      Translation: [-2.04509449, 2.54567385, 2.14637947]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    Physics3DMaterialComponent:
+      Mass: 0
+      Friction: 0.100000001
+      RollingFriction: 0.100000001
+      SpinningFriction: 0.100000001
+      Restitution: 0.5
+      FixRotX: false
+      FixRotY: false
+      FixRotZ: false
+    Physics3DColliderComponent:
+      Shape: 2
+      ContactResponse: false

@@ -41,6 +41,25 @@ namespace OP
 				tC.computeModelMatrix();
 			}
 
+			bool hasPhysicsMaterial = HasComponent<Physics3DMaterial>();
+
+			if (hasPhysicsMaterial)
+			{
+				auto& physics3DMaterial = GetComponent<Physics3DMaterial>();
+				btMotionState* mS = (btMotionState*)physics3DMaterial.RuntimeMotionState;
+
+				if (mS)
+				{
+					btTransform transform;
+					mS->getWorldTransform(transform);
+					transform.setOrigin(btVector3(tC.Translation.x, tC.Translation.y, tC.Translation.z));
+					glm::quat rot = glm::quat(tC.Rotation);
+					transform.setRotation(btQuaternion(rot.x, rot.y, rot.z, rot.w));
+					mS->setWorldTransform(transform);
+				}
+			}
+
+
 			Entity child = m_Scene->GetEntityWithUUID(relC.first);
 			while (entt::entity(child) != entt::null)
 			{

@@ -49,6 +49,7 @@ namespace OP
 		glm::vec3 CalculateTargetPosition() const;
 		glm::vec3 GetTargetForwardDirection() const;
 
+		void FocusOn(glm::vec3 pos);
 	private:
 		void UpdateProjection();
 		void UpdateView(Timestep ts);

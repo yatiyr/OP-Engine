@@ -359,9 +359,9 @@ namespace OP
 			case MONO_TYPE_VALUETYPE:
 			{
 				char* name = mono_type_get_name(monoType);
-				if (strcmp(name, "Opium.Vector2") == 0) return FieldType::Vec2;
-				if (strcmp(name, "Opium.Vector3") == 0) return FieldType::Vec3;
-				if (strcmp(name, "Opium.Vector4") == 0) return FieldType::Vec4;
+				if (strcmp(name, "OP.Vec2") == 0) return FieldType::Vec2;
+				if (strcmp(name, "OP.Vec3") == 0) return FieldType::Vec3;
+				if (strcmp(name, "OP.Vec4") == 0) return FieldType::Vec4;
 			}
 		}
 

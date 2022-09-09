@@ -156,7 +156,7 @@ void main()
 		vec3  F   = FresnelSchlick(max(dot(halfwayDir, viewDir), 0.0), F0);
 
 		vec3 numerator = NDF * G * F;
-		float denominator = 4.0 * max(dot(normal, viewDir), 0.0) * max(dot(normal, lightDir), 0.0) + 0.001;
+		float denominator = 4.0 * max(dot(normal, viewDir), 0.0) * max(dot(normal, lightDir), 0.0) + 0.01;
 		vec3 specular = numerator / denominator;
 
 		vec3 kS = F;
@@ -206,7 +206,7 @@ void main()
 		vec3  F   = FresnelSchlick(max(dot(halfwayDir, viewDir), 0.0), F0);
 
 		vec3 numerator = NDF * G * F;
-		float denominator = 4.0 * max(dot(normal, viewDir), 0.0) * max(dot(normal, -lightDir), 0.0) + 0.001;
+		float denominator = 4.0 * max(dot(normal, viewDir), 0.0) * max(dot(normal, -lightDir), 0.0) + 0.01;
 		vec3 specular = numerator / denominator;
 
 		vec3 kS = F;
@@ -243,7 +243,7 @@ void main()
 		vec3  F   = FresnelSchlick(max(dot(halfwayDir, viewDir), 0.0), F0);
 
 		vec3 numerator = NDF * G * F;
-		float denominator = 4.0 * max(dot(normal, viewDir), 0.0) * max(dot(normal, lightDir), 0.0) + 0.001;
+		float denominator = 4.0 * max(dot(normal, viewDir), 0.0) * max(dot(normal, lightDir), 0.0) + 0.01;
 		vec3 specular = numerator / denominator;
 
 		vec3 kS = F;

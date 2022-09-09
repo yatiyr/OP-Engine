@@ -10,6 +10,8 @@
 #include <Input/Input.h>
 #include <mono/jit/jit.h>
 
+#include <Opium/Application.h>
+
 namespace OP
 {
 	//extern std::unordered_map<uint32_t, Scene*> s_ActiveScenes;
@@ -30,9 +32,14 @@ namespace OP
 
 
 		// Input Wrapper
-		bool Opium_Input_IsKeyPressed(KeyCode key)
+		bool OP_Input_IsKeyPressed(KeyCode key)
 		{
 			return Input::IsKeyPressed(key);
+		}
+
+		bool OP_Input_IsMouseButtonPressed(MouseButtonCode mouseCode)
+		{
+			return Input::IsMouseButtonPressed(mouseCode);
 		}
 
 		//////////////////////////////////// TRANSFORM COMPONENT WRAPPERS ///////////////////////////////////////////
@@ -383,10 +390,27 @@ namespace OP
 			btRigidBody* body = (btRigidBody*)physics3DMaterial.RuntimeBody;
 			body->clearForces();
 		}
+
+		void OP_HideCursor()
+		{
+			Application::Get().GetWindow().HideMouseCursor();
+		}
+
+		void OP_ShowCursor()
+		{
+			Application::Get().GetWindow().ShowMouseCursor();
+		}
+
+		void OP_GetMousePos(float* x, float* y)
+		{
+			auto [posX, posY] = Input::GetMousePos();
+			*x = posX;
+			*y = posY;
+		}
 		 
 		
 		// Entity wrappers
-		void Opium_Entity_GetTransform(uint32_t sceneID, uint32_t entityID, glm::mat4* outTransform)
+		void OP_Entity_GetTransform(uint32_t sceneID, uint32_t entityID, glm::mat4* outTransform)
 		{
 			Scene* scene = s_ActiveScene;
 			Entity entity((entt::entity)entityID, scene);
@@ -395,7 +419,7 @@ namespace OP
 			memcpy(outTransform, glm::value_ptr(transform), sizeof(glm::mat4));
 		}
 
-		void Opium_Entity_SetTransform(uint32_t sceneID, uint32_t entityID, glm::mat4* inTransform)
+		void OP_Entity_SetTransform(uint32_t sceneID, uint32_t entityID, glm::mat4* inTransform)
 		{
 			Scene* scene = s_ActiveScene;
 			Entity entity((entt::entity)entityID, scene);
@@ -406,7 +430,7 @@ namespace OP
 			memcpy(glm::value_ptr(newTransform), inTransform, sizeof(glm::mat4));
 		}
 
-		void Opium_Entity_CreateComponent(uint32_t sceneID, uint32_t entityID, void* type)
+		void OP_Entity_CreateComponent(uint32_t sceneID, uint32_t entityID, void* type)
 		{
 			MonoType* monoType = mono_reflection_type_get_type((MonoReflectionType*)type);
 
@@ -415,7 +439,7 @@ namespace OP
 			s_CreateComponentFuncs[monoType](entity);
 		}
 
-		bool Opium_Entity_HasComponent(uint32_t sceneID, uint32_t entityID, void* type)
+		bool OP_Entity_HasComponent(uint32_t sceneID, uint32_t entityID, void* type)
 		{
 			MonoType* monoType = mono_reflection_type_get_type((MonoReflectionType*)type);
 

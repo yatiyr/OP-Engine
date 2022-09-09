@@ -45,7 +45,13 @@ namespace OP
 	{
 		InitComponentTypes();
 
-		mono_add_internal_call("OP.Input::IsKeyPressed_Native", OP::Script::Opium_Input_IsKeyPressed);
+		mono_add_internal_call("OP.Input::IsKeyPressed_Native", OP::Script::OP_Input_IsKeyPressed);
+		mono_add_internal_call("OP.Input::IsMouseButtonPressed_Native", OP::Script::OP_Input_IsMouseButtonPressed);
+
+		////////////////////////////////// ARRANGE Window FUNCTIONS /////////////////////////////////////////////
+		mono_add_internal_call("OP.Window::ShowCursor_Native", OP::Script::OP_ShowCursor);
+		mono_add_internal_call("OP.Window::HideCursor_Native", OP::Script::OP_HideCursor);
+		mono_add_internal_call("OP.Window::GetMousePos_Native", OP::Script::OP_GetMousePos);
 
 		/////////////////////// ARRANGE TRANSFORM COMPONENT FUNCTIONS ///////////////////////////////////////////
 			mono_add_internal_call("OP.TransformComponent::GetTransform_Native",     OP::Script::OP_Get_Transform);
@@ -97,10 +103,10 @@ namespace OP
 
 
 		// OLD PART
-		mono_add_internal_call("OP.Entity::GetTransform_Native", OP::Script::Opium_Entity_GetTransform);
-		mono_add_internal_call("OP.Entity::SetTransform_Native", OP::Script::Opium_Entity_SetTransform);
-		mono_add_internal_call("OP.Entity::CreateComponent_Native", OP::Script::Opium_Entity_CreateComponent);
-		mono_add_internal_call("OP.Entity::HasComponent_Native", OP::Script::Opium_Entity_HasComponent);
+		mono_add_internal_call("OP.Entity::GetTransform_Native", OP::Script::OP_Entity_GetTransform);
+		mono_add_internal_call("OP.Entity::SetTransform_Native", OP::Script::OP_Entity_SetTransform);
+		mono_add_internal_call("OP.Entity::CreateComponent_Native", OP::Script::OP_Entity_CreateComponent);
+		mono_add_internal_call("OP.Entity::HasComponent_Native", OP::Script::OP_Entity_HasComponent);
 
 	
 	}

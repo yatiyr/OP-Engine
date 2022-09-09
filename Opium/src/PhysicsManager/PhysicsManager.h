@@ -35,7 +35,7 @@ namespace OP
 		btQuaternion Orientation;
 		btVector3 Origin;
 
-
+		bool IsKinematic = false;
 	};
 
 	struct PhysicsObject
