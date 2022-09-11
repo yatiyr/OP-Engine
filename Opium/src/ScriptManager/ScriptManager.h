@@ -22,17 +22,58 @@ namespace OP
 		None = 0, Float, Int, UnsignedInt, String, Vec2, Vec3, Vec4
 	};
 
-	static MonoMethod* GetMethod(MonoImage* coreImage, MonoImage* appImage, const std::string& methodDesc)
+	static MonoMethod* GetMethod(MonoImage* coreImage, MonoImage* appImage, const std::string& fullName, const std::string& methodDesc)
 	{
-		MonoMethodDesc* desc = mono_method_desc_new(methodDesc.c_str(), NULL);
+		std::string fullDesc = fullName + methodDesc;
+
+		MonoMethodDesc* desc = mono_method_desc_new(fullDesc.c_str(), NULL);
 		if (!desc) OP_ENGINE_ERROR("mono_method_desc_new has been failed");
 
 		MonoMethod* method = mono_method_desc_search_in_image(desc, appImage);
 		if (!method)
+		{
 			method = mono_method_desc_search_in_image(desc, coreImage);
-		if (!method) OP_ENGINE_ERROR("mono_method_desc_search_in_image has been failed");
+		}
+			
+		if (!method)
+		{
+			std::string baseDescStr = "Entity" + methodDesc;
+			MonoMethodDesc* baseDesc = mono_method_desc_new(baseDescStr.c_str(), NULL);
+			method = mono_method_desc_search_in_image(baseDesc, coreImage);
+		}
+		
+		if (!method)
+		{
+			OP_ENGINE_ERROR("mono_method_desc_search_in_image has been failed");
+		}
+		
 
 		return method;
+	}
+
+
+	static MonoMethod* SearchFromClassRecursive(MonoClass* monoClass, const std::string& methodDesc)
+	{
+		MonoClass* classIterator = monoClass;
+		MonoMethodDesc* desc;
+		MonoMethod* resultMethod = nullptr;
+
+		desc = mono_method_desc_new(methodDesc.c_str(), true);
+
+		while (classIterator != nullptr && resultMethod == nullptr)
+		{
+			resultMethod = mono_method_desc_search_in_class(desc, classIterator);
+			if (resultMethod == nullptr)
+			{
+				classIterator = mono_class_get_parent(classIterator);
+			}
+		}
+		mono_method_desc_free(desc);
+
+		if (!resultMethod)
+			OP_ENGINE_ERROR("mono_method_desc_search_in_class has been failed");
+
+		return resultMethod;
 	}
 
 	struct EntityStruct
@@ -64,11 +105,11 @@ namespace OP
 
 		void InitClassMethods(MonoImage* coreImage, MonoImage* appImage)
 		{
-			OnCreateMethod = GetMethod(coreImage, appImage, FullName + ":OnCreate()");
-			OnUpdateMethod = GetMethod(coreImage, appImage, FullName + ":OnUpdate(single)");
-			OnCollisionMethod = GetMethod(coreImage, appImage, FullName + ":OnCollision_Native(uint,uint,single,single,single)");
-			OnCollisionStartedMethod = GetMethod(coreImage, appImage, FullName + ":OnCollisionStarted_Native(uint,uint)");
-			OnCollisionEndedMethod = GetMethod(coreImage, appImage, FullName + ":OnCollisionEnded_Native(uint,uint)");
+			OnCreateMethod = SearchFromClassRecursive(Class, ":OnCreate()");
+			OnUpdateMethod = SearchFromClassRecursive(Class, ":OnUpdate(single)");
+			OnCollisionMethod = SearchFromClassRecursive(Class, ":OnCollision(uint,single,single,single)");
+			OnCollisionStartedMethod = SearchFromClassRecursive(Class, ":OnCollisionStarted(uint)");
+			OnCollisionEndedMethod = SearchFromClassRecursive(Class, ":OnCollisionEnded(uint)");
 		}
 
 	};

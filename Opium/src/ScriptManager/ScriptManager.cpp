@@ -129,7 +129,12 @@ namespace OP
 	static MonoObject* CallMethod(MonoObject* object, MonoMethod* method, void** params = nullptr)
 	{
 		MonoObject* pException = NULL;
-		MonoObject* result = mono_runtime_invoke(method, object, params, &pException);
+		MonoMethod* possibleMethod = method;
+
+		if (object)
+			possibleMethod = mono_object_get_virtual_method(object, possibleMethod);
+
+		MonoObject* result = mono_runtime_invoke(possibleMethod, object, params, &pException);
 		return result;
 	}
 
@@ -298,10 +303,9 @@ namespace OP
 				
 				float x = collisionPoint.x;
 				float y = collisionPoint.y;
-				float z = collisionPoint.z;
-				
-				
-				void* args[] = { &EntityID, &SceneID, &x, &y, &z};
+				float z = collisionPoint.z;			
+
+				void* args[] = { &EntityID, &x, &y, &z};
 				CallMethod(entity.GetInstance(), entity.ScriptClass->OnCollisionMethod, args);
 			}
 		}
@@ -321,7 +325,8 @@ namespace OP
 				uint32_t EntityID = otherEntityID;
 				uint32_t SceneID = 0; // for now TODO: Figure it out
 
-				void* args[] = { &EntityID, &SceneID };
+
+				void* args[] = { &EntityID };
 				CallMethod(entity.GetInstance(), entity.ScriptClass->OnCollisionStartedMethod, args);
 			}
 		}
@@ -340,7 +345,7 @@ namespace OP
 				uint32_t EntityID = otherEntityID;
 				uint32_t SceneID = 0; // for now TODO: Figure it out
 
-				void* args[] = { &EntityID, &SceneID };
+				void* args[] = { &EntityID };
 
 				CallMethod(entity.GetInstance(), entity.ScriptClass->OnCollisionEndedMethod, args);
 			}

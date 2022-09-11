@@ -28,21 +28,6 @@ internal class Script : Entity
         pC = GetComponent<Physics3DMaterial>();
     }
 
-    public void OnCollisionStarted(Entity otherEntity)
-    {
-        Console.WriteLine("CollisionStarted");
-    }
-
-    public void OnCollisionEnded(Entity otherEntity)
-    {
-        Console.WriteLine("CollisionEnded");
-    }
-
-    public void OnCollision(Entity otherEntity, Vec3 collisionPoint)
-    {
-        Console.WriteLine("Collision");
-    }
-
     public void ImScript()
     {
         Console.WriteLine("ImScript");

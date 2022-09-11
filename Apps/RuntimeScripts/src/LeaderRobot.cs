@@ -25,30 +25,15 @@ internal class LeaderRobot : Entity
         pC = GetComponent<Physics3DMaterial>();
         target = waypoint1;
 
-        Object child = GetChildEntity("Sensor");
+        Entity child = GetChildEntity("Sensor");
 
         Console.WriteLine(child.GetType().Name);
-        //sensor = (Script)child;
+        sensor = (Script)child;
 
         //Console.WriteLine(sensor.EntityID);
         //Console.WriteLine(sensor.SceneID);
-        //sensor.ImScript();
+        sensor.ImScript();
 
-    }
-
-    public void OnCollisionStarted(Entity otherEntity)
-    {
-        Console.WriteLine("CollisionStarted");
-    }
-
-    public void OnCollisionEnded(Entity otherEntity)
-    {
-        Console.WriteLine("CollisionEnded");
-    }
-
-    public void OnCollision(Entity otherEntity, Vec3 collisionPoint)
-    {
-        Console.WriteLine("Collision");
     }
 
 

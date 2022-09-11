@@ -273,14 +273,44 @@ namespace OP
 		{
 			Entity e = { entity, m_ActiveScene.get() };
 
-			auto tC = e.GetComponent<TransformComponent>();
+			auto tC = e.GetComponent<TransformComponent>();			
 			auto pC = view.get<Physics3DCollider>(entity);
 
 			if (pC.ShowCollider)
 			{
-				glm::mat4 model = tC.GetTransform();
-				model = glm::scale(model, pC.Scale);
-				m_CollisionShapeVisualizer->SetMat4(0, model);
+				auto pM = e.GetComponent<Physics3DMaterial>();
+
+				btRigidBody* rB = (btRigidBody*)pM.RuntimeBody;
+				if (rB)
+				{
+					btCollisionShape* cS = (btCollisionShape*)pC.RuntimeCollisionShape;
+					btVector3 localScaling = cS->getLocalScaling();
+
+					glm::mat4 model(1.0f);
+
+					btTransform transform;
+					transform = rB->getWorldTransform();
+
+					btVector3 origin = transform.getOrigin();
+					btQuaternion rot = transform.getRotation();
+
+					glm::vec3 rotEuler(0.0f);
+					transform.getRotation().getEulerZYX(rotEuler.z, rotEuler.y, rotEuler.x);
+
+					model = glm::translate(model, glm::vec3(origin.x(), origin.y(), origin.z()));
+					glm::mat4 rotation = glm::toMat4(glm::quat(rotEuler));
+					glm::vec3 lastScale = tC.Scale * glm::vec3(localScaling.x(), localScaling.y(), localScaling.z());
+
+					model = model * rotation * glm::scale(glm::mat4(1.0f), lastScale);
+					m_CollisionShapeVisualizer->SetMat4(0, model);
+				}
+				else
+				{
+					glm::mat4 model = tC.GetTransform();
+					model = model * glm::scale(glm::mat4(1.0f), pC.Scale);
+					m_CollisionShapeVisualizer->SetMat4(0, model);
+				}
+
 
 				// color of collision shape ->  RED
 				m_CollisionShapeVisualizer->SetFloat3(1, glm::vec3(1.0f, 0.0f, 0.0f));

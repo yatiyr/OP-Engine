@@ -16,52 +16,20 @@ namespace OP
         {
 
         }
-        void OnCollision_Native(uint EntityID, uint SceneID, float x, float y, float z)
-        {
-            Entity oE = new Entity();
-            oE.EntityID = EntityID;
-            oE.SceneID = SceneID;
 
-            Vec3 cP;
-            cP.x = x;
-            cP.y = y;
-            cP.z = z;
-            OnCollision(oE, cP);
+        void OnCollision(uint otherEntityID, float x, float y, float z)
+        {
+            Console.WriteLine("Entity Class On Collision");
         }
 
-        void OnCollisionStarted_Native(uint EntityID, uint SceneID)
+        void OnCollisionStarted(uint otherEntityID)
         {
-            Entity oE = new Entity();
-            oE.EntityID = EntityID;
-            oE.SceneID = SceneID;
-
-            OnCollisionStarted(oE);
+            Console.WriteLine("Entity Class On Collision Started");
         }
 
-        void OnCollisionEnded_Native(uint EntityID, uint SceneID)
+        void OnCollisionEnded(uint otherEntityID)
         {
-            Entity oE = new Entity();
-            oE.EntityID = EntityID;
-            oE.SceneID = SceneID;
-            OnCollisionEnded(oE);
-        }
-
-        void OnCollision(Entity otherEntity, Vec3 collisionPoint)
-        {
-            string res = String.Format("EntityID = {0}, SceneID = {1}, CollisionPoint=[{2},{3},{4}]",
-                otherEntity.EntityID, otherEntity.SceneID,
-                collisionPoint.x, collisionPoint.y, collisionPoint.z);
-            Console.WriteLine(res);
-        }
-
-        void OnCollisionStarted(Entity otherEntity)
-        {
-            Console.WriteLine("OnCollisionStarted");
-        }
-
-        void OnCollisionEnded(Entity otherEntity)
-        {
-            Console.WriteLine("OnCollisionEnded");
+            Console.WriteLine("Entity Class On Collision Ended");
         }
 
         public uint SceneID { get; set; }
@@ -108,7 +76,7 @@ namespace OP
             SetTransform_Native(SceneID, EntityID, ref transform);
         }
 
-        public Object GetChildEntity(string tag)
+        public Entity GetChildEntity(string tag)
         {
             m_EntityStringBuffer.Clear();
             byte[] values = Encoding.ASCII.GetBytes(tag);
@@ -116,7 +84,7 @@ namespace OP
 
             Object res;
             GetChildEntity_Native(SceneID, EntityID, ref m_EntityStringBuffer, out res);
-            return res;
+            return (Entity)res;
         }
 
         [MethodImpl(MethodImplOptions.InternalCall)]
