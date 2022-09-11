@@ -147,6 +147,7 @@ namespace OP
 		void OP_Set_Skybox(char* SkyboxName)
 		{
 			char buffer[256];
+			memset(buffer, 0x00, 256);
 			memcpy(&buffer, SkyboxName, 256);
 			std::string str(buffer);
 			s_ActiveScene->SetSkybox(str);
@@ -417,6 +418,23 @@ namespace OP
 			auto& transformComponent = entity.GetComponent<TransformComponent>();
 			glm::mat4 transform = transformComponent.GetTransform();
 			memcpy(outTransform, glm::value_ptr(transform), sizeof(glm::mat4));
+		}
+
+		void OP_Entity_GetChild(uint32_t sceneID, uint32_t entityID, char* tag, MonoObject** obj)
+		{
+			char buffer[256];
+			//memset(buffer, 0x00, 256);
+			memcpy(&buffer, tag, 256);
+			std::string tagStr(buffer);
+			Entity entity((entt::entity)entityID, s_ActiveScene);
+
+			Entity childEntity = entity.GetChild(tagStr);
+			uint32_t childHandle = childEntity.GetEntityHandle();
+			std::unordered_map< uint32_t, EntityInstance> iM = ScriptManager::GetInstanceMap();
+
+			auto& entityInstance = iM[childHandle];
+
+			*obj = entityInstance.GetInstance();
 		}
 
 		void OP_Entity_SetTransform(uint32_t sceneID, uint32_t entityID, glm::mat4* inTransform)

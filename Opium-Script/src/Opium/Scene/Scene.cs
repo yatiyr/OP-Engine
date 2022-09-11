@@ -30,7 +30,7 @@ namespace OP
                 int remainingMax = Math.Min(index + array.Length, MAX_LENGTH) - index;
                 for (int i=0; i<remainingMax; i++)
                 {
-                    ptr[index + i] = array[i];
+                    buffer[index + i] = array[i];
                 }
             }
         }

@@ -43,6 +43,10 @@ internal class Script : Entity
         Console.WriteLine("Collision");
     }
 
+    public void ImScript()
+    {
+        Console.WriteLine("ImScript");
+    }
 
     public void OnUpdate(float ts)
     {

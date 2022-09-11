@@ -438,6 +438,11 @@ namespace OP
 		return fields;
 	}
 
+	std::unordered_map<uint32_t, EntityInstance> ScriptManager::GetInstanceMap()
+	{
+		return s_EntityInstanceMap;
+	}
+
 	const OP::ScriptModuleFieldMap& ScriptManager::GetFieldMap()
 	{
 		return s_PublicFields;

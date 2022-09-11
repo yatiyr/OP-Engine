@@ -591,6 +591,7 @@ namespace OP
 
 	void EditorLayer::NewScene()
 	{
+		ScriptManager::ReloadManager();
 		m_ActiveScene = CreateRef<Scene>();
 		m_ActiveScene->OnViewportResize((uint32_t)m_ViewportComponent.m_ViewportSize.x, (uint32_t)m_ViewportComponent.m_ViewportSize.y);
 		m_SceneGraph.SetContext(m_ActiveScene);
@@ -607,6 +608,7 @@ namespace OP
 		std::string filePath = FileDialogs::OpenFile("Opium Scene file (*.opium)\0*.opium\0");
 		if (!filePath.empty())
 		{
+			ScriptManager::ReloadManager();
 			OpenScene(filePath);
 		}
 	}
@@ -632,6 +634,7 @@ namespace OP
 			m_SceneGraph.SetContext(m_EditorScene);
 			m_ViewportComponent.SetContext(m_EditorScene);
 			m_ActiveScene = m_EditorScene;
+			s_ActiveScene = m_ActiveScene.get();
 			SceneRenderer::ChangeEnvironmentMap(m_ActiveScene->GetSkybox());
 			SceneRenderer::SetHdr(m_ActiveScene->GetToneMap());
 			SceneRenderer::SetExposure(m_ActiveScene->GetExposure());
@@ -674,8 +677,8 @@ namespace OP
 		m_SceneState = SceneState::Play;
 
 		m_ActiveScene = Scene::Copy(m_EditorScene);
-		m_ActiveScene->OnRuntimeStart();
 		s_ActiveScene = m_ActiveScene.get();
+		m_ActiveScene->OnRuntimeStart();
 		m_SceneGraph.SetContext(m_ActiveScene);
 	}
 

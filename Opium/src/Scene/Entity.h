@@ -173,6 +173,10 @@ namespace OP
 
 		Scene* GetScene() { return m_Scene; }
 
+		Entity GetChild(std::string tag);
+
+		uint32_t GetEntityHandle() { return (uint32_t)m_EntityHandle; }
+
 	private:
 		entt::entity m_EntityHandle{ entt::null };
 		Scene* m_Scene = nullptr;

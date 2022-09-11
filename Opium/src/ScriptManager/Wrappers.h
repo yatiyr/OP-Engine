@@ -33,6 +33,7 @@ namespace OP
 		void OP_Entity_SetTransform(uint32_t sceneID, uint32_t entityID, glm::mat4* inTransform);
 		void OP_Entity_CreateComponent(uint32_t sceneID, uint32_t entityID, void* type);
 		bool OP_Entity_HasComponent(uint32_t sceneID, uint32_t entityID, void* type);
+		void OP_Entity_GetChild(uint32_t sceneID, uint32_t entityID, char* tag, MonoObject** obj);
 
 		// Transform Component
 		void OP_Get_Transform(uint32_t sceneID, uint32_t entityID, glm::mat4* outTransform);

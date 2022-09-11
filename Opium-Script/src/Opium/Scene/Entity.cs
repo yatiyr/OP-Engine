@@ -9,7 +9,8 @@ namespace OP
 {
     public class Entity
     {
-        
+
+        private Buffer m_EntityStringBuffer;
 
         void OnCreate()
         {
@@ -63,19 +64,6 @@ namespace OP
             Console.WriteLine("OnCollisionEnded");
         }
 
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        private static extern void CreateComponent_Native(uint sceneID, uint entityID, Type type);
-
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        private static extern bool HasComponent_Native(uint sceneID, uint entityID, Type type);
-
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        private static extern void GetTransform_Native(uint sceneID, uint entityID, out Mat4 matrix);
-
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        private static extern void SetTransform_Native(uint sceneID, uint entityID, ref Mat4 matrix);
-
-
         public uint SceneID { get; set; }
         public uint EntityID { get; set; }
 
@@ -119,6 +107,32 @@ namespace OP
         {
             SetTransform_Native(SceneID, EntityID, ref transform);
         }
+
+        public Object GetChildEntity(string tag)
+        {
+            m_EntityStringBuffer.Clear();
+            byte[] values = Encoding.ASCII.GetBytes(tag);
+            m_EntityStringBuffer.Store(values, 0);
+
+            Object res;
+            GetChildEntity_Native(SceneID, EntityID, ref m_EntityStringBuffer, out res);
+            return res;
+        }
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void CreateComponent_Native(uint sceneID, uint entityID, Type type);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern bool HasComponent_Native(uint sceneID, uint entityID, Type type);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void GetTransform_Native(uint sceneID, uint entityID, out Mat4 matrix);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void SetTransform_Native(uint sceneID, uint entityID, ref Mat4 matrix);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void GetChildEntity_Native(uint sceneID, uint entityID, ref Buffer tag, out Object obj);
 
     }
 }

@@ -408,9 +408,8 @@ namespace OP
 			auto& physics3DCollider = entity.GetComponent<Physics3DCollider>();
 
 			out << YAML::Key << "Shape" << physics3DCollider.Shape;
-			if (physics3DCollider.Shape == 0)
-				out << YAML::Key << "Scale" << physics3DCollider.Scale;
-			else if (physics3DCollider.Shape == 1)
+			out << YAML::Key << "Scale" << physics3DCollider.Scale;
+			if (physics3DCollider.Shape == 1)
 				out << YAML::Key << "Radius" << physics3DCollider.Radius;
 			out << YAML::Key << "ContactResponse" << physics3DCollider.ContactResponse;
 
@@ -642,9 +641,9 @@ namespace OP
 				{
 					auto& p3DCC = deserializedEntity.AddComponent<Physics3DCollider>();
 					p3DCC.Shape = physics3DColliderComponent["Shape"].as<int>();
-					if (p3DCC.Shape == 0)
+					if(physics3DColliderComponent["Scale"])
 						p3DCC.Scale = physics3DColliderComponent["Scale"].as<glm::vec3>();
-					else if (p3DCC.Shape == 1)
+					if (p3DCC.Shape == 1)
 						p3DCC.Radius = physics3DColliderComponent["Radius"].as<float>();
 					p3DCC.ContactResponse = physics3DColliderComponent["ContactResponse"].as<bool>();
 				}

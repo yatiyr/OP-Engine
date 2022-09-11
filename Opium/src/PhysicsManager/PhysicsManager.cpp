@@ -50,8 +50,8 @@ namespace OP
 		Entity* o2 = (Entity*)b2->getUserPointer();
 
 
-		ScriptManager::OnCollisionStarted((uint32_t)o1, (uint32_t)o2);
-		ScriptManager::OnCollisionStarted((uint32_t)o2, (uint32_t)o1);
+		ScriptManager::OnCollisionStarted((uint32_t)*o1, (uint32_t)*o2);
+		ScriptManager::OnCollisionStarted((uint32_t)*o2, (uint32_t)*o1);
 
 	}
 
@@ -65,8 +65,8 @@ namespace OP
 		Entity* o2 = (Entity*)b2->getUserPointer();
 
 
-		ScriptManager::OnCollisionEnded((uint32_t)o1, (uint32_t)o2);
-		ScriptManager::OnCollisionEnded((uint32_t)o2, (uint32_t)o1);
+		ScriptManager::OnCollisionEnded((uint32_t)*o1, (uint32_t)*o2);
+		ScriptManager::OnCollisionEnded((uint32_t)*o2, (uint32_t)*o1);
 
 	}
 
@@ -162,6 +162,7 @@ namespace OP
 		if (spec.IsKinematic)
 		{
 			rB->setCollisionFlags(rB->getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT);
+			rB->setActivationState(DISABLE_DEACTIVATION);
 		}
 
 		rB->setUserPointer(EntityPointer);

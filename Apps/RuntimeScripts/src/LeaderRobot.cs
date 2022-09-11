@@ -14,6 +14,7 @@ internal class LeaderRobot : Entity
     public Vec3 waypoint1 = new Vec3(10.0f, 10.0f, 10.0f);
     public Vec3 waypoint2 = new Vec3(-10.0f, -10.0f, -10.0f);
 
+    Script sensor;
 
     private Vec3 target;
 
@@ -23,6 +24,16 @@ internal class LeaderRobot : Entity
         tC = GetComponent<TransformComponent>();
         pC = GetComponent<Physics3DMaterial>();
         target = waypoint1;
+
+        Object child = GetChildEntity("Sensor");
+
+        Console.WriteLine(child.GetType().Name);
+        //sensor = (Script)child;
+
+        //Console.WriteLine(sensor.EntityID);
+        //Console.WriteLine(sensor.SceneID);
+        //sensor.ImScript();
+
     }
 
     public void OnCollisionStarted(Entity otherEntity)
@@ -43,6 +54,9 @@ internal class LeaderRobot : Entity
 
     public void OnUpdate(float ts)
     {
+
+
+        Console.WriteLine(sensor.publicField4);
 
         Vec3 currentPosition = tC.Translation;
 

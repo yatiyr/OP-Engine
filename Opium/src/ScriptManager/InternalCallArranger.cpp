@@ -102,12 +102,11 @@ namespace OP
 			mono_add_internal_call("OP.Physics3DMaterial::ClearForces_Native",         OP::Script::OP_ClearForces);							
 
 
-		// OLD PART
-		mono_add_internal_call("OP.Entity::GetTransform_Native", OP::Script::OP_Entity_GetTransform);
-		mono_add_internal_call("OP.Entity::SetTransform_Native", OP::Script::OP_Entity_SetTransform);
-		mono_add_internal_call("OP.Entity::CreateComponent_Native", OP::Script::OP_Entity_CreateComponent);
-		mono_add_internal_call("OP.Entity::HasComponent_Native", OP::Script::OP_Entity_HasComponent);
-
-	
+		////////////////////////////////////////// ENTITY FUNCTIONS /////////////////////////////////////////////////
+			mono_add_internal_call("OP.Entity::GetChildEntity_Native",                 OP::Script::OP_Entity_GetChild);
+			mono_add_internal_call("OP.Entity::GetTransform_Native",                   OP::Script::OP_Entity_GetTransform);
+			mono_add_internal_call("OP.Entity::SetTransform_Native",                   OP::Script::OP_Entity_SetTransform);
+			mono_add_internal_call("OP.Entity::CreateComponent_Native",                OP::Script::OP_Entity_CreateComponent);
+			mono_add_internal_call("OP.Entity::HasComponent_Native",                   OP::Script::OP_Entity_HasComponent);
 	}
 }

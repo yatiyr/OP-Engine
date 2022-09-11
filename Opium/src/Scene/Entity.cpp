@@ -8,4 +8,25 @@ namespace OP
 	{
 	}
 
+	Entity Entity::GetChild(std::string tag)
+	{
+		auto& relC = GetComponent<RelationshipComponent>();
+		UUID iterator;
+		iterator = relC.first;
+
+		Entity iteratorEntity = m_Scene->GetEntityWithUUID(iterator);
+
+		while (entt::entity(iteratorEntity) != entt::null)
+		{
+			auto& childRelC = iteratorEntity.GetComponent<RelationshipComponent>();
+			auto& tagC = iteratorEntity.GetComponent<TagComponent>();
+			if (tag == tagC.Tag)
+				return iteratorEntity;
+
+			iteratorEntity = m_Scene->GetEntityWithUUID(childRelC.next);
+		}
+
+		return Entity();
+	}
+
 }
