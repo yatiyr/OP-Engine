@@ -36,15 +36,15 @@ void main()
 
 	mat3 modelMatrixN = transpose(inverse(mat3(u_Model)));
 
-	vec3 T = normalize(modelMatrixN * a_Tangent);
-	vec3 B = normalize(modelMatrixN * a_Bitangent);
-	vec3 N = normalize(modelMatrixN * a_Normal);
+	vec3 T = normalize(normalize(modelMatrixN * a_Tangent));
+	vec3 B = normalize(normalize(modelMatrixN * a_Bitangent));
+	vec3 N = normalize(normalize(modelMatrixN * a_Normal));
 	vs_out.TBN = mat3(T, B, N);
 	
 
 	vs_out.FragPos = vec3(u_Model * vec4(a_Position, 1.0));
 	vs_out.FragPosViewSpace = u_View * vec4(vs_out.FragPos, 1.0);
-	vs_out.Normal  = modelMatrixN * a_Normal;
+	vs_out.Normal  = N;
 	vs_out.TexCoords = a_TexCoords;
 
 	gl_Position =  u_ViewProjection * u_Model * vec4(a_Position, 1.0);
@@ -113,7 +113,7 @@ void main()
 	vec2 texCoords = fs_in.TexCoords;
 	vec3 fragPos = fs_in.FragPos;
 	
-	vec3 viewDir = normalize(u_ViewPos - fs_in.FragPos);
+	vec3 viewDir = normalize(normalize(u_ViewPos - fs_in.FragPos));
 
 	float parallaxHeight;
 	texCoords = ParallaxMapping(u_HeightMap, vec3(0.0, 0.0, 1.0), fs_in.TexCoords, normalize(transpose(fs_in.TBN) * viewDir), parallaxHeight, u_TilingFactor, u_HeightFactor);
@@ -127,9 +127,9 @@ void main()
 
 	vec3 normal = texture(u_NormalMap, texCoords * u_TilingFactor).rgb;
 	normal = normalize(normal * 2.0 - 1.0);
-	normal = normalize(fs_in.TBN * normal);
+	normal = normalize(normalize(fs_in.TBN * normal));
 
-	vec3 reflectionVec = normalize(reflect(-viewDir, normal)); 
+	vec3 reflectionVec = normalize(normalize(reflect(-viewDir, normal))); 
 
 	vec3 F0 = vec3(0.04);
 	F0 = mix(F0, color, metalness);
@@ -268,10 +268,10 @@ void main()
 
 	// sample both pre-filter map and the BRDF lut and combine them together as per the split-sum approximation to get the IBL specular part
 	const float MAX_REFLECTION_LOD = 4.0;
-	vec3 prefilteredColor = textureLod(u_PrefilterMap, reflectionVec, roughness * MAX_REFLECTION_LOD).rgb;
-	vec2 brdf = texture(u_BrdfLUT, vec2(max(dot(normal, viewDir), 0.0), roughness)).rg;
-	vec3 specular = prefilteredColor * (kS * brdf.x + brdf.y);
 
+	vec3 prefilteredColor = textureLod(u_PrefilterMap, reflectionVec, roughness * MAX_REFLECTION_LOD).rgb;
+	vec2 brdf = texture(u_BrdfLUT, vec2(max(dot(normal, viewDir), 0.0), roughness)).rg;		
+	vec3 specular = prefilteredColor * (kS * brdf.x + brdf.y);
 	vec3 ambient    = (kD * diffuse + specular) * ao; 
 	//vec3 ambient = vec3(0.03) * color * ao;
 

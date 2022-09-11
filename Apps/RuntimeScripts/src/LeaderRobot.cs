@@ -29,9 +29,6 @@ internal class LeaderRobot : Entity
 
         Console.WriteLine(child.GetType().Name);
         sensor = (Script)child;
-
-        //Console.WriteLine(sensor.EntityID);
-        //Console.WriteLine(sensor.SceneID);
         sensor.ImScript();
 
     }
@@ -39,9 +36,6 @@ internal class LeaderRobot : Entity
 
     public void OnUpdate(float ts)
     {
-
-
-        Console.WriteLine(sensor.publicField4);
 
         Vec3 currentPosition = tC.Translation;
 

@@ -19,6 +19,9 @@ namespace OP
 	namespace Script
 	{
 
+		void OP_Get_Tag(uint32_t entityID, uint32_t sceneID, MonoString** str);
+		void OP_Set_Tag(uint32_t entityID, uint32_t sceneID, MonoString** str);
+
 		// Input wrapper
 		bool OP_Input_IsKeyPressed(KeyCode key);
 		bool OP_Input_IsMouseButtonPressed(MouseButtonCode mouseCode);

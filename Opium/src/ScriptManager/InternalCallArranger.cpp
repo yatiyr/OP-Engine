@@ -45,6 +45,11 @@ namespace OP
 	{
 		InitComponentTypes();
 
+		//////////////////////////////// ARRANGE TAG COMPONENT FUNCTIONS ////////////////////////////////////////
+		mono_add_internal_call("OP.TagComponent::GetTag_Native", OP::Script::OP_Get_Tag);
+		mono_add_internal_call("OP.TagComponent::SetTag_Native", OP::Script::OP_Set_Tag);
+		
+		//////////////////////////////////// INPUT FUNCTIONS ////////////////////////////////////////////////////
 		mono_add_internal_call("OP.Input::IsKeyPressed_Native", OP::Script::OP_Input_IsKeyPressed);
 		mono_add_internal_call("OP.Input::IsMouseButtonPressed_Native", OP::Script::OP_Input_IsMouseButtonPressed);
 

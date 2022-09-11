@@ -19,17 +19,17 @@ namespace OP
 
         void OnCollision(uint otherEntityID, float x, float y, float z)
         {
-            Console.WriteLine("Entity Class On Collision");
+
         }
 
         void OnCollisionStarted(uint otherEntityID)
         {
-            Console.WriteLine("Entity Class On Collision Started");
+
         }
 
         void OnCollisionEnded(uint otherEntityID)
         {
-            Console.WriteLine("Entity Class On Collision Ended");
+
         }
 
         public uint SceneID { get; set; }

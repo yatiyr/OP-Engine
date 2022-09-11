@@ -31,6 +31,30 @@ namespace OP
 		};
 
 
+		void OP_Get_Tag(uint32_t entityID, uint32_t sceneID, MonoString** str)
+		{
+			Entity e{ (entt::entity)entityID, s_ActiveScene };
+
+			auto& tC = e.GetComponent<TagComponent>();
+
+			MonoDomain* domain = ScriptManager::GetDomain();
+
+			MonoString* string = mono_string_new(domain, tC.Tag.c_str());
+
+			*str = string;
+
+		}
+
+		void OP_Set_Tag(uint32_t entityID, uint32_t sceneID, MonoString** str)
+		{
+			Entity e{ (entt::entity)entityID, s_ActiveScene };
+
+			auto& tC = e.GetComponent<TagComponent>();
+
+			MonoString* string = *str;
+			tC.Tag = mono_string_to_utf8(string);			
+		}
+
 		// Input Wrapper
 		bool OP_Input_IsKeyPressed(KeyCode key)
 		{

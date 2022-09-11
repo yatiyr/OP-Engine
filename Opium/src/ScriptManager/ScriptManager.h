@@ -180,6 +180,8 @@ namespace OP
 		static std::unordered_map<std::string, void*> OnInitEntity(ScriptComponent& script, uint32_t entityID, uint32_t sceneID);
 		static std::unordered_map<uint32_t, EntityInstance> GetInstanceMap();
 
+		static MonoDomain* GetDomain();
+
 		static const ScriptModuleFieldMap& GetFieldMap();
 	};
 }

@@ -448,6 +448,11 @@ namespace OP
 		return s_EntityInstanceMap;
 	}
 
+	MonoDomain* ScriptManager::GetDomain()
+	{
+		return s_MonoDomain;
+	}
+
 	const OP::ScriptModuleFieldMap& ScriptManager::GetFieldMap()
 	{
 		return s_PublicFields;

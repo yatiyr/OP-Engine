@@ -33,63 +33,29 @@ internal class Script : Entity
         Console.WriteLine("ImScript");
     }
 
+    public void OnCollisionStarted(uint otherEntityID)
+    {
+        TagComponent tC = new TagComponent();
+        tC.Entity = new Entity();
+        tC.Entity.EntityID = otherEntityID;
+        tC.Entity.SceneID = SceneID;
+
+        Console.WriteLine("Collision started with {0}", tC.Tag);
+    }
+
+    public void OnCollisionEnded(uint otherEntityID)
+    {
+        TagComponent tC = new TagComponent();
+        tC.Entity = new Entity();
+        tC.Entity.EntityID = otherEntityID;
+        tC.Entity.SceneID = SceneID;
+
+        Console.WriteLine("Collision ended with {0}", tC.Tag);
+    }
+
     public void OnUpdate(float ts)
     {
-        Mat4 transform = GetTransform();
-        Vec3 translationVec = new Vec3(2.0f * ts, 2.0f * ts, 5.0f * ts);
-        Mat4 translationMatrix = Mat4.Translate(translationVec);
-        Mat4 newTransform = transform + translationMatrix;
 
-        if(OP.Input.IsKeyPressed(KeyCode.Q))
-        {
-            Scene.Exposure += 0.5f * ts;
-        }
-
-        if(OP.Input.IsKeyPressed(KeyCode.E))
-        {
-            Scene.Exposure -= 0.5f * ts;
-        }
-
-        if(OP.Input.IsKeyPressed(KeyCode.Z))
-        {
-            Console.WriteLine(Scene.Skybox);
-        }
-
-        if(OP.Input.IsKeyPressed(KeyCode.W))
-        {
-            pC.LinearVelocity = new Vec3(0.0f, 10.5f, 0.0f);
-        }
-
-        if(OP.Input.IsKeyPressed(KeyCode.C))
-        {
-            OP.Window.HideCursor();
-        }
-
-        if (OP.Input.IsKeyPressed(KeyCode.V))
-        {
-            OP.Window.ShowCursor();
-        }
-        // tC.Translation = new Vec3(5.0f, 5.0f, 5.0f);
-        // Console.WriteLine(tC.Translation.x);
-        //SetTransform(newTransform);
-
-        if(OP.Input.IsMouseButtonPressed(MouseButtonCode.ButtonLeft))
-        {
-            (float x, float y) = OP.Window.GetMousePos();
-            Console.WriteLine("MousePos: {0} {1}", x, y);
-        }
-
-        if (OP.Input.IsMouseButtonPressed(MouseButtonCode.ButtonMiddle))
-        {
-            (float x, float y) = OP.Window.GetMousePos();
-            Console.WriteLine("MousePos: {0} {1}", x, y);
-        }
-
-        if (OP.Input.IsMouseButtonPressed(MouseButtonCode.ButtonRight))
-        {
-            (float x, float y) = OP.Window.GetMousePos();
-            Console.WriteLine("MousePos: {0} {1}", x, y);
-        }
     }
 }
 
