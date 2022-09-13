@@ -121,6 +121,11 @@ namespace OP
 
 		}
 
+		void LookAt(const glm::vec3 direction)
+		{
+
+		}
+
 		void computeLocalTransform(const glm::mat4& parentGlobalTransformInv)
 		{
 			localTransformation = parentGlobalTransformInv * globalTransformation;

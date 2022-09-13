@@ -100,8 +100,11 @@ namespace OP
 
         public static Vec3 Mix(Vec3 val1, Vec3 val2, float t)
         {
-            float x = val1.x * (1 - t) + val2.y * t;
-            float y = val1.y * (1 - t) + val2.z * t;
+            if (t > 1)
+                return new Vec3(val2.x, val2.y, val2.z);
+
+            float x = val1.x * (1 - t) + val2.x * t;
+            float y = val1.y * (1 - t) + val2.y * t;
             float z = val1.z * (1 - t) + val2.z * t;
 
             return new Vec3(x, y, z);
@@ -111,9 +114,12 @@ namespace OP
         {
             float length = Length(this);
 
-            this.x /= length;
-            this.y /= length;
-            this.z /= length;
+            if(length != 0)
+            {
+                this.x /= length;
+                this.y /= length;
+                this.z /= length;
+            }
 
             return this;
         }

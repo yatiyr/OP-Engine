@@ -139,6 +139,9 @@ namespace OP
 		btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, mS, colShape, localInertia);
 		btRigidBody* rB = new btRigidBody(rbInfo);
 
+
+		rB->setActivationState(DISABLE_DEACTIVATION);
+
 		motionState    = (void*)mS;
 		body           = (void*)rB;
 		collisionShape = (void*)colShape;
