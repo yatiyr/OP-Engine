@@ -154,8 +154,9 @@ namespace OP
 			out << YAML::Key << "TagComponent";
 			out << YAML::BeginMap; // Tag Component
 
-			auto& tag = entity.GetComponent<TagComponent>().Tag;
-			out << YAML::Key << "Tag" << YAML::Value << tag;
+			auto& tag = entity.GetComponent<TagComponent>();
+			out << YAML::Key << "Tag" << YAML::Value << tag.Tag;
+			out << YAML::Key << "TypeEnum" << YAML::Value << tag.TypeEnum;
 			out << YAML::EndMap; // Tag Component
 		}
 
@@ -549,13 +550,22 @@ namespace OP
 			{
 				uint64_t uuid = entity["Entity"].as<uint64_t>();
 				std::string name;
+				uint32_t typeEnum = 0;
 				auto tagComponent = entity["TagComponent"];
 				if (tagComponent)
+				{
 					name = tagComponent["Tag"].as<std::string>();
+					if (tagComponent["TypeEnum"])
+						typeEnum = tagComponent["TypeEnum"].as<int>();
+				}
+					
 
 				OP_ENGINE_TRACE("Deserialized entity with ID = {0}, name = {1}", uuid, name);
 
 				Entity deserializedEntity = m_Scene->CreateEntityWithUUID(uuid, name);
+
+				auto& tagC = deserializedEntity.GetComponent<TagComponent>();
+				tagC.TypeEnum = typeEnum;
 
 				auto transformComponent = entity["TransformComponent"];
 				if (transformComponent)

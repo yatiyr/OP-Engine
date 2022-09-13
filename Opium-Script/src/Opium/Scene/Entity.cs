@@ -87,6 +87,13 @@ namespace OP
             return (Entity)res;
         }
 
+        public Entity GetParentEntity()
+        {
+            Object res;
+            GetParentEntity_Native(SceneID, EntityID, out res);
+            return (Entity)res;
+        }
+
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern void CreateComponent_Native(uint sceneID, uint entityID, Type type);
 
@@ -101,6 +108,9 @@ namespace OP
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern void GetChildEntity_Native(uint sceneID, uint entityID, ref Buffer tag, out Object obj);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void GetParentEntity_Native(uint sceneID, uint entityID, out Object obj);
 
     }
 }

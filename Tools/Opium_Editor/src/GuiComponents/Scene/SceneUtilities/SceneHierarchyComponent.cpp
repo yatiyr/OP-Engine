@@ -119,7 +119,7 @@ namespace OP
 				envMapNames.push_back(envMapName);
 			}
 
-			std::string comboPreviewValue = "sky1";
+			std::string comboPreviewValue = "space";
 
 			if (ImGui::BeginCombo("Environment", comboPreviewValue.c_str(), ImGuiComboFlags_PopupAlignLeft))
 			{
@@ -536,15 +536,16 @@ namespace OP
 
 		if (entity.HasComponent<TagComponent>())
 		{
-			auto& tag = entity.GetComponent<TagComponent>().Tag;
+			auto& tag = entity.GetComponent<TagComponent>();
 
 			char buffer[256];
 			memset(buffer, 0, sizeof(buffer));
-			strcpy_s(buffer, sizeof(buffer), tag.c_str());
+			strcpy_s(buffer, sizeof(buffer), tag.Tag.c_str());
 			if (ImGui::InputText("##Tag", buffer, sizeof(buffer)))
 			{
 				tag = std::string(buffer);
 			}
+
 		}
 
 		ImGui::SameLine();
@@ -680,6 +681,9 @@ namespace OP
 
 		ImGui::PopItemWidth();
 
+		auto& tagC = entity.GetComponent<TagComponent>();
+
+		ImGui::DragInt("TypeEnum", &tagC.TypeEnum, 1.0f, 0, 1000);
 
 		DrawComponent<TransformComponent>("Transform", entity, [&](auto& component)
 			{
@@ -869,6 +873,10 @@ namespace OP
 					curSelectedName = "Box";
 				else if (currentSelected == 1)
 					curSelectedName = "Sphere";
+				else if (currentSelected == 2)
+					curSelectedName = "Cylinder";
+				else if (currentSelected == 3)
+					curSelectedName = "Capsule";
 
 				std::vector<std::string> shapeNames = { "Box", "Sphere", "Cylinder", "Capsule"};
 

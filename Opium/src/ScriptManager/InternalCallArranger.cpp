@@ -46,16 +46,18 @@ namespace OP
 		InitComponentTypes();
 
 		//////////////////////////////// ARRANGE TAG COMPONENT FUNCTIONS ////////////////////////////////////////
-		mono_add_internal_call("OP.TagComponent::GetTag_Native", OP::Script::OP_Get_Tag);
-		mono_add_internal_call("OP.TagComponent::SetTag_Native", OP::Script::OP_Set_Tag);
-		
+		mono_add_internal_call("OP.TagComponent::GetTag_Native",      OP::Script::OP_Get_Tag);
+		mono_add_internal_call("OP.TagComponent::SetTag_Native",      OP::Script::OP_Set_Tag);
+		mono_add_internal_call("OP.TagComponent::GetTypeEnum_Native", OP::Script::OP_Get_TypeEnum);
+		mono_add_internal_call("OP.TagComponent::SetTypeEnum_Native", OP::Script::OP_Set_TypeEnum);
+
 		//////////////////////////////////// INPUT FUNCTIONS ////////////////////////////////////////////////////
-		mono_add_internal_call("OP.Input::IsKeyPressed_Native", OP::Script::OP_Input_IsKeyPressed);
+		mono_add_internal_call("OP.Input::IsKeyPressed_Native",         OP::Script::OP_Input_IsKeyPressed);
 		mono_add_internal_call("OP.Input::IsMouseButtonPressed_Native", OP::Script::OP_Input_IsMouseButtonPressed);
 
 		////////////////////////////////// ARRANGE Window FUNCTIONS /////////////////////////////////////////////
-		mono_add_internal_call("OP.Window::ShowCursor_Native", OP::Script::OP_ShowCursor);
-		mono_add_internal_call("OP.Window::HideCursor_Native", OP::Script::OP_HideCursor);
+		mono_add_internal_call("OP.Window::ShowCursor_Native",  OP::Script::OP_ShowCursor);
+		mono_add_internal_call("OP.Window::HideCursor_Native",  OP::Script::OP_HideCursor);
 		mono_add_internal_call("OP.Window::GetMousePos_Native", OP::Script::OP_GetMousePos);
 
 		/////////////////////// ARRANGE TRANSFORM COMPONENT FUNCTIONS ///////////////////////////////////////////
@@ -109,6 +111,7 @@ namespace OP
 
 		////////////////////////////////////////// ENTITY FUNCTIONS /////////////////////////////////////////////////
 			mono_add_internal_call("OP.Entity::GetChildEntity_Native",                 OP::Script::OP_Entity_GetChild);
+			mono_add_internal_call("OP.Entity::GetParentEntity_Native",                OP::Script::OP_Entity_GetParent);
 			mono_add_internal_call("OP.Entity::GetTransform_Native",                   OP::Script::OP_Entity_GetTransform);
 			mono_add_internal_call("OP.Entity::SetTransform_Native",                   OP::Script::OP_Entity_SetTransform);
 			mono_add_internal_call("OP.Entity::CreateComponent_Native",                OP::Script::OP_Entity_CreateComponent);

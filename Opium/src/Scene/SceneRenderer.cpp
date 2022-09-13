@@ -109,8 +109,8 @@ namespace OP
 
 			struct ToneMappingSettings
 			{
-				float exposure = 1.0;
-				bool hdr = true;
+				float exposure = 2.0;
+				bool hdr = false;
 			} ToneMappingSettingsBuffer;
 
 			Ref<UniformBuffer> ToneMappingSettingsUniformBuffer;

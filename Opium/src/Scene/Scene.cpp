@@ -147,7 +147,7 @@ namespace OP
 			enttMap[uuid] = (entt::entity)newEntity;
 		}
 
-
+		CopyComponent<TagComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
 		CopyComponent<RootComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
 		CopyComponent<TransformComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
 		CopyComponent<RelationshipComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);

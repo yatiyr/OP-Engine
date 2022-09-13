@@ -299,7 +299,7 @@ namespace OP
 
 					model = glm::translate(model, glm::vec3(origin.x(), origin.y(), origin.z()));
 					glm::mat4 rotation = glm::toMat4(glm::quat(rotEuler));
-					glm::vec3 lastScale = tC.Scale * glm::vec3(localScaling.x(), localScaling.y(), localScaling.z());
+					glm::vec3 lastScale = tC.Scale * glm::vec3(localScaling.x(), localScaling.y(), localScaling.z()) * pC.Scale;
 
 					model = model * rotation * glm::scale(glm::mat4(1.0f), lastScale);
 					m_CollisionShapeVisualizer->SetMat4(0, model);

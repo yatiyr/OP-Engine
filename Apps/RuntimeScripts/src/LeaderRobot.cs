@@ -12,9 +12,9 @@ internal class LeaderRobot : Entity
     private Physics3DMaterial pC;
 
     public Vec3 waypoint1 = new Vec3(10.0f, 10.0f, 10.0f);
-    public Vec3 waypoint2 = new Vec3(-10.0f, -10.0f, -10.0f);
+    public Vec3 waypoint2 = new Vec3(10.0f, 10.0f, -10.0f);
 
-    Script sensor;
+    Sensor sensor;
 
     private Vec3 target;
 
@@ -28,8 +28,7 @@ internal class LeaderRobot : Entity
         Entity child = GetChildEntity("Sensor");
 
         Console.WriteLine(child.GetType().Name);
-        sensor = (Script)child;
-        sensor.ImScript();
+        sensor = (Sensor)child;
 
     }
 

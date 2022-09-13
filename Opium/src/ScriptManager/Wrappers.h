@@ -19,8 +19,11 @@ namespace OP
 	namespace Script
 	{
 
+		// TagComponent
 		void OP_Get_Tag(uint32_t entityID, uint32_t sceneID, MonoString** str);
 		void OP_Set_Tag(uint32_t entityID, uint32_t sceneID, MonoString** str);
+		void OP_Get_TypeEnum(uint32_t entityID, uint32_t sceneID, int* typeEnum);
+		void OP_Set_TypeEnum(uint32_t entityID, uint32_t sceneID, int* typeEnum);
 
 		// Input wrapper
 		bool OP_Input_IsKeyPressed(KeyCode key);
@@ -37,6 +40,7 @@ namespace OP
 		void OP_Entity_CreateComponent(uint32_t sceneID, uint32_t entityID, void* type);
 		bool OP_Entity_HasComponent(uint32_t sceneID, uint32_t entityID, void* type);
 		void OP_Entity_GetChild(uint32_t sceneID, uint32_t entityID, char* tag, MonoObject** obj);
+		void OP_Entity_GetParent(uint32_t sceneID, uint32_t entityID, MonoObject** obj);
 
 		// Transform Component
 		void OP_Get_Transform(uint32_t sceneID, uint32_t entityID, glm::mat4* outTransform);

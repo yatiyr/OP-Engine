@@ -128,13 +128,17 @@ namespace OP
 
 	static MonoObject* CallMethod(MonoObject* object, MonoMethod* method, void** params = nullptr)
 	{
-		MonoObject* pException = NULL;
+		MonoObject* pException;
 		MonoMethod* possibleMethod = method;
 
 		if (object)
 			possibleMethod = mono_object_get_virtual_method(object, possibleMethod);
 
 		MonoObject* result = mono_runtime_invoke(possibleMethod, object, params, &pException);
+
+		if (pException)
+			mono_print_unhandled_exception(pException);
+
 		return result;
 	}
 

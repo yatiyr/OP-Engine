@@ -29,4 +29,12 @@ namespace OP
 		return Entity();
 	}
 
+	Entity Entity::GetParent()
+	{
+		auto& relC = GetComponent<RelationshipComponent>();		
+		UUID parentUUID = relC.parent;
+
+		return m_Scene->GetEntityWithUUID(parentUUID);
+	}
+
 }

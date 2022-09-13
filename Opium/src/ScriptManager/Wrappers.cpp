@@ -55,6 +55,22 @@ namespace OP
 			tC.Tag = mono_string_to_utf8(string);			
 		}
 
+		void OP_Get_TypeEnum(uint32_t entityID, uint32_t sceneID, int* typeEnum)
+		{
+			Entity e{ (entt::entity)entityID, s_ActiveScene };
+			auto& tC = e.GetComponent<TagComponent>();
+
+			*typeEnum = tC.TypeEnum;
+		}
+
+		void OP_Set_TypeEnum(uint32_t entityID, uint32_t sceneID, int* typeEnum)
+		{
+			Entity e{ (entt::entity)entityID, s_ActiveScene };
+			auto& tC = e.GetComponent<TagComponent>();
+
+			tC.TypeEnum = *typeEnum;
+		}
+
 		// Input Wrapper
 		bool OP_Input_IsKeyPressed(KeyCode key)
 		{
@@ -458,6 +474,18 @@ namespace OP
 
 			auto& entityInstance = iM[childHandle];
 
+			*obj = entityInstance.GetInstance();
+		}
+
+		void OP_Entity_GetParent(uint32_t sceneID, uint32_t entityID, MonoObject** obj)
+		{
+			Entity entity((entt::entity)entityID, s_ActiveScene);
+
+			Entity parentEntity = entity.GetParent();
+
+			uint32_t parentHandle = parentEntity.GetEntityHandle();
+			std::unordered_map< uint32_t, EntityInstance> iM = ScriptManager::GetInstanceMap();
+			auto& entityInstance = iM[parentHandle];
 			*obj = entityInstance.GetInstance();
 		}
 

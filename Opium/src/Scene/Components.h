@@ -64,6 +64,7 @@ namespace OP
 	{
 		std::string Tag;
 
+		int TypeEnum = 0;
 		TagComponent() = default;
 		TagComponent(const TagComponent&) = default;
 		TagComponent(const std::string& tag)

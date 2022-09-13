@@ -174,6 +174,7 @@ namespace OP
 		Scene* GetScene() { return m_Scene; }
 
 		Entity GetChild(std::string tag);
+		Entity GetParent();
 
 		uint32_t GetEntityHandle() { return (uint32_t)m_EntityHandle; }
 
