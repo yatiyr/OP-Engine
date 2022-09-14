@@ -24,6 +24,8 @@ internal class SwarmRobot : Entity
 
     public float velChangeSpeed = 5.0f;
 
+    private Vec3 originalAxis = new Vec3(0.0f, 1.0f, 0.0f);
+
     public void OnCreate()
     {
         Console.WriteLine("Leader Robot Has been Created");
@@ -69,7 +71,7 @@ internal class SwarmRobot : Entity
             float dist = Vec3.Distance(robotPos, currentPosition);
             if (dist <= separationDistance)
             {
-                float distFactor = 1.0f / (dist * dist + 0.001f);
+                float distFactor = 1.0f / (dist * dist * dist + 0.001f);
                 Vec3 dir = currentPosition - robotPos;
                 dir.Normalize();
                 separation += dir * distFactor;
@@ -94,7 +96,7 @@ internal class SwarmRobot : Entity
             float dist = Vec3.Distance(obstaclePos, currentPosition);
             if (dist <= obstacleDistance)
             {
-                float distFactor = 1 / (dist * dist + 0.001f);
+                float distFactor = 1 / (dist * dist * dist + 0.001f);
                 Vec3 dir = currentPosition - obstaclePos;
                 dir.Normalize();
                 obstacleAvoidance += dir * distFactor;
@@ -114,10 +116,32 @@ internal class SwarmRobot : Entity
             targetVelocity.Normalize();
         }
 
+        if (currentPosition.x < -4)
+            targetVelocity = new Vec3(2.5f, 0.0f, 0.0f);
+        else if (currentPosition.x > 4)
+            targetVelocity = new Vec3(-2.5f, 0.0f, 0.0f);
+        else if (currentPosition.y < 2)
+            targetVelocity = new Vec3(0.0f, 2.5f, 0.0f);
+        else if (currentPosition.y > 7)
+            targetVelocity = new Vec3(0.0f, -2.5f, 0.0f);
+        else if (currentPosition.z < -5)
+            targetVelocity = new Vec3(0.0f, 0.0f, 2.5f);
+        else if (currentPosition.z > 5)
+            targetVelocity = new Vec3(0.0f, 0.0f, -2.5f);
+
         velocity = Vec3.Mix(velocity, targetVelocity, ts * velChangeSpeed);
         velocity.Normalize();
 
-        pC.LinearVelocity = velocity * speed;
+        tC.RotateFromTwoVectors(originalAxis, velocity);
+
+        velocity = velocity * speed;
+
+
+        pC.LinearVelocity = velocity;
+
+        
+
+
 
     }
 }

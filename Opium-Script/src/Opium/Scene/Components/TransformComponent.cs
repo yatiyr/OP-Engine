@@ -84,6 +84,11 @@ namespace OP
             }
         }
 
+        public void RotateFromTwoVectors(Vec3 axis1, Vec3 axis2)
+        {
+            RotateFromTwoVectors_Native(Entity.SceneID, Entity.EntityID, ref axis1, ref axis2);
+        }
+
         ////////////////////////////// GET-SET TRANSFORM ////////////////////////////////////////////////////
         [MethodImpl(MethodImplOptions.InternalCall)]
         public static extern void GetTransform_Native(uint sceneID, uint entityID, out Mat4 result);
@@ -114,6 +119,9 @@ namespace OP
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         public static extern void SetScale_Native(uint sceneID, uint entityID, ref Vec3 result);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        public static extern void RotateFromTwoVectors_Native(uint sceneID, uint entityID, ref Vec3 axis1, ref Vec3 axis2);
 
     }
 }

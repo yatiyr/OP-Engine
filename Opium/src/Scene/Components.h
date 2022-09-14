@@ -83,6 +83,7 @@ namespace OP
 		glm::vec3 Rotation = { 0.0f, 0.0f, 0.0f };
 		glm::vec3 Scale = { 1.0f, 1.0f, 1.0f };
 
+		glm::vec3 RuntimeControlledRotation = { 0.0f, 0.0f, 0.0f };
 
 		glm::mat4 globalTransformation = glm::mat4(1.0f);
 		glm::mat4 globalTransformationInv = glm::mat4(1.0f);

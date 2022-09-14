@@ -174,6 +174,15 @@ namespace OP
 			entity.Patch<TransformComponent>();
 		}
 
+		void OP_RotateFromTwoVectors(uint32_t sceneID, uint32_t entityID, glm::vec3* axis1, glm::vec3* axis2)
+		{
+			Entity entity((entt::entity)entityID, s_ActiveScene);
+			auto& transformComponent = entity.GetComponent<TransformComponent>();
+			glm::quat rot = glm::quat(*axis1, *axis2);
+			transformComponent.RuntimeControlledRotation = glm::eulerAngles(rot);
+			//entity.Patch<TransformComponent>();
+		}
+
 		///////////////////////////////////////// SCENE WRAPPERS //////////////////////////////////////////
 		void OP_Get_Skybox(char* SkyboxName)
 		{

@@ -47,7 +47,7 @@ namespace OP
 			{
 				auto& physics3DMaterial = GetComponent<Physics3DMaterial>();
 				btMotionState* mS = (btMotionState*)physics3DMaterial.RuntimeMotionState;
-
+				
 				if (mS)
 				{
 					btTransform transform;

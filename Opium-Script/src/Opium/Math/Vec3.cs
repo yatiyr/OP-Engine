@@ -30,6 +30,12 @@ namespace OP
             this.z = val.z;
         }
 
+        public static Vec3 Reflect(Vec3 incomingVec, Vec3 normal)
+        {
+            Vec3 result;
+            result = incomingVec - normal * 2.0f * (Dot(incomingVec, normal));
+            return result;
+        }
         public static Vec3 operator -(Vec3 val1, Vec3 val2)
         {
             return new Vec3(val1.x - val2.x, val1.y - val2.y, val1.z - val2.z);

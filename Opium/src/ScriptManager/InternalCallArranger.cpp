@@ -71,7 +71,7 @@ namespace OP
 			mono_add_internal_call("OP.TransformComponent::SetRotationQuat_Native",  OP::Script::OP_Set_RotationQuat);
 			mono_add_internal_call("OP.TransformComponent::GetScale_Native",         OP::Script::OP_Get_Scale);
 			mono_add_internal_call("OP.TransformComponent::SetScale_Native",         OP::Script::OP_Set_Scale);
-
+			mono_add_internal_call("OP.TransformComponent::RotateFromTwoVectors_Native", OP::Script::OP_RotateFromTwoVectors);
 
 		///////////////////////////////////// ARRANGE SCENE FUNCTIONS //////////////////////////////////////////////
 			mono_add_internal_call("OP.Scene::GetSkybox_Native",   OP::Script::OP_Get_Skybox);

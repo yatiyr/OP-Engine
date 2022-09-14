@@ -53,7 +53,7 @@ namespace OP
 		void OP_Set_RotationQuat(uint32_t sceneID, uint32_t entityID, glm::quat* inRotationQuat);
 		void OP_Get_Scale(uint32_t sceneID, uint32_t entityID, glm::vec3* outScale);
 		void OP_Set_Scale(uint32_t sceneID, uint32_t entityID, glm::vec3* inScale);
-
+		void OP_RotateFromTwoVectors(uint32_t sceneID, uint32_t entityID, glm::vec3* axis1, glm::vec3* axis2);
 		// Scene
 		void OP_Get_Skybox(char* SkyboxName);
 		void OP_Set_Skybox(char* SkyboxName);

@@ -465,7 +465,22 @@ namespace OP
 				transform.getRotation().getEulerZYX(rotEuler.z, rotEuler.y, rotEuler.x);
 
 				transformComponent.Translation = glm::vec3(origin.x(), origin.y(), origin.z());
-				transformComponent.Rotation = rotEuler;
+				if (transformComponent.RuntimeControlledRotation != glm::vec3(0.0f))
+				{
+					transformComponent.Rotation = transformComponent.RuntimeControlledRotation;
+					transformComponent.RuntimeControlledRotation = glm::vec3(0.0f);
+					glm::quat newQuat = glm::quat(transformComponent.RuntimeControlledRotation);
+
+					btQuaternion newRot = btQuaternion(newQuat.x, newQuat.y, newQuat.z, newQuat.w);
+					btTransform newTransform;
+					newTransform.setRotation(newRot);
+					newTransform.setOrigin(origin);					
+					mS->setWorldTransform(newTransform);
+				}
+				else
+				{
+					transformComponent.Rotation = rotEuler;
+				}
 				e.Patch<TransformComponent>();
 			}
 		}
