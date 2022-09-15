@@ -6,6 +6,9 @@ using OP;
 
 internal class SwarmRobot : Entity
 {
+
+    private float PI = 3.1415926f;
+    public float sensorAngle = 280.0f;
     public float speed = 1.0f;
 
     private TransformComponent tC;
@@ -17,7 +20,10 @@ internal class SwarmRobot : Entity
 
     public float separationDistance = 0.2f;
     public float obstacleDistance = 0.4f;
+    public float obstacleAvoidanceMultiplier = 10.0f;
     public float cohesionFactor = 1.0f;
+    public float separationMultiplier = 10.0f;
+    public float alignmentMultiplier = 10.0f;
 
     private Vec3 targetVelocity;
     private Vec3 velocity;
@@ -63,19 +69,31 @@ internal class SwarmRobot : Entity
         for(int i = 0; i < robots.Count; i++)
         {
             Vec3 robotPos = robots[i].BodyTransform.Translation;
-            Vec3 robotLinearVelocity = robots[i].Body.LinearVelocity;
+            Vec3 robotToCur = robotPos - currentPosition;
+            robotToCur.Normalize();
+            Vec3 curVelocity = velocity;
+            curVelocity.Normalize();
 
-            averageRobotPos += robotPos;
-            alignment += robotLinearVelocity;
+            float cosAngle = Vec3.Dot(curVelocity, robotToCur);
+            float cosAngleThreshold = (float)Math.Cos(sensorAngle * PI / 180.0f);
 
-            float dist = Vec3.Distance(robotPos, currentPosition);
-            if (dist <= separationDistance)
+            if (cosAngle >= cosAngleThreshold)
             {
-                float distFactor = 1.0f / (dist * dist * dist + 0.001f);
-                Vec3 dir = currentPosition - robotPos;
-                dir.Normalize();
-                separation += dir * distFactor;
+                Vec3 robotLinearVelocity = robots[i].Body.LinearVelocity;
+
+                averageRobotPos += robotPos;
+                alignment += robotLinearVelocity;
+
+                float dist = Vec3.Distance(robotPos, currentPosition);
+                if (dist <= separationDistance)
+                {
+                    float distFactor = 1.0f / (dist * dist * dist + 0.001f);
+                    Vec3 dir = currentPosition - robotPos;
+                    dir.Normalize();
+                    separation += dir * distFactor;
+                }
             }
+            
         }
 
 
@@ -103,7 +121,6 @@ internal class SwarmRobot : Entity
             }
         }
 
-        Console.Write("RobotCount = {0}, ObstacleCount = {1}", robots.Count, obstacles.Count);
         if (robots.Count == 0 && obstacles.Count == 0)
         {
             targetVelocity.x = 0;
@@ -112,7 +129,7 @@ internal class SwarmRobot : Entity
         }
         else
         {
-            targetVelocity = (cohesion * cohesionFactor + alignment + separation + obstacleAvoidance);
+            targetVelocity = (cohesion * cohesionFactor + alignment * alignmentMultiplier + separation * separationMultiplier + obstacleAvoidance * obstacleAvoidanceMultiplier);
             targetVelocity.Normalize();
         }
 

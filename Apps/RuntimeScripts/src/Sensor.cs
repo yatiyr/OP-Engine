@@ -69,12 +69,10 @@ internal class Sensor : Entity
 
         if(sB.TypeEnum == (int)TypeEnum.Obstacle)
         {
-            Console.WriteLine("Added Obstacle to collision list");
             Obstacles.Add(sB);
         }
         else if(sB.TypeEnum == (int)TypeEnum.Robot && Parent.EntityID != otherEntityID)
         {
-            Console.WriteLine("Added robot to collision list");
             Robots.Add(sB);
         }
             
@@ -93,12 +91,10 @@ internal class Sensor : Entity
 
         if (typeEnum == (int)TypeEnum.Obstacle)
         {
-            Console.WriteLine("Removed Obstacle from collision list");
             Obstacles.RemoveAll(s => s.EntityID == otherEntityID);
         }
         else if (typeEnum == (int)TypeEnum.Robot)
         {
-            Console.WriteLine("Removed Robot from collision list");
             Robots.RemoveAll(s => s.EntityID == otherEntityID);
         }
 

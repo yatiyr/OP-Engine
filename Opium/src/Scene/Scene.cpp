@@ -116,6 +116,11 @@ namespace OP
 		}
 	}
 
+	static void CopyScriptComponent(entt::registry& dst, entt::registry& src, const std::unordered_map<UUID, entt::entity>& enttMap)
+	{
+
+	}
+
 	template<typename Component>
 	static void CopyComponentIfExists(Entity dst, Entity src)
 	{
@@ -125,6 +130,69 @@ namespace OP
 		}
 	}
 
+	static void CopyScriptComponent(Entity dst, Entity src)
+	{
+		if (src.HasComponent<ScriptComponent>())
+		{
+			auto& sC = src.GetComponent<ScriptComponent>();
+
+			auto& sCDst = dst.AddOrReplaceComponent<ScriptComponent>(sC.ModuleName);
+
+			for (auto& [name, field] : sC.PublicFields)
+			{
+				PublicField* pField = (PublicField*)field;
+
+				if (pField->Type == FieldType::Int)
+				{
+
+					int val = pField->GetValue<int>();
+					PublicField* pFieldNew = (PublicField*)sCDst.PublicFields[name];
+					pFieldNew->SetValue<int>(val);
+					
+				}
+				else if (pField->Type == FieldType::Float)
+				{
+					float val = pField->GetValue<float>();
+					PublicField* pFieldNew = (PublicField*)sCDst.PublicFields[name];
+					pFieldNew->SetValue<float>(val);					
+				}
+				else if (pField->Type == FieldType::String)
+				{
+					std::string val = pField->GetValue<std::string>();
+					PublicField* pFieldNew = (PublicField*)sCDst.PublicFields[name];
+					pFieldNew->SetValue<std::string>(val);
+
+				}
+				else if (pField->Type == FieldType::UnsignedInt)
+				{
+					uint32_t val = pField->GetValue<uint32_t>();
+					PublicField* pFieldNew = (PublicField*)sCDst.PublicFields[name];
+					pFieldNew->SetValue<uint32_t>(val);
+					
+				}
+				else if (pField->Type == FieldType::Vec2)
+				{
+					glm::vec2 val = pField->GetValue<glm::vec2>();
+					PublicField* pFieldNew = (PublicField*)sCDst.PublicFields[name];
+					pFieldNew->SetValue<glm::vec2>(val);
+					
+				}
+				else if (pField->Type == FieldType::Vec3)
+				{
+					glm::vec3 val = pField->GetValue<glm::vec3>();
+					PublicField* pFieldNew = (PublicField*)sCDst.PublicFields[name];
+					pFieldNew->SetValue<glm::vec3>(val);
+					
+				}
+				else if (pField->Type == FieldType::Vec4)
+				{
+					glm::vec4 val = pField->GetValue<glm::vec4>();
+					PublicField* pFieldNew = (PublicField*)sCDst.PublicFields[name];
+					pFieldNew->SetValue<glm::vec4>(val);
+				}
+			}
+		}
+	}
 
 	Ref<Scene> Scene::Copy(Ref<Scene> other)
 	{
@@ -563,7 +631,7 @@ namespace OP
 			CopyComponentIfExists<CameraComponent>(newChild, childIterator);
 			CopyComponentIfExists<Rigidbody2DComponent>(newChild, childIterator);
 			CopyComponentIfExists<BoxCollider2DComponent>(newChild, childIterator);
-			CopyComponentIfExists<ScriptComponent>(newChild, childIterator);
+			CopyScriptComponent(newChild, childIterator);
 			CopyComponentIfExists<NativeScriptComponent>(newChild, childIterator);
 			CopyComponentIfExists<DirLightComponent>(newChild, childIterator);
 			CopyComponentIfExists<PointLightComponent>(newChild, childIterator);
@@ -648,7 +716,7 @@ namespace OP
 		CopyComponentIfExists<CameraComponent>         (newEntity, entity);
 		CopyComponentIfExists<Rigidbody2DComponent>    (newEntity, entity);
 		CopyComponentIfExists<BoxCollider2DComponent>  (newEntity, entity);
-		CopyComponentIfExists<ScriptComponent>         (newEntity, entity);
+		CopyScriptComponent                            (newEntity, entity);
 		CopyComponentIfExists<NativeScriptComponent>   (newEntity, entity);
 		CopyComponentIfExists<DirLightComponent>       (newEntity, entity);
 		CopyComponentIfExists<SpotLightComponent>      (newEntity, entity);
@@ -682,7 +750,7 @@ namespace OP
 			CopyComponentIfExists<CameraComponent>         (newChild, childIterator);
 			CopyComponentIfExists<Rigidbody2DComponent>    (newChild, childIterator);
 			CopyComponentIfExists<BoxCollider2DComponent>  (newChild, childIterator);
-			CopyComponentIfExists<ScriptComponent>         (newChild, childIterator);
+			CopyScriptComponent                            (newChild, childIterator);
 			CopyComponentIfExists<NativeScriptComponent>   (newChild, childIterator);
 			CopyComponentIfExists<DirLightComponent>       (newChild, childIterator);
 			CopyComponentIfExists<SpotLightComponent>      (newChild, childIterator);

@@ -643,7 +643,7 @@ namespace OP
 					p3DMc.FixRotX          = physics3DMaterialComponent["FixRotX"].as<bool>();
 					p3DMc.FixRotY		   = physics3DMaterialComponent["FixRotY"].as<bool>();
 					p3DMc.FixRotZ		   = physics3DMaterialComponent["FixRotZ"].as<bool>();
-					// p3DMc.IsKinematic = physics3DMaterialComponent["IsKinematic"].as<bool>();
+					p3DMc.IsKinematic      = physics3DMaterialComponent["IsKinematic"].as<bool>();
 				}
 
 				auto physics3DColliderComponent = entity["Physics3DColliderComponent"];
