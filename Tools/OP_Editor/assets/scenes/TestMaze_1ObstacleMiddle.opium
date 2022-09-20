@@ -1,0 +1,2685 @@
+Scene: Unitled
+Skybox: space
+ToneMap: false
+Exposure: 2.63000011
+Entities:
+  - Entity: 11806408221567271221
+    TagComponent:
+      Tag: Sensor
+      TypeEnum: 0
+    RootComponent:
+      Root: false
+    RelationshipComponent:
+      Children: 0
+      Parent: 10015497487802494324
+      First: 9032006565978239838
+      Prev: 10795034899815151007
+      Next: 6280580602472533345
+    ScriptComponent:
+      Name: Sensor
+      Fields:
+        publicField1_Float: 15
+        publicField2_Int: 0
+        publicField3_Int: 0
+        publicField4_Int: 0
+    TransformComponent:
+      Translation: [5.76908159, 2.02887535, 3.41767859]
+      Rotation: [0, -0, 0]
+      Scale: [4.840693, 3.99631, 3.70628333]
+    Physics3DMaterialComponent:
+      Mass: 1
+      Friction: 0.100000001
+      RollingFriction: 0.100000001
+      SpinningFriction: 0.100000001
+      Restitution: 0.5
+      IsKinematic: true
+      FixRotX: false
+      FixRotY: false
+      FixRotZ: false
+    Physics3DColliderComponent:
+      Shape: 0
+      Scale: [1, 1, 1]
+      ContactResponse: false
+  - Entity: 10015497487802494324
+    TagComponent:
+      Tag: Robot
+      TypeEnum: 1
+    RootComponent:
+      Root: true
+    RelationshipComponent:
+      Children: 0
+      Parent: 6915286330110533920
+      First: 11806408221567271221
+      Prev: 13503150988607561961
+      Next: 5120706994708688488
+    ScriptComponent:
+      Name: SwarmRobot
+      Fields:
+        cohesionFactor_Float: 10
+        separationDistance_Float: 2
+        sensorAngle_Float: 280
+        speed_Float: 3
+        obstacleDistance_Float: 3
+        obstacleAvoidanceMultiplier_Float: 10000000
+        separationMultiplier_Float: 10
+        alignmentMultiplier_Float: 50
+        velChangeSpeed_Float: 20
+    TransformComponent:
+      Translation: [5.76908159, 2.02887535, 3.41767859]
+      Rotation: [0, 0, 0]
+      Scale: [0.0948999971, 0.230540842, 0.0948999971]
+    Physics3DMaterialComponent:
+      Mass: 1
+      Friction: 0.100000001
+      RollingFriction: 0.100000001
+      SpinningFriction: 0.100000001
+      Restitution: 0.5
+      IsKinematic: false
+      FixRotX: false
+      FixRotY: false
+      FixRotZ: false
+    Physics3DColliderComponent:
+      Shape: 0
+      Scale: [1, 1, 1]
+      ContactResponse: true
+    MeshComponent:
+      MeshName: Pyramid
+    MaterialComponent:
+      MaterialName: DefaultPbr
+      TilingFactor: 1
+      HeightFactor: 0
+      ClipBorder: false
+      FloatValues:
+        roughness: 0.5
+        metalness: 0.100000001
+      Float2Values:
+        {}
+      Float3Values:
+        albedo: [0, 0, 0]
+      IntValues:
+        {}
+      Textures:
+        albedoMap: WhiteTexture
+        roughnessMap: WhiteTexture
+        metalnessMap: WhiteTexture
+        aoMap: WhiteTexture
+        normalMap: DefaultNormalMap
+        heightMap: WhiteTexture
+  - Entity: 9034459134507258493
+    TagComponent:
+      Tag: Sensor
+      TypeEnum: 0
+    RootComponent:
+      Root: false
+    RelationshipComponent:
+      Children: 0
+      Parent: 5315076943077056937
+      First: 11771003227331155079
+      Prev: 10229394848817788160
+      Next: 248640772652073654
+    ScriptComponent:
+      Name: Sensor
+      Fields:
+        publicField1_Float: 15
+        publicField2_Int: 0
+        publicField3_Int: 0
+        publicField4_Int: 0
+    TransformComponent:
+      Translation: [3.71355867, 2.02887034, 6.90288544]
+      Rotation: [0, -0, 0]
+      Scale: [4.840693, 3.99631, 3.70628333]
+    Physics3DMaterialComponent:
+      Mass: 1
+      Friction: 0.100000001
+      RollingFriction: 0.100000001
+      SpinningFriction: 0.100000001
+      Restitution: 0.5
+      IsKinematic: true
+      FixRotX: false
+      FixRotY: false
+      FixRotZ: false
+    Physics3DColliderComponent:
+      Shape: 0
+      Scale: [1, 1, 1]
+      ContactResponse: false
+  - Entity: 5315076943077056937
+    TagComponent:
+      Tag: Robot
+      TypeEnum: 1
+    RootComponent:
+      Root: true
+    RelationshipComponent:
+      Children: 0
+      Parent: 17298811986802943094
+      First: 9034459134507258493
+      Prev: 3627340884325700917
+      Next: 2137073031815824873
+    ScriptComponent:
+      Name: SwarmRobot
+      Fields:
+        cohesionFactor_Float: 10
+        separationDistance_Float: 2
+        sensorAngle_Float: 280
+        speed_Float: 3
+        obstacleDistance_Float: 3
+        obstacleAvoidanceMultiplier_Float: 10000000
+        separationMultiplier_Float: 10
+        alignmentMultiplier_Float: 50
+        velChangeSpeed_Float: 20
+    TransformComponent:
+      Translation: [3.71355867, 2.02887034, 6.90288544]
+      Rotation: [0, 0, 0]
+      Scale: [0.0948999971, 0.230540842, 0.0948999971]
+    Physics3DMaterialComponent:
+      Mass: 1
+      Friction: 0.100000001
+      RollingFriction: 0.100000001
+      SpinningFriction: 0.100000001
+      Restitution: 0.5
+      IsKinematic: false
+      FixRotX: false
+      FixRotY: false
+      FixRotZ: false
+    Physics3DColliderComponent:
+      Shape: 0
+      Scale: [1, 1, 1]
+      ContactResponse: true
+    MeshComponent:
+      MeshName: Pyramid
+    MaterialComponent:
+      MaterialName: DefaultPbr
+      TilingFactor: 1
+      HeightFactor: 0
+      ClipBorder: false
+      FloatValues:
+        roughness: 0.5
+        metalness: 0.100000001
+      Float2Values:
+        {}
+      Float3Values:
+        albedo: [0, 0, 0]
+      IntValues:
+        {}
+      Textures:
+        albedoMap: WhiteTexture
+        roughnessMap: WhiteTexture
+        metalnessMap: WhiteTexture
+        aoMap: WhiteTexture
+        normalMap: DefaultNormalMap
+        heightMap: WhiteTexture
+  - Entity: 14981568308537696340
+    TagComponent:
+      Tag: Sensor
+      TypeEnum: 0
+    RootComponent:
+      Root: false
+    RelationshipComponent:
+      Children: 0
+      Parent: 14294991759147732790
+      First: 3324494111840353211
+      Prev: 2544452011376551750
+      Next: 4860458895674419511
+    ScriptComponent:
+      Name: Sensor
+      Fields:
+        publicField1_Float: 15
+        publicField2_Int: 0
+        publicField3_Int: 0
+        publicField4_Int: 0
+    TransformComponent:
+      Translation: [1.2827996, 2.02886701, 5.48084831]
+      Rotation: [0, -0, 0]
+      Scale: [4.840693, 3.99631, 3.70628333]
+    Physics3DMaterialComponent:
+      Mass: 1
+      Friction: 0.100000001
+      RollingFriction: 0.100000001
+      SpinningFriction: 0.100000001
+      Restitution: 0.5
+      IsKinematic: true
+      FixRotX: false
+      FixRotY: false
+      FixRotZ: false
+    Physics3DColliderComponent:
+      Shape: 0
+      Scale: [1, 1, 1]
+      ContactResponse: false
+  - Entity: 14294991759147732790
+    TagComponent:
+      Tag: Robot
+      TypeEnum: 1
+    RootComponent:
+      Root: true
+    RelationshipComponent:
+      Children: 0
+      Parent: 560230350512850791
+      First: 14981568308537696340
+      Prev: 71305055778268399
+      Next: 17222347477062271116
+    ScriptComponent:
+      Name: SwarmRobot
+      Fields:
+        cohesionFactor_Float: 10
+        separationDistance_Float: 2
+        sensorAngle_Float: 280
+        speed_Float: 3
+        obstacleDistance_Float: 3
+        obstacleAvoidanceMultiplier_Float: 10000000
+        separationMultiplier_Float: 10
+        alignmentMultiplier_Float: 50
+        velChangeSpeed_Float: 20
+    TransformComponent:
+      Translation: [1.2827996, 2.02886701, 5.48084831]
+      Rotation: [0, 0, 0]
+      Scale: [0.0948999971, 0.230540842, 0.0948999971]
+    Physics3DMaterialComponent:
+      Mass: 1
+      Friction: 0.100000001
+      RollingFriction: 0.100000001
+      SpinningFriction: 0.100000001
+      Restitution: 0.5
+      IsKinematic: false
+      FixRotX: false
+      FixRotY: false
+      FixRotZ: false
+    Physics3DColliderComponent:
+      Shape: 0
+      Scale: [1, 1, 1]
+      ContactResponse: true
+    MeshComponent:
+      MeshName: Pyramid
+    MaterialComponent:
+      MaterialName: DefaultPbr
+      TilingFactor: 1
+      HeightFactor: 0
+      ClipBorder: false
+      FloatValues:
+        roughness: 0.5
+        metalness: 0.100000001
+      Float2Values:
+        {}
+      Float3Values:
+        albedo: [0, 0, 0]
+      IntValues:
+        {}
+      Textures:
+        albedoMap: WhiteTexture
+        roughnessMap: WhiteTexture
+        metalnessMap: WhiteTexture
+        aoMap: WhiteTexture
+        normalMap: DefaultNormalMap
+        heightMap: WhiteTexture
+  - Entity: 1959882339404881652
+    TagComponent:
+      Tag: Sensor
+      TypeEnum: 0
+    RootComponent:
+      Root: false
+    RelationshipComponent:
+      Children: 0
+      Parent: 14820731208503998223
+      First: 4179884244046856249
+      Prev: 5396158466765186653
+      Next: 5039303934503639576
+    ScriptComponent:
+      Name: Sensor
+      Fields:
+        publicField1_Float: 15
+        publicField2_Int: 0
+        publicField3_Int: 0
+        publicField4_Int: 0
+    TransformComponent:
+      Translation: [-1.28258801, 2.02911305, -1.73332405]
+      Rotation: [0, -0, 0]
+      Scale: [4.840693, 3.99631, 3.70628333]
+    Physics3DMaterialComponent:
+      Mass: 1
+      Friction: 0.100000001
+      RollingFriction: 0.100000001
+      SpinningFriction: 0.100000001
+      Restitution: 0.5
+      IsKinematic: true
+      FixRotX: false
+      FixRotY: false
+      FixRotZ: false
+    Physics3DColliderComponent:
+      Shape: 0
+      Scale: [1, 1, 1]
+      ContactResponse: false
+  - Entity: 14820731208503998223
+    TagComponent:
+      Tag: Robot
+      TypeEnum: 1
+    RootComponent:
+      Root: true
+    RelationshipComponent:
+      Children: 0
+      Parent: 11962895133262367546
+      First: 1959882339404881652
+      Prev: 1839992880326459137
+      Next: 12245463898631195935
+    ScriptComponent:
+      Name: SwarmRobot
+      Fields:
+        cohesionFactor_Float: 10
+        separationDistance_Float: 2
+        sensorAngle_Float: 280
+        speed_Float: 3
+        obstacleDistance_Float: 3
+        obstacleAvoidanceMultiplier_Float: 10000000
+        separationMultiplier_Float: 10
+        alignmentMultiplier_Float: 50
+        velChangeSpeed_Float: 20
+    TransformComponent:
+      Translation: [-1.28258801, 2.02911305, -1.73332405]
+      Rotation: [0, 0, 0]
+      Scale: [0.0948999971, 0.230540842, 0.0948999971]
+    Physics3DMaterialComponent:
+      Mass: 1
+      Friction: 0.100000001
+      RollingFriction: 0.100000001
+      SpinningFriction: 0.100000001
+      Restitution: 0.5
+      IsKinematic: false
+      FixRotX: false
+      FixRotY: false
+      FixRotZ: false
+    Physics3DColliderComponent:
+      Shape: 0
+      Scale: [1, 1, 1]
+      ContactResponse: true
+    MeshComponent:
+      MeshName: Pyramid
+    MaterialComponent:
+      MaterialName: DefaultPbr
+      TilingFactor: 1
+      HeightFactor: 0
+      ClipBorder: false
+      FloatValues:
+        roughness: 0.5
+        metalness: 0.100000001
+      Float2Values:
+        {}
+      Float3Values:
+        albedo: [0, 0, 0]
+      IntValues:
+        {}
+      Textures:
+        albedoMap: WhiteTexture
+        roughnessMap: WhiteTexture
+        metalnessMap: WhiteTexture
+        aoMap: WhiteTexture
+        normalMap: DefaultNormalMap
+        heightMap: WhiteTexture
+  - Entity: 18126181588168016828
+    TagComponent:
+      Tag: Sensor
+      TypeEnum: 0
+    RootComponent:
+      Root: false
+    RelationshipComponent:
+      Children: 0
+      Parent: 11116999710515337062
+      First: 6962067596276796824
+      Prev: 2336050890792416929
+      Next: 3453697484052345437
+    ScriptComponent:
+      Name: Sensor
+      Fields:
+        publicField1_Float: 15
+        publicField2_Int: 0
+        publicField3_Int: 0
+        publicField4_Int: 0
+    TransformComponent:
+      Translation: [-6.0888586, 2.02934933, -2.20854688]
+      Rotation: [0, -0, 0]
+      Scale: [4.840693, 3.99631, 3.70628333]
+    Physics3DMaterialComponent:
+      Mass: 1
+      Friction: 0.100000001
+      RollingFriction: 0.100000001
+      SpinningFriction: 0.100000001
+      Restitution: 0.5
+      IsKinematic: true
+      FixRotX: false
+      FixRotY: false
+      FixRotZ: false
+    Physics3DColliderComponent:
+      Shape: 0
+      Scale: [1, 1, 1]
+      ContactResponse: false
+  - Entity: 11116999710515337062
+    TagComponent:
+      Tag: Robot
+      TypeEnum: 1
+    RootComponent:
+      Root: true
+    RelationshipComponent:
+      Children: 0
+      Parent: 18069892811454948818
+      First: 18126181588168016828
+      Prev: 7645853119337430002
+      Next: 11737867723616167436
+    ScriptComponent:
+      Name: SwarmRobot
+      Fields:
+        cohesionFactor_Float: 10
+        separationDistance_Float: 2
+        sensorAngle_Float: 280
+        speed_Float: 3
+        obstacleDistance_Float: 3
+        obstacleAvoidanceMultiplier_Float: 10000000
+        separationMultiplier_Float: 10
+        alignmentMultiplier_Float: 50
+        velChangeSpeed_Float: 20
+    TransformComponent:
+      Translation: [-6.0888586, 2.02934933, -2.20854688]
+      Rotation: [0, 0, 0]
+      Scale: [0.0948999971, 0.230540842, 0.0948999971]
+    Physics3DMaterialComponent:
+      Mass: 1
+      Friction: 0.100000001
+      RollingFriction: 0.100000001
+      SpinningFriction: 0.100000001
+      Restitution: 0.5
+      IsKinematic: false
+      FixRotX: false
+      FixRotY: false
+      FixRotZ: false
+    Physics3DColliderComponent:
+      Shape: 0
+      Scale: [1, 1, 1]
+      ContactResponse: true
+    MeshComponent:
+      MeshName: Pyramid
+    MaterialComponent:
+      MaterialName: DefaultPbr
+      TilingFactor: 1
+      HeightFactor: 0
+      ClipBorder: false
+      FloatValues:
+        roughness: 0.5
+        metalness: 0.100000001
+      Float2Values:
+        {}
+      Float3Values:
+        albedo: [0, 0, 0]
+      IntValues:
+        {}
+      Textures:
+        albedoMap: WhiteTexture
+        roughnessMap: WhiteTexture
+        metalnessMap: WhiteTexture
+        aoMap: WhiteTexture
+        normalMap: DefaultNormalMap
+        heightMap: WhiteTexture
+  - Entity: 8171717528816754455
+    TagComponent:
+      Tag: Sensor
+      TypeEnum: 0
+    RootComponent:
+      Root: false
+    RelationshipComponent:
+      Children: 0
+      Parent: 3265030803358176918
+      First: 3470564065098510181
+      Prev: 13415526977239292917
+      Next: 2769468143251375671
+    ScriptComponent:
+      Name: Sensor
+      Fields:
+        publicField1_Float: 15
+        publicField2_Int: 0
+        publicField3_Int: 0
+        publicField4_Int: 0
+    TransformComponent:
+      Translation: [-5.52750683, 2.02911377, -3.30881763]
+      Rotation: [0, -0, 0]
+      Scale: [4.840693, 3.99631, 3.70628333]
+    Physics3DMaterialComponent:
+      Mass: 1
+      Friction: 0.100000001
+      RollingFriction: 0.100000001
+      SpinningFriction: 0.100000001
+      Restitution: 0.5
+      IsKinematic: true
+      FixRotX: false
+      FixRotY: false
+      FixRotZ: false
+    Physics3DColliderComponent:
+      Shape: 0
+      Scale: [1, 1, 1]
+      ContactResponse: false
+  - Entity: 3265030803358176918
+    TagComponent:
+      Tag: Robot
+      TypeEnum: 1
+    RootComponent:
+      Root: true
+    RelationshipComponent:
+      Children: 0
+      Parent: 16427826509856040048
+      First: 8171717528816754455
+      Prev: 10548766267575529608
+      Next: 11443649321268972517
+    ScriptComponent:
+      Name: SwarmRobot
+      Fields:
+        cohesionFactor_Float: 10
+        separationDistance_Float: 2
+        sensorAngle_Float: 280
+        speed_Float: 3
+        obstacleDistance_Float: 3
+        obstacleAvoidanceMultiplier_Float: 10000000
+        separationMultiplier_Float: 10
+        alignmentMultiplier_Float: 50
+        velChangeSpeed_Float: 20
+    TransformComponent:
+      Translation: [-5.52750683, 2.02911377, -3.30881763]
+      Rotation: [0, 0, 0]
+      Scale: [0.0948999971, 0.230540842, 0.0948999971]
+    Physics3DMaterialComponent:
+      Mass: 1
+      Friction: 0.100000001
+      RollingFriction: 0.100000001
+      SpinningFriction: 0.100000001
+      Restitution: 0.5
+      IsKinematic: false
+      FixRotX: false
+      FixRotY: false
+      FixRotZ: false
+    Physics3DColliderComponent:
+      Shape: 0
+      Scale: [1, 1, 1]
+      ContactResponse: true
+    MeshComponent:
+      MeshName: Pyramid
+    MaterialComponent:
+      MaterialName: DefaultPbr
+      TilingFactor: 1
+      HeightFactor: 0
+      ClipBorder: false
+      FloatValues:
+        roughness: 0.5
+        metalness: 0.100000001
+      Float2Values:
+        {}
+      Float3Values:
+        albedo: [0, 0, 0]
+      IntValues:
+        {}
+      Textures:
+        albedoMap: WhiteTexture
+        roughnessMap: WhiteTexture
+        metalnessMap: WhiteTexture
+        aoMap: WhiteTexture
+        normalMap: DefaultNormalMap
+        heightMap: WhiteTexture
+  - Entity: 13815826821302124000
+    TagComponent:
+      Tag: Sensor
+      TypeEnum: 0
+    RootComponent:
+      Root: false
+    RelationshipComponent:
+      Children: 0
+      Parent: 14366484255838150273
+      First: 10190702993664331032
+      Prev: 18087387462960677144
+      Next: 10936953463165489297
+    ScriptComponent:
+      Name: Sensor
+      Fields:
+        publicField1_Float: 15
+        publicField2_Int: 0
+        publicField3_Int: 0
+        publicField4_Int: 0
+    TransformComponent:
+      Translation: [-4.0610733, 2.02887321, -4.57078123]
+      Rotation: [0, -0, 0]
+      Scale: [4.840693, 3.99631, 3.70628333]
+    Physics3DMaterialComponent:
+      Mass: 1
+      Friction: 0.100000001
+      RollingFriction: 0.100000001
+      SpinningFriction: 0.100000001
+      Restitution: 0.5
+      IsKinematic: true
+      FixRotX: false
+      FixRotY: false
+      FixRotZ: false
+    Physics3DColliderComponent:
+      Shape: 0
+      Scale: [1, 1, 1]
+      ContactResponse: false
+  - Entity: 14366484255838150273
+    TagComponent:
+      Tag: Robot
+      TypeEnum: 1
+    RootComponent:
+      Root: true
+    RelationshipComponent:
+      Children: 0
+      Parent: 15318070766118351272
+      First: 13815826821302124000
+      Prev: 15155362310456528009
+      Next: 5379276238274806490
+    ScriptComponent:
+      Name: SwarmRobot
+      Fields:
+        cohesionFactor_Float: 10
+        separationDistance_Float: 2
+        sensorAngle_Float: 280
+        speed_Float: 3
+        obstacleDistance_Float: 3
+        obstacleAvoidanceMultiplier_Float: 10000000
+        separationMultiplier_Float: 10
+        alignmentMultiplier_Float: 50
+        velChangeSpeed_Float: 20
+    TransformComponent:
+      Translation: [-4.0610733, 2.02887321, -4.57078123]
+      Rotation: [0, 0, 0]
+      Scale: [0.0948999971, 0.230540842, 0.0948999971]
+    Physics3DMaterialComponent:
+      Mass: 1
+      Friction: 0.100000001
+      RollingFriction: 0.100000001
+      SpinningFriction: 0.100000001
+      Restitution: 0.5
+      IsKinematic: false
+      FixRotX: false
+      FixRotY: false
+      FixRotZ: false
+    Physics3DColliderComponent:
+      Shape: 0
+      Scale: [1, 1, 1]
+      ContactResponse: true
+    MeshComponent:
+      MeshName: Pyramid
+    MaterialComponent:
+      MaterialName: DefaultPbr
+      TilingFactor: 1
+      HeightFactor: 0
+      ClipBorder: false
+      FloatValues:
+        roughness: 0.5
+        metalness: 0.100000001
+      Float2Values:
+        {}
+      Float3Values:
+        albedo: [0, 0, 0]
+      IntValues:
+        {}
+      Textures:
+        albedoMap: WhiteTexture
+        roughnessMap: WhiteTexture
+        metalnessMap: WhiteTexture
+        aoMap: WhiteTexture
+        normalMap: DefaultNormalMap
+        heightMap: WhiteTexture
+  - Entity: 1677640725822420955
+    TagComponent:
+      Tag: Sensor
+      TypeEnum: 0
+    RootComponent:
+      Root: false
+    RelationshipComponent:
+      Children: 0
+      Parent: 15411501873412425585
+      First: 1421906666157171165
+      Prev: 4634759723272847211
+      Next: 2359281892547894585
+    ScriptComponent:
+      Name: Sensor
+      Fields:
+        publicField1_Float: 15
+        publicField2_Int: 0
+        publicField3_Int: 0
+        publicField4_Int: 0
+    TransformComponent:
+      Translation: [-2.21674347, 2.02887702, -5.07373667]
+      Rotation: [0, -0, 0]
+      Scale: [4.840693, 3.99631, 3.70628333]
+    Physics3DMaterialComponent:
+      Mass: 1
+      Friction: 0.100000001
+      RollingFriction: 0.100000001
+      SpinningFriction: 0.100000001
+      Restitution: 0.5
+      IsKinematic: true
+      FixRotX: false
+      FixRotY: false
+      FixRotZ: false
+    Physics3DColliderComponent:
+      Shape: 0
+      Scale: [1, 1, 1]
+      ContactResponse: false
+  - Entity: 15411501873412425585
+    TagComponent:
+      Tag: Robot
+      TypeEnum: 1
+    RootComponent:
+      Root: true
+    RelationshipComponent:
+      Children: 0
+      Parent: 12002181889079150863
+      First: 1677640725822420955
+      Prev: 15070898393694207959
+      Next: 17200427944002250960
+    ScriptComponent:
+      Name: SwarmRobot
+      Fields:
+        cohesionFactor_Float: 10
+        separationDistance_Float: 2
+        sensorAngle_Float: 280
+        speed_Float: 3
+        obstacleDistance_Float: 3
+        obstacleAvoidanceMultiplier_Float: 10000000
+        separationMultiplier_Float: 10
+        alignmentMultiplier_Float: 50
+        velChangeSpeed_Float: 20
+    TransformComponent:
+      Translation: [-2.21674347, 2.02887702, -5.07373667]
+      Rotation: [0, 0, 0]
+      Scale: [0.0948999971, 0.230540842, 0.0948999971]
+    Physics3DMaterialComponent:
+      Mass: 1
+      Friction: 0.100000001
+      RollingFriction: 0.100000001
+      SpinningFriction: 0.100000001
+      Restitution: 0.5
+      IsKinematic: false
+      FixRotX: false
+      FixRotY: false
+      FixRotZ: false
+    Physics3DColliderComponent:
+      Shape: 0
+      Scale: [1, 1, 1]
+      ContactResponse: true
+    MeshComponent:
+      MeshName: Pyramid
+    MaterialComponent:
+      MaterialName: DefaultPbr
+      TilingFactor: 1
+      HeightFactor: 0
+      ClipBorder: false
+      FloatValues:
+        roughness: 0.5
+        metalness: 0.100000001
+      Float2Values:
+        {}
+      Float3Values:
+        albedo: [0, 0, 0]
+      IntValues:
+        {}
+      Textures:
+        albedoMap: WhiteTexture
+        roughnessMap: WhiteTexture
+        metalnessMap: WhiteTexture
+        aoMap: WhiteTexture
+        normalMap: DefaultNormalMap
+        heightMap: WhiteTexture
+  - Entity: 11727865679043742177
+    TagComponent:
+      Tag: Sensor
+      TypeEnum: 0
+    RootComponent:
+      Root: false
+    RelationshipComponent:
+      Children: 0
+      Parent: 10263070280104956600
+      First: 4260489787177510295
+      Prev: 8675798208811880095
+      Next: 15609347234213899691
+    ScriptComponent:
+      Name: Sensor
+      Fields:
+        publicField1_Float: 15
+        publicField2_Int: 0
+        publicField3_Int: 0
+        publicField4_Int: 0
+    TransformComponent:
+      Translation: [0.974241972, 2.02888155, -2.46546841]
+      Rotation: [0, -0, 0]
+      Scale: [4.840693, 3.99631, 3.70628333]
+    Physics3DMaterialComponent:
+      Mass: 1
+      Friction: 0.100000001
+      RollingFriction: 0.100000001
+      SpinningFriction: 0.100000001
+      Restitution: 0.5
+      IsKinematic: true
+      FixRotX: false
+      FixRotY: false
+      FixRotZ: false
+    Physics3DColliderComponent:
+      Shape: 0
+      Scale: [1, 1, 1]
+      ContactResponse: false
+  - Entity: 10263070280104956600
+    TagComponent:
+      Tag: Robot
+      TypeEnum: 1
+    RootComponent:
+      Root: true
+    RelationshipComponent:
+      Children: 0
+      Parent: 14665362715212892135
+      First: 11727865679043742177
+      Prev: 15188126552377064875
+      Next: 17771844206510927630
+    ScriptComponent:
+      Name: SwarmRobot
+      Fields:
+        cohesionFactor_Float: 10
+        separationDistance_Float: 2
+        sensorAngle_Float: 280
+        speed_Float: 3
+        obstacleDistance_Float: 3
+        obstacleAvoidanceMultiplier_Float: 10000000
+        separationMultiplier_Float: 10
+        alignmentMultiplier_Float: 50
+        velChangeSpeed_Float: 20
+    TransformComponent:
+      Translation: [0.974241972, 2.02888155, -2.46546841]
+      Rotation: [0, 0, 0]
+      Scale: [0.0948999971, 0.230540842, 0.0948999971]
+    Physics3DMaterialComponent:
+      Mass: 1
+      Friction: 0.100000001
+      RollingFriction: 0.100000001
+      SpinningFriction: 0.100000001
+      Restitution: 0.5
+      IsKinematic: false
+      FixRotX: false
+      FixRotY: false
+      FixRotZ: false
+    Physics3DColliderComponent:
+      Shape: 0
+      Scale: [1, 1, 1]
+      ContactResponse: true
+    MeshComponent:
+      MeshName: Pyramid
+    MaterialComponent:
+      MaterialName: DefaultPbr
+      TilingFactor: 1
+      HeightFactor: 0
+      ClipBorder: false
+      FloatValues:
+        roughness: 0.5
+        metalness: 0.100000001
+      Float2Values:
+        {}
+      Float3Values:
+        albedo: [0, 0, 0]
+      IntValues:
+        {}
+      Textures:
+        albedoMap: WhiteTexture
+        roughnessMap: WhiteTexture
+        metalnessMap: WhiteTexture
+        aoMap: WhiteTexture
+        normalMap: DefaultNormalMap
+        heightMap: WhiteTexture
+  - Entity: 348328397188551931
+    TagComponent:
+      Tag: Sensor
+      TypeEnum: 0
+    RootComponent:
+      Root: false
+    RelationshipComponent:
+      Children: 0
+      Parent: 11360249738688887555
+      First: 13513259521177830500
+      Prev: 9512868461222435102
+      Next: 5106879818492934364
+    ScriptComponent:
+      Name: Sensor
+      Fields:
+        publicField1_Float: 15
+        publicField2_Int: 0
+        publicField3_Int: 0
+        publicField4_Int: 0
+    TransformComponent:
+      Translation: [2.51689816, 2.02888465, -2.86082506]
+      Rotation: [0, -0, 0]
+      Scale: [4.840693, 3.99631, 3.70628333]
+    Physics3DMaterialComponent:
+      Mass: 1
+      Friction: 0.100000001
+      RollingFriction: 0.100000001
+      SpinningFriction: 0.100000001
+      Restitution: 0.5
+      IsKinematic: true
+      FixRotX: false
+      FixRotY: false
+      FixRotZ: false
+    Physics3DColliderComponent:
+      Shape: 0
+      Scale: [1, 1, 1]
+      ContactResponse: false
+  - Entity: 11360249738688887555
+    TagComponent:
+      Tag: Robot
+      TypeEnum: 1
+    RootComponent:
+      Root: true
+    RelationshipComponent:
+      Children: 0
+      Parent: 7628362025270285783
+      First: 348328397188551931
+      Prev: 1297817049302698875
+      Next: 14521719083199068720
+    ScriptComponent:
+      Name: SwarmRobot
+      Fields:
+        cohesionFactor_Float: 10
+        separationDistance_Float: 2
+        sensorAngle_Float: 280
+        speed_Float: 3
+        obstacleDistance_Float: 3
+        obstacleAvoidanceMultiplier_Float: 10000000
+        separationMultiplier_Float: 10
+        alignmentMultiplier_Float: 50
+        velChangeSpeed_Float: 20
+    TransformComponent:
+      Translation: [2.51689816, 2.02888465, -2.86082506]
+      Rotation: [0, 0, 0]
+      Scale: [0.0948999971, 0.230540842, 0.0948999971]
+    Physics3DMaterialComponent:
+      Mass: 1
+      Friction: 0.100000001
+      RollingFriction: 0.100000001
+      SpinningFriction: 0.100000001
+      Restitution: 0.5
+      IsKinematic: false
+      FixRotX: false
+      FixRotY: false
+      FixRotZ: false
+    Physics3DColliderComponent:
+      Shape: 0
+      Scale: [1, 1, 1]
+      ContactResponse: true
+    MeshComponent:
+      MeshName: Pyramid
+    MaterialComponent:
+      MaterialName: DefaultPbr
+      TilingFactor: 1
+      HeightFactor: 0
+      ClipBorder: false
+      FloatValues:
+        roughness: 0.5
+        metalness: 0.100000001
+      Float2Values:
+        {}
+      Float3Values:
+        albedo: [0, 0, 0]
+      IntValues:
+        {}
+      Textures:
+        albedoMap: WhiteTexture
+        roughnessMap: WhiteTexture
+        metalnessMap: WhiteTexture
+        aoMap: WhiteTexture
+        normalMap: DefaultNormalMap
+        heightMap: WhiteTexture
+  - Entity: 17635615876790332001
+    TagComponent:
+      Tag: Sensor
+      TypeEnum: 0
+    RootComponent:
+      Root: false
+    RelationshipComponent:
+      Children: 0
+      Parent: 16565869628382932923
+      First: 8765526952509781477
+      Prev: 17734134768405743905
+      Next: 2847825582582696056
+    ScriptComponent:
+      Name: Sensor
+      Fields:
+        publicField1_Float: 15
+        publicField2_Int: 0
+        publicField3_Int: 0
+        publicField4_Int: 0
+    TransformComponent:
+      Translation: [2.85283422, 2.02888322, 0.84203589]
+      Rotation: [0, -0, 0]
+      Scale: [4.840693, 3.99631, 3.70628333]
+    Physics3DMaterialComponent:
+      Mass: 1
+      Friction: 0.100000001
+      RollingFriction: 0.100000001
+      SpinningFriction: 0.100000001
+      Restitution: 0.5
+      IsKinematic: true
+      FixRotX: false
+      FixRotY: false
+      FixRotZ: false
+    Physics3DColliderComponent:
+      Shape: 0
+      Scale: [1, 1, 1]
+      ContactResponse: false
+  - Entity: 16565869628382932923
+    TagComponent:
+      Tag: Robot
+      TypeEnum: 1
+    RootComponent:
+      Root: true
+    RelationshipComponent:
+      Children: 0
+      Parent: 1055633774829178485
+      First: 17635615876790332001
+      Prev: 7614255140213667879
+      Next: 13260472950265546865
+    ScriptComponent:
+      Name: SwarmRobot
+      Fields:
+        cohesionFactor_Float: 10
+        separationDistance_Float: 2
+        sensorAngle_Float: 280
+        speed_Float: 3
+        obstacleDistance_Float: 3
+        obstacleAvoidanceMultiplier_Float: 10000000
+        separationMultiplier_Float: 10
+        alignmentMultiplier_Float: 50
+        velChangeSpeed_Float: 20
+    TransformComponent:
+      Translation: [2.85283422, 2.02888322, 0.84203589]
+      Rotation: [0, 0, 0]
+      Scale: [0.0948999971, 0.230540842, 0.0948999971]
+    Physics3DMaterialComponent:
+      Mass: 1
+      Friction: 0.100000001
+      RollingFriction: 0.100000001
+      SpinningFriction: 0.100000001
+      Restitution: 0.5
+      IsKinematic: false
+      FixRotX: false
+      FixRotY: false
+      FixRotZ: false
+    Physics3DColliderComponent:
+      Shape: 0
+      Scale: [1, 1, 1]
+      ContactResponse: true
+    MeshComponent:
+      MeshName: Pyramid
+    MaterialComponent:
+      MaterialName: DefaultPbr
+      TilingFactor: 1
+      HeightFactor: 0
+      ClipBorder: false
+      FloatValues:
+        roughness: 0.5
+        metalness: 0.100000001
+      Float2Values:
+        {}
+      Float3Values:
+        albedo: [0, 0, 0]
+      IntValues:
+        {}
+      Textures:
+        albedoMap: WhiteTexture
+        roughnessMap: WhiteTexture
+        metalnessMap: WhiteTexture
+        aoMap: WhiteTexture
+        normalMap: DefaultNormalMap
+        heightMap: WhiteTexture
+  - Entity: 12214167879418016211
+    TagComponent:
+      Tag: Sensor
+      TypeEnum: 0
+    RootComponent:
+      Root: false
+    RelationshipComponent:
+      Children: 0
+      Parent: 15571284326611360972
+      First: 392610805767647494
+      Prev: 9398638823815111640
+      Next: 790365727706281338
+    ScriptComponent:
+      Name: Sensor
+      Fields:
+        publicField1_Float: 15
+        publicField2_Int: 0
+        publicField3_Int: 0
+        publicField4_Int: 0
+    TransformComponent:
+      Translation: [0.300121963, 2.02887797, 1.38591325]
+      Rotation: [0, -0, 0]
+      Scale: [4.840693, 3.99631, 3.70628333]
+    Physics3DMaterialComponent:
+      Mass: 1
+      Friction: 0.100000001
+      RollingFriction: 0.100000001
+      SpinningFriction: 0.100000001
+      Restitution: 0.5
+      IsKinematic: true
+      FixRotX: false
+      FixRotY: false
+      FixRotZ: false
+    Physics3DColliderComponent:
+      Shape: 0
+      Scale: [1, 1, 1]
+      ContactResponse: false
+  - Entity: 15571284326611360972
+    TagComponent:
+      Tag: Robot
+      TypeEnum: 1
+    RootComponent:
+      Root: true
+    RelationshipComponent:
+      Children: 0
+      Parent: 6560920172311516937
+      First: 12214167879418016211
+      Prev: 4666156136349804141
+      Next: 2775541905309267355
+    ScriptComponent:
+      Name: SwarmRobot
+      Fields:
+        cohesionFactor_Float: 10
+        separationDistance_Float: 2
+        sensorAngle_Float: 280
+        speed_Float: 3
+        obstacleDistance_Float: 3
+        obstacleAvoidanceMultiplier_Float: 10000000
+        separationMultiplier_Float: 10
+        alignmentMultiplier_Float: 50
+        velChangeSpeed_Float: 20
+    TransformComponent:
+      Translation: [0.300121963, 2.02887797, 1.38591325]
+      Rotation: [0, 0, 0]
+      Scale: [0.0948999971, 0.230540842, 0.0948999971]
+    Physics3DMaterialComponent:
+      Mass: 1
+      Friction: 0.100000001
+      RollingFriction: 0.100000001
+      SpinningFriction: 0.100000001
+      Restitution: 0.5
+      IsKinematic: false
+      FixRotX: false
+      FixRotY: false
+      FixRotZ: false
+    Physics3DColliderComponent:
+      Shape: 0
+      Scale: [1, 1, 1]
+      ContactResponse: true
+    MeshComponent:
+      MeshName: Pyramid
+    MaterialComponent:
+      MaterialName: DefaultPbr
+      TilingFactor: 1
+      HeightFactor: 0
+      ClipBorder: false
+      FloatValues:
+        roughness: 0.5
+        metalness: 0.100000001
+      Float2Values:
+        {}
+      Float3Values:
+        albedo: [0, 0, 0]
+      IntValues:
+        {}
+      Textures:
+        albedoMap: WhiteTexture
+        roughnessMap: WhiteTexture
+        metalnessMap: WhiteTexture
+        aoMap: WhiteTexture
+        normalMap: DefaultNormalMap
+        heightMap: WhiteTexture
+  - Entity: 215200725626368542
+    TagComponent:
+      Tag: Sensor
+      TypeEnum: 0
+    RootComponent:
+      Root: false
+    RelationshipComponent:
+      Children: 0
+      Parent: 807489849356755417
+      First: 15171075327244173399
+      Prev: 16802355571640104176
+      Next: 12917695577543336372
+    ScriptComponent:
+      Name: Sensor
+      Fields:
+        publicField1_Float: 15
+        publicField2_Int: 0
+        publicField3_Int: 0
+        publicField4_Int: 0
+    TransformComponent:
+      Translation: [-1.70606446, 2.02887344, 2.72510719]
+      Rotation: [0, -0, 0]
+      Scale: [4.840693, 3.99631, 3.70628333]
+    Physics3DMaterialComponent:
+      Mass: 1
+      Friction: 0.100000001
+      RollingFriction: 0.100000001
+      SpinningFriction: 0.100000001
+      Restitution: 0.5
+      IsKinematic: true
+      FixRotX: false
+      FixRotY: false
+      FixRotZ: false
+    Physics3DColliderComponent:
+      Shape: 0
+      Scale: [1, 1, 1]
+      ContactResponse: false
+  - Entity: 807489849356755417
+    TagComponent:
+      Tag: Robot
+      TypeEnum: 1
+    RootComponent:
+      Root: true
+    RelationshipComponent:
+      Children: 0
+      Parent: 8563018074621389722
+      First: 215200725626368542
+      Prev: 13188048160585902738
+      Next: 15010965990212289174
+    ScriptComponent:
+      Name: SwarmRobot
+      Fields:
+        cohesionFactor_Float: 10
+        separationDistance_Float: 2
+        sensorAngle_Float: 280
+        speed_Float: 3
+        obstacleDistance_Float: 3
+        obstacleAvoidanceMultiplier_Float: 10000000
+        separationMultiplier_Float: 10
+        alignmentMultiplier_Float: 50
+        velChangeSpeed_Float: 20
+    TransformComponent:
+      Translation: [-1.70606446, 2.02887344, 2.72510719]
+      Rotation: [0, 0, 0]
+      Scale: [0.0948999971, 0.230540842, 0.0948999971]
+    Physics3DMaterialComponent:
+      Mass: 1
+      Friction: 0.100000001
+      RollingFriction: 0.100000001
+      SpinningFriction: 0.100000001
+      Restitution: 0.5
+      IsKinematic: false
+      FixRotX: false
+      FixRotY: false
+      FixRotZ: false
+    Physics3DColliderComponent:
+      Shape: 0
+      Scale: [1, 1, 1]
+      ContactResponse: true
+    MeshComponent:
+      MeshName: Pyramid
+    MaterialComponent:
+      MaterialName: DefaultPbr
+      TilingFactor: 1
+      HeightFactor: 0
+      ClipBorder: false
+      FloatValues:
+        roughness: 0.5
+        metalness: 0.100000001
+      Float2Values:
+        {}
+      Float3Values:
+        albedo: [0, 0, 0]
+      IntValues:
+        {}
+      Textures:
+        albedoMap: WhiteTexture
+        roughnessMap: WhiteTexture
+        metalnessMap: WhiteTexture
+        aoMap: WhiteTexture
+        normalMap: DefaultNormalMap
+        heightMap: WhiteTexture
+  - Entity: 8364297550017897481
+    TagComponent:
+      Tag: Obstacle
+      TypeEnum: 0
+    RootComponent:
+      Root: true
+    RelationshipComponent:
+      Children: 0
+      Parent: 11226779530701311251
+      First: 10483975072882758611
+      Prev: 10802727689709332651
+      Next: 17094560631443246781
+    TransformComponent:
+      Translation: [-0.289653301, 3.11410117, 0.24282223]
+      Rotation: [0, 0, 0]
+      Scale: [1.53640008, 5.23730612, 1.53640008]
+    Physics3DMaterialComponent:
+      Mass: 1000000
+      Friction: 0.100000001
+      RollingFriction: 0.100000001
+      SpinningFriction: 0.100000001
+      Restitution: 0.5
+      IsKinematic: false
+      FixRotX: false
+      FixRotY: false
+      FixRotZ: false
+    Physics3DColliderComponent:
+      Shape: 0
+      Scale: [1, 1, 1]
+      ContactResponse: true
+    MeshComponent:
+      MeshName: Cylinder
+    MaterialComponent:
+      MaterialName: DefaultPbr
+      TilingFactor: 1
+      HeightFactor: 0
+      ClipBorder: false
+      FloatValues:
+        roughness: 0.5
+        metalness: 0.100000001
+      Float2Values:
+        {}
+      Float3Values:
+        albedo: [1, 1, 1]
+      IntValues:
+        {}
+      Textures:
+        albedoMap: WhiteTexture
+        roughnessMap: WhiteTexture
+        metalnessMap: WhiteTexture
+        aoMap: WhiteTexture
+        normalMap: DefaultNormalMap
+        heightMap: WhiteTexture
+  - Entity: 1457661294055300381
+    TagComponent:
+      Tag: Sensor
+      TypeEnum: 0
+    RootComponent:
+      Root: false
+    RelationshipComponent:
+      Children: 0
+      Parent: 10043196794180728341
+      First: 15341090450150685156
+      Prev: 5424894892340364387
+      Next: 284567129483734160
+    ScriptComponent:
+      Name: Sensor
+      Fields:
+        publicField1_Float: 15
+        publicField2_Int: 0
+        publicField3_Int: 0
+        publicField4_Int: 0
+    TransformComponent:
+      Translation: [-1.76758909, 2.02900124, 3.49820805]
+      Rotation: [0, -0, 0]
+      Scale: [4.840693, 3.99631, 3.70628333]
+    Physics3DMaterialComponent:
+      Mass: 1
+      Friction: 0.100000001
+      RollingFriction: 0.100000001
+      SpinningFriction: 0.100000001
+      Restitution: 0.5
+      IsKinematic: true
+      FixRotX: false
+      FixRotY: false
+      FixRotZ: false
+    Physics3DColliderComponent:
+      Shape: 0
+      Scale: [1, 1, 1]
+      ContactResponse: false
+  - Entity: 10043196794180728341
+    TagComponent:
+      Tag: Robot
+      TypeEnum: 1
+    RootComponent:
+      Root: true
+    RelationshipComponent:
+      Children: 0
+      Parent: 7870995283449293111
+      First: 1457661294055300381
+      Prev: 730410243201639880
+      Next: 1278488244064339402
+    ScriptComponent:
+      Name: SwarmRobot
+      Fields:
+        cohesionFactor_Float: 10
+        separationDistance_Float: 2
+        sensorAngle_Float: 280
+        speed_Float: 3
+        obstacleDistance_Float: 3
+        obstacleAvoidanceMultiplier_Float: 10000000
+        separationMultiplier_Float: 10
+        alignmentMultiplier_Float: 50
+        velChangeSpeed_Float: 20
+    TransformComponent:
+      Translation: [-1.76758909, 2.02900124, 3.49820805]
+      Rotation: [0, 0, 0]
+      Scale: [0.0948999971, 0.230540842, 0.0948999971]
+    Physics3DMaterialComponent:
+      Mass: 1
+      Friction: 0.100000001
+      RollingFriction: 0.100000001
+      SpinningFriction: 0.100000001
+      Restitution: 0.5
+      IsKinematic: false
+      FixRotX: false
+      FixRotY: false
+      FixRotZ: false
+    Physics3DColliderComponent:
+      Shape: 0
+      Scale: [1, 1, 1]
+      ContactResponse: true
+    MeshComponent:
+      MeshName: Pyramid
+    MaterialComponent:
+      MaterialName: DefaultPbr
+      TilingFactor: 1
+      HeightFactor: 0
+      ClipBorder: false
+      FloatValues:
+        roughness: 0.5
+        metalness: 0.100000001
+      Float2Values:
+        {}
+      Float3Values:
+        albedo: [0, 0, 0]
+      IntValues:
+        {}
+      Textures:
+        albedoMap: WhiteTexture
+        roughnessMap: WhiteTexture
+        metalnessMap: WhiteTexture
+        aoMap: WhiteTexture
+        normalMap: DefaultNormalMap
+        heightMap: WhiteTexture
+  - Entity: 6546974175790525836
+    TagComponent:
+      Tag: Sensor
+      TypeEnum: 0
+    RootComponent:
+      Root: false
+    RelationshipComponent:
+      Children: 0
+      Parent: 7932840066862943725
+      First: 16038192420706245633
+      Prev: 4677880645292636832
+      Next: 13922106915870184453
+    ScriptComponent:
+      Name: Sensor
+      Fields:
+        publicField1_Float: 15
+        publicField2_Int: 0
+        publicField3_Int: 0
+        publicField4_Int: 0
+    TransformComponent:
+      Translation: [-2.5389092, 2.02900434, 4.26453686]
+      Rotation: [0, -0, 0]
+      Scale: [4.840693, 3.99631, 3.70628333]
+    Physics3DMaterialComponent:
+      Mass: 1
+      Friction: 0.100000001
+      RollingFriction: 0.100000001
+      SpinningFriction: 0.100000001
+      Restitution: 0.5
+      IsKinematic: true
+      FixRotX: false
+      FixRotY: false
+      FixRotZ: false
+    Physics3DColliderComponent:
+      Shape: 0
+      Scale: [1, 1, 1]
+      ContactResponse: false
+  - Entity: 7932840066862943725
+    TagComponent:
+      Tag: Robot
+      TypeEnum: 1
+    RootComponent:
+      Root: true
+    RelationshipComponent:
+      Children: 0
+      Parent: 15847331608073406303
+      First: 6546974175790525836
+      Prev: 13891466754820145149
+      Next: 16479484110891707517
+    ScriptComponent:
+      Name: SwarmRobot
+      Fields:
+        cohesionFactor_Float: 10
+        separationDistance_Float: 2
+        sensorAngle_Float: 280
+        speed_Float: 3
+        obstacleDistance_Float: 3
+        obstacleAvoidanceMultiplier_Float: 10000000
+        separationMultiplier_Float: 10
+        alignmentMultiplier_Float: 50
+        velChangeSpeed_Float: 20
+    TransformComponent:
+      Translation: [-2.5389092, 2.02900434, 4.26453686]
+      Rotation: [0, 0, 0]
+      Scale: [0.0948999971, 0.230540842, 0.0948999971]
+    Physics3DMaterialComponent:
+      Mass: 1
+      Friction: 0.100000001
+      RollingFriction: 0.100000001
+      SpinningFriction: 0.100000001
+      Restitution: 0.5
+      IsKinematic: false
+      FixRotX: false
+      FixRotY: false
+      FixRotZ: false
+    Physics3DColliderComponent:
+      Shape: 0
+      Scale: [1, 1, 1]
+      ContactResponse: true
+    MeshComponent:
+      MeshName: Pyramid
+    MaterialComponent:
+      MaterialName: DefaultPbr
+      TilingFactor: 1
+      HeightFactor: 0
+      ClipBorder: false
+      FloatValues:
+        roughness: 0.5
+        metalness: 0.100000001
+      Float2Values:
+        {}
+      Float3Values:
+        albedo: [0, 0, 0]
+      IntValues:
+        {}
+      Textures:
+        albedoMap: WhiteTexture
+        roughnessMap: WhiteTexture
+        metalnessMap: WhiteTexture
+        aoMap: WhiteTexture
+        normalMap: DefaultNormalMap
+        heightMap: WhiteTexture
+  - Entity: 2365278776520629411
+    TagComponent:
+      Tag: Sensor
+      TypeEnum: 0
+    RootComponent:
+      Root: false
+    RelationshipComponent:
+      Children: 0
+      Parent: 13417949372775720301
+      First: 1944915174927090003
+      Prev: 3910721798768404328
+      Next: 1786908696646946726
+    ScriptComponent:
+      Name: Sensor
+      Fields:
+        publicField1_Float: 15
+        publicField2_Int: 0
+        publicField3_Int: 0
+        publicField4_Int: 0
+    TransformComponent:
+      Translation: [-2.72935176, 2.0290029, 3.27404594]
+      Rotation: [0, -0, 0]
+      Scale: [4.840693, 3.99631, 3.70628333]
+    Physics3DMaterialComponent:
+      Mass: 1
+      Friction: 0.100000001
+      RollingFriction: 0.100000001
+      SpinningFriction: 0.100000001
+      Restitution: 0.5
+      IsKinematic: true
+      FixRotX: false
+      FixRotY: false
+      FixRotZ: false
+    Physics3DColliderComponent:
+      Shape: 0
+      Scale: [1, 1, 1]
+      ContactResponse: false
+  - Entity: 13417949372775720301
+    TagComponent:
+      Tag: Robot
+      TypeEnum: 1
+    RootComponent:
+      Root: true
+    RelationshipComponent:
+      Children: 0
+      Parent: 1717744296197459434
+      First: 2365278776520629411
+      Prev: 14482249577767092771
+      Next: 14197800849729664837
+    ScriptComponent:
+      Name: SwarmRobot
+      Fields:
+        cohesionFactor_Float: 10
+        separationDistance_Float: 2
+        sensorAngle_Float: 280
+        speed_Float: 3
+        obstacleDistance_Float: 3
+        obstacleAvoidanceMultiplier_Float: 10000000
+        separationMultiplier_Float: 10
+        alignmentMultiplier_Float: 50
+        velChangeSpeed_Float: 20
+    TransformComponent:
+      Translation: [-2.72935176, 2.0290029, 3.27404594]
+      Rotation: [0, 0, 0]
+      Scale: [0.0948999971, 0.230540842, 0.0948999971]
+    Physics3DMaterialComponent:
+      Mass: 1
+      Friction: 0.100000001
+      RollingFriction: 0.100000001
+      SpinningFriction: 0.100000001
+      Restitution: 0.5
+      IsKinematic: false
+      FixRotX: false
+      FixRotY: false
+      FixRotZ: false
+    Physics3DColliderComponent:
+      Shape: 0
+      Scale: [1, 1, 1]
+      ContactResponse: true
+    MeshComponent:
+      MeshName: Pyramid
+    MaterialComponent:
+      MaterialName: DefaultPbr
+      TilingFactor: 1
+      HeightFactor: 0
+      ClipBorder: false
+      FloatValues:
+        roughness: 0.5
+        metalness: 0.100000001
+      Float2Values:
+        {}
+      Float3Values:
+        albedo: [0, 0, 0]
+      IntValues:
+        {}
+      Textures:
+        albedoMap: WhiteTexture
+        roughnessMap: WhiteTexture
+        metalnessMap: WhiteTexture
+        aoMap: WhiteTexture
+        normalMap: DefaultNormalMap
+        heightMap: WhiteTexture
+  - Entity: 18183457691721077982
+    TagComponent:
+      Tag: Sensor
+      TypeEnum: 0
+    RootComponent:
+      Root: false
+    RelationshipComponent:
+      Children: 0
+      Parent: 16611814522147449898
+      First: 4255239113510908343
+      Prev: 5449512845743135666
+      Next: 16393821361782509673
+    ScriptComponent:
+      Name: Sensor
+      Fields:
+        publicField1_Float: 15
+        publicField2_Int: 0
+        publicField3_Int: 0
+        publicField4_Int: 0
+    TransformComponent:
+      Translation: [-2.84276104, 2.02876091, 2.359375]
+      Rotation: [0, -0, 0]
+      Scale: [4.840693, 3.99631, 3.70628333]
+    Physics3DMaterialComponent:
+      Mass: 1
+      Friction: 0.100000001
+      RollingFriction: 0.100000001
+      SpinningFriction: 0.100000001
+      Restitution: 0.5
+      IsKinematic: true
+      FixRotX: false
+      FixRotY: false
+      FixRotZ: false
+    Physics3DColliderComponent:
+      Shape: 0
+      Scale: [1, 1, 1]
+      ContactResponse: false
+  - Entity: 16611814522147449898
+    TagComponent:
+      Tag: Robot
+      TypeEnum: 1
+    RootComponent:
+      Root: true
+    RelationshipComponent:
+      Children: 0
+      Parent: 114974058986899533
+      First: 18183457691721077982
+      Prev: 15337158322005211635
+      Next: 10037462479493792063
+    ScriptComponent:
+      Name: SwarmRobot
+      Fields:
+        cohesionFactor_Float: 10
+        separationDistance_Float: 2
+        sensorAngle_Float: 280
+        speed_Float: 3
+        obstacleDistance_Float: 3
+        obstacleAvoidanceMultiplier_Float: 10000000
+        separationMultiplier_Float: 10
+        alignmentMultiplier_Float: 50
+        velChangeSpeed_Float: 20
+    TransformComponent:
+      Translation: [-2.84276104, 2.02876091, 2.359375]
+      Rotation: [0, 0, 0]
+      Scale: [0.0948999971, 0.230540842, 0.0948999971]
+    Physics3DMaterialComponent:
+      Mass: 1
+      Friction: 0.100000001
+      RollingFriction: 0.100000001
+      SpinningFriction: 0.100000001
+      Restitution: 0.5
+      IsKinematic: false
+      FixRotX: false
+      FixRotY: false
+      FixRotZ: false
+    Physics3DColliderComponent:
+      Shape: 0
+      Scale: [1, 1, 1]
+      ContactResponse: true
+    MeshComponent:
+      MeshName: Pyramid
+    MaterialComponent:
+      MaterialName: DefaultPbr
+      TilingFactor: 1
+      HeightFactor: 0
+      ClipBorder: false
+      FloatValues:
+        roughness: 0.5
+        metalness: 0.100000001
+      Float2Values:
+        {}
+      Float3Values:
+        albedo: [0, 0, 0]
+      IntValues:
+        {}
+      Textures:
+        albedoMap: WhiteTexture
+        roughnessMap: WhiteTexture
+        metalnessMap: WhiteTexture
+        aoMap: WhiteTexture
+        normalMap: DefaultNormalMap
+        heightMap: WhiteTexture
+  - Entity: 8166656073128881201
+    TagComponent:
+      Tag: Sensor
+      TypeEnum: 0
+    RootComponent:
+      Root: false
+    RelationshipComponent:
+      Children: 0
+      Parent: 6971424785683463960
+      First: 16632917170427982113
+      Prev: 2274655624045019136
+      Next: 7272076909744934379
+    ScriptComponent:
+      Name: Sensor
+      Fields:
+        publicField1_Float: 15
+        publicField2_Int: 0
+        publicField3_Int: 0
+        publicField4_Int: 0
+    TransformComponent:
+      Translation: [-2.91030073, 2.02875948, 1.49333191]
+      Rotation: [0, -0, 0]
+      Scale: [4.840693, 3.99631, 3.70628333]
+    Physics3DMaterialComponent:
+      Mass: 1
+      Friction: 0.100000001
+      RollingFriction: 0.100000001
+      SpinningFriction: 0.100000001
+      Restitution: 0.5
+      IsKinematic: true
+      FixRotX: false
+      FixRotY: false
+      FixRotZ: false
+    Physics3DColliderComponent:
+      Shape: 0
+      Scale: [1, 1, 1]
+      ContactResponse: false
+  - Entity: 6971424785683463960
+    TagComponent:
+      Tag: Robot
+      TypeEnum: 1
+    RootComponent:
+      Root: true
+    RelationshipComponent:
+      Children: 0
+      Parent: 5864707574418577319
+      First: 8166656073128881201
+      Prev: 9527146356101156005
+      Next: 12183361443026094134
+    ScriptComponent:
+      Name: SwarmRobot
+      Fields:
+        cohesionFactor_Float: 10
+        separationDistance_Float: 2
+        sensorAngle_Float: 280
+        speed_Float: 3
+        obstacleDistance_Float: 3
+        obstacleAvoidanceMultiplier_Float: 10000000
+        separationMultiplier_Float: 10
+        alignmentMultiplier_Float: 50
+        velChangeSpeed_Float: 20
+    TransformComponent:
+      Translation: [-2.91030073, 2.02875948, 1.49333191]
+      Rotation: [0, 0, 0]
+      Scale: [0.0948999971, 0.230540842, 0.0948999971]
+    Physics3DMaterialComponent:
+      Mass: 1
+      Friction: 0.100000001
+      RollingFriction: 0.100000001
+      SpinningFriction: 0.100000001
+      Restitution: 0.5
+      IsKinematic: false
+      FixRotX: false
+      FixRotY: false
+      FixRotZ: false
+    Physics3DColliderComponent:
+      Shape: 0
+      Scale: [1, 1, 1]
+      ContactResponse: true
+    MeshComponent:
+      MeshName: Pyramid
+    MaterialComponent:
+      MaterialName: DefaultPbr
+      TilingFactor: 1
+      HeightFactor: 0
+      ClipBorder: false
+      FloatValues:
+        roughness: 0.5
+        metalness: 0.100000001
+      Float2Values:
+        {}
+      Float3Values:
+        albedo: [0, 0, 0]
+      IntValues:
+        {}
+      Textures:
+        albedoMap: WhiteTexture
+        roughnessMap: WhiteTexture
+        metalnessMap: WhiteTexture
+        aoMap: WhiteTexture
+        normalMap: DefaultNormalMap
+        heightMap: WhiteTexture
+  - Entity: 16121437098721210073
+    TagComponent:
+      Tag: Sensor
+      TypeEnum: 0
+    RootComponent:
+      Root: false
+    RelationshipComponent:
+      Children: 0
+      Parent: 10229486068670540857
+      First: 17504472575659666784
+      Prev: 1628792804149577660
+      Next: 11464943090793916687
+    ScriptComponent:
+      Name: Sensor
+      Fields:
+        publicField1_Float: 15
+        publicField2_Int: 0
+        publicField3_Int: 0
+        publicField4_Int: 0
+    TransformComponent:
+      Translation: [-3.09262872, 2.02863646, 0.824376225]
+      Rotation: [0, -0, 0]
+      Scale: [4.840693, 3.99631, 3.70628333]
+    Physics3DMaterialComponent:
+      Mass: 1
+      Friction: 0.100000001
+      RollingFriction: 0.100000001
+      SpinningFriction: 0.100000001
+      Restitution: 0.5
+      IsKinematic: true
+      FixRotX: false
+      FixRotY: false
+      FixRotZ: false
+    Physics3DColliderComponent:
+      Shape: 0
+      Scale: [1, 1, 1]
+      ContactResponse: false
+  - Entity: 10229486068670540857
+    TagComponent:
+      Tag: Robot
+      TypeEnum: 1
+    RootComponent:
+      Root: true
+    RelationshipComponent:
+      Children: 0
+      Parent: 807477229034117547
+      First: 16121437098721210073
+      Prev: 12047470241111279533
+      Next: 10579186009053938190
+    ScriptComponent:
+      Name: SwarmRobot
+      Fields:
+        cohesionFactor_Float: 10
+        separationDistance_Float: 2
+        sensorAngle_Float: 280
+        speed_Float: 3
+        obstacleDistance_Float: 3
+        obstacleAvoidanceMultiplier_Float: 10000000
+        separationMultiplier_Float: 10
+        alignmentMultiplier_Float: 50
+        velChangeSpeed_Float: 20
+    TransformComponent:
+      Translation: [-3.09262872, 2.02863646, 0.824376225]
+      Rotation: [0, 0, 0]
+      Scale: [0.0948999971, 0.230540842, 0.0948999971]
+    Physics3DMaterialComponent:
+      Mass: 1
+      Friction: 0.100000001
+      RollingFriction: 0.100000001
+      SpinningFriction: 0.100000001
+      Restitution: 0.5
+      IsKinematic: false
+      FixRotX: false
+      FixRotY: false
+      FixRotZ: false
+    Physics3DColliderComponent:
+      Shape: 0
+      Scale: [1, 1, 1]
+      ContactResponse: true
+    MeshComponent:
+      MeshName: Pyramid
+    MaterialComponent:
+      MaterialName: DefaultPbr
+      TilingFactor: 1
+      HeightFactor: 0
+      ClipBorder: false
+      FloatValues:
+        roughness: 0.5
+        metalness: 0.100000001
+      Float2Values:
+        {}
+      Float3Values:
+        albedo: [0, 0, 0]
+      IntValues:
+        {}
+      Textures:
+        albedoMap: WhiteTexture
+        roughnessMap: WhiteTexture
+        metalnessMap: WhiteTexture
+        aoMap: WhiteTexture
+        normalMap: DefaultNormalMap
+        heightMap: WhiteTexture
+  - Entity: 9756164591582717949
+    TagComponent:
+      Tag: Sensor
+      TypeEnum: 0
+    RootComponent:
+      Root: false
+    RelationshipComponent:
+      Children: 0
+      Parent: 17524608188212410394
+      First: 3152551814398595368
+      Prev: 557518854092650496
+      Next: 5202448285445992400
+    ScriptComponent:
+      Name: Sensor
+      Fields:
+        publicField1_Float: 15
+        publicField2_Int: 0
+        publicField3_Int: 0
+        publicField4_Int: 0
+    TransformComponent:
+      Translation: [-2.09061742, 2.028512, 0.64892453]
+      Rotation: [0, -0, 0]
+      Scale: [4.840693, 3.99631, 3.70628333]
+    Physics3DMaterialComponent:
+      Mass: 1
+      Friction: 0.100000001
+      RollingFriction: 0.100000001
+      SpinningFriction: 0.100000001
+      Restitution: 0.5
+      IsKinematic: true
+      FixRotX: false
+      FixRotY: false
+      FixRotZ: false
+    Physics3DColliderComponent:
+      Shape: 0
+      Scale: [1, 1, 1]
+      ContactResponse: false
+  - Entity: 17524608188212410394
+    TagComponent:
+      Tag: Robot
+      TypeEnum: 1
+    RootComponent:
+      Root: true
+    RelationshipComponent:
+      Children: 0
+      Parent: 1986230717140642240
+      First: 9756164591582717949
+      Prev: 14874612687633843136
+      Next: 1835977951691391708
+    ScriptComponent:
+      Name: SwarmRobot
+      Fields:
+        cohesionFactor_Float: 10
+        separationDistance_Float: 2
+        sensorAngle_Float: 280
+        speed_Float: 3
+        obstacleDistance_Float: 3
+        obstacleAvoidanceMultiplier_Float: 10000000
+        separationMultiplier_Float: 10
+        alignmentMultiplier_Float: 50
+        velChangeSpeed_Float: 20
+    TransformComponent:
+      Translation: [-2.09061742, 2.028512, 0.64892453]
+      Rotation: [0, 0, 0]
+      Scale: [0.0948999971, 0.230540842, 0.0948999971]
+    Physics3DMaterialComponent:
+      Mass: 1
+      Friction: 0.100000001
+      RollingFriction: 0.100000001
+      SpinningFriction: 0.100000001
+      Restitution: 0.5
+      IsKinematic: false
+      FixRotX: false
+      FixRotY: false
+      FixRotZ: false
+    Physics3DColliderComponent:
+      Shape: 0
+      Scale: [1, 1, 1]
+      ContactResponse: true
+    MeshComponent:
+      MeshName: Pyramid
+    MaterialComponent:
+      MaterialName: DefaultPbr
+      TilingFactor: 1
+      HeightFactor: 0
+      ClipBorder: false
+      FloatValues:
+        roughness: 0.5
+        metalness: 0.100000001
+      Float2Values:
+        {}
+      Float3Values:
+        albedo: [0, 0, 0]
+      IntValues:
+        {}
+      Textures:
+        albedoMap: WhiteTexture
+        roughnessMap: WhiteTexture
+        metalnessMap: WhiteTexture
+        aoMap: WhiteTexture
+        normalMap: DefaultNormalMap
+        heightMap: WhiteTexture
+  - Entity: 5070388288429793964
+    TagComponent:
+      Tag: Sensor
+      TypeEnum: 0
+    RootComponent:
+      Root: false
+    RelationshipComponent:
+      Children: 0
+      Parent: 12711150263668288229
+      First: 12714934085048056105
+      Prev: 13871564947101528531
+      Next: 8477857527408662518
+    ScriptComponent:
+      Name: Sensor
+      Fields:
+        publicField1_Float: 15
+        publicField2_Int: 0
+        publicField3_Int: 0
+        publicField4_Int: 0
+    TransformComponent:
+      Translation: [-1.11627793, 2.02850699, -1.01060343]
+      Rotation: [0, -0, 0]
+      Scale: [4.840693, 3.99631, 3.70628333]
+    Physics3DMaterialComponent:
+      Mass: 1
+      Friction: 0.100000001
+      RollingFriction: 0.100000001
+      SpinningFriction: 0.100000001
+      Restitution: 0.5
+      IsKinematic: true
+      FixRotX: false
+      FixRotY: false
+      FixRotZ: false
+    Physics3DColliderComponent:
+      Shape: 0
+      Scale: [1, 1, 1]
+      ContactResponse: false
+  - Entity: 12711150263668288229
+    TagComponent:
+      Tag: Robot
+      TypeEnum: 1
+    RootComponent:
+      Root: true
+    RelationshipComponent:
+      Children: 0
+      Parent: 5389272635124371864
+      First: 5070388288429793964
+      Prev: 504137372062646210
+      Next: 4244165150245148433
+    ScriptComponent:
+      Name: SwarmRobot
+      Fields:
+        cohesionFactor_Float: 10
+        separationDistance_Float: 2
+        sensorAngle_Float: 280
+        speed_Float: 3
+        obstacleDistance_Float: 3
+        obstacleAvoidanceMultiplier_Float: 10000000
+        separationMultiplier_Float: 10
+        alignmentMultiplier_Float: 50
+        velChangeSpeed_Float: 20
+    TransformComponent:
+      Translation: [-1.11627793, 2.02850699, -1.01060343]
+      Rotation: [0, 0, 0]
+      Scale: [0.0948999971, 0.230540842, 0.0948999971]
+    Physics3DMaterialComponent:
+      Mass: 1
+      Friction: 0.100000001
+      RollingFriction: 0.100000001
+      SpinningFriction: 0.100000001
+      Restitution: 0.5
+      IsKinematic: false
+      FixRotX: false
+      FixRotY: false
+      FixRotZ: false
+    Physics3DColliderComponent:
+      Shape: 0
+      Scale: [1, 1, 1]
+      ContactResponse: true
+    MeshComponent:
+      MeshName: Pyramid
+    MaterialComponent:
+      MaterialName: DefaultPbr
+      TilingFactor: 1
+      HeightFactor: 0
+      ClipBorder: false
+      FloatValues:
+        roughness: 0.5
+        metalness: 0.100000001
+      Float2Values:
+        {}
+      Float3Values:
+        albedo: [0, 0, 0]
+      IntValues:
+        {}
+      Textures:
+        albedoMap: WhiteTexture
+        roughnessMap: WhiteTexture
+        metalnessMap: WhiteTexture
+        aoMap: WhiteTexture
+        normalMap: DefaultNormalMap
+        heightMap: WhiteTexture
+  - Entity: 16194910849106296004
+    TagComponent:
+      Tag: Sensor
+      TypeEnum: 0
+    RootComponent:
+      Root: false
+    RelationshipComponent:
+      Children: 0
+      Parent: 3017848034485986409
+      First: 7147737924676030880
+      Prev: 11357585599318623798
+      Next: 6271645160929126319
+    ScriptComponent:
+      Name: Sensor
+      Fields:
+        publicField1_Float: 15
+        publicField2_Int: 0
+        publicField3_Int: 0
+        publicField4_Int: 0
+    TransformComponent:
+      Translation: [2.81543922, 2.02887034, 4.03790426]
+      Rotation: [0, -0, 0]
+      Scale: [4.840693, 3.99631, 3.70628333]
+    Physics3DMaterialComponent:
+      Mass: 1
+      Friction: 0.100000001
+      RollingFriction: 0.100000001
+      SpinningFriction: 0.100000001
+      Restitution: 0.5
+      IsKinematic: true
+      FixRotX: false
+      FixRotY: false
+      FixRotZ: false
+    Physics3DColliderComponent:
+      Shape: 0
+      Scale: [1, 1, 1]
+      ContactResponse: false
+  - Entity: 3017848034485986409
+    TagComponent:
+      Tag: Robot
+      TypeEnum: 1
+    RootComponent:
+      Root: true
+    RelationshipComponent:
+      Children: 0
+      Parent: 16033189112327230694
+      First: 16194910849106296004
+      Prev: 16425486597619599033
+      Next: 12220929326612983083
+    ScriptComponent:
+      Name: SwarmRobot
+      Fields:
+        cohesionFactor_Float: 10
+        separationDistance_Float: 2
+        sensorAngle_Float: 280
+        speed_Float: 3
+        obstacleDistance_Float: 3
+        obstacleAvoidanceMultiplier_Float: 10000000
+        separationMultiplier_Float: 10
+        alignmentMultiplier_Float: 50
+        velChangeSpeed_Float: 20
+    TransformComponent:
+      Translation: [2.81543922, 2.02887034, 4.03790426]
+      Rotation: [0, 0, 0]
+      Scale: [0.0948999971, 0.230540842, 0.0948999971]
+    Physics3DMaterialComponent:
+      Mass: 1
+      Friction: 0.100000001
+      RollingFriction: 0.100000001
+      SpinningFriction: 0.100000001
+      Restitution: 0.5
+      IsKinematic: false
+      FixRotX: false
+      FixRotY: false
+      FixRotZ: false
+    Physics3DColliderComponent:
+      Shape: 0
+      Scale: [1, 1, 1]
+      ContactResponse: true
+    MeshComponent:
+      MeshName: Pyramid
+    MaterialComponent:
+      MaterialName: DefaultPbr
+      TilingFactor: 1
+      HeightFactor: 0
+      ClipBorder: false
+      FloatValues:
+        roughness: 0.5
+        metalness: 0.100000001
+      Float2Values:
+        {}
+      Float3Values:
+        albedo: [0, 0, 0]
+      IntValues:
+        {}
+      Textures:
+        albedoMap: WhiteTexture
+        roughnessMap: WhiteTexture
+        metalnessMap: WhiteTexture
+        aoMap: WhiteTexture
+        normalMap: DefaultNormalMap
+        heightMap: WhiteTexture
+  - Entity: 14658971481130340214
+    TagComponent:
+      Tag: Sensor
+      TypeEnum: 0
+    RootComponent:
+      Root: false
+    RelationshipComponent:
+      Children: 0
+      Parent: 4429605029057364286
+      First: 13109526273899340855
+      Prev: 7586475484461521879
+      Next: 14828702420485960624
+    ScriptComponent:
+      Name: Sensor
+      Fields:
+        publicField1_Float: 15
+        publicField2_Int: 0
+        publicField3_Int: 0
+        publicField4_Int: 0
+    TransformComponent:
+      Translation: [-1.37349963, 2.0285089, -0.216173768]
+      Rotation: [0, -0, 0]
+      Scale: [4.840693, 3.99631, 3.70628333]
+    Physics3DMaterialComponent:
+      Mass: 1
+      Friction: 0.100000001
+      RollingFriction: 0.100000001
+      SpinningFriction: 0.100000001
+      Restitution: 0.5
+      IsKinematic: true
+      FixRotX: false
+      FixRotY: false
+      FixRotZ: false
+    Physics3DColliderComponent:
+      Shape: 0
+      Scale: [1, 1, 1]
+      ContactResponse: false
+  - Entity: 4429605029057364286
+    TagComponent:
+      Tag: Robot
+      TypeEnum: 1
+    RootComponent:
+      Root: true
+    RelationshipComponent:
+      Children: 0
+      Parent: 2988849824397994107
+      First: 14658971481130340214
+      Prev: 14222794138161817369
+      Next: 11207055482893564626
+    ScriptComponent:
+      Name: SwarmRobot
+      Fields:
+        cohesionFactor_Float: 10
+        separationDistance_Float: 2
+        sensorAngle_Float: 280
+        speed_Float: 3
+        obstacleDistance_Float: 3
+        obstacleAvoidanceMultiplier_Float: 10000000
+        separationMultiplier_Float: 10
+        alignmentMultiplier_Float: 50
+        velChangeSpeed_Float: 20
+    TransformComponent:
+      Translation: [-1.37349963, 2.0285089, -0.216173768]
+      Rotation: [0, 0, 0]
+      Scale: [0.0948999971, 0.230540842, 0.0948999971]
+    Physics3DMaterialComponent:
+      Mass: 1
+      Friction: 0.100000001
+      RollingFriction: 0.100000001
+      SpinningFriction: 0.100000001
+      Restitution: 0.5
+      IsKinematic: false
+      FixRotX: false
+      FixRotY: false
+      FixRotZ: false
+    Physics3DColliderComponent:
+      Shape: 0
+      Scale: [1, 1, 1]
+      ContactResponse: true
+    MeshComponent:
+      MeshName: Pyramid
+    MaterialComponent:
+      MaterialName: DefaultPbr
+      TilingFactor: 1
+      HeightFactor: 0
+      ClipBorder: false
+      FloatValues:
+        roughness: 0.5
+        metalness: 0.100000001
+      Float2Values:
+        {}
+      Float3Values:
+        albedo: [0, 0, 0]
+      IntValues:
+        {}
+      Textures:
+        albedoMap: WhiteTexture
+        roughnessMap: WhiteTexture
+        metalnessMap: WhiteTexture
+        aoMap: WhiteTexture
+        normalMap: DefaultNormalMap
+        heightMap: WhiteTexture
+  - Entity: 2998762627914074178
+    TagComponent:
+      Tag: Sensor
+      TypeEnum: 0
+    RootComponent:
+      Root: false
+    RelationshipComponent:
+      Children: 0
+      Parent: 15035744010550297815
+      First: 5334136656022014707
+      Prev: 5784224639524559180
+      Next: 594373787808163843
+    ScriptComponent:
+      Name: Sensor
+      Fields:
+        publicField1_Float: 15
+        publicField2_Int: 0
+        publicField3_Int: 0
+        publicField4_Int: 0
+    TransformComponent:
+      Translation: [-2.40705919, 2.02851224, 0.415296495]
+      Rotation: [0, -0, 0]
+      Scale: [4.840693, 3.99631, 3.70628333]
+    Physics3DMaterialComponent:
+      Mass: 1
+      Friction: 0.100000001
+      RollingFriction: 0.100000001
+      SpinningFriction: 0.100000001
+      Restitution: 0.5
+      IsKinematic: true
+      FixRotX: false
+      FixRotY: false
+      FixRotZ: false
+    Physics3DColliderComponent:
+      Shape: 0
+      Scale: [1, 1, 1]
+      ContactResponse: false
+  - Entity: 15035744010550297815
+    TagComponent:
+      Tag: Robot
+      TypeEnum: 1
+    RootComponent:
+      Root: true
+    RelationshipComponent:
+      Children: 0
+      Parent: 3778063876205352150
+      First: 2998762627914074178
+      Prev: 3075142901925339698
+      Next: 12712248041908271329
+    ScriptComponent:
+      Name: SwarmRobot
+      Fields:
+        cohesionFactor_Float: 10
+        separationDistance_Float: 2
+        sensorAngle_Float: 280
+        speed_Float: 3
+        obstacleDistance_Float: 3
+        obstacleAvoidanceMultiplier_Float: 10000000
+        separationMultiplier_Float: 10
+        alignmentMultiplier_Float: 50
+        velChangeSpeed_Float: 20
+    TransformComponent:
+      Translation: [-2.40705919, 2.02851224, 0.415296495]
+      Rotation: [0, 0, 0]
+      Scale: [0.0948999971, 0.230540842, 0.0948999971]
+    Physics3DMaterialComponent:
+      Mass: 1
+      Friction: 0.100000001
+      RollingFriction: 0.100000001
+      SpinningFriction: 0.100000001
+      Restitution: 0.5
+      IsKinematic: false
+      FixRotX: false
+      FixRotY: false
+      FixRotZ: false
+    Physics3DColliderComponent:
+      Shape: 0
+      Scale: [1, 1, 1]
+      ContactResponse: true
+    MeshComponent:
+      MeshName: Pyramid
+    MaterialComponent:
+      MaterialName: DefaultPbr
+      TilingFactor: 1
+      HeightFactor: 0
+      ClipBorder: false
+      FloatValues:
+        roughness: 0.5
+        metalness: 0.100000001
+      Float2Values:
+        {}
+      Float3Values:
+        albedo: [0, 0, 0]
+      IntValues:
+        {}
+      Textures:
+        albedoMap: WhiteTexture
+        roughnessMap: WhiteTexture
+        metalnessMap: WhiteTexture
+        aoMap: WhiteTexture
+        normalMap: DefaultNormalMap
+        heightMap: WhiteTexture
+  - Entity: 6115598176708215468
+    TagComponent:
+      Tag: Ground
+      TypeEnum: 0
+    RootComponent:
+      Root: true
+    RelationshipComponent:
+      Children: 0
+      Parent: 13536270356290534395
+      First: 12889090694040794763
+      Prev: 2901934027870244283
+      Next: 2169937836385811414
+    TransformComponent:
+      Translation: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [20, 1, 20]
+    Physics3DMaterialComponent:
+      Mass: 0
+      Friction: 0.100000001
+      RollingFriction: 0.100000001
+      SpinningFriction: 0.100000001
+      Restitution: 0.5
+      IsKinematic: false
+      FixRotX: false
+      FixRotY: false
+      FixRotZ: false
+    Physics3DColliderComponent:
+      Shape: 0
+      Scale: [1, 1, 1]
+      ContactResponse: true
+    MeshComponent:
+      MeshName: Cube
+    MaterialComponent:
+      MaterialName: DefaultPbr
+      TilingFactor: 1
+      HeightFactor: 0
+      ClipBorder: false
+      FloatValues:
+        roughness: 0.5
+        metalness: 0.100000001
+      Float2Values:
+        {}
+      Float3Values:
+        albedo: [1, 1, 1]
+      IntValues:
+        {}
+      Textures:
+        albedoMap: WhiteTexture
+        roughnessMap: WhiteTexture
+        metalnessMap: WhiteTexture
+        aoMap: WhiteTexture
+        normalMap: DefaultNormalMap
+        heightMap: WhiteTexture
+  - Entity: 13275618909608231279
+    TagComponent:
+      Tag: Light
+      TypeEnum: 0
+    RootComponent:
+      Root: true
+    RelationshipComponent:
+      Children: 0
+      Parent: 12627850669458347346
+      First: 11167305897235618918
+      Prev: 14768555803035111817
+      Next: 16226088816901634520
+    TransformComponent:
+      Translation: [-3.4723413, 7.20569897, 0.52445823]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    PointLightComponent:
+      Color: [1, 1, 1]
+      Intensity: 25
+      NearDist: 0.00999999978
+      FarDist: 100
+      Kq: 0.00749999983
+      Kl: 0.0450000018
+      CastShadows: false
+  - Entity: 11027335180415823020
+    TagComponent:
+      Tag: Robot
+      TypeEnum: 1
+    RootComponent:
+      Root: true
+    RelationshipComponent:
+      Children: 0
+      Parent: 14634766330544610758
+      First: 30607828697626466
+      Prev: 2761477327403320068
+      Next: 12729953729337885170
+    ScriptComponent:
+      Name: SwarmRobot
+      Fields:
+        cohesionFactor_Float: 10
+        separationDistance_Float: 2
+        sensorAngle_Float: 280
+        speed_Float: 3
+        obstacleDistance_Float: 3
+        obstacleAvoidanceMultiplier_Float: 10000000
+        separationMultiplier_Float: 10
+        alignmentMultiplier_Float: 50
+        velChangeSpeed_Float: 20
+    TransformComponent:
+      Translation: [-2.24358463, 2.02851057, -0.354092807]
+      Rotation: [0, 0, 0]
+      Scale: [0.0948999971, 0.230540842, 0.0948999971]
+    Physics3DMaterialComponent:
+      Mass: 1
+      Friction: 0.100000001
+      RollingFriction: 0.100000001
+      SpinningFriction: 0.100000001
+      Restitution: 0.5
+      IsKinematic: false
+      FixRotX: false
+      FixRotY: false
+      FixRotZ: false
+    Physics3DColliderComponent:
+      Shape: 0
+      Scale: [1, 1, 1]
+      ContactResponse: true
+    MeshComponent:
+      MeshName: Pyramid
+    MaterialComponent:
+      MaterialName: DefaultPbr
+      TilingFactor: 1
+      HeightFactor: 0
+      ClipBorder: false
+      FloatValues:
+        roughness: 0.5
+        metalness: 0.100000001
+      Float2Values:
+        {}
+      Float3Values:
+        albedo: [0, 0, 0]
+      IntValues:
+        {}
+      Textures:
+        albedoMap: WhiteTexture
+        roughnessMap: WhiteTexture
+        metalnessMap: WhiteTexture
+        aoMap: WhiteTexture
+        normalMap: DefaultNormalMap
+        heightMap: WhiteTexture
+  - Entity: 30607828697626466
+    TagComponent:
+      Tag: Sensor
+      TypeEnum: 0
+    RootComponent:
+      Root: false
+    RelationshipComponent:
+      Children: 0
+      Parent: 11027335180415823020
+      First: 6698457371545266003
+      Prev: 1354041889484378406
+      Next: 2857578735073213553
+    ScriptComponent:
+      Name: Sensor
+      Fields:
+        publicField1_Float: 15
+        publicField2_Int: 0
+        publicField3_Int: 0
+        publicField4_Int: 0
+    TransformComponent:
+      Translation: [-2.24358463, 2.02851057, -0.354092807]
+      Rotation: [0, -0, 0]
+      Scale: [4.840693, 3.99631, 3.70628333]
+    Physics3DMaterialComponent:
+      Mass: 1
+      Friction: 0.100000001
+      RollingFriction: 0.100000001
+      SpinningFriction: 0.100000001
+      Restitution: 0.5
+      IsKinematic: true
+      FixRotX: false
+      FixRotY: false
+      FixRotZ: false
+    Physics3DColliderComponent:
+      Shape: 0
+      Scale: [1, 1, 1]
+      ContactResponse: false

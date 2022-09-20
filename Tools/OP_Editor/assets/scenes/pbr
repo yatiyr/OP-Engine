@@ -1,0 +1,116 @@
+Scene: Unitled
+Entities:
+  - Entity: 8829224514441010401
+    TagComponent:
+      Tag: Empty Entity
+    RootComponent:
+      Root: true
+    RelationshipComponent:
+      Children: 0
+      Parent: 3135011971833768436
+      First: 1712002786400709373
+      Prev: 6054380919245978663
+      Next: 169948134513594331
+      TransformComponent:
+        Translation: [7.18701172, 8.70223045, 5.4405179]
+        Rotation: [0, 0, 0]
+        Scale: [1, 1, 1]
+      PointLightComponent:
+        Color: [0.5, 0.5, 0.5]
+        Intensity: 14.1599998
+        NearDist: 0.00999999978
+        FarDist: 100
+        Kq: 0.00749999983
+        Kl: 0.0450000018
+        CastShadows: false
+    ? Entity: 1520424877148364778
+      TagComponent:
+        Tag: Empty Entity
+      RootComponent:
+        Root: true
+      RelationshipComponent:
+        Children: 0
+        Parent: 7220000443398658344
+        First: 6652343866782195380
+        Prev: 5794221413912299922
+        Next: 17504975535975520243
+        TransformComponent:
+          Translation: [6.40108204, 7.64517212, 3.80141568]
+          Rotation: [2.43512801e-07, -0.535900354, -1.00452286e-08]
+          Scale: [1.36000013, 1.36000013, 1.36000013]
+        MeshComponent:
+          MeshName: ""
+        MaterialComponent:
+          MaterialName: DefaultPbr
+          TilingFactor: 1
+          HeightFactor: 0.0109999999
+          ClipBorder: true
+          FloatValues:
+            roughness: 1
+            metalness: 1
+          Float2Values:
+            {}
+          Float3Values:
+            albedo: [1, 1, 1]
+          IntValues:
+            {}
+          Textures:
+            albedoMap: ""
+            roughnessMap: ""
+            metalnessMap: ""
+            aoMap: WhiteTexture
+            normalMap: ""
+            heightMap: ""
+      ? Entity: 2486550316121625361
+        TagComponent:
+          Tag: Empty Entity
+        RootComponent:
+          Root: true
+        RelationshipComponent:
+          Children: 0
+          Parent: 17775368029103609622
+          First: 2183690438699286478
+          Prev: 13851870948483680290
+          Next: 16893989176430233224
+          TransformComponent:
+            Translation: [8.31282997, -2.13444424, 0.259277672]
+            Rotation: [0, 0, 0]
+            Scale: [13.6800003, 13.6800003, 13.6800003]
+          MeshComponent:
+            MeshName: ""
+          MaterialComponent:
+            MaterialName: DefaultPbr
+            TilingFactor: 1
+            HeightFactor: 0.00300000003
+            ClipBorder: true
+            FloatValues:
+              roughness: 1
+              metalness: 0
+            Float2Values:
+              {}
+            Float3Values:
+              albedo: [1, 1, 1]
+            IntValues:
+              {}
+            Textures:
+              albedoMap: ""
+              roughnessMap: ""
+              metalnessMap: WhiteTexture
+              aoMap: WhiteTexture
+              normalMap: ""
+              heightMap: ""
+        ? Entity: 10793970097767371901
+          TagComponent:
+            Tag: ScriptedEntity
+          RootComponent:
+            Root: true
+          RelationshipComponent:
+            Children: 0
+            Parent: 9607898516612341895
+            First: 17434981328770426823
+            Prev: 11368265435424552311
+            Next: 4328532123382407125
+            TransformComponent:
+              Translation: [0, 0, 0]
+              Rotation: [0, 0, 0]
+              Scale: [1, 1, 1]
