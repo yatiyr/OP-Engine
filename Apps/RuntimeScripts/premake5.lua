@@ -3,12 +3,12 @@ project "RuntimeScripts"
 	language "C#"
 	clr "Unsafe"
 
-	targetdir ("%{wks.location}/Tools/Opium_Editor/assets/scripts/bin")
+	targetdir ("%{wks.location}/Tools/OP_Editor/assets/scripts/bin")
 	objdir ("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.name}")
 
 	postbuildcommands
 	{
-		'{COPY} "%{wks.location}/Apps/RuntimeScripts/src" "%{wks.location}/Tools/Opium_Editor/assets/scripts/src"'
+		'{COPY} "%{wks.location}/Apps/RuntimeScripts/src" "%{wks.location}/Tools/OP_Editor/assets/scripts/src"'
 	}
 
 	files
@@ -18,5 +18,5 @@ project "RuntimeScripts"
 
 	links
 	{
-		"Opium-Script"
+		"OP-Script"
 	}

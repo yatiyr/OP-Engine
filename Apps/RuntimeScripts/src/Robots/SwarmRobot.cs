@@ -3,67 +3,66 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using OP;
 
+using static OP.Constants;
 
 internal class SwarmRobot : Entity
 {
 
-    private float PI = 3.1415926f;
-    public float sensorAngle = 280.0f;
-    public float speed = 1.0f;
-
+    // Needed components
     private TransformComponent tC;
     private Physics3DMaterial pC;
 
+    // Parent entity
+    private RobotManager robotManager;
 
-    Sensor sensor;
+    // Child Entity
+    private Sensor sensor;
 
+    // Internal variables
+    private Vec3 targetVelocity = new Vec3();
+    private Vec3 velocity       = new Vec3();
 
-    public float separationDistance = 0.2f;
-    public float obstacleDistance = 0.4f;
-    public float obstacleAvoidanceMultiplier = 10.0f;
-    public float cohesionFactor = 1.0f;
-    public float separationMultiplier = 10.0f;
-    public float alignmentMultiplier = 10.0f;
-
-    private Vec3 targetVelocity;
-    private Vec3 velocity;
-
-    public float velChangeSpeed = 5.0f;
-
+    
+    // Determines original orientation of the robot is facing
+    // upwards y direction
     private Vec3 originalAxis = new Vec3(0.0f, 1.0f, 0.0f);
 
     public void OnCreate()
     {
-        Console.WriteLine("Leader Robot Has been Created");
+
+        // Get Components
         tC = GetComponent<TransformComponent>();
         pC = GetComponent<Physics3DMaterial>();
 
-        Entity child = GetChildEntity("Sensor");
+        // Get Parent
+        robotManager = (RobotManager)GetParentEntity();
 
-        Console.WriteLine(child.GetType().Name);
-        sensor = (Sensor)child;
-
-        targetVelocity = new Vec3();
-        velocity = new Vec3();
+        // Get Child
+        sensor       = (Sensor)GetChildEntity("Sensor");
 
     }
-
 
     public void OnUpdate(float ts)
     {
 
+        // Current position info is taken from transform component
         Vec3 currentPosition = tC.Translation;
 
+        // We get which robots and obstacles are around
         List<SceneBody> obstacles = sensor.GetObstacles();
         List<SceneBody> robots    = sensor.GetRobots();
 
-
+        // We need these for target velocity calculation
         Vec3 cohesion   = new Vec3(0.0f);
         Vec3 separation = new Vec3(0.0f);
         Vec3 alignment  = new Vec3(0.0f);
+        Vec3 obstacleAvoidance = new Vec3(0.0f);
+
+
+
         Vec3 averageRobotPos = new Vec3(0.0f);
 
-        Vec3 obstacleAvoidance = new Vec3(0.0f);
+        
 
         // Cohesion and Separation
         for(int i = 0; i < robots.Count; i++)
@@ -75,7 +74,7 @@ internal class SwarmRobot : Entity
             curVelocity.Normalize();
 
             float cosAngle = Vec3.Dot(curVelocity, robotToCur);
-            float cosAngleThreshold = (float)Math.Cos(sensorAngle * PI / 180.0f);
+            float cosAngleThreshold = (float)Math.Cos(robotManager.SensorAngle * PI / 180.0f);
 
             if (cosAngle >= cosAngleThreshold)
             {
@@ -85,7 +84,7 @@ internal class SwarmRobot : Entity
                 alignment += robotLinearVelocity;
 
                 float dist = Vec3.Distance(robotPos, currentPosition);
-                if (dist <= separationDistance)
+                if (dist <= robotManager.SeparationDistance)
                 {
                     float distFactor = 1.0f / (dist * dist * dist + 0.001f);
                     Vec3 dir = currentPosition - robotPos;
@@ -112,7 +111,7 @@ internal class SwarmRobot : Entity
             Vec3 obstaclePos = obstacles[i].BodyTransform.Translation;
 
             float dist = Vec3.Distance(obstaclePos, currentPosition);
-            if (dist <= obstacleDistance)
+            if (dist <= robotManager.ObstacleAvoidanceDistance)
             {
                 float distFactor = 1 / (dist * dist * dist + 0.001f);
                 Vec3 dir = currentPosition - obstaclePos;
@@ -129,36 +128,34 @@ internal class SwarmRobot : Entity
         }
         else
         {
-            targetVelocity = (cohesion * cohesionFactor + alignment * alignmentMultiplier + separation * separationMultiplier + obstacleAvoidance * obstacleAvoidanceMultiplier);
+            targetVelocity = (cohesion * robotManager.Cohesion + alignment * robotManager.Alignment + separation * robotManager.Separation + obstacleAvoidance * robotManager.ObstacleAvoidance);
             targetVelocity.Normalize();
         }
 
-        if (currentPosition.x < -4)
-            targetVelocity = new Vec3(2.5f, 0.0f, 0.0f);
-        else if (currentPosition.x > 4)
-            targetVelocity = new Vec3(-2.5f, 0.0f, 0.0f);
-        else if (currentPosition.y < 2)
-            targetVelocity = new Vec3(0.0f, 2.5f, 0.0f);
-        else if (currentPosition.y > 7)
-            targetVelocity = new Vec3(0.0f, -2.5f, 0.0f);
-        else if (currentPosition.z < -5)
-            targetVelocity = new Vec3(0.0f, 0.0f, 2.5f);
-        else if (currentPosition.z > 5)
-            targetVelocity = new Vec3(0.0f, 0.0f, -2.5f);
+        if (currentPosition.x < robotManager.Xmin)
+            targetVelocity = new Vec3(5.5f, 0.0f, 0.0f);
+        else if (currentPosition.x > robotManager.Xmax)
+            targetVelocity = new Vec3(-5.5f, 0.0f, 0.0f);
+        else if (currentPosition.y < robotManager.Ymin)
+            targetVelocity = new Vec3(0.0f, 5.5f, 0.0f);
+        else if (currentPosition.y > robotManager.Ymax)
+            targetVelocity = new Vec3(0.0f, -5.5f, 0.0f);
+        else if (currentPosition.z < robotManager.Zmin)
+            targetVelocity = new Vec3(0.0f, 0.0f, 5.5f);
+        else if (currentPosition.z > robotManager.Zmax)
+            targetVelocity = new Vec3(0.0f, 0.0f, -5.5f);
 
-        velocity = Vec3.Mix(velocity, targetVelocity, ts * velChangeSpeed);
+        velocity = Vec3.Mix(velocity, targetVelocity, ts * robotManager.VelocityChangeSpeed);
         velocity.Normalize();
 
         tC.RotateFromTwoVectors(originalAxis, velocity);
 
-        velocity = velocity * speed;
+        velocity = velocity * robotManager.Speed;
 
 
         pC.LinearVelocity = velocity;
 
         
-
-
 
     }
 }
