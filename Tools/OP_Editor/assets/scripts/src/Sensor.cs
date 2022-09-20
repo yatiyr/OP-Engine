@@ -30,17 +30,9 @@ internal class Sensor : Entity
         return Robots;
     }
 
-    public async Task func()
-    {
-        await Task.Delay(10000);
-        Console.WriteLine("Func executed!");
-    }
 
     public void OnCreate()
     {
-        Console.WriteLine("Script.OnCreate has been invoked");
-        func();
-        Console.WriteLine("Life moves on and on and on!");
         tC = GetComponent<TransformComponent>();
         pC = GetComponent<Physics3DMaterial>();
         Obstacles = new List<SceneBody>();

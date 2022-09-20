@@ -1,6 +1,6 @@
 build
 out
-.vs/
+.vs
 bin
 bin-int
 .vscode
@@ -21,5 +21,8 @@ ConfigureScripts/__pycache__
 **/**.vcxproj
 **/**.vcxproj.filters
 **/**.vcxproj.user
+**/**.csproj
+**/**.csproj.filters
+**/**.csproj.user
 
-Tools/Opium_Editor/assets/cache
+Tools/OP_Editor/assets/cache
