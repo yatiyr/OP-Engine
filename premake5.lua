@@ -1,9 +1,9 @@
 -- require "cmake"
-include "OpiumDeps.lua"
+include "OPDeps.lua"
 
-workspace "Opium"
+workspace "OP"
     architecture "x86_64"
-    startproject "Opium_Editor"
+    startproject "OP_Editor"
 
     configurations
     {
@@ -20,28 +20,28 @@ workspace "Opium"
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
-group "OpiumProjectCore"
-    include "Opium"
-    include "Opium-Script"
+group "OPProjectCore"
+    include "OP"
+    include "OP-Script"
 group ""
 
 
-group "Opium-Tools"
-    include "Tools/Opium_Editor"
+group "OP-Tools"
+    include "Tools/OP_Editor"
 group ""    
     
 
 
-group "OpiumApps"
+group "OPApps"
         include "Apps/RuntimeScripts"
 group ""
 
 
 group "ThirdParty"
-    include "Opium/external/GLFW"
-    include "Opium/external/Box2D"
-    include "Opium/external/Glad"
-    include "Opium/external/imgui"
-    include "Opium/external/yaml-cpp"
+    include "OP/external/GLFW"
+    include "OP/external/Box2D"
+    include "OP/external/Glad"
+    include "OP/external/imgui"
+    include "OP/external/yaml-cpp"
 group ""
         
