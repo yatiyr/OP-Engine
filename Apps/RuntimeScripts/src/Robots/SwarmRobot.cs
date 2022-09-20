@@ -38,7 +38,7 @@ internal class SwarmRobot : Entity
         robotManager = (RobotManager)GetParentEntity();
 
         // Get Child
-        sensor       = (Sensor)GetChildEntity("Sensor");
+        sensor      = (Sensor)GetChildEntity("Sensor");
 
     }
 
