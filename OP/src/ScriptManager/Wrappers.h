@@ -92,5 +92,34 @@ namespace OP
 		void OP_ClearForces(uint32_t sceneID, uint32_t entityID);
 
 		
+
+		// Camera Component
+		void OP_GetProjectionType(uint32_t sceneID, uint32_t entityID, int* pType);
+		void OP_SetProjectionType(uint32_t sceneID, uint32_t entityID, int* pType);
+		
+		void OP_GetPrimary(uint32_t sceneID, uint32_t entityID, bool* primary);
+		void OP_SetPrimary(uint32_t sceneID, uint32_t entityID, bool* primary);
+
+		void OP_GetFixedAspectRatio(uint32_t sceneID, uint32_t entityID, bool* fixedAspectRatio);
+		void OP_SetFixedAspectRatio(uint32_t sceneID, uint32_t entityID, bool* fixedAspectRatio);
+
+		void OP_GetPerspectiveVerticalFOV(uint32_t sceneID, uint32_t entityID, float* vertFOV);
+		void OP_SetPerspectiveVerticalFOV(uint32_t sceneID, uint32_t entityID, float* vertFOV);
+
+		void OP_GetPerspectiveNearClip(uint32_t sceneID, uint32_t entityID, float* persNear);
+		void OP_SetPerspectiveNearClip(uint32_t sceneID, uint32_t entityID, float* persNear);
+
+		void OP_GetPerspectiveFarClip(uint32_t sceneID, uint32_t entityID, float* persFar);
+		void OP_SetPerspectiveFarClip(uint32_t sceneID, uint32_t entityID, float* persFar);
+
+		void OP_GetOrthographicSize(uint32_t sceneID, uint32_t entityID, float* orthoSize);
+		void OP_SetOrthographicSize(uint32_t sceneID, uint32_t entityID, float* orthoSize);
+
+		void OP_GetOrthographicNearClip(uint32_t sceneID, uint32_t entityID, float* orthoNear);
+		void OP_SetOrthographicNearClip(uint32_t sceneID, uint32_t entityID, float* orthoNear);
+
+		void OP_GetOrthographicFarClip(uint32_t sceneID, uint32_t entityID, float* orthoFar);
+		void OP_SetOrthographicFarClip(uint32_t sceneID, uint32_t entityID, float* orthoFar);
+
 	}
 }

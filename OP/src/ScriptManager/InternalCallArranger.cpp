@@ -109,6 +109,26 @@ namespace OP
 			mono_add_internal_call("OP.Physics3DMaterial::ClearForces_Native",         OP::Script::OP_ClearForces);							
 
 
+		//////////////////////////////////// CAMERA COMPONENT FUNCTIONS /////////////////////////////////////////////
+			mono_add_internal_call("OP.CameraComponent::GetProjectionType_Native",         OP::Script::OP_GetProjectionType);
+			mono_add_internal_call("OP.CameraComponent::SetProjectionType_Native",         OP::Script::OP_SetProjectionType);
+			mono_add_internal_call("OP.CameraComponent::GetPrimary_Native",                OP::Script::OP_GetPrimary);
+			mono_add_internal_call("OP.CameraComponent::SetPrimary_Native",                OP::Script::OP_SetPrimary);
+			mono_add_internal_call("OP.CameraComponent::GetFixedAspectRatio_Native",       OP::Script::OP_GetFixedAspectRatio);
+			mono_add_internal_call("OP.CameraComponent::SetFixedAspectRatio_Native",       OP::Script::OP_SetFixedAspectRatio);
+			mono_add_internal_call("OP.CameraComponent::GetPerspectiveVerticalFOV_Native", OP::Script::OP_GetPerspectiveVerticalFOV);
+			mono_add_internal_call("OP.CameraComponent::SetPerspectiveVerticalFOV_Native", OP::Script::OP_SetPerspectiveVerticalFOV);
+			mono_add_internal_call("OP.CameraComponent::GetPerspectiveNearClip_Native",    OP::Script::OP_GetPerspectiveNearClip);
+			mono_add_internal_call("OP.CameraComponent::SetPerspectiveNearClip_Native",    OP::Script::OP_SetPerspectiveNearClip);
+			mono_add_internal_call("OP.CameraComponent::GetPerspectiveFarClip_Native",     OP::Script::OP_GetPerspectiveFarClip);
+			mono_add_internal_call("OP.CameraComponent::SetPerspectiveFarClip_Native",     OP::Script::OP_SetPerspectiveFarClip);
+			mono_add_internal_call("OP.CameraComponent::GetOrthographicSize_Native",       OP::Script::OP_GetOrthographicSize);
+			mono_add_internal_call("OP.CameraComponent::SetOrthographicSize_Native",       OP::Script::OP_SetOrthographicSize);
+			mono_add_internal_call("OP.CameraComponent::GetOrthographicNearClip_Native",   OP::Script::OP_GetOrthographicNearClip);
+			mono_add_internal_call("OP.CameraComponent::SetOrthographicNearClip_Native",   OP::Script::OP_SetOrthographicNearClip);
+			mono_add_internal_call("OP.CameraComponent::GetOrthographicFarClip_Native",    OP::Script::OP_GetOrthographicFarClip);
+			mono_add_internal_call("OP.CameraComponent::SetOrthographicFarClip_Native",    OP::Script::OP_SetOrthographicFarClip);
+
 		////////////////////////////////////////// ENTITY FUNCTIONS /////////////////////////////////////////////////
 			mono_add_internal_call("OP.Entity::GetChildEntity_Native",                 OP::Script::OP_Entity_GetChild);
 			mono_add_internal_call("OP.Entity::GetParentEntity_Native",                OP::Script::OP_Entity_GetParent);

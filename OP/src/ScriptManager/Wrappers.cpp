@@ -441,6 +441,150 @@ namespace OP
 			body->clearForces();
 		}
 
+		void OP_GetProjectionType(uint32_t sceneID, uint32_t entityID, int* pType)
+		{
+			Scene* scene = s_ActiveScene;
+			Entity entity((entt::entity)entityID, scene);
+			auto& cameraComponent = entity.GetComponent<CameraComponent>();
+			*pType = (int)cameraComponent.Camera.GetProjectionType();
+		}
+
+		void OP_SetProjectionType(uint32_t sceneID, uint32_t entityID, int* pType)
+		{
+			Scene* scene = s_ActiveScene;
+			Entity entity((entt::entity)entityID, scene);
+			auto& cameraComponent = entity.GetComponent<CameraComponent>();
+			cameraComponent.Camera.SetProjectionType((SceneCamera::ProjectionType) * pType);
+		}
+
+		void OP_GetPrimary(uint32_t sceneID, uint32_t entityID, bool* primary)
+		{
+			Scene* scene = s_ActiveScene;
+			Entity entity((entt::entity)entityID, scene);
+			auto& cameraComponent = entity.GetComponent<CameraComponent>();
+			*primary = cameraComponent.Primary;
+		}
+
+		void OP_SetPrimary(uint32_t sceneID, uint32_t entityID, bool* primary)
+		{
+			Scene* scene = s_ActiveScene;
+			Entity entity((entt::entity)entityID, scene);
+			auto& cameraComponent = entity.GetComponent<CameraComponent>();
+			cameraComponent.Primary = *primary;
+		}
+
+		void OP_GetFixedAspectRatio(uint32_t sceneID, uint32_t entityID, bool* fixedAspectRatio)
+		{
+			Scene* scene = s_ActiveScene;
+			Entity entity((entt::entity)entityID, scene);
+			auto& cameraComponent = entity.GetComponent<CameraComponent>();
+			*fixedAspectRatio = cameraComponent.FixedAspectRatio;
+		}
+
+		void OP_SetFixedAspectRatio(uint32_t sceneID, uint32_t entityID, bool* fixedAspectRatio)
+		{
+			Scene* scene = s_ActiveScene;
+			Entity entity((entt::entity)entityID, scene);
+			auto& cameraComponent = entity.GetComponent<CameraComponent>();
+			cameraComponent.FixedAspectRatio = *fixedAspectRatio;
+		}
+
+		void OP_GetPerspectiveVerticalFOV(uint32_t sceneID, uint32_t entityID, float* vertFOV)
+		{
+			Scene* scene = s_ActiveScene;
+			Entity entity((entt::entity)entityID, scene);
+			auto& cameraComponent = entity.GetComponent<CameraComponent>();
+			*vertFOV = cameraComponent.Camera.GetPerspectiveVerticalFOV();
+		}
+
+		void OP_SetPerspectiveVerticalFOV(uint32_t sceneID, uint32_t entityID, float* vertFOV)
+		{
+			Scene* scene = s_ActiveScene;
+			Entity entity((entt::entity)entityID, scene);
+			auto& cameraComponent = entity.GetComponent<CameraComponent>();
+			cameraComponent.Camera.SetPerspectiveVerticalFOV(*vertFOV);
+		}
+
+		void OP_GetPerspectiveNearClip(uint32_t sceneID, uint32_t entityID, float* persNear)
+		{
+			Scene* scene = s_ActiveScene;
+			Entity entity((entt::entity)entityID, scene);
+			auto& cameraComponent = entity.GetComponent<CameraComponent>();
+			*persNear = cameraComponent.Camera.GetPerspectiveNearClip();
+		}
+
+		void OP_SetPerspectiveNearClip(uint32_t sceneID, uint32_t entityID, float* persNear)
+		{
+			Scene* scene = s_ActiveScene;
+			Entity entity((entt::entity)entityID, scene);
+			auto& cameraComponent = entity.GetComponent<CameraComponent>();
+			cameraComponent.Camera.SetPerspectiveNearClip(*persNear);
+		}
+
+		void OP_GetPerspectiveFarClip(uint32_t sceneID, uint32_t entityID, float* persFar)
+		{
+			Scene* scene = s_ActiveScene;
+			Entity entity((entt::entity)entityID, scene);
+			auto& cameraComponent = entity.GetComponent<CameraComponent>();
+			*persFar = cameraComponent.Camera.GetPerspectiveFarClip();
+		}
+
+		void OP_SetPerspectiveFarClip(uint32_t sceneID, uint32_t entityID, float* persFar)
+		{
+			Scene* scene = s_ActiveScene;
+			Entity entity((entt::entity)entityID, scene);
+			auto& cameraComponent = entity.GetComponent<CameraComponent>();
+			cameraComponent.Camera.SetPerspectiveFarClip(*persFar);
+		}
+
+		void OP_GetOrthographicSize(uint32_t sceneID, uint32_t entityID, float* orthoSize)
+		{
+			Scene* scene = s_ActiveScene;
+			Entity entity((entt::entity)entityID, scene);
+			auto& cameraComponent = entity.GetComponent<CameraComponent>();
+			*orthoSize = cameraComponent.Camera.GetOrthographicSize();
+		}
+
+		void OP_SetOrthographicSize(uint32_t sceneID, uint32_t entityID, float* orthoSize)
+		{
+			Scene* scene = s_ActiveScene;
+			Entity entity((entt::entity)entityID, scene);
+			auto& cameraComponent = entity.GetComponent<CameraComponent>();
+			cameraComponent.Camera.SetOrthographicSize(*orthoSize);
+		}
+
+		void OP_GetOrthographicNearClip(uint32_t sceneID, uint32_t entityID, float* orthoNear)
+		{
+			Scene* scene = s_ActiveScene;
+			Entity entity((entt::entity)entityID, scene);
+			auto& cameraComponent = entity.GetComponent<CameraComponent>();
+			*orthoNear = cameraComponent.Camera.GetOrthographicNearClip();
+		}
+
+		void OP_SetOrthographicNearClip(uint32_t sceneID, uint32_t entityID, float* orthoNear)
+		{
+			Scene* scene = s_ActiveScene;
+			Entity entity((entt::entity)entityID, scene);
+			auto& cameraComponent = entity.GetComponent<CameraComponent>();
+			cameraComponent.Camera.SetOrthographicNearClip(*orthoNear);
+		}
+
+		void OP_GetOrthographicFarClip(uint32_t sceneID, uint32_t entityID, float* orthoFar)
+		{
+			Scene* scene = s_ActiveScene;
+			Entity entity((entt::entity)entityID, scene);
+			auto& cameraComponent = entity.GetComponent<CameraComponent>();
+			*orthoFar = cameraComponent.Camera.GetOrthographicFarClip();
+		}
+
+		void OP_SetOrthographicFarClip(uint32_t sceneID, uint32_t entityID, float* orthoFar)
+		{
+			Scene* scene = s_ActiveScene;
+			Entity entity((entt::entity)entityID, scene);
+			auto& cameraComponent = entity.GetComponent<CameraComponent>();
+			cameraComponent.Camera.SetOrthographicNearClip(*orthoFar);
+		}
+
 		void OP_HideCursor()
 		{
 			Application::Get().GetWindow().HideMouseCursor();
