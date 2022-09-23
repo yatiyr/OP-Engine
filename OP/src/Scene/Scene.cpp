@@ -563,8 +563,10 @@ namespace OP
 		}
 
 		// Render
-		Camera PrimaryCamera;
-		glm::mat4 cameraTransform;
+		SceneCamera PrimaryCamera;
+		bool primaryCameraExists = false;
+		glm::mat4 cameraView;
+		glm::vec3 cameraPos;
 		{
 			auto group = m_Registry.group<CameraComponent>(entt::get<TransformComponent>);
 			for (auto entity : group)
@@ -574,13 +576,18 @@ namespace OP
 				if (camera.Primary)
 				{
 					PrimaryCamera = camera.Camera;
-					cameraTransform = transform.GetTransform();
+					cameraView = glm::inverse(transform.GetTransform());
+					cameraPos = transform.Translation;
+					primaryCameraExists = true;
 					break;
 				}
 			}
 		}
 
-		SceneRenderer::Render(camera, this, ts);
+		if (primaryCameraExists)
+			SceneRenderer::Render(PrimaryCamera, cameraView, cameraPos, this, ts);
+		else
+			SceneRenderer::Render(camera, this, ts);
 		//JobSystem::Execute([&] {SceneRenderer::Render(camera, this, ts); });
 
 		//JobSystem::Wait();

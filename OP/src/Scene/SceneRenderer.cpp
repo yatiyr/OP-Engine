@@ -528,135 +528,77 @@ namespace OP
 		return s_SceneRendererData.tShadowMapBlurPass;
 	}
 
-	void SceneRenderer::Render(EditorCamera& camera, Scene* scene, Timestep ts)
+	void SceneRenderer::RenderChain(Scene* scene, Timestep ts)
 	{
-		s_SceneRendererData.timer.Reset();
-		// -------------------- CALCULATE CAMERA DATA -------------------------------- //
-			s_SceneRendererData.CameraBuffer.ViewProjection = camera.GetViewProjection();
-			s_SceneRendererData.CameraBuffer.ViewPos = camera.GetPosition();
-			s_SceneRendererData.CameraBuffer.View = camera.GetViewMatrix();
-			s_SceneRendererData.CameraBuffer.Projection = camera.GetProjection();
-			s_SceneRendererData.CameraBuffer.Near = camera.GetNearClip();
-			s_SceneRendererData.CameraBuffer.Far = camera.GetFarClip();
-			s_SceneRendererData.CameraUniformBuffer->SetData(&s_SceneRendererData.CameraBuffer, sizeof(SceneRendererData::CameraData));
-		// ---------------------- END CALCULATE CAMERA DATA -------------------------- //
+		auto group2 = scene->m_Registry.group<SpotLightComponent>(entt::get<TransformComponent>);
+		s_SceneRendererData.SpotLightsBuffer.Size = group2.size() < MAX_SPOT_LIGHTS ? group2.size() : MAX_SPOT_LIGHTS;
+		int spotLightCounter = 0;
+		for (auto entity : group2)
+		{
+			auto [transform, spotLight] = group2.get<TransformComponent, SpotLightComponent>(entity);
 
-
-		// ---------------------- TONE MAPPING SETTINGS ------------------------------ //
-			s_SceneRendererData.ToneMappingSettingsUniformBuffer->SetData(&s_SceneRendererData.ToneMappingSettingsBuffer, sizeof(SceneRendererData::ToneMappingSettings));
-
-
-		// --------------------- UPDATE ANIMATIONS -------------------------------- //
-
-			//s_SceneRendererData.animatedModel->UpdateAnimation(ts);
-			//s_SceneRendererData.BoneMatricesUniformBuffer->SetData(&s_SceneRendererData.animatedModel->GetFinalBoneMatrices(), sizeof(SceneRendererData::BoneMatricesData));
-
-		// ------------------ FILL IN DIR LIGHT UNIFORMS -------------------------- //
-			glm::mat4 cameraProjection = camera.GetProjection();
-
-			{
-				auto group = scene->m_Registry.group<TransformComponent>(entt::get<DirLightComponent>);
-				s_SceneRendererData.DirLightsBuffer.Size = group.size() < MAX_DIR_LIGHTS ? group.size() : MAX_DIR_LIGHTS;
-				int dirLightCounter = 0;
-				for (auto entity : group)
-				{
-					auto [transform, dirLight] = group.get<TransformComponent, DirLightComponent>(entity);
-
-					glm::vec3 lightDirection = transform.GetDirection();
-					s_SceneRendererData.DirLightsBuffer.DirLights[dirLightCounter].LightDir = lightDirection;
-					s_SceneRendererData.DirLightsBuffer.DirLights[dirLightCounter].Color = dirLight.Color * dirLight.Intensity;
-					s_SceneRendererData.DirLightsBuffer.DirLights[dirLightCounter].CascadeSize = dirLight.CascadeSize;
-					s_SceneRendererData.DirLightsBuffer.DirLights[dirLightCounter].FrustaDistFactor = dirLight.FrustaDistFactor;
-
-					std::vector<float> cascadeLevels = Utils::DistributeShadowCascadeLevels(dirLight.CascadeSize, dirLight.FrustaDistFactor, camera.GetFarClip() / 20);
-					OP_ENGINE_ASSERT(cascadeLevels <= MAX_CASCADE_SIZE);
-					std::vector<glm::mat4> matrices = Utils::GetLightSpaceMatrices(cameraProjection, camera.GetViewMatrix(),
-						cascadeLevels, camera.GetNearClip(), camera.GetFarClip(),
-						lightDirection, s_SceneRendererData.zMult);
-
-					for (uint32_t i = 0; i < matrices.size(); i++)
-					{
-						s_SceneRendererData.LightSpaceMatricesDSBuffer.LightSpaceMatricesDirSpot[MAX_CASCADE_SIZE * dirLightCounter + i].mat = matrices[i];
-					}
-
-					for (uint32_t i = 0; i < cascadeLevels.size(); i++)
-					{
-						s_SceneRendererData.CascadePlaneDistancesBuffer.cascadePlanes[(MAX_CASCADE_SIZE - 1) * dirLightCounter + i].dist = cascadeLevels[i];
-					}
-
-					dirLightCounter++;
-				}
-			}
-
-			auto group2 = scene->m_Registry.group<SpotLightComponent>(entt::get<TransformComponent>);
-			s_SceneRendererData.SpotLightsBuffer.Size = group2.size() < MAX_SPOT_LIGHTS ? group2.size() : MAX_SPOT_LIGHTS;
-			int spotLightCounter = 0;
-			for (auto entity : group2)
-			{
-				auto [transform, spotLight] = group2.get<TransformComponent, SpotLightComponent>(entity);
-
-				glm::vec3 lightDirection = transform.GetDirection();
-				glm::vec3 pos = transform.Translation;
-				s_SceneRendererData.SpotLightsBuffer.SpotLights[spotLightCounter].LightDir = lightDirection;
-				s_SceneRendererData.SpotLightsBuffer.SpotLights[spotLightCounter].Color = spotLight.Color * spotLight.Intensity;
-				s_SceneRendererData.SpotLightsBuffer.SpotLights[spotLightCounter].Cutoff = cos(glm::radians(spotLight.Cutoff));
-				s_SceneRendererData.SpotLightsBuffer.SpotLights[spotLightCounter].OuterCutoff = cos(glm::radians(spotLight.OuterCutoff));
-				s_SceneRendererData.SpotLightsBuffer.SpotLights[spotLightCounter].Position = pos;
-				s_SceneRendererData.SpotLightsBuffer.SpotLights[spotLightCounter].NearDist = spotLight.NearDist;
-				s_SceneRendererData.SpotLightsBuffer.SpotLights[spotLightCounter].FarDist = spotLight.FarDist;
-				s_SceneRendererData.SpotLightsBuffer.SpotLights[spotLightCounter].Kq = spotLight.Kq;
-				s_SceneRendererData.SpotLightsBuffer.SpotLights[spotLightCounter].Kl = spotLight.Kl;
-				s_SceneRendererData.SpotLightsBuffer.SpotLights[spotLightCounter].FarDist = spotLight.FarDist;
-				s_SceneRendererData.SpotLightsBuffer.SpotLights[spotLightCounter].Bias = spotLight.Bias;
+			glm::vec3 lightDirection = transform.GetDirection();
+			glm::vec3 pos = transform.Translation;
+			s_SceneRendererData.SpotLightsBuffer.SpotLights[spotLightCounter].LightDir = lightDirection;
+			s_SceneRendererData.SpotLightsBuffer.SpotLights[spotLightCounter].Color = spotLight.Color * spotLight.Intensity;
+			s_SceneRendererData.SpotLightsBuffer.SpotLights[spotLightCounter].Cutoff = cos(glm::radians(spotLight.Cutoff));
+			s_SceneRendererData.SpotLightsBuffer.SpotLights[spotLightCounter].OuterCutoff = cos(glm::radians(spotLight.OuterCutoff));
+			s_SceneRendererData.SpotLightsBuffer.SpotLights[spotLightCounter].Position = pos;
+			s_SceneRendererData.SpotLightsBuffer.SpotLights[spotLightCounter].NearDist = spotLight.NearDist;
+			s_SceneRendererData.SpotLightsBuffer.SpotLights[spotLightCounter].FarDist = spotLight.FarDist;
+			s_SceneRendererData.SpotLightsBuffer.SpotLights[spotLightCounter].Kq = spotLight.Kq;
+			s_SceneRendererData.SpotLightsBuffer.SpotLights[spotLightCounter].Kl = spotLight.Kl;
+			s_SceneRendererData.SpotLightsBuffer.SpotLights[spotLightCounter].FarDist = spotLight.FarDist;
+			s_SceneRendererData.SpotLightsBuffer.SpotLights[spotLightCounter].Bias = spotLight.Bias;
 
 
 
-				glm::mat4 projection = glm::perspective(glm::radians(spotLight.OuterCutoff * 2), 1.0f, spotLight.NearDist, spotLight.FarDist);
-				glm::mat4 view = glm::lookAt(pos, pos + lightDirection, glm::vec3(0.0f, 1.0f, 0.0f));
+			glm::mat4 projection = glm::perspective(glm::radians(spotLight.OuterCutoff * 2), 1.0f, spotLight.NearDist, spotLight.FarDist);
+			glm::mat4 view = glm::lookAt(pos, pos + lightDirection, glm::vec3(0.0f, 1.0f, 0.0f));
 
-				s_SceneRendererData.LightSpaceMatricesDSBuffer.LightSpaceMatricesDirSpot[MAX_CASCADE_SIZE * MAX_DIR_LIGHTS + spotLightCounter].mat = projection * view;
-			
-				spotLightCounter++;
-			}
+			s_SceneRendererData.LightSpaceMatricesDSBuffer.LightSpaceMatricesDirSpot[MAX_CASCADE_SIZE * MAX_DIR_LIGHTS + spotLightCounter].mat = projection * view;
 
-			auto group3 = scene->m_Registry.group<PointLightComponent>(entt::get<TransformComponent>);
-			s_SceneRendererData.PointLightsBuffer.Size = group3.size() <  MAX_POINT_LIGHTS ? group3.size() : MAX_POINT_LIGHTS;
-			int pointLightCounter = 0;
-			for (auto entity : group3)
-			{
-				auto [transform, pointLight] = group3.get<TransformComponent, PointLightComponent>(entity);
+			spotLightCounter++;
+		}
 
-				glm::vec3 pos = transform.Translation;
-				s_SceneRendererData.PointLightsBuffer.PointLights[pointLightCounter].Position = pos;
-				s_SceneRendererData.PointLightsBuffer.PointLights[pointLightCounter].Color = pointLight.Color * pointLight.Intensity;
-				s_SceneRendererData.PointLightsBuffer.PointLights[pointLightCounter].NearDist = pointLight.NearDist;
-				s_SceneRendererData.PointLightsBuffer.PointLights[pointLightCounter].FarDist = pointLight.FarDist;
-				s_SceneRendererData.PointLightsBuffer.PointLights[pointLightCounter].Kl = pointLight.Kl;
-				s_SceneRendererData.PointLightsBuffer.PointLights[pointLightCounter].Kq = pointLight.Kq;
+		auto group3 = scene->m_Registry.group<PointLightComponent>(entt::get<TransformComponent>);
+		s_SceneRendererData.PointLightsBuffer.Size = group3.size() < MAX_POINT_LIGHTS ? group3.size() : MAX_POINT_LIGHTS;
+		int pointLightCounter = 0;
+		for (auto entity : group3)
+		{
+			auto [transform, pointLight] = group3.get<TransformComponent, PointLightComponent>(entity);
 
-				glm::mat4 projection = glm::perspective(glm::radians(90.0f), 1.0f, pointLight.NearDist, pointLight.FarDist);
+			glm::vec3 pos = transform.Translation;
+			s_SceneRendererData.PointLightsBuffer.PointLights[pointLightCounter].Position = pos;
+			s_SceneRendererData.PointLightsBuffer.PointLights[pointLightCounter].Color = pointLight.Color * pointLight.Intensity;
+			s_SceneRendererData.PointLightsBuffer.PointLights[pointLightCounter].NearDist = pointLight.NearDist;
+			s_SceneRendererData.PointLightsBuffer.PointLights[pointLightCounter].FarDist = pointLight.FarDist;
+			s_SceneRendererData.PointLightsBuffer.PointLights[pointLightCounter].Kl = pointLight.Kl;
+			s_SceneRendererData.PointLightsBuffer.PointLights[pointLightCounter].Kq = pointLight.Kq;
 
-				s_SceneRendererData.LightSpaceMatricesPointBuffer.LightSpaceMatricesPoint[pointLightCounter * 6 + 0].mat = projection *
-					glm::lookAt(pos, pos + glm::vec3(1.0, 0.0, 0.0), glm::vec3(0.0, -1.0, 0.0));
+			glm::mat4 projection = glm::perspective(glm::radians(90.0f), 1.0f, pointLight.NearDist, pointLight.FarDist);
 
-				s_SceneRendererData.LightSpaceMatricesPointBuffer.LightSpaceMatricesPoint[pointLightCounter * 6 + 1].mat = projection *
-					glm::lookAt(pos, pos + glm::vec3(-1.0, 0.0, 0.0), glm::vec3(0.0, -1.0, 0.0));
+			s_SceneRendererData.LightSpaceMatricesPointBuffer.LightSpaceMatricesPoint[pointLightCounter * 6 + 0].mat = projection *
+				glm::lookAt(pos, pos + glm::vec3(1.0, 0.0, 0.0), glm::vec3(0.0, -1.0, 0.0));
 
-				s_SceneRendererData.LightSpaceMatricesPointBuffer.LightSpaceMatricesPoint[pointLightCounter * 6 + 2].mat = projection *
-					glm::lookAt(pos, pos + glm::vec3(0.0, 1.0, 0.0), glm::vec3(0.0, 0.0, 1.0));
+			s_SceneRendererData.LightSpaceMatricesPointBuffer.LightSpaceMatricesPoint[pointLightCounter * 6 + 1].mat = projection *
+				glm::lookAt(pos, pos + glm::vec3(-1.0, 0.0, 0.0), glm::vec3(0.0, -1.0, 0.0));
 
-				s_SceneRendererData.LightSpaceMatricesPointBuffer.LightSpaceMatricesPoint[pointLightCounter * 6 + 3].mat = projection *
-					glm::lookAt(pos, pos + glm::vec3(0.0, -1.0, 0.0), glm::vec3(0.0, 0.0, -1.0));
+			s_SceneRendererData.LightSpaceMatricesPointBuffer.LightSpaceMatricesPoint[pointLightCounter * 6 + 2].mat = projection *
+				glm::lookAt(pos, pos + glm::vec3(0.0, 1.0, 0.0), glm::vec3(0.0, 0.0, 1.0));
 
-				s_SceneRendererData.LightSpaceMatricesPointBuffer.LightSpaceMatricesPoint[pointLightCounter * 6 + 4].mat = projection *
-					glm::lookAt(pos, pos + glm::vec3(0.0, 0.0, 1.0), glm::vec3(0.0, -1.0, 0.0));
+			s_SceneRendererData.LightSpaceMatricesPointBuffer.LightSpaceMatricesPoint[pointLightCounter * 6 + 3].mat = projection *
+				glm::lookAt(pos, pos + glm::vec3(0.0, -1.0, 0.0), glm::vec3(0.0, 0.0, -1.0));
 
-				s_SceneRendererData.LightSpaceMatricesPointBuffer.LightSpaceMatricesPoint[pointLightCounter * 6 + 5].mat = projection *
-					glm::lookAt(pos, pos + glm::vec3(0.0, 0.0, -1.0), glm::vec3(0.0, -1.0, 0.0));
+			s_SceneRendererData.LightSpaceMatricesPointBuffer.LightSpaceMatricesPoint[pointLightCounter * 6 + 4].mat = projection *
+				glm::lookAt(pos, pos + glm::vec3(0.0, 0.0, 1.0), glm::vec3(0.0, -1.0, 0.0));
+
+			s_SceneRendererData.LightSpaceMatricesPointBuffer.LightSpaceMatricesPoint[pointLightCounter * 6 + 5].mat = projection *
+				glm::lookAt(pos, pos + glm::vec3(0.0, 0.0, -1.0), glm::vec3(0.0, -1.0, 0.0));
 
 
-				pointLightCounter++;
-			}
+			pointLightCounter++;
+		}
 
 		// ------------------- END FILL IN DIR LIGHT UNIFORMS --------------------- //
 
@@ -664,7 +606,7 @@ namespace OP
 
 		glm::mat4 model = glm::mat4(1.0f);
 
-		
+
 		s_SceneRendererData.DirLightUniformBuffer->SetData(&s_SceneRendererData.DirLightsBuffer,
 			sizeof(s_SceneRendererData.DirLightsBuffer));
 
@@ -684,7 +626,7 @@ namespace OP
 			sizeof(s_SceneRendererData.CascadePlaneDistancesBuffer));
 
 		s_SceneRendererData.depthRenderPass->InvokeCommands(
-			[&] () -> void {
+			[&]() -> void {
 
 				s_SceneRendererData.depthShader->Bind();
 
@@ -699,7 +641,7 @@ namespace OP
 
 					s_SceneRendererData.TransformBuffer.Model = tC.GetTransform();
 					s_SceneRendererData.TransformUniformBuffer->SetData(&s_SceneRendererData.TransformBuffer, sizeof(SceneRendererData::TransformData));
-					if(mC.Mesh)
+					if (mC.Mesh)
 						mC.Mesh->Draw();
 				}
 
@@ -713,7 +655,7 @@ namespace OP
 				s_SceneRendererData.TransformUniformBuffer->SetData(&s_SceneRendererData.TransformBuffer, sizeof(SceneRendererData::TransformData));
 				//s_SceneRendererData.BoneMatricesUniformBuffer->SetData(&s_SceneRendererData.animatedModel->GetFinalBoneMatrices(), sizeof(SceneRendererData::BoneMatricesData));
 				s_SceneRendererData.animatedModel->Draw(); */
-				
+
 				// ---------- DRAW SCENE END ----------
 				//glCullFace(GL_BACK);
 
@@ -774,7 +716,7 @@ namespace OP
 					s_SceneRendererData.ShadowMapSettingsUniformBuffer->SetData(&s_SceneRendererData.ShadowMapSettingsBuffer, sizeof(SceneRendererData::ShadowMapSettings));
 					// reset viewport
 					uint32_t depthMap = 0;
-					if(firstTime)
+					if (firstTime)
 						depthMap = RenderPass::GetColorInput(s_SceneRendererData.depthRenderPass, 0);
 					else
 						depthMap = PingPongRenderPass::GetColorInputPP(s_SceneRendererData.depthBlurDSLRenderPass, 0);
@@ -800,7 +742,7 @@ namespace OP
 		RenderCommand::Enable(MODE::DEPTH_TEST);
 
 		// POINT LIGHT ICIN PCF UYGULA SADECE!!!!!
-		
+
 		s_SceneRendererData.entityIDFramebufferPass->InvokeCommands(
 			[&]()-> void {
 
@@ -834,7 +776,7 @@ namespace OP
 
 				uint32_t depthMap = s_SceneRendererData.depthBlurDSLRenderPass->GetColorAttachmentPP(0);
 				glBindTextureUnit(0, depthMap);
-				
+
 				uint32_t depthMap2 = s_SceneRendererData.pointLightDepthRenderPass->GetDepthAttachment(0);
 				glBindTextureUnit(1, depthMap2);
 				// ------------ DRAW SCENE ------------
@@ -934,6 +876,133 @@ namespace OP
 			}
 		);
 		s_SceneRendererData.tPostProcessingPass = s_SceneRendererData.timer.ElapsedMilliseconds() - s_SceneRendererData.tFinalRenderMiliseconds;
+	}
+
+	void SceneRenderer::Render(SceneCamera& camera, const glm::mat4& cameraView, const glm::vec3& cameraPosition, Scene* scene, Timestep ts)
+	{
+		s_SceneRendererData.timer.Reset();
+		// -------------------- CALCULATE CAMERA DATA -------------------------------- //
+		s_SceneRendererData.CameraBuffer.ViewProjection = camera.GetProjection() * cameraView;
+		s_SceneRendererData.CameraBuffer.ViewPos = cameraPosition;
+		s_SceneRendererData.CameraBuffer.View = cameraView;
+		s_SceneRendererData.CameraBuffer.Projection = camera.GetProjection();
+		s_SceneRendererData.CameraBuffer.Near = camera.GetNearClip();
+		s_SceneRendererData.CameraBuffer.Far = camera.GetFarClip();
+		s_SceneRendererData.CameraUniformBuffer->SetData(&s_SceneRendererData.CameraBuffer, sizeof(SceneRendererData::CameraData));
+		// ---------------------- END CALCULATE CAMERA DATA -------------------------- //
+
+
+		// ---------------------- TONE MAPPING SETTINGS ------------------------------ //
+		s_SceneRendererData.ToneMappingSettingsUniformBuffer->SetData(&s_SceneRendererData.ToneMappingSettingsBuffer, sizeof(SceneRendererData::ToneMappingSettings));
+
+
+		// --------------------- UPDATE ANIMATIONS -------------------------------- //
+
+			//s_SceneRendererData.animatedModel->UpdateAnimation(ts);
+			//s_SceneRendererData.BoneMatricesUniformBuffer->SetData(&s_SceneRendererData.animatedModel->GetFinalBoneMatrices(), sizeof(SceneRendererData::BoneMatricesData));
+
+		// ------------------ FILL IN DIR LIGHT UNIFORMS -------------------------- //
+		glm::mat4 cameraProjection = camera.GetProjection();
+
+		{
+			auto group = scene->m_Registry.group<TransformComponent>(entt::get<DirLightComponent>);
+			s_SceneRendererData.DirLightsBuffer.Size = group.size() < MAX_DIR_LIGHTS ? group.size() : MAX_DIR_LIGHTS;
+			int dirLightCounter = 0;
+			for (auto entity : group)
+			{
+				auto [transform, dirLight] = group.get<TransformComponent, DirLightComponent>(entity);
+
+				glm::vec3 lightDirection = transform.GetDirection();
+				s_SceneRendererData.DirLightsBuffer.DirLights[dirLightCounter].LightDir = lightDirection;
+				s_SceneRendererData.DirLightsBuffer.DirLights[dirLightCounter].Color = dirLight.Color * dirLight.Intensity;
+				s_SceneRendererData.DirLightsBuffer.DirLights[dirLightCounter].CascadeSize = dirLight.CascadeSize;
+				s_SceneRendererData.DirLightsBuffer.DirLights[dirLightCounter].FrustaDistFactor = dirLight.FrustaDistFactor;
+
+				std::vector<float> cascadeLevels = Utils::DistributeShadowCascadeLevels(dirLight.CascadeSize, dirLight.FrustaDistFactor, camera.GetFarClip() / 20);
+				OP_ENGINE_ASSERT(cascadeLevels <= MAX_CASCADE_SIZE);
+				std::vector<glm::mat4> matrices = Utils::GetLightSpaceMatrices(cameraProjection, cameraView,
+					cascadeLevels, camera.GetNearClip(), camera.GetFarClip(),
+					lightDirection, s_SceneRendererData.zMult);
+
+				for (uint32_t i = 0; i < matrices.size(); i++)
+				{
+					s_SceneRendererData.LightSpaceMatricesDSBuffer.LightSpaceMatricesDirSpot[MAX_CASCADE_SIZE * dirLightCounter + i].mat = matrices[i];
+				}
+
+				for (uint32_t i = 0; i < cascadeLevels.size(); i++)
+				{
+					s_SceneRendererData.CascadePlaneDistancesBuffer.cascadePlanes[(MAX_CASCADE_SIZE - 1) * dirLightCounter + i].dist = cascadeLevels[i];
+				}
+
+				dirLightCounter++;
+			}
+		}
+
+		RenderChain(scene, ts);
+	}
+
+	void SceneRenderer::Render(EditorCamera& camera, Scene* scene, Timestep ts)
+	{
+		s_SceneRendererData.timer.Reset();
+		// -------------------- CALCULATE CAMERA DATA -------------------------------- //
+			s_SceneRendererData.CameraBuffer.ViewProjection = camera.GetViewProjection();
+			s_SceneRendererData.CameraBuffer.ViewPos = camera.GetPosition();
+			s_SceneRendererData.CameraBuffer.View = camera.GetViewMatrix();
+			s_SceneRendererData.CameraBuffer.Projection = camera.GetProjection();
+			s_SceneRendererData.CameraBuffer.Near = camera.GetNearClip();
+			s_SceneRendererData.CameraBuffer.Far = camera.GetFarClip();
+			s_SceneRendererData.CameraUniformBuffer->SetData(&s_SceneRendererData.CameraBuffer, sizeof(SceneRendererData::CameraData));
+		// ---------------------- END CALCULATE CAMERA DATA -------------------------- //
+
+
+		// ---------------------- TONE MAPPING SETTINGS ------------------------------ //
+			s_SceneRendererData.ToneMappingSettingsUniformBuffer->SetData(&s_SceneRendererData.ToneMappingSettingsBuffer, sizeof(SceneRendererData::ToneMappingSettings));
+
+
+		// --------------------- UPDATE ANIMATIONS -------------------------------- //
+
+			//s_SceneRendererData.animatedModel->UpdateAnimation(ts);
+			//s_SceneRendererData.BoneMatricesUniformBuffer->SetData(&s_SceneRendererData.animatedModel->GetFinalBoneMatrices(), sizeof(SceneRendererData::BoneMatricesData));
+
+		// ------------------ FILL IN DIR LIGHT UNIFORMS -------------------------- //
+			glm::mat4 cameraProjection = camera.GetProjection();
+
+			{
+				auto group = scene->m_Registry.group<TransformComponent>(entt::get<DirLightComponent>);
+				s_SceneRendererData.DirLightsBuffer.Size = group.size() < MAX_DIR_LIGHTS ? group.size() : MAX_DIR_LIGHTS;
+				int dirLightCounter = 0;
+				for (auto entity : group)
+				{
+					auto [transform, dirLight] = group.get<TransformComponent, DirLightComponent>(entity);
+
+					glm::vec3 lightDirection = transform.GetDirection();
+					s_SceneRendererData.DirLightsBuffer.DirLights[dirLightCounter].LightDir = lightDirection;
+					s_SceneRendererData.DirLightsBuffer.DirLights[dirLightCounter].Color = dirLight.Color * dirLight.Intensity;
+					s_SceneRendererData.DirLightsBuffer.DirLights[dirLightCounter].CascadeSize = dirLight.CascadeSize;
+					s_SceneRendererData.DirLightsBuffer.DirLights[dirLightCounter].FrustaDistFactor = dirLight.FrustaDistFactor;
+
+					std::vector<float> cascadeLevels = Utils::DistributeShadowCascadeLevels(dirLight.CascadeSize, dirLight.FrustaDistFactor, camera.GetFarClip() / 20);
+					OP_ENGINE_ASSERT(cascadeLevels <= MAX_CASCADE_SIZE);
+					std::vector<glm::mat4> matrices = Utils::GetLightSpaceMatrices(cameraProjection, camera.GetViewMatrix(),
+						cascadeLevels, camera.GetNearClip(), camera.GetFarClip(),
+						lightDirection, s_SceneRendererData.zMult);
+
+					for (uint32_t i = 0; i < matrices.size(); i++)
+					{
+						s_SceneRendererData.LightSpaceMatricesDSBuffer.LightSpaceMatricesDirSpot[MAX_CASCADE_SIZE * dirLightCounter + i].mat = matrices[i];
+					}
+
+					for (uint32_t i = 0; i < cascadeLevels.size(); i++)
+					{
+						s_SceneRendererData.CascadePlaneDistancesBuffer.cascadePlanes[(MAX_CASCADE_SIZE - 1) * dirLightCounter + i].dist = cascadeLevels[i];
+					}
+
+					dirLightCounter++;
+				}
+			}
+
+			RenderChain(scene, ts);
+
 	}
 
 	SceneRendererStats SceneRenderer::GetStats()

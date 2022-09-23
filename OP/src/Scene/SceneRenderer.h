@@ -20,7 +20,8 @@ namespace OP
 		static void Init(float width, float height, Ref<Framebuffer> fB);
 
 		static void Render(EditorCamera& camera, Scene* scene, Timestep ts);
-
+		static void Render(SceneCamera& camera, const glm::mat4& cameraView, const glm::vec3& cameraTransform, Scene* scene, Timestep ts);
+		static void RenderChain(Scene* scene, Timestep ts);
 		static SceneRendererStats GetStats();
 
 		static void ResizeViewport(float width, float height);
