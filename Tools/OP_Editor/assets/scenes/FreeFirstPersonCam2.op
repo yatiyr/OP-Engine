@@ -1,0 +1,102 @@
+Scene: Unitled
+Skybox: space
+ToneMap: false
+Exposure: 2.91000009
+Entities:
+  - Entity: 6034982828428147421
+    TagComponent:
+      Tag: ReferenceObject
+      TypeEnum: 0
+    RootComponent:
+      Root: true
+    RelationshipComponent:
+      Children: 0
+      Parent: 7111347673922935935
+      First: 11986376481533043540
+      Prev: 10563866450182124884
+      Next: 13410015036659181836
+    TransformComponent:
+      Translation: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+      LocalTransform: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+    MeshComponent:
+      MeshName: Cube
+    MaterialComponent:
+      MaterialName: DefaultPbr
+      TilingFactor: 1
+      HeightFactor: 0
+      ClipBorder: false
+      FloatValues:
+        roughness: 0.5
+        metalness: 0.100000001
+      Float2Values:
+        {}
+      Float3Values:
+        albedo: [0.859388947, 0.982915699, 0.0145534333]
+      IntValues:
+        {}
+      Textures:
+        albedoMap: WhiteTexture
+        roughnessMap: WhiteTexture
+        metalnessMap: WhiteTexture
+        aoMap: WhiteTexture
+        normalMap: DefaultNormalMap
+        heightMap: WhiteTexture
+  - Entity: 2546331689628982056
+    TagComponent:
+      Tag: Camera
+      TypeEnum: 0
+    RootComponent:
+      Root: true
+    RelationshipComponent:
+      Children: 0
+      Parent: 9189946545451357642
+      First: 2343265526631402563
+      Prev: 775953105854638908
+      Next: 17350288458277003289
+    ScriptComponent:
+      Name: FreeFirstPersonCamera
+      Fields:
+        YawSpeed_Float: 0.0500000007
+        PitchSpeed_Float: 0.0500000007
+        MoveSpeed_Float: 1
+    TransformComponent:
+      Translation: [0, 0, 2.21753883]
+      Rotation: [0, 0, 0]
+      Scale: [0.200000048, 0.200000048, 0.200000048]
+      LocalTransform: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+    CameraComponent:
+      Camera:
+        ProjectionType: 0
+        PerspectiveFOV: 0.785398185
+        PerspectiveNear: 0.0500000007
+        PerspectiveFar: 1000
+        OrthographicSize: 10
+        OrthographicNear: -1
+        OrthographicFar: 1
+      Primary: true
+      FixedAspectRatio: false
+    MeshComponent:
+      MeshName: Cube
+    MaterialComponent:
+      MaterialName: DefaultPbr
+      TilingFactor: 1
+      HeightFactor: 0
+      ClipBorder: false
+      FloatValues:
+        roughness: 0.5
+        metalness: 0.100000001
+      Float2Values:
+        {}
+      Float3Values:
+        albedo: [0, 0, 0]
+      IntValues:
+        {}
+      Textures:
+        albedoMap: WhiteTexture
+        roughnessMap: WhiteTexture
+        metalnessMap: WhiteTexture
+        aoMap: WhiteTexture
+        normalMap: DefaultNormalMap
+        heightMap: WhiteTexture

@@ -65,6 +65,7 @@ namespace OP
 			mono_add_internal_call("OP.TransformComponent::SetTransform_Native",     OP::Script::OP_Set_Transform);
 			mono_add_internal_call("OP.TransformComponent::GetTranslation_Native",   OP::Script::OP_Get_Translation);
 			mono_add_internal_call("OP.TransformComponent::SetTranslation_Native",   OP::Script::OP_Set_Translation);
+			mono_add_internal_call("OP.TransformComponent::GetDirection_Native",     OP::Script::OP_GetDirection);
 			mono_add_internal_call("OP.TransformComponent::GetRotationEuler_Native", OP::Script::OP_Get_RotationEuler);
 			mono_add_internal_call("OP.TransformComponent::SetRotationEuler_Native", OP::Script::OP_Set_RotationEuler);
 			mono_add_internal_call("OP.TransformComponent::GetRotationQuat_Native",  OP::Script::OP_Get_RotationQuat);

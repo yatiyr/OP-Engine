@@ -47,6 +47,7 @@ namespace OP
 		void OP_Set_Transform(uint32_t sceneID, uint32_t entityID, glm::mat4* inTransform);
 		void OP_Get_Translation(uint32_t sceneID, uint32_t entityID, glm::vec3* outTranslation);
 		void OP_Set_Translation(uint32_t sceneID, uint32_t entityID, glm::vec3* inTranslation);
+		void OP_GetDirection(uint32_t sceneID, uint32_t entityID, glm::vec3* outDirection);
 		void OP_Get_RotationEuler(uint32_t sceneID, uint32_t entityID, glm::vec3* outRotationEuler);
 		void OP_Set_RotationEuler(uint32_t sceneID, uint32_t entityID, glm::vec3* inRotationEuler);
 		void OP_Get_RotationQuat(uint32_t sceneID, uint32_t entityID, glm::quat* outRotationQuat);
@@ -54,6 +55,7 @@ namespace OP
 		void OP_Get_Scale(uint32_t sceneID, uint32_t entityID, glm::vec3* outScale);
 		void OP_Set_Scale(uint32_t sceneID, uint32_t entityID, glm::vec3* inScale);
 		void OP_RotateFromTwoVectors(uint32_t sceneID, uint32_t entityID, glm::vec3* axis1, glm::vec3* axis2);
+
 		// Scene
 		void OP_Get_Skybox(char* SkyboxName);
 		void OP_Set_Skybox(char* SkyboxName);

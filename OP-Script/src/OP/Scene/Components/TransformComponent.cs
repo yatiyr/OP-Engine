@@ -84,6 +84,13 @@ namespace OP
             }
         }
 
+        public Vec3 GetDirection()
+        {
+            Vec3 result;
+            GetDirection_Native(Entity.SceneID, Entity.EntityID, out result);
+            return result;
+        }
+
         public void RotateFromTwoVectors(Vec3 axis1, Vec3 axis2)
         {
             RotateFromTwoVectors_Native(Entity.SceneID, Entity.EntityID, ref axis1, ref axis2);
@@ -122,6 +129,10 @@ namespace OP
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         public static extern void RotateFromTwoVectors_Native(uint sceneID, uint entityID, ref Vec3 axis1, ref Vec3 axis2);
+
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        public static extern void GetDirection_Native(uint sceneID, uint entityID, out Vec3 result);
 
     }
 }

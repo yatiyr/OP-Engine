@@ -4,7 +4,7 @@ float parallaxShadowMultiplier(in sampler2D heightMap, in vec3 normal, in vec3 l
 {
     float shadowMultiplier = 1;
 
-    const float minLayers = 128;
+    const float minLayers = 32;
     const float maxLayers = 256;
 
     if(dot(normal, lightDir) >= 0)
@@ -15,7 +15,7 @@ float parallaxShadowMultiplier(in sampler2D heightMap, in vec3 normal, in vec3 l
         layerHeight = initialHeight / numLayers;
         if(layerHeight <= 0.0)
             layerHeight = 0.001;
-        vec2 texStep = HeightFactor * lightDir.xy / lightDir.z / numLayers;
+        vec2 texStep = HeightFactor * lightDir.xy / (lightDir.z + 1.0) / numLayers;
         
         // current parameters
         float currentLayerHeight = initialHeight - layerHeight;
@@ -65,15 +65,15 @@ vec2 ParallaxMapping(in sampler2D heightMap, in vec3 normal, in vec2 texCoords, 
         return texCoords;
 
     // number of depth layers
-    const float minLayers = 512;
-    const float maxLayers = 1024;
+    const float minLayers = 32;
+    const float maxLayers = 256;
     float numLayers = mix(maxLayers, minLayers, abs(dot(normal, viewDir)));
     // calculate the size of each layer
     float layerDepth = 1.0 / numLayers;
     // depth of current layer
     float currentLayerDepth = 0.0;
     // the amount to shift the texture coordinates per layer (from vector P)
-    vec2 P = viewDir.xy / viewDir.z * HeightFactor;
+    vec2 P = viewDir.xy / (viewDir.z + 1.0) * HeightFactor;
     vec2 deltaTexCoords = P / numLayers;
 
     // get initial values
@@ -98,7 +98,7 @@ vec2 ParallaxMapping(in sampler2D heightMap, in vec3 normal, in vec2 texCoords, 
     float beforeDepth = 1 - texture(heightMap, prevTexCoords * TilingFactor).r - currentLayerDepth + layerDepth;
 
     // interpolation of texture coordinates
-    float weight = afterDepth / (afterDepth - beforeDepth);
+    float weight = afterDepth / (afterDepth - beforeDepth + 1.0);
     vec2 finalTexCoords = prevTexCoords * weight + currentTexCoords * (1.0 - weight);
 
     // interpolation of depth values

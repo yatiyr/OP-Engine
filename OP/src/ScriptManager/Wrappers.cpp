@@ -119,6 +119,15 @@ namespace OP
 			entity.Patch<TransformComponent>();
 		}
 
+		void OP_GetDirection(uint32_t sceneID, uint32_t entityID, glm::vec3* outDirection)
+		{
+			Scene* scene = s_ActiveScene;
+			Entity entity((entt::entity)entityID, scene);
+			auto& transformComponent = entity.GetComponent<TransformComponent>();
+			glm::vec3 direction = transformComponent.GetDirection();
+			memcpy(outDirection, glm::value_ptr(direction), sizeof(glm::vec3));
+		}
+
 		void OP_Get_RotationEuler(uint32_t sceneID, uint32_t entityID, glm::vec3* outRotationEuler)
 		{
 			Scene* scene = s_ActiveScene;

@@ -334,13 +334,18 @@ namespace OP
 		}
 
 		RenderCommand::PolygonMode(FACE::FRONT_AND_BACK, POLYGONMODE::FILL);
-		//RenderCommand::Disable(MODE::DEPTH_TEST);
-		m_GridShader->Bind();
-		m_Plane->Draw();
-		//RenderCommand::Enable(MODE::DEPTH_TEST);
+
+		if (m_SceneState == SceneState::Edit)
+		{
+			//RenderCommand::Disable(MODE::DEPTH_TEST);
+			m_GridShader->Bind();
+			m_Plane->Draw();
+			//RenderCommand::Enable(MODE::DEPTH_TEST);
+
+			
+		}
 
 		m_FinalFramebuffer->Unbind();
-
 		
 	}
 
