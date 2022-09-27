@@ -15,7 +15,7 @@ float parallaxShadowMultiplier(in sampler2D heightMap, in vec3 normal, in vec3 l
         layerHeight = initialHeight / numLayers;
         if(layerHeight <= 0.0)
             layerHeight = 0.001;
-        vec2 texStep = HeightFactor * lightDir.xy / (lightDir.z + 1.0) / numLayers;
+        vec2 texStep = HeightFactor * lightDir.xy / (lightDir.z + 2.5) / numLayers;
         
         // current parameters
         float currentLayerHeight = initialHeight - layerHeight;
@@ -73,7 +73,7 @@ vec2 ParallaxMapping(in sampler2D heightMap, in vec3 normal, in vec2 texCoords, 
     // depth of current layer
     float currentLayerDepth = 0.0;
     // the amount to shift the texture coordinates per layer (from vector P)
-    vec2 P = viewDir.xy / (viewDir.z + 1.0) * HeightFactor;
+    vec2 P = viewDir.xy / (viewDir.z + 2.5) * HeightFactor;
     vec2 deltaTexCoords = P / numLayers;
 
     // get initial values

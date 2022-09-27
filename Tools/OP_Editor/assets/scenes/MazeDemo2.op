@@ -5298,12 +5298,12 @@ Entities:
       IntValues:
         {}
       Textures:
-        albedoMap: ""
-        roughnessMap: ""
+        albedoMap: WhiteTexture
+        roughnessMap: WhiteTexture
         metalnessMap: WhiteTexture
-        aoMap: ""
-        normalMap: ""
-        heightMap: ""
+        aoMap: WhiteTexture
+        normalMap: DefaultNormalMap
+        heightMap: WhiteTexture
   - Entity: 3774102409103343588
     TagComponent:
       Tag: GroundPillar

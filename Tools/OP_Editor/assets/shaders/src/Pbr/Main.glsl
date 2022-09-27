@@ -113,7 +113,7 @@ void main()
 	vec2 texCoords = fs_in.TexCoords;
 	vec3 fragPos = fs_in.FragPos;
 	
-	vec3 viewDir = normalize(normalize(u_ViewPos - fs_in.FragPos));
+	vec3 viewDir = u_ViewPos - fs_in.FragPos;
 
 	float parallaxHeight;
 	texCoords = ParallaxMapping(u_HeightMap, vec3(0.0, 0.0, 1.0), fs_in.TexCoords, normalize(transpose(fs_in.TBN) * viewDir), parallaxHeight, u_TilingFactor, u_HeightFactor);
@@ -129,7 +129,7 @@ void main()
 	normal = normalize(normal * 2.0 - 1.0);
 	normal = normalize(normalize(fs_in.TBN * normal));
 
-	vec3 reflectionVec = normalize(normalize(reflect(-viewDir, normal))); 
+	vec3 reflectionVec = normalize(reflect(-viewDir, normal)); 
 
 	vec3 F0 = vec3(0.04);
 	F0 = mix(F0, color, metalness);
