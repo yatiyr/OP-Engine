@@ -38,9 +38,9 @@ group ""
 
 
 group "ThirdParty"
-    include "OP/external/GLFW"
-    include "OP/external/Box2D"
-    include "OP/external/Glad"
+    include "OP/external/glfw"
+    include "OP/external/box2D"
+    include "OP/external/glad"
     include "OP/external/imgui"
     include "OP/external/yaml-cpp"
 group ""
