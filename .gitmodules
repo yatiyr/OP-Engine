@@ -46,3 +46,6 @@
 [submodule "OP/external/imgui"]
 	path = OP/external/imgui
 	url = https://github.com/yatiyr/imgui.git
+[submodule "OP/external/box2d"]
+	path = OP/external/box2d
+	url = https://github.com/yatiyr/box2d.git
