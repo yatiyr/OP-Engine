@@ -40,3 +40,9 @@
 [submodule "Opium/external/assimp"]
 	path = Opium/external/assimp
 	url = https://github.com/yatiyr/assimp.git
+[submodule "OP/external/yaml-cpp"]
+	path = OP/external/yaml-cpp
+	url = https://github.com/yatiyr/yaml-cpp.git
+[submodule "OP/external/imgui"]
+	path = OP/external/imgui
+	url = https://github.com/yatiyr/imgui.git
