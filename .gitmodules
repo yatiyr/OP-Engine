@@ -58,3 +58,6 @@
 [submodule "OP/external/glm"]
 	path = OP/external/glm
 	url = https://github.com/yatiyr/glm.git
+[submodule "OP/external/imgui-node-editor"]
+	path = OP/external/imgui-node-editor
+	url = https://github.com/yatiyr/imgui-node-editor.git
