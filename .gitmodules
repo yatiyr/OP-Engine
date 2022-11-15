@@ -49,3 +49,6 @@
 [submodule "OP/external/box2d"]
 	path = OP/external/box2d
 	url = https://github.com/yatiyr/box2d.git
+[submodule "OP/external/ImGuizmo"]
+	path = OP/external/ImGuizmo
+	url = https://github.com/yatiyr/ImGuizmo.git
