@@ -52,3 +52,6 @@
 [submodule "OP/external/ImGuizmo"]
 	path = OP/external/ImGuizmo
 	url = https://github.com/yatiyr/ImGuizmo.git
+[submodule "OP/external/glfw"]
+	path = OP/external/glfw
+	url = https://github.com/yatiyr/glfw.git
