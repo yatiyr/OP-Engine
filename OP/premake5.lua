@@ -84,6 +84,14 @@ project "OP"
             "OP_BUILD_DLL",
         }
 
+	links
+	{
+		"%{Library.WinSock}",
+		"%{Library.WinMM}",
+		"%{Library.WinVersion}",
+		"%{Library.BCrypt}"
+	}
+
     filter "configurations:Debug"
         defines "OP_DEBUG"
         runtime "Debug"

@@ -1,0 +1,6 @@
+C:\Users\abici\OneDrive\Masaustu\repos\OP-Engine\Tools\OP_Editor\Resources\Scripts\Intermediates\Release\OP-Script.csproj.AssemblyReference.cache
+C:\Users\abici\OneDrive\Masaustu\repos\OP-Engine\Tools\OP_Editor\Resources\Scripts\Intermediates\Release\OP-Script.csproj.CoreCompileInputs.cache
+C:\Users\abici\OneDrive\Masaustu\repos\OP-Engine\Tools\OP_Editor\Resources\Scripts\Intermediates\Release\OP-Script.dll
+C:\Users\abici\OneDrive\Masaustu\repos\OP-Engine\Tools\OP_Editor\Resources\Scripts\Intermediates\Release\OP-Script.pdb
+C:\Users\abici\OneDrive\Masaustu\repos\OP-Engine\Tools\OP_Editor\Resources\Scripts\OP-Script.dll
+C:\Users\abici\OneDrive\Masaustu\repos\OP-Engine\Tools\OP_Editor\Resources\Scripts\OP-Script.pdb

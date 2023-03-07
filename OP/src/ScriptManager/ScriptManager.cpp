@@ -31,8 +31,76 @@ namespace OP
 		}
 	};*/
 
+
+	char* ReadBytes(const std::string& filepath, uint32_t* outSize)
+	{
+		std::ifstream stream(filepath, std::ios::binary | std::ios::ate);
+
+		// If the file could not be opened
+		if (!stream)
+			return nullptr;
+
+		std::streampos end = stream.tellg();
+		stream.seekg(0, std::ios::beg);
+		uint32_t size = end - stream.tellg();
+
+		// If file is empty
+		if (size == 0)
+			nullptr;
+
+		char* buffer = new char[size];
+		stream.read((char*)buffer, size);
+		stream.close();
+
+		*outSize = size;
+
+		return buffer;
+
+	}
+
 	static std::unordered_map<std::string, EntityScriptClass> s_EntityClassMap;
 	static std::unordered_map<uint32_t, EntityInstance> s_EntityInstanceMap;
+
+
+	MonoAssembly* LoadAssemblyFromFile(const std::string& filePath)
+	{
+		uint32_t fileSize = 0;
+		char* fileData = ReadBytes(filePath, &fileSize);
+
+		MonoImageOpenStatus status;
+		MonoImage* image = mono_image_open_from_data_full(fileData, fileSize, 1, &status, 0);
+
+		if (status != MONO_IMAGE_OK)
+		{
+			const char* errorMessage = mono_image_strerror(status);
+			return nullptr;
+		}
+
+		MonoAssembly* assembly = mono_assembly_load_from_full(image, filePath.c_str(), &status, 0);
+		mono_image_close(image);
+
+		delete[] fileData;
+
+		return assembly;
+	}
+
+	void PrintAssemblyTypes(MonoAssembly* assembly)
+	{
+		MonoImage* image = mono_assembly_get_image(assembly);
+		const MonoTableInfo* typeDefinitionsTable = mono_image_get_table_info(image, MONO_TABLE_TYPEDEF);
+		int32_t numTypes = mono_table_info_get_rows(typeDefinitionsTable);
+
+		for (int32_t i = 0; i < numTypes; i++)
+		{
+			uint32_t cols[MONO_TYPEDEF_SIZE];
+			mono_metadata_decode_row(typeDefinitionsTable, i, cols, MONO_TYPEDEF_SIZE);
+			
+			const char* nameSpace = mono_metadata_string_heap(image, cols[MONO_TYPEDEF_NAMESPACE]);
+			const char* name = mono_metadata_string_heap(image, cols[MONO_TYPEDEF_NAME]);
+
+			printf("%s.%s", nameSpace, name);
+		}
+	}
 
 	MonoAssembly* InitializeAssemblyFromFile(const char* filePath)
 	{
@@ -77,7 +145,7 @@ namespace OP
 
 	static MonoAssembly* InitializeAssembly(const std::string& path)
 	{
-		MonoAssembly* assembly = InitializeAssemblyFromFile(path.c_str());
+		MonoAssembly* assembly = LoadAssemblyFromFile(path.c_str());
 
 		if (assembly == nullptr)
 		{
@@ -87,6 +155,9 @@ namespace OP
 		{
 			OP_ENGINE_TRACE("Assembly Loaded Successfully: {0}", path);
 		}
+
+
+		PrintAssemblyTypes(assembly);
 
 		return assembly;
 
@@ -182,7 +253,7 @@ namespace OP
 		char* name = (char*)"OpRuntime";
 
 		s_MonoDomain = mono_domain_create_appdomain(name, nullptr);
-		mono_domain_set(s_MonoDomain, 0);
+		mono_domain_set(s_MonoDomain, true);
 	}
 
 	static MonoAssembly* s_AppAssembly = nullptr;
@@ -209,9 +280,9 @@ namespace OP
 		}
 
 		
-		s_CoreAssembly = InitializeAssembly("assets/scripts/bin/OP-Script.dll");
+		s_CoreAssembly = InitializeAssembly("Resources/Scripts/OP-Script.dll");
 		s_CoreAssemblyImage = GetAssemblyImage(s_CoreAssembly);
-
+		
 
 		s_AppAssembly = InitializeAssembly(path);
 		s_AppAssemblyImage = GetAssemblyImage(s_AppAssembly);
@@ -239,12 +310,8 @@ namespace OP
 		//mono_assembly_close(s_CoreAssembly);
 
 		//s_DeletedDomain = s_MonoDomain;
-		//mono_domain_unload(s_MonoDomain);
-
-		
-
+		//mono_domain_unload(s_MonoDomain);		
 	
-
 		s_MonoDomain = nullptr;
 		s_AppAssembly = nullptr;
 		s_AppAssemblyImage = nullptr;		
@@ -252,8 +319,7 @@ namespace OP
 		s_CoreAssemblyImage = nullptr;
 		s_EntityClassMap.clear();
 		s_EntityInstanceMap.clear();
-		s_PublicFields.clear();
-		
+		s_PublicFields.clear();		
 
 		char* name = (char*)"OpRuntime";
 		s_MonoDomain = mono_domain_create_appdomain(name, nullptr);

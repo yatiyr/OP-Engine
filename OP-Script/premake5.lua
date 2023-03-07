@@ -3,10 +3,24 @@ project "OP-Script"
 	language "C#"
 	clr "Unsafe"
 
-	targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.name}")
-	objdir ("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.name}")
+	targetdir ("%{wks.location}/Tools/OP_Editor/Resources/Scripts")
+	objdir ("%{wks.location}/Tools/OP_Editor/Resources/Scripts/Intermediates")
 
 	files
 	{
-		"%{prj.name}/src/**.cs"
+		"Source/**.cs",
+		"Properties/**.cs"
 	}
+
+	filter "configurations:Debug"
+		optimize "Off"
+		symbols "Default"
+
+	filter "configurations:Release"
+		optimize "On"
+		symbols "Default"
+
+
+	filter "configurations:Dist"
+		optimize "Full"
+		symbols "Off"

@@ -21,14 +21,14 @@ IncludeDir["Assimp"]      = "%{wks.location}/OP/external/assimp/include"
 IncludeDir["Bullet"]      = "%{wks.location}/OP/external/bullet/include"
 
 LibraryDir = {}
-LibraryDir["Mono"]   = "%{wks.location}/OP/external/mono/lib/Release"
+LibraryDir["Mono"]   = "%{wks.location}/OP/external/mono/lib/%{cfg.buildcfg}"
 LibraryDir["VK_SDK"] = "%{VK_SDK}/Lib"
 LibraryDir["Assimp"] = "%{wks.location}/OP/external/assimp/lib/Release"
 LibraryDir["BulletRel"] = "%{wks.location}/OP/external/bullet/lib/release"
 LibraryDir["BulletDbg"] = "%{wks.location}/OP/external/bullet/lib/debug"
 
 Library = {}
-Library["Mono"]     = "%{LibraryDir.Mono}/mono-2.0-sgen.lib"
+Library["Mono"]     = "%{LibraryDir.Mono}/libmono-static-sgen.lib"
 Library["VK"]       = "%{LibraryDir.VK_SDK}/vulkan-1.lib"
 Library["VK_UTILS"] = "%{LibraryDir.VK_SDK}/VkLayer_utils.lib"
 Library["Assimp"]   = "%{LibraryDir.Assimp}/assimp-vc143-mt.lib"
@@ -47,3 +47,11 @@ Library["SPIRV_TOOLS_DBG"]      = "%{LibraryDir.VK_SDK}/SPIRV-Tools.lib"
 -- Library["SPIRV_CROSS_REL"] = "%{wks.location}/OP/external/spirv-cross/lib/spirv-cross-core.lib"
 -- Library["SPIRV_CROSS_GLSL_DBG"] = "%{wks.location}/OP/external/spirv-cross/lib/spirv-cross-glsld.lib"
 -- Library["SPIRV_CROSS_GLSL_REL"] = "%{wks.location}/OP/external/spirv-cross/lib/spirv-cross-glsl.lib"
+
+
+-- Windows
+
+Library["WinSock"] = "Ws2_32.lib"
+Library["WinMM"]   = "Winmm.lib"
+Library["WinVersion"] = "Version.lib"
+Library["BCrypt"]     = "Bcrypt.lib"
