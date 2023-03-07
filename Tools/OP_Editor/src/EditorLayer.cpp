@@ -23,7 +23,7 @@
 
 #include <ScriptManager/ScriptManager.h>
 
-
+#include <Profiling/Timer.h>
 
 namespace OP
 {
@@ -199,6 +199,7 @@ namespace OP
 
 	void EditorLayer::OnUpdate(Timestep ts)
 	{
+		Timer timer;
 
 		m_ViewportComponent.ResizeFramebuffer();
 
@@ -347,6 +348,7 @@ namespace OP
 
 		m_FinalFramebuffer->Unbind();
 		
+		OP_ENGINE_INFO("Layer Update: {0}", timer.ElapsedMilliseconds());
 	}
 
 	void EditorLayer::OnImGuiRender()
@@ -406,9 +408,9 @@ namespace OP
 		ImGui::Text("Indices: %d:", stats.GetTotalIndexCount());
 		
 
-		// bool showDemoPlot = true;
-		// ImPlot::GetStyle().AntiAliasedLines = true;
-		// ImPlot::ShowDemoWindow(&showDemoPlot);
+		bool showDemoPlot = true;
+		ImPlot::GetStyle().AntiAliasedLines = true;
+		ImPlot::ShowDemoWindow(&showDemoPlot);
 		ImGui::End();
 		ImGui::PopStyleVar();
 

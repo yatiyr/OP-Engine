@@ -74,6 +74,10 @@ namespace OP
 
 		bool IsValid(Entity entity);
 
+		float m_UpdatePhysicsTime;
+		float m_UpdateRenderTime;
+		float m_UpdateScriptsTime;
+
 	private:
 		template<typename T>
 		void OnComponentAdded(Entity entity, T& component);

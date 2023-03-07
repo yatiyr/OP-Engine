@@ -21,6 +21,9 @@
 
 #include <JobSystem/JobSystem.h>
 
+
+#include <Profiling/Timer.h>
+
 namespace OP
 {
 
@@ -506,6 +509,9 @@ namespace OP
 
 	void Scene::OnUpdateRuntime(Timestep ts, EditorCamera& camera)
 	{
+
+		Timer timer;
+
 		// Update scripts
 		auto scriptView = m_Registry.view<ScriptComponent>();
 		for (auto entity : scriptView)
@@ -514,6 +520,8 @@ namespace OP
 			ScriptManager::OnUpdateEntity((uint32_t)e, ts);
 		}
 
+		m_UpdateScriptsTime = timer.ElapsedMilliseconds();
+		//timer.Reset();
 		//JobSystem::Wait();
 
 
@@ -562,6 +570,9 @@ namespace OP
 
 		}
 
+		m_UpdatePhysicsTime = timer.ElapsedMilliseconds();
+		//timer.Reset();
+		
 		// Render
 		SceneCamera PrimaryCamera;
 		bool primaryCameraExists = false;
@@ -588,6 +599,8 @@ namespace OP
 			SceneRenderer::Render(PrimaryCamera, cameraView, cameraPos, this, ts);
 		else
 			SceneRenderer::Render(camera, this, ts);
+
+		m_UpdateRenderTime = timer.ElapsedMilliseconds();
 		//JobSystem::Execute([&] {SceneRenderer::Render(camera, this, ts); });
 
 		//JobSystem::Wait();
@@ -612,6 +625,10 @@ namespace OP
 
 			Renderer2D::EndScene();
 		} */
+
+		OP_ENGINE_TRACE("Update Physics: {0}", m_UpdatePhysicsTime);
+		OP_ENGINE_TRACE("Update Render: {0}", m_UpdateRenderTime);
+		OP_ENGINE_TRACE("Update Script: {0}", m_UpdateScriptsTime);
 
 	}
 

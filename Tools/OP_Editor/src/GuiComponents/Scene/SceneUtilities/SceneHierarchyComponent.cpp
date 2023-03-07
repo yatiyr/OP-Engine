@@ -160,6 +160,9 @@ namespace OP
 			ImGui::Text("SM Blur Time: %.1f", SceneRenderer::GetShadowMapBlurMiliseconds());
 			ImGui::Text("Final Render Time: %.1f", SceneRenderer::GetFinalRenderMiliseconds());
 			ImGui::Text("Post Processing Time: %.1f", SceneRenderer::GetPostProcessingPassMiliseconds());
+			ImGui::Text("Physics Update Time: %.1f", m_Context->m_UpdatePhysicsTime);
+			ImGui::Text("Render Update Time: %.1f", m_Context->m_UpdateRenderTime);
+			ImGui::Text("Scripts Update Time: %.1f", m_Context->m_UpdatePhysicsTime);
 
 		ImGui::End();
 		ImGui::PopStyleVar();
