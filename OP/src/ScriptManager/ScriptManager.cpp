@@ -334,7 +334,11 @@ namespace OP
 
 	void ScriptManager::ShutdownManager()
 	{
+		// mono_domain_unload(s_MonoDomain);
+		s_MonoDomain = nullptr;
 		// shutdown
+		// mono_jit_cleanup(s_RootDomain);
+		s_RootDomain = nullptr;
 	}
 
 	void ScriptManager::OnCreateEntity(uint32_t entity)
