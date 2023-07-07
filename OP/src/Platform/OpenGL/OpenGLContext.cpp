@@ -19,9 +19,9 @@ namespace OP
 		OP_ENGINE_ASSERT(status, "Could not initialize GLAD properly!");
 
 		OP_ENGINE_INFO("Information about OPENGL Renderer and Graphics Card");
-		OP_ENGINE_INFO("  Vendor: {0}", glGetString(GL_VENDOR));
-		OP_ENGINE_INFO("  Renderer: {0}", glGetString(GL_RENDERER));
-		OP_ENGINE_INFO("  Version: {0}", glGetString(GL_VERSION));
+		OP_ENGINE_INFO("  Vendor: {0}", fmt::ptr(glGetString(GL_VENDOR)));
+		OP_ENGINE_INFO("  Renderer: {0}", fmt::ptr(glGetString(GL_RENDERER)));
+		OP_ENGINE_INFO("  Version: {0}", fmt::ptr(glGetString(GL_VERSION)));
 	}
 
 	void OpenGLContext::SwapBuffers()

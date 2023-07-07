@@ -40,10 +40,10 @@ project "OP_Editor"
     postbuildcommands
 	{
            '{COPY} "%{wks.location}/Tools/OP_Editor/assets" "%{cfg.targetdir}/assets"',
-	   '{COPY} "%{wks.location}/OP/external/mono/bin/Release/mono-2.0-sgen.dll" "%{cfg.targetdir}"',
+	   '{COPY} "%{wks.location}/OP/external/mono/bin_/Release/mono-2.0-sgen.dll" "%{cfg.targetdir}"',
 	   '{COPY} "%{wks.location}/Tools/OP_Editor/mono" "%{cfg.targetDir}/mono"',
 	   '{COPY} "%{wks.location}/Tools/OP_Editor/EditorResources" "%{cfg.targetDir}/EditorResources"',
-	   '{COPY} "%{wks.location}/OP/external/assimp/bin/assimp-vc143-mt.dll" "%{cfg.targetDir}"'
+	   '{COPY} "%{wks.location}/OP/external/assimp/bin_/assimp-vc143-mt.dll" "%{cfg.targetDir}"'
 	}
 
 
