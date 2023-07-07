@@ -3,7 +3,7 @@ include "OPDeps.lua"
 
 workspace "OP"
     architecture "x86_64"
-    startproject "OP_Editor"
+    startproject "OP_VulkanSandbox"
 
     configurations
     {
@@ -28,6 +28,7 @@ group ""
 
 group "OP-Tools"
     include "Tools/OP_Editor"
+    include "Tools/OP_VulkanSandbox"
 group ""    
     
 
