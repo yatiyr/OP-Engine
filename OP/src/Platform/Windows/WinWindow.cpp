@@ -62,7 +62,7 @@ namespace OP
 
 
 		glfwSetWindowUserPointer(m_Window, &m_Data);
-		SetVSync(true);
+		// SetVSync(true); Only for Opengl / Vulkan does not support this (TODO: will look at swapchain )
 
 		// Set callbacks of GLFW
 		glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width, int height)

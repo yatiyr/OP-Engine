@@ -32,7 +32,7 @@ namespace OP
 		m_Window = std::unique_ptr<Window>(Window::Create(WinProperties(name)));
 		m_Window->SetEventCallback(OP_BIND_EVENT_FUNCTION(Application::OnEvent));
 
-		m_DpiScale = m_Window->GetDpiScale();
+		/*m_DpiScale = m_Window->GetDpiScale();
 
 		RenderCommand::Enable(MODE::DITHER);
 		RenderCommand::Enable(MODE::TEXTURE_CUBE_MAP_SEAMLESS);
@@ -46,6 +46,7 @@ namespace OP
 
 		m_ImGuiLayer = new ImGuiLayer();
 		PushOverlay(m_ImGuiLayer);
+		*/
 	}
 
 	Application::~Application()
@@ -66,7 +67,7 @@ namespace OP
 
 	void Application::Close()
 	{
-		is_running = false;
+		is_running = false;		
 	}
 
 	void Application::OnEvent(Event& e)
@@ -89,7 +90,7 @@ namespace OP
 		while (is_running)
 		{
 
-			float time = (float)Application::GetWindow().GetTime();
+			/*float time = (float)Application::GetWindow().GetTime();
 			Timestep timestep = time - m_LastFrameTime;
 
 			m_LastFrameTime = time;
@@ -109,9 +110,9 @@ namespace OP
 				for (Layer* layer : m_LayerStack)
 					layer->OnImGuiRender();
 			}
-			m_ImGuiLayer->End();
+			m_ImGuiLayer->End(); */
 
-			m_Window->OnUpdate();
+			m_Window->OnUpdate(); 
 
 		}
 	}
