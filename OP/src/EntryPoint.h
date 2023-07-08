@@ -1,35 +1,23 @@
 #pragma once
 
 
-// Entry point is being controlled by the engine
 
-#ifdef OP_PLATFORM_WINDOWS
+extern OP::Application* OP::CreateApplication(AppCommandLineArguments args);
 
-	extern OP::Application* OP::CreateApplication(AppCommandLineArguments args);
+int main(int argc, char** argv)
+{
 
-	int main(int argc, char** argv)
-	{
-		OP::Logging::Init();
-		OP_ENGINE_WARN("Logging Service has been initialized!");
+	// Initialize the spdlog
+	OP::Logging::Init();
 
-		OP::Application* Application = OP::CreateApplication({ argc, argv });
-		Application->Run();
+	OP_ENGINE_TRACE("Logging Init!");
 
+	// Create the application and run it
+	OP::Application* Application = OP::CreateApplication({ argc, argv });
+	Application->Run();
 
-		delete Application;
-	}
+	// Delete the application after it is complete or there has been an error
+	delete Application;
 
-#else
-
-	extern OP::Application* OP::CreateApplication();
-
-	int main(int argc, char** argv)
-	{
-		OP::Logging::Init();
-
-		auto app = Op::CreateApplication();
-		app->Run();
-		delete app;
-	}
-
-#endif
+	return 0;
+}

@@ -24,8 +24,11 @@ namespace OP
 	{
 
 		OP_ENGINE_ASSERT(!s_Instance, "There is already an application ready!");
+
+		// Bind the static instance to the pointer to this application object
 		s_Instance = this;
 
+		// Create the window
 		m_Window = std::unique_ptr<Window>(Window::Create(WinProperties(name)));
 		m_Window->SetEventCallback(OP_BIND_EVENT_FUNCTION(Application::OnEvent));
 

@@ -1,9 +1,9 @@
 #pragma once
 
+#define GLFW_INCLUDE_VULKAN
+#include <GLFW/glfw3.h>
 #include <Window/Window.h>
 #include <Renderer/GraphicsContext.h>
-#include <GLFW/glfw3.h>
-
 
 namespace OP
 {
@@ -19,12 +19,13 @@ namespace OP
 		inline unsigned int GetHeight() const override { return m_Data.Height; }
 
 		// Window attributes
-		inline void SetEventCallback(const EventCallbackFunction& callback) override { m_Data.EventCallback = callback; }
-		void SetVSync(bool enabled) override;
 		bool IsVSync() const override;
+		void SetVSync(bool enabled) override;
+		inline void SetEventCallback(const EventCallbackFunction& callback) override { m_Data.EventCallback = callback; }
 
-		inline virtual void* GetNativeWindow() const { return m_Window; }
+
 		virtual float GetTime() const override;
+		inline virtual void* GetNativeWindow() const { return m_Window; }
 
 		virtual float GetDpiScale() const override;
 
@@ -33,15 +34,15 @@ namespace OP
 	private:
 		virtual void Init(const WinProperties& props);
 		virtual void Shutdown();
-
+	private:
 		GLFWwindow* m_Window;
 		GraphicsContext* m_Context;
 
 		struct WinData
 		{
 			std::string Title;
-			unsigned int Width, Height;
-			bool VSync;
+			unsigned int Width = 1280, Height = 720;
+			bool VSync = false;
 
 			EventCallbackFunction EventCallback;
 		};

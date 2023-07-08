@@ -5,7 +5,7 @@
 #include <EventSystem/MouseEvent.h>
 #include <EventSystem/KeyEvent.h>
 
-#include <Platform/OpenGL/OpenGLContext.h>
+#include <Platform/Vulkan/VulkanContext.h>
 
 
 namespace OP
@@ -29,16 +29,19 @@ namespace OP
 
 	WinWindow::~WinWindow()
 	{
+		m_Context->Cleanup();
 		Shutdown();
 	}
 
 	void WinWindow::Init(const WinProperties& props)
 	{
-		m_Data.Title = props.Title;
-		m_Data.Width = props.Width;
-		m_Data.Height = props.Height;
 
 		OP_ENGINE_INFO("Window is being created {0} ({1}, {2})", props.Title, props.Width, props.Height);
+
+		// Fill up m_Data
+		m_Data.Title  = props.Title;
+		m_Data.Width  = props.Width;
+		m_Data.Height = props.Height;
 
 		if (!is_glfw_initialized)
 		{
@@ -48,12 +51,13 @@ namespace OP
 			is_glfw_initialized = true;
 		}
 
-		
+		// Create GLFW window
+		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 		glfwWindowHint(GLFW_SCALE_TO_MONITOR, true);
-
 		m_Window = glfwCreateWindow((int)props.Width, (int)props.Height, m_Data.Title.c_str(), nullptr, nullptr);
 		
-		m_Context = new OpenGLContext(m_Window);
+		// Create the context
+		m_Context = new VulkanContext(m_Window);
 		m_Context->Init();
 
 
@@ -156,6 +160,7 @@ namespace OP
 	void WinWindow::Shutdown()
 	{
 		glfwDestroyWindow(m_Window);
+		glfwTerminate();
 	}
 
 	void WinWindow::OnUpdate()

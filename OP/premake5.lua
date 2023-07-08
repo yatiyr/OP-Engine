@@ -33,8 +33,8 @@ project "OP"
     defines
     {
         "_CRT_SECURE_NO_WARNINGS",
-	    "YAML_CPP_STATIC_DEFINE",
-        "GLFW_INCLUDE_NONE"
+	"YAML_CPP_STATIC_DEFINE",
+        "GLFW_INCLUDE_VULKAN"
     }
 
     includedirs
@@ -70,6 +70,7 @@ project "OP"
         "opengl32.lib",
 	"%{Library.Mono}",
 	"%{Library.Assimp}",
+	"%{Library.VK}"
     }
 
     filter "files:external/ImGuizmo/**.cpp"

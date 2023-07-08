@@ -14,16 +14,16 @@ namespace OP
 
     Scene* s_ActiveScene;
 
-    class OpEditor : public Application
+    class OpVulkanSandbox : public Application
     {
     public:
-        OpEditor(AppCommandLineArguments args)
+        OpVulkanSandbox(AppCommandLineArguments args)
             : Application("Op Vulkan Sandbox", args)
         {
 
         }
 
-        ~OpEditor()
+        ~OpVulkanSandbox()
         {
 
         }
@@ -31,6 +31,6 @@ namespace OP
 
     Application* CreateApplication(AppCommandLineArguments args)
     {
-        return new OpEditor(args);
+        return new OpVulkanSandbox(args);
     }
 }

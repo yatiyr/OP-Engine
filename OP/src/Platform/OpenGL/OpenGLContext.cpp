@@ -2,6 +2,8 @@
 #include <Platform/OpenGL/OpenGLContext.h>
 
 
+#ifndef GLFW_INCLUDE_VULKAN
+
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
 
@@ -30,3 +32,5 @@ namespace OP
 	}
 
 }
+
+#endif // !GLFW_INCLUDE_VULKAN

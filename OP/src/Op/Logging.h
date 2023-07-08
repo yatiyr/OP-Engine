@@ -2,8 +2,8 @@
 
 #include <Op/Core.h>
 #include <spdlog/spdlog.h>
-#include <spdlog/sinks/stdout_color_sinks.h>
 #include <spdlog/fmt/ostr.h>
+#include <spdlog/sinks/stdout_color_sinks.h>
 
 // Log macros for Engine
 #define OP_ENGINE_FATAL(...) ::OP::Logging::GetEngineLogger()->critical(__VA_ARGS__);
@@ -30,14 +30,10 @@ namespace OP
 	{
 	public:
 		static void Init();
-
 		static std::shared_ptr<spdlog::logger>& GetEngineLogger() { return _engineLogger; }
-		static std::shared_ptr<spdlog::logger>& GetAppLogger() { return _appLogger; }
-
+		static std::shared_ptr<spdlog::logger>& GetAppLogger()    { return _appLogger; }
 	private:
-
 		static std::shared_ptr<spdlog::logger> _engineLogger;
 		static std::shared_ptr<spdlog::logger> _appLogger;
-
 	};
 }
