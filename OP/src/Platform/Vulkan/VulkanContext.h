@@ -52,10 +52,14 @@ namespace OP
 		int RateDevice(VkPhysicalDevice device);
 
 		QueueFamilyIndices FindQueueFamilies(VkPhysicalDevice device);
+
+		void CreateLogicalDevice();
 	private:
 		GLFWwindow* m_WindowHandle;
 		VkInstance m_Instance;
 		VkDebugUtilsMessengerEXT m_DebugMessenger;
 		VkPhysicalDevice m_PhysicalDevice;
+		VkDevice m_Device;
+		VkQueue m_GraphicsQueue;
 	};
 }
