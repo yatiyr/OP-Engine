@@ -2,6 +2,9 @@
 
 #include <Platform/Vulkan/VulkanContext.h>
 
+
+#include <map>
+
 namespace OP
 {
 
@@ -51,6 +54,7 @@ namespace OP
 	{
 		CreateInstance();
 		SetupDebugMessenger();
+		PickPhysicalDevice();
 	}
 
 	void VulkanContext::SwapBuffers()
@@ -199,6 +203,100 @@ namespace OP
 			                     VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
 
 		createInfo.pfnUserCallback = debugCallback;
+	}
+
+	void VulkanContext::PickPhysicalDevice()
+	{
+		m_PhysicalDevice = VK_NULL_HANDLE;
+
+		uint32_t deviceCount = 0;
+		vkEnumeratePhysicalDevices(m_Instance, &deviceCount, nullptr);
+
+		if (deviceCount == 0)
+		{
+			OP_ENGINE_ERROR("Failed to find GPUs with Vulkan Support!");
+		}
+
+		std::vector<VkPhysicalDevice> devices(deviceCount);
+		vkEnumeratePhysicalDevices(m_Instance, &deviceCount, devices.data());
+
+		std::multimap<int, VkPhysicalDevice> candidates;
+
+		for (const auto& device : devices)
+		{
+			int score = RateDevice(device);
+			candidates.insert(std::make_pair(score, device));
+		}
+
+		// Check for the best candidate
+		if (candidates.rbegin()->first > 0)
+		{
+			m_PhysicalDevice = candidates.rbegin()->second;
+		}
+		else
+		{
+			OP_ENGINE_ERROR("Failed to find a suitable GPU!");
+		}
+
+	}
+
+	QueueFamilyIndices VulkanContext::FindQueueFamilies(VkPhysicalDevice device)
+	{
+		QueueFamilyIndices indices;
+
+		uint32_t queueFamilyCount = 0;
+		vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, nullptr);
+
+		std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
+		vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, queueFamilies.data());
+
+		int i = 0;
+		for (const auto& queueFamily : queueFamilies)
+		{
+			if (queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT)
+			{
+				indices.graphicsFamily = i;
+			}
+
+			if (indices.IsComplete())
+				break;
+
+			i++;
+		}
+
+		return indices;
+	}
+
+	int VulkanContext::RateDevice(VkPhysicalDevice device)
+	{
+
+		VkPhysicalDeviceProperties deviceProperties;
+		VkPhysicalDeviceFeatures deviceFeatures;
+
+		vkGetPhysicalDeviceProperties(device, &deviceProperties);
+		vkGetPhysicalDeviceFeatures(device, &deviceFeatures);
+
+		int score = 0;
+
+		// If the device does not have the queue families we want
+		// it will not be used
+		QueueFamilyIndices indices = FindQueueFamilies(device);
+		if (!indices.IsComplete())
+			return score;
+
+		// Applications must function with geometry shaders
+		if (!deviceFeatures.geometryShader)
+			return score;
+
+		// Discrete GPU's are better
+		if (deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU)
+			score += 1000;
+
+		// Maximum possible size of textures affects graphics quality
+		score += deviceProperties.limits.maxImageDimension2D;
+
+
+		return score;
 	}
 
 	void VulkanContext::Cleanup()

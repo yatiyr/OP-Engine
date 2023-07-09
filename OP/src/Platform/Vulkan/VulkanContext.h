@@ -7,8 +7,22 @@
 
 struct GLFWwindow;
 
+#include <optional>
+
 namespace OP
 {
+
+	struct QueueFamilyIndices
+	{
+		std::optional<uint32_t> graphicsFamily;
+
+		bool IsComplete()
+		{
+			return graphicsFamily.has_value();
+		}
+	};
+
+
 	class VulkanContext : public GraphicsContext
 	{
 	public:
@@ -32,9 +46,16 @@ namespace OP
 										       const VkAllocationCallbacks* pAllocator);
 
 		void PopulateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo);
+
+		void PickPhysicalDevice();
+
+		int RateDevice(VkPhysicalDevice device);
+
+		QueueFamilyIndices FindQueueFamilies(VkPhysicalDevice device);
 	private:
 		GLFWwindow* m_WindowHandle;
 		VkInstance m_Instance;
 		VkDebugUtilsMessengerEXT m_DebugMessenger;
+		VkPhysicalDevice m_PhysicalDevice;
 	};
 }
