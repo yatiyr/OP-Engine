@@ -15,10 +15,11 @@ namespace OP
 	struct QueueFamilyIndices
 	{
 		std::optional<uint32_t> graphicsFamily;
+		std::optional<uint32_t> presentFamily;
 
 		bool IsComplete()
 		{
-			return graphicsFamily.has_value();
+			return graphicsFamily.has_value() && presentFamily.has_value();
 		}
 	};
 
@@ -54,6 +55,8 @@ namespace OP
 		QueueFamilyIndices FindQueueFamilies(VkPhysicalDevice device);
 
 		void CreateLogicalDevice();
+
+		void CreateSurface();
 	private:
 		GLFWwindow* m_WindowHandle;
 		VkInstance m_Instance;
@@ -61,5 +64,7 @@ namespace OP
 		VkPhysicalDevice m_PhysicalDevice;
 		VkDevice m_Device;
 		VkQueue m_GraphicsQueue;
+		VkQueue m_PresentQueue;
+		VkSurfaceKHR m_Surface;
 	};
 }
