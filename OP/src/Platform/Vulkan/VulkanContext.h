@@ -76,6 +76,9 @@ namespace OP
 
 
 		void CreateSwapChain();
+
+		void CreateImageViews();
+
 	private:
 		GLFWwindow* m_WindowHandle;
 		VkInstance m_Instance;
@@ -89,5 +92,6 @@ namespace OP
 		std::vector<VkImage> m_SwapChainImages;
 		VkFormat m_SwapChainImageFormat;
 		VkExtent2D m_SwapChainExtent;
+		std::vector<VkImageView> m_SwapChainImageViews;
 	};
 }
