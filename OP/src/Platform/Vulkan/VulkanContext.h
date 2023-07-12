@@ -23,6 +23,12 @@ namespace OP
 		}
 	};
 
+	struct SwapChainSupportDetails
+	{
+		VkSurfaceCapabilitiesKHR capabilities;
+		std::vector<VkSurfaceFormatKHR> formats;
+		std::vector<VkPresentModeKHR> presentModes;
+	};
 
 	class VulkanContext : public GraphicsContext
 	{
@@ -57,6 +63,19 @@ namespace OP
 		void CreateLogicalDevice();
 
 		void CreateSurface();
+
+		bool CheckDeviceExtensionSupport(VkPhysicalDevice device);
+
+		SwapChainSupportDetails QuerySwapChainSupport(VkPhysicalDevice device);
+
+		VkSurfaceFormatKHR ChooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
+
+		VkPresentModeKHR ChooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);
+
+		VkExtent2D ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
+
+
+		void CreateSwapChain();
 	private:
 		GLFWwindow* m_WindowHandle;
 		VkInstance m_Instance;
@@ -66,5 +85,9 @@ namespace OP
 		VkQueue m_GraphicsQueue;
 		VkQueue m_PresentQueue;
 		VkSurfaceKHR m_Surface;
+		VkSwapchainKHR m_SwapChain;
+		std::vector<VkImage> m_SwapChainImages;
+		VkFormat m_SwapChainImageFormat;
+		VkExtent2D m_SwapChainExtent;
 	};
 }
