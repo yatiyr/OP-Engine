@@ -23,14 +23,14 @@ namespace OP
 		: m_CommandLineArguments(args)
 	{
 
-		OP_ENGINE_ASSERT(!s_Instance, "There is already an application ready!");
-
 		// Bind the static instance to the pointer to this application object
 		s_Instance = this;
 
 		// Create the window
 		m_Window = std::unique_ptr<Window>(Window::Create(WinProperties(name)));
 		m_Window->SetEventCallback(OP_BIND_EVENT_FUNCTION(Application::OnEvent));
+
+		ResourceManager::Init(std::filesystem::current_path());
 
 		/*m_DpiScale = m_Window->GetDpiScale();
 
@@ -39,7 +39,6 @@ namespace OP
 
 		OP::JobSystem::Initialize();
 
-		ResourceManager::Init(std::filesystem::current_path());
 		PhysicsManager::Init();
 		Renderer::Init();
 		ScriptManager::InitializeManager("assets/scripts/bin/RuntimeScripts.dll");

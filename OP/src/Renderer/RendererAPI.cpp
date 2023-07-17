@@ -3,5 +3,5 @@
 
 namespace OP
 {
-	RendererAPI::API RendererAPI::s_API = RendererAPI::API::OpenGL;
+	RendererAPI::API RendererAPI::s_API = RendererAPI::API::Vulkan;
 }

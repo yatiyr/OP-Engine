@@ -6,6 +6,7 @@
 
 namespace OP
 {
+
 	class Shader
 	{
 	public:
@@ -33,6 +34,7 @@ namespace OP
 
 		virtual const std::string& GetName() const = 0;
 
+		static Ref<Shader> Create(const std::string& name, const std::map<uint32_t, std::string>& map);
 		static Ref<Shader> Create(const std::string& filePath);
 		static Ref<Shader> Create(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc);
 		static Ref<Shader> Create(const std::string& name, const std::string& vertexSrc, const std::string& geomSrc, const std::string& fragmentSrc);

@@ -8,6 +8,7 @@
 struct GLFWwindow;
 
 #include <optional>
+#include <vector>
 
 namespace OP
 {
@@ -40,6 +41,10 @@ namespace OP
 		virtual void SwapBuffers() override;
 
 		virtual void Cleanup() override;
+		static VulkanContext* GetContext();
+		VkDevice GetDevice();
+		VkExtent2D GetSwapChainExtent();
+
 	private:
 		void CreateInstance();
 		bool checkValidationLayerSupport();
@@ -79,7 +84,10 @@ namespace OP
 
 		void CreateImageViews();
 
+		void CreateGraphicsPipeline();
+
 	private:
+		static VulkanContext* s_Instance;
 		GLFWwindow* m_WindowHandle;
 		VkInstance m_Instance;
 		VkDebugUtilsMessengerEXT m_DebugMessenger;

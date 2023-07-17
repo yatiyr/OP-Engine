@@ -772,7 +772,7 @@ namespace OP
 				{
 					auto& mC = deserializedEntity.AddComponent<MeshComponent>();
 					mC.MeshName = meshComponent["MeshName"].as<std::string>();
-					mC.Mesh = ResourceManager::GetMesh(mC.MeshName);
+					//mC.Mesh = ResourceManager::GetMesh(mC.MeshName);
 				}
 
 				auto scriptComponent = entity["ScriptComponent"];
@@ -837,8 +837,9 @@ namespace OP
 				if (materialComponent)
 				{
 					auto& mC = deserializedEntity.AddOrReplaceComponent<MaterialComponent>();
-					Ref<Material> mat = ResourceManager::GetMaterial(materialComponent["MaterialName"].as<std::string>());
-					mC.MatInstance = MaterialInstance::Create(mat);
+					// TODO:
+					// Ref<Material> mat = ResourceManager::GetMaterial(materialComponent["MaterialName"].as<std::string>());
+					// mC.MatInstance = MaterialInstance::Create(mat);
 					mC.MatInstance->TilingFactor = materialComponent["TilingFactor"].as<float>();
 					mC.MatInstance->HeightFactor = materialComponent["HeightFactor"].as<float>();
 					mC.MatInstance->ClipBorder = materialComponent["ClipBorder"].as<bool>();
@@ -885,8 +886,9 @@ namespace OP
 					{
 						std::string textureType = element.first.as<std::string>();
 						std::string textureName = element.second.as<std::string>();
-						Ref<Texture> texture = ResourceManager::GetTexture(textureName);
-						mC.MatInstance->Textures[texCounter] = { textureType, texture };
+						// TODO:
+						// Ref<Texture> texture = ResourceManager::GetTexture(textureName);
+						// mC.MatInstance->Textures[texCounter] = { textureType, texture };
 						texCounter++;
 					}
 

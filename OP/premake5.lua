@@ -55,7 +55,6 @@ project "OP"
 	"%{IncludeDir.Mono}",
         "%{IncludeDir.VK_SDK}",
 	"%{IncludeDir.FontAwesome}",
-	"%{IncludeDir.SPIRV_Cross}",
 	"%{IncludeDir.Assimp}",
 	"%{IncludeDir.Bullet}"
     }
@@ -93,20 +92,20 @@ project "OP"
         links
         {
             "%{Library.ShaderC_DBG}",
-			"%{Library.SPIRV_CROSS_DBG}",
-			"%{Library.SPIRV_CROSS_GLSL_DBG}",
-	"%{LibraryDir.BulletDbg}/Bullet3Collision_Debug.lib",
-	"%{LibraryDir.BulletDbg}/Bullet3Common_Debug.lib",
-	"%{LibraryDir.BulletDbg}/Bullet3Dynamics_Debug.lib",
-	"%{LibraryDir.BulletDbg}/Bullet3Geometry_Debug.lib",
-	"%{LibraryDir.BulletDbg}/Bullet3OpenCL_clew_Debug.lib",
-	"%{LibraryDir.BulletDbg}/BulletCollision_Debug.lib",
-	"%{LibraryDir.BulletDbg}/BulletDynamics_Debug.lib",
-	"%{LibraryDir.BulletDbg}/BulletInverseDynamics_Debug.lib",
-	"%{LibraryDir.BulletDbg}/BulletInverseDynamicsUtils_Debug.lib",
-	"%{LibraryDir.BulletDbg}/BulletSoftBody_Debug.lib",
-	"%{LibraryDir.BulletDbg}/ConvexDecomposition_Debug.lib",
-	"%{LibraryDir.BulletDbg}/LinearMath_Debug.lib"
+	    "%{Library.SPIRV_CROSS_DBG}",
+	    "%{Library.SPIRV_CROSS_GLSL_DBG}",
+	    "%{LibraryDir.BulletDbg}/Bullet3Collision_Debug.lib",
+	    "%{LibraryDir.BulletDbg}/Bullet3Common_Debug.lib",
+	    "%{LibraryDir.BulletDbg}/Bullet3Dynamics_Debug.lib",
+	    "%{LibraryDir.BulletDbg}/Bullet3Geometry_Debug.lib",
+	    "%{LibraryDir.BulletDbg}/Bullet3OpenCL_clew_Debug.lib",
+	    "%{LibraryDir.BulletDbg}/BulletCollision_Debug.lib",
+	    "%{LibraryDir.BulletDbg}/BulletDynamics_Debug.lib",
+	    "%{LibraryDir.BulletDbg}/BulletInverseDynamics_Debug.lib",
+	    "%{LibraryDir.BulletDbg}/BulletInverseDynamicsUtils_Debug.lib",
+	    "%{LibraryDir.BulletDbg}/BulletSoftBody_Debug.lib",
+	    "%{LibraryDir.BulletDbg}/ConvexDecomposition_Debug.lib",
+	    "%{LibraryDir.BulletDbg}/LinearMath_Debug.lib"
         }
 
     filter "configurations:Release"
@@ -117,20 +116,20 @@ project "OP"
         links
         {
             "%{Library.ShaderC_REL}",
-			"%{Library.SPIRV_CROSS_REL}",
-			"%{Library.SPIRV_CROSS_GLSL_REL}",
-	"%{LibraryDir.BulletRel}/Bullet3Collision.lib",
-	"%{LibraryDir.BulletRel}/Bullet3Common.lib",
-	"%{LibraryDir.BulletRel}/Bullet3Dynamics.lib",
-	"%{LibraryDir.BulletRel}/Bullet3Geometry.lib",
-	"%{LibraryDir.BulletRel}/Bullet3OpenCL_clew.lib",
-	"%{LibraryDir.BulletRel}/BulletCollision.lib",
-	"%{LibraryDir.BulletRel}/BulletDynamics.lib",
-	"%{LibraryDir.BulletRel}/BulletInverseDynamics.lib",
-	"%{LibraryDir.BulletRel}/BulletInverseDynamicsUtils.lib",
-	"%{LibraryDir.BulletRel}/BulletSoftBody.lib",
-	"%{LibraryDir.BulletRel}/ConvexDecomposition.lib",
-	"%{LibraryDir.BulletRel}/LinearMath.lib"
+	    "%{Library.SPIRV_CROSS_REL}",
+	    "%{Library.SPIRV_CROSS_GLSL_REL}",
+	    "%{LibraryDir.BulletRel}/Bullet3Collision.lib",
+	    "%{LibraryDir.BulletRel}/Bullet3Common.lib",
+	    "%{LibraryDir.BulletRel}/Bullet3Dynamics.lib",
+	    "%{LibraryDir.BulletRel}/Bullet3Geometry.lib",
+	    "%{LibraryDir.BulletRel}/Bullet3OpenCL_clew.lib",
+	    "%{LibraryDir.BulletRel}/BulletCollision.lib",
+	    "%{LibraryDir.BulletRel}/BulletDynamics.lib",
+	    "%{LibraryDir.BulletRel}/BulletInverseDynamics.lib",
+	    "%{LibraryDir.BulletRel}/BulletInverseDynamicsUtils.lib",
+	    "%{LibraryDir.BulletRel}/BulletSoftBody.lib",
+	    "%{LibraryDir.BulletRel}/ConvexDecomposition.lib",
+	    "%{LibraryDir.BulletRel}/LinearMath.lib"
         }        
 
     filter "configurations:Dist"
@@ -141,6 +140,6 @@ project "OP"
         links
         {
             "%{Library.ShaderC_REL}",
-			"%{Library.SPIRV_CROSS_REL}",
-			"%{Library.SPIRV_CROSS_GLSL_REL}"
+	    "%{Library.SPIRV_CROSS_REL}",
+	    "%{Library.SPIRV_CROSS_GLSL_REL}"
         }                 

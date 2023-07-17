@@ -3,10 +3,20 @@
 
 #include <Renderer/Renderer.h>
 #include <Platform/OpenGL/OpenGLShader.h>
+#include <Platform/Vulkan/VulkanShaderModule.h>
 
 namespace OP
 {
+	Ref<Shader> Shader::Create(const std::string& name, const std::map<uint32_t, std::string>& map)
+	{
+		switch (Renderer::GetAPI())
+		{
+			case RendererAPI::API::None:   OP_ENGINE_ASSERT(false, "RendererAPI::None is not supported!"); return nullptr;
+		}
 
+		OP_ENGINE_ASSERT(false, "Unknown RendererAPI!");
+		return nullptr;
+	}
 	Ref<Shader> Shader::Create(const std::string& filePath)
 	{
 		switch (Renderer::GetAPI())

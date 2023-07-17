@@ -29,7 +29,7 @@ namespace OP
 				OP_ENGINE_WARN("Validation Layer [WARNING]: {0}", pCallbackData->pMessage);
 				break;
 			case VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT:
-				OP_ENGINE_INFO("Validation Layer [ERROR]: {0}", pCallbackData->pMessage);
+				OP_ENGINE_ERROR("Validation Layer [ERROR]: {0}", pCallbackData->pMessage);
 				break;
 			default:
 				break;
@@ -47,8 +47,11 @@ namespace OP
 	const bool enableValidationLayers = true;
 #endif
 
+	VulkanContext* VulkanContext::s_Instance = nullptr;
+
 	VulkanContext::VulkanContext(GLFWwindow* windowHandle) : m_WindowHandle(windowHandle)
 	{
+		s_Instance = this;
 		OP_ENGINE_ASSERT(windowHandle, "Window Handle is not initialized")
 	}
 
@@ -81,7 +84,7 @@ namespace OP
 		appInfo.pApplicationName = "Vulkan App";
 		appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
 		appInfo.pEngineName = "OP Engine";
-		appInfo.apiVersion = VK_API_VERSION_1_0;
+		appInfo.apiVersion = VK_API_VERSION_1_3;
 
 		VkInstanceCreateInfo createInfo{};
 		createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
@@ -116,6 +119,21 @@ namespace OP
 		{
 			OP_ENGINE_ERROR("Failed to Create Instance!");
 		}
+	}
+
+	VulkanContext* VulkanContext::GetContext()
+	{
+		return s_Instance;
+	}
+
+	VkDevice VulkanContext::GetDevice()
+	{
+		return m_Device;
+	}
+
+	VkExtent2D VulkanContext::GetSwapChainExtent()
+	{
+		return m_SwapChainExtent;
 	}
 
 	bool VulkanContext::checkValidationLayerSupport()
@@ -464,6 +482,10 @@ namespace OP
 				OP_ENGINE_ERROR("Failed to create Image Views!");
 			}
 		}
+	}
+
+	void VulkanContext::CreateGraphicsPipeline()
+	{
 	}
 
 	VkSurfaceFormatKHR VulkanContext::ChooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats)

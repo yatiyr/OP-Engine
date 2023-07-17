@@ -45,7 +45,7 @@ namespace OP
 	public:
 		enum class API
 		{
-			None = 0, OpenGL = 1
+			None = 0, OpenGL = 1, Vulkan = 2
 		};
 	public:
 		virtual void Init() = 0;

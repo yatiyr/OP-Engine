@@ -855,8 +855,9 @@ namespace OP
 	template<>
 	void Scene::OnComponentAdded<MaterialComponent>(Entity entity, MaterialComponent& component)
 	{
-		Ref<Material> defaultPbr = ResourceManager::GetMaterial("DefaultPbr");
-		component.MatInstance = MaterialInstance::Create(defaultPbr);
+		// TODO:
+		//Ref<Material> defaultPbr = ResourceManager::GetMaterial("DefaultPbr");
+		// component.MatInstance = MaterialInstance::Create(defaultPbr);
 	}
 	template<>
 	void Scene::OnComponentAdded<Physics3DMaterial>(Entity entity, Physics3DMaterial& component){}

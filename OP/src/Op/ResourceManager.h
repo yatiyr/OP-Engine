@@ -9,6 +9,9 @@
 
 #include <Renderer/EnvironmentMap.h>
 
+
+#include <Platform/Vulkan/VulkanShaderModule.h>
+
 namespace OP
 {
 
@@ -39,27 +42,11 @@ namespace OP
 		static int LoadShaderSources(std::filesystem::path shaderIncludeFilePath);
 		static int CompileShaders();
 
-		static Ref<Shader> GetShader(std::string name);
-		static Ref<Model> GetModel(std::string name);
-		static Ref<Texture> GetTexture(std::string name);
-		static Ref<EnvironmentMap> GetEnvironmentMap(std::string name);
-		static Ref<Material> GetMaterial(std::string name);
+		static Ref<VulkanShaderModule> GetShader(std::string name);
 
-		static int LoadModels(std::filesystem::path meshFilePath);
-		static int RegisterModelResources();
 
 		static std::string ResolveIncludes(const std::string& shaderSource, const std::string& fileName, std::unordered_map<std::string, bool>& includeMap, bool firstTime);
-		// Mesh Related functions
-		static int AddMesh();
-		static Ref<Mesh> GetMesh(std::string name);
-		static const std::unordered_map<uint32_t, Ref<Mesh>>& GetMeshMap();
-		static const std::unordered_map<uint32_t, Ref<EnvironmentMap>>& GetEnvironmentMaps();
 
-		static int LoadMaterials(std::filesystem::path materialsFilePath);
-
-		// Texture related functions
-		static int LoadEnvironmentMaps(std::filesystem::path texturesFilePath);
-		static int LoadTextures(std::filesystem::path texturesFilePath);
 
 	private:
 	};
