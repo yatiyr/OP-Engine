@@ -1,5 +1,5 @@
 #include <Precomp.h>
-#include "VulkanGraphicsPipeline.h"
+#include <Platform/Vulkan/VulkanGraphicsPipeline.h>
 
 
 namespace OP
@@ -18,8 +18,9 @@ namespace OP
 		}
 	}
 
-	VulkanGraphicsPipeline::VulkanGraphicsPipeline(const std::map<uint32_t, VkShaderModule>& vulkanShaderModules)
+	VulkanGraphicsPipeline::VulkanGraphicsPipeline(Ref<VulkanShaderModule> shaders, Ref<VulkanRenderPass> renderPass)
 	{
+		std::map<uint32_t, VkShaderModule> vulkanShaderModules = shaders->GetShaderModules();
 
 		std::vector<VkPipelineShaderStageCreateInfo> createInfos;
 
@@ -142,11 +143,35 @@ namespace OP
 		}
 
 
+		VkGraphicsPipelineCreateInfo pipelineInfo{};
+		pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
+		pipelineInfo.stageCount = 2;
+		pipelineInfo.pStages = createInfos.data();
+		pipelineInfo.pVertexInputState = &vertexInputInfo;
+		pipelineInfo.pInputAssemblyState = &inputAssembly;
+		pipelineInfo.pViewportState = &viewportState;
+		pipelineInfo.pRasterizationState = &rasterizer;
+		pipelineInfo.pMultisampleState = &multisampling;
+		pipelineInfo.pDepthStencilState = nullptr;
+		pipelineInfo.pColorBlendState = &colorBlending;
+		pipelineInfo.pDynamicState = &dynamicState;
+		pipelineInfo.layout = m_PipelineLayout;
+		pipelineInfo.renderPass = renderPass->GetVkRenderPass();
+		pipelineInfo.subpass = 0;
+		pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
+		pipelineInfo.basePipelineIndex = -1;
+
+		if (vkCreateGraphicsPipelines(VulkanContext::GetContext()->GetDevice(), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &m_Pipeline) != VK_SUCCESS)
+		{
+			OP_ENGINE_ERROR("Failed to create graphics pipeline!");
+		}
 	}
 
 	VulkanGraphicsPipeline::~VulkanGraphicsPipeline()
 	{
-
+		VkDevice device = VulkanContext::GetContext()->GetDevice();
+		vkDestroyPipeline(device, m_Pipeline, nullptr);
+		vkDestroyPipelineLayout(device, m_PipelineLayout, nullptr);
 	}
 
 

@@ -64,6 +64,8 @@ namespace OP
 		CreateLogicalDevice();
 		CreateSwapChain();
 		CreateImageViews();
+		CreateCommandPool();
+		CreateCommandBuffer();
 	}
 
 	void VulkanContext::SwapBuffers()
@@ -131,9 +133,14 @@ namespace OP
 		return m_Device;
 	}
 
-	VkExtent2D VulkanContext::GetSwapChainExtent()
+	VkExtent2D& VulkanContext::GetSwapChainExtent()
 	{
 		return m_SwapChainExtent;
+	}
+
+	VkFormat& VulkanContext::GetSwapChainImageFormat()
+	{
+		return m_SwapChainImageFormat;
 	}
 
 	bool VulkanContext::checkValidationLayerSupport()
@@ -313,6 +320,16 @@ namespace OP
 		vkGetDeviceQueue(m_Device, indices.presentFamily.value(), 0, &m_PresentQueue);
 	}
 
+	std::vector<VkImageView> VulkanContext::GetSwapChainImageViews()
+	{
+		return m_SwapChainImageViews;
+	}
+
+	VkCommandPool& VulkanContext::GetCommandPool()
+	{
+		return m_CommandPool;
+	}
+
 	void VulkanContext::CreateSurface()
 	{
 		if (glfwCreateWindowSurface(m_Instance, m_WindowHandle, nullptr, &m_Surface) != VK_SUCCESS)
@@ -455,6 +472,21 @@ namespace OP
 		m_SwapChainExtent = extent;
 	}
 
+	void VulkanContext::CreateCommandPool()
+	{
+		QueueFamilyIndices queueFamilyIndices = FindQueueFamilies(m_PhysicalDevice);
+
+		VkCommandPoolCreateInfo poolInfo{};
+		poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+		poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
+		poolInfo.queueFamilyIndex = queueFamilyIndices.graphicsFamily.value();
+
+		if (vkCreateCommandPool(m_Device, &poolInfo, nullptr, &m_CommandPool) != VK_SUCCESS)
+		{
+			OP_ENGINE_ERROR("Failed to create command pool!");
+		}
+	}
+
 	void VulkanContext::CreateImageViews()
 	{
 		m_SwapChainImageViews.resize(m_SwapChainImages.size());
@@ -484,8 +516,20 @@ namespace OP
 		}
 	}
 
-	void VulkanContext::CreateGraphicsPipeline()
+	void VulkanContext::CreateCommandBuffer()
 	{
+		VkCommandBufferAllocateInfo allocInfo{};
+		allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+		allocInfo.commandPool = m_CommandPool;
+		allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+		allocInfo.commandBufferCount = 1;
+
+		if (vkAllocateCommandBuffers(m_Device, &allocInfo, &m_CommandBuffer) != VK_SUCCESS)
+		{
+			OP_ENGINE_ERROR("Failed to allocate command buffers!");
+		}
+
+
 	}
 
 	VkSurfaceFormatKHR VulkanContext::ChooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats)
@@ -578,6 +622,8 @@ namespace OP
 
 	void VulkanContext::Cleanup()
 	{
+		vkDestroyCommandPool(m_Device, m_CommandPool, nullptr);
+
 		for (auto imageView : m_SwapChainImageViews)
 		{
 			vkDestroyImageView(m_Device, imageView, nullptr);

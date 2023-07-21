@@ -103,6 +103,11 @@ namespace OP
 		}
 	}
 
+	const std::map<uint32_t, VkShaderModule>& VulkanShaderModule::GetShaderModules()
+	{
+		return m_ShaderModules;
+	}
+
 	void VulkanShaderModule::CompileOrGetBinaries(const std::map<uint32_t, std::string>& shaderTypeMap)
 	{
 		shaderc::Compiler compiler;

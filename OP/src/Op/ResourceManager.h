@@ -1,3 +1,5 @@
+#pragma once
+
 #include <string>
 #include <Scene/Scene.h>
 #include <filesystem>
@@ -14,6 +16,8 @@
 
 namespace OP
 {
+	// Forward declaration
+	class VulkanShaderModule;
 
 	enum class ResourceTypes
 	{

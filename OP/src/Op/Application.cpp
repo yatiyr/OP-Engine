@@ -13,6 +13,9 @@
 #include <PhysicsManager/PhysicsManager.h>
 #include <JobSystem/JobSystem.h>
 
+#include <Platform/Vulkan/VulkanRenderSystem.h>
+
+
 namespace OP
 {
 
@@ -31,6 +34,8 @@ namespace OP
 		m_Window->SetEventCallback(OP_BIND_EVENT_FUNCTION(Application::OnEvent));
 
 		ResourceManager::Init(std::filesystem::current_path());
+
+		VulkanRenderSystem::Init();
 
 		/*m_DpiScale = m_Window->GetDpiScale();
 
@@ -118,6 +123,7 @@ namespace OP
 
 	bool Application::OnWindowClose(WindowCloseEvent& e)
 	{
+		VulkanRenderSystem::Cleanup();
 		is_running = false;
 		return true;
 	}

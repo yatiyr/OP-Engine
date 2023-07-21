@@ -10,6 +10,8 @@ namespace OP
 	public:
 		VulkanShaderModule(const std::string& name,const std::map<uint32_t, std::string>& shaderTypeMap);
 		~VulkanShaderModule();
+
+		const std::map<uint32_t, VkShaderModule>& GetShaderModules();
 	private:
 		void CompileOrGetBinaries(const std::map<uint32_t, std::string>& shaderTypeMap);
 

@@ -4,14 +4,21 @@
 #include <GLFW/glfw3.h>
 
 #include <Renderer/GraphicsContext.h>
-
 struct GLFWwindow;
 
 #include <optional>
 #include <vector>
 
+
+#include <Platform/Vulkan/VulkanGraphicsPipeline.h>
+#include <Platform/Vulkan/VulkanRenderPass.h>
+
+#include <Op/ResourceManager.h>
+
 namespace OP
 {
+	// Forward declaration
+	class VulkanGraphicsPipeline;
 
 	struct QueueFamilyIndices
 	{
@@ -43,49 +50,36 @@ namespace OP
 		virtual void Cleanup() override;
 		static VulkanContext* GetContext();
 		VkDevice GetDevice();
-		VkExtent2D GetSwapChainExtent();
+		VkExtent2D& GetSwapChainExtent();
+		VkFormat& GetSwapChainImageFormat();
+
+		std::vector<VkImageView>& GetSwapChainImageViews();
+		VkCommandPool& GetCommandPool();
 
 	private:
 		void CreateInstance();
 		bool checkValidationLayerSupport();
 		void SetupDebugMessenger();
 		std::vector<const char*> GetRequiredExtensions();
-
 		VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo,
 											  const VkAllocationCallbacks* pAllocator, VkDebugUtilsMessengerEXT* pDebugMessenger);
-
 		void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debugMessenger,
 										       const VkAllocationCallbacks* pAllocator);
-
 		void PopulateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo);
-
 		void PickPhysicalDevice();
-
 		int RateDevice(VkPhysicalDevice device);
-
 		QueueFamilyIndices FindQueueFamilies(VkPhysicalDevice device);
-
 		void CreateLogicalDevice();
-
 		void CreateSurface();
-
 		bool CheckDeviceExtensionSupport(VkPhysicalDevice device);
-
 		SwapChainSupportDetails QuerySwapChainSupport(VkPhysicalDevice device);
-
 		VkSurfaceFormatKHR ChooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
-
 		VkPresentModeKHR ChooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);
-
 		VkExtent2D ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
-
-
 		void CreateSwapChain();
-
 		void CreateImageViews();
-
-		void CreateGraphicsPipeline();
-
+		void CreateCommandPool();
+		void CreateCommandBuffer();
 	private:
 		static VulkanContext* s_Instance;
 		GLFWwindow* m_WindowHandle;
@@ -101,5 +95,7 @@ namespace OP
 		VkFormat m_SwapChainImageFormat;
 		VkExtent2D m_SwapChainExtent;
 		std::vector<VkImageView> m_SwapChainImageViews;
+		VkCommandPool m_CommandPool;
+		VkCommandBuffer m_CommandBuffer;
 	};
 }
