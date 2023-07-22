@@ -1,8 +1,10 @@
 #include <Precomp.h>
 #include <Platform/Vulkan/VulkanRenderSystem.h>
 
+#include <Platform/Vulkan/VulkanFramebuffer.h>
 #include <Platform/Vulkan/VulkanGraphicsPipeline.h>
 #include <Platform/Vulkan/VulkanRenderPass.h>
+#include <Platform/Vulkan/VulkanCommandBuffer.h>
 
 namespace OP
 {
@@ -10,7 +12,8 @@ namespace OP
 	{
 		Ref<VulkanGraphicsPipeline> Pipeline;
 		Ref<VulkanRenderPass> RenderPass;
-		std::vector<VkFramebuffer> SwapchainFramebuffers;
+		std::vector<Ref<VulkanFramebuffer>> SwapchainFramebuffers;
+		Ref<VulkanCommandBuffer> CommandBuffer;
 	} s_VulkanRenderData;
 
 
@@ -19,6 +22,9 @@ namespace OP
 	{
 		s_VulkanRenderData.RenderPass = std::make_shared<VulkanRenderPass>();
 		s_VulkanRenderData.Pipeline = std::make_shared<VulkanGraphicsPipeline>(ResourceManager::GetShader("sandbox"), s_VulkanRenderData.RenderPass);
+
+		CreateFramebuffers();
+		CreateCommandBuffer();
 	}
 
 	void VulkanRenderSystem::Cleanup()
@@ -26,7 +32,7 @@ namespace OP
 		VkDevice device = VulkanContext::GetContext()->GetDevice();
 		for (auto framebuffer : s_VulkanRenderData.SwapchainFramebuffers)
 		{
-			vkDestroyFramebuffer(device, framebuffer, nullptr);
+			framebuffer->~VulkanFramebuffer();
 		}
 	}
 
@@ -48,22 +54,17 @@ namespace OP
 				swapchainImageViews[i]
 			};
 
-			VkFramebufferCreateInfo framebufferInfo{};
-			framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
-			framebufferInfo.renderPass = s_VulkanRenderData.RenderPass->GetVkRenderPass();
-			framebufferInfo.attachmentCount = 1;
-			framebufferInfo.pAttachments = attachments;
-			framebufferInfo.width = swapchainExtent.width;
-			framebufferInfo.height = swapchainExtent.height;
-			framebufferInfo.layers = 1;
-
-			if (vkCreateFramebuffer(device, &framebufferInfo, nullptr, &s_VulkanRenderData.SwapchainFramebuffers[i]) != VK_SUCCESS)
-			{
-				OP_ENGINE_ERROR("Failed to create framebuffer!");
-			}
+			s_VulkanRenderData.SwapchainFramebuffers[i] = std::make_shared<VulkanFramebuffer>(s_VulkanRenderData.RenderPass,
+				                                                                              attachments,
+				                                                                              swapchainExtent.width, swapchainExtent.height);
 
 		}
 
+	}
+
+	void VulkanRenderSystem::CreateCommandBuffer()
+	{
+		s_VulkanRenderData.CommandBuffer = std::make_shared<VulkanCommandBuffer>();
 	}
 
 }

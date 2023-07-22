@@ -27,4 +27,58 @@ namespace OP
 		return m_CommandBuffer;
 	}
 
+	void VulkanCommandBuffer::RecordCommandBuffer(Ref<VulkanRenderPass> renderpass, Ref<VulkanFramebuffer> framebuffer, VkExtent2D extent)
+	{
+		VkCommandBufferBeginInfo beginInfo{};
+		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+		beginInfo.flags = 0;
+		beginInfo.pInheritanceInfo = nullptr;
+
+		if (vkBeginCommandBuffer(m_CommandBuffer, &beginInfo) != VK_SUCCESS)
+		{
+			OP_ENGINE_ERROR("Failed to begin recording the command buffer!");
+		}
+
+		// Start renderpass
+		VkRenderPassBeginInfo renderPassInfo{};
+		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+		renderPassInfo.renderPass = renderpass->GetVkRenderPass();
+		renderPassInfo.framebuffer = framebuffer->GetVkFramebuffer();
+		renderPassInfo.renderArea.offset = { 0, 0 };
+		renderPassInfo.renderArea.extent = extent;
+
+		// ClearColor
+		VkClearValue clearColor = { {{0.0f, 0.0f, 0.0f, 1.0f}} };
+		renderPassInfo.clearValueCount = 1;
+		renderPassInfo.pClearValues = &clearColor;
+
+		// Begin the render pass
+		vkCmdBeginRenderPass(m_CommandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+
+		// Fixed functions
+		VkViewport viewport{};
+		viewport.x = 0.0f;
+		viewport.y = 0.0f;
+		viewport.width = static_cast<float>(extent.width);
+		viewport.height = static_cast<float>(extent.height);
+		viewport.minDepth = 0.0f;
+		viewport.maxDepth = 1.0f;
+		vkCmdSetViewport(m_CommandBuffer, 0, 1, &viewport);
+
+		VkRect2D scissor{};
+		scissor.offset = { 0, 0 };
+		scissor.extent = extent;
+		vkCmdSetScissor(m_CommandBuffer, 0, 1, &scissor);
+
+		// TODO: WILL BE CHANGED
+		vkCmdDraw(m_CommandBuffer, 3, 1, 0, 0);
+
+		vkCmdEndRenderPass(m_CommandBuffer);
+
+		if (vkEndCommandBuffer(m_CommandBuffer) != VK_SUCCESS)
+		{
+			OP_ENGINE_ERROR("Failed to record command buffer!");
+		}
+	}
+
 }

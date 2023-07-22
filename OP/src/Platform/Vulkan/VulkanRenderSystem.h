@@ -11,6 +11,7 @@ namespace OP
 		static void Init();
 		static void Cleanup();
 	private:
-		void CreateFramebuffers();
+		static void CreateFramebuffers();
+		static void CreateCommandBuffer();
 	};
 }

@@ -320,7 +320,7 @@ namespace OP
 		vkGetDeviceQueue(m_Device, indices.presentFamily.value(), 0, &m_PresentQueue);
 	}
 
-	std::vector<VkImageView> VulkanContext::GetSwapChainImageViews()
+	std::vector<VkImageView>& VulkanContext::GetSwapChainImageViews()
 	{
 		return m_SwapChainImageViews;
 	}
