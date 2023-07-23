@@ -13,13 +13,15 @@ namespace OP
 		Ref<VulkanGraphicsPipeline> Pipeline;
 		Ref<VulkanRenderPass> RenderPass;
 		std::vector<Ref<VulkanFramebuffer>> SwapchainFramebuffers;
-		Ref<VulkanCommandBuffer> CommandBuffer;
+		std::vector<Ref<VulkanCommandBuffer>> CommandBuffers;
+		uint32_t CurrentFrame = 0;
 	} s_VulkanRenderData;
 
 
 
 	void VulkanRenderSystem::Init()
 	{
+
 		s_VulkanRenderData.RenderPass = std::make_shared<VulkanRenderPass>();
 		s_VulkanRenderData.Pipeline = std::make_shared<VulkanGraphicsPipeline>(ResourceManager::GetShader("sandbox"), s_VulkanRenderData.RenderPass);
 
@@ -41,21 +43,22 @@ namespace OP
 		VulkanContext* context = VulkanContext::GetContext();
 
 		VkDevice device = context->GetDevice();
-		VkFence inFlightFence = context->GetInFlightFence();
-		VkSemaphore imageAvailableSemaphore = context->GetImageAvailableSemaphore();
-		VkSemaphore renderFinishedSemaphore = context->GetRenderFinishedSemaphore();
+		std::vector<VkFence> inFlightFences = context->GetInFlightFences();
+		std::vector<VkSemaphore> imageAvailableSemaphores = context->GetImageAvailableSemaphores();
+		std::vector<VkSemaphore> renderFinishedSemaphores = context->GetRenderFinishedSemaphores();
 		VkSwapchainKHR swapchain = context->GetSwapchain();
 		VkExtent2D extent = context->GetSwapChainExtent();
 		VkQueue graphicsQueue = context->GetGraphicsQueue();
 		VkQueue presentQueue = context->GetPresentQueue();
 
-		vkWaitForFences(device, 1, &inFlightFence, VK_TRUE, UINT64_MAX);
+		vkWaitForFences(device, 1, &inFlightFences[s_VulkanRenderData.CurrentFrame], VK_TRUE, UINT64_MAX);
+		vkResetFences(device, 1, &inFlightFences[s_VulkanRenderData.CurrentFrame]);
 
 		uint32_t imageIndex;
-		vkAcquireNextImageKHR(device, swapchain, UINT64_MAX, imageAvailableSemaphore, VK_NULL_HANDLE, &imageIndex);
+		vkAcquireNextImageKHR(device, swapchain, UINT64_MAX, imageAvailableSemaphores[s_VulkanRenderData.CurrentFrame], VK_NULL_HANDLE, &imageIndex);
 
-		s_VulkanRenderData.CommandBuffer->ResetCommandBuffer();
-		s_VulkanRenderData.CommandBuffer->RecordCommandBuffer(s_VulkanRenderData.RenderPass,
+		s_VulkanRenderData.CommandBuffers[s_VulkanRenderData.CurrentFrame]->ResetCommandBuffer();
+		s_VulkanRenderData.CommandBuffers[s_VulkanRenderData.CurrentFrame]->RecordCommandBuffer(s_VulkanRenderData.RenderPass,
 										s_VulkanRenderData.SwapchainFramebuffers[imageIndex],
 										s_VulkanRenderData.Pipeline,
 										extent);
@@ -64,22 +67,21 @@ namespace OP
 		VkSubmitInfo submitInfo{};
 		submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 
-		VkSemaphore waitSemaphores[] = { imageAvailableSemaphore };
+		VkSemaphore waitSemaphores[] = { imageAvailableSemaphores[s_VulkanRenderData.CurrentFrame]};
 		VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
 		submitInfo.waitSemaphoreCount = 1;
 		submitInfo.pWaitSemaphores = waitSemaphores;
 		submitInfo.pWaitDstStageMask = waitStages;
 		submitInfo.commandBufferCount = 1;
-		submitInfo.pCommandBuffers = &s_VulkanRenderData.CommandBuffer->GetCommandBuffer();
+		submitInfo.pCommandBuffers = &s_VulkanRenderData.CommandBuffers[s_VulkanRenderData.CurrentFrame]->GetCommandBuffer();
 
-		VkSemaphore signalSemaphores[] = { renderFinishedSemaphore };
+		VkSemaphore signalSemaphores[] = { renderFinishedSemaphores[s_VulkanRenderData.CurrentFrame]};
 		submitInfo.signalSemaphoreCount = 1;
 		submitInfo.pSignalSemaphores = signalSemaphores;
 
 
-		vkResetFences(device, 1, &inFlightFence);
 
-		if (vkQueueSubmit(graphicsQueue, 1, &submitInfo, inFlightFence) != VK_SUCCESS)
+		if (vkQueueSubmit(graphicsQueue, 1, &submitInfo, inFlightFences[s_VulkanRenderData.CurrentFrame]) != VK_SUCCESS)
 		{
 			OP_ENGINE_ERROR("Failed to submit draw command buffer!");
 		}
@@ -98,6 +100,7 @@ namespace OP
 
 		vkQueuePresentKHR(presentQueue, &presentInfo);
 
+		s_VulkanRenderData.CurrentFrame = (s_VulkanRenderData.CurrentFrame + 1) % context->GetMaxFramesInFlight();
 	}
 
 	// Try to move framebuffer to a separate class
@@ -128,7 +131,13 @@ namespace OP
 
 	void VulkanRenderSystem::CreateCommandBuffer()
 	{
-		s_VulkanRenderData.CommandBuffer = std::make_shared<VulkanCommandBuffer>();
+		VulkanContext* context = VulkanContext::GetContext();
+		int maxFramesInFlight = context->GetMaxFramesInFlight();
+
+		for (uint32_t i = 0; i < maxFramesInFlight; i++)
+		{
+			s_VulkanRenderData.CommandBuffers.push_back(std::make_shared<VulkanCommandBuffer>());
+		}
 	}
 
 }

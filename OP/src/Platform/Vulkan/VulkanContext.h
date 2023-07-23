@@ -56,14 +56,16 @@ namespace OP
 		std::vector<VkImageView>& GetSwapChainImageViews();
 		VkCommandPool& GetCommandPool();
 
-		VkSemaphore GetImageAvailableSemaphore();
-		VkSemaphore GetRenderFinishedSemaphore();
-		VkFence GetInFlightFence();
+		std::vector<VkSemaphore>& GetImageAvailableSemaphores();
+		std::vector<VkSemaphore>& GetRenderFinishedSemaphores();
+		std::vector<VkFence>& GetInFlightFences();
 
 		VkSwapchainKHR GetSwapchain();
 
 		VkQueue GetGraphicsQueue();
 		VkQueue GetPresentQueue();
+
+		int GetMaxFramesInFlight();
 	private:
 		void CreateInstance();
 		bool checkValidationLayerSupport();
@@ -106,8 +108,10 @@ namespace OP
 		VkCommandPool m_CommandPool;
 
 		// Sync
-		VkSemaphore m_ImageAvailableSemaphore;
-		VkSemaphore m_RenderFinishedSemaphore;
-		VkFence m_InFlightFence;
+		std::vector<VkSemaphore> m_ImageAvailableSemaphores;
+		std::vector<VkSemaphore> m_RenderFinishedSemaphores;
+		std::vector<VkFence> m_InFlightFences;
+
+		int m_MaxFramesInFlight;
 	};
 }

@@ -51,6 +51,7 @@ namespace OP
 
 	VulkanContext::VulkanContext(GLFWwindow* windowHandle) : m_WindowHandle(windowHandle)
 	{
+		m_MaxFramesInFlight = 2;
 		s_Instance = this;
 		OP_ENGINE_ASSERT(windowHandle, "Window Handle is not initialized")
 	}
@@ -330,14 +331,14 @@ namespace OP
 		return m_CommandPool;
 	}
 
-	VkSemaphore VulkanContext::GetImageAvailableSemaphore()
+	std::vector<VkSemaphore>& VulkanContext::GetImageAvailableSemaphores()
 	{
-		return m_ImageAvailableSemaphore;
+		return m_ImageAvailableSemaphores;
 	}
 
-	VkSemaphore VulkanContext::GetRenderFinishedSemaphore()
+	std::vector<VkSemaphore>& VulkanContext::GetRenderFinishedSemaphores()
 	{
-		return m_RenderFinishedSemaphore;
+		return m_RenderFinishedSemaphores;
 	}
 
 	void VulkanContext::CreateSurface()
@@ -366,9 +367,9 @@ namespace OP
 		return requiredExtensions.empty();
 	}
 
-	VkFence VulkanContext::GetInFlightFence()
+	std::vector<VkFence>& VulkanContext::GetInFlightFences()
 	{
-		return m_InFlightFence;
+		return m_InFlightFences;
 	}
 
 	VkSwapchainKHR VulkanContext::GetSwapchain()
@@ -384,6 +385,11 @@ namespace OP
 	VkQueue VulkanContext::GetPresentQueue()
 	{
 		return m_PresentQueue;
+	}
+
+	int VulkanContext::GetMaxFramesInFlight()
+	{
+		return m_MaxFramesInFlight;
 	}
 
 	SwapChainSupportDetails VulkanContext::QuerySwapChainSupport(VkPhysicalDevice device)
@@ -548,6 +554,10 @@ namespace OP
 
 	void VulkanContext::CreateSyncObjects()
 	{
+		m_ImageAvailableSemaphores.resize(m_MaxFramesInFlight);
+		m_RenderFinishedSemaphores.resize(m_MaxFramesInFlight);
+		m_InFlightFences.resize(m_MaxFramesInFlight);
+
 		VkSemaphoreCreateInfo semaphoreInfo{};
 		semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
 
@@ -555,12 +565,16 @@ namespace OP
 		fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
 		fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
 
-		if (vkCreateSemaphore(m_Device, &semaphoreInfo, nullptr, &m_ImageAvailableSemaphore) != VK_SUCCESS ||
-			vkCreateSemaphore(m_Device, &semaphoreInfo, nullptr, &m_RenderFinishedSemaphore) != VK_SUCCESS ||
-			vkCreateFence(m_Device, &fenceInfo, nullptr, &m_InFlightFence) != VK_SUCCESS)
+		for (uint32_t i = 0; i < m_MaxFramesInFlight; i++)
 		{
-			OP_ENGINE_ERROR("Failed to create sync objects!");
+			if (vkCreateSemaphore(m_Device, &semaphoreInfo, nullptr, &m_ImageAvailableSemaphores[i]) != VK_SUCCESS ||
+				vkCreateSemaphore(m_Device, &semaphoreInfo, nullptr, &m_RenderFinishedSemaphores[i]) != VK_SUCCESS ||
+				vkCreateFence(m_Device, &fenceInfo, nullptr, &m_InFlightFences[i]) != VK_SUCCESS)
+			{
+				OP_ENGINE_ERROR("Failed to create sync objects for a frame!");
+			}
 		}
+
 	}
 
 	VkSurfaceFormatKHR VulkanContext::ChooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats)
@@ -653,9 +667,14 @@ namespace OP
 
 	void VulkanContext::Cleanup()
 	{
-		vkDestroySemaphore(m_Device, m_ImageAvailableSemaphore, nullptr);
-		vkDestroySemaphore(m_Device, m_RenderFinishedSemaphore, nullptr);
-		vkDestroyFence(m_Device, m_InFlightFence, nullptr);
+
+		for (uint32_t i = 0; i < m_MaxFramesInFlight; i++)
+		{
+			vkDestroySemaphore(m_Device, m_ImageAvailableSemaphores[i], nullptr);
+			vkDestroySemaphore(m_Device, m_RenderFinishedSemaphores[i], nullptr);
+			vkDestroyFence(m_Device, m_InFlightFences[i], nullptr);
+		}
+
 
 		vkDestroyCommandPool(m_Device, m_CommandPool, nullptr);
 
