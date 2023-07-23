@@ -56,6 +56,14 @@ namespace OP
 		std::vector<VkImageView>& GetSwapChainImageViews();
 		VkCommandPool& GetCommandPool();
 
+		VkSemaphore GetImageAvailableSemaphore();
+		VkSemaphore GetRenderFinishedSemaphore();
+		VkFence GetInFlightFence();
+
+		VkSwapchainKHR GetSwapchain();
+
+		VkQueue GetGraphicsQueue();
+		VkQueue GetPresentQueue();
 	private:
 		void CreateInstance();
 		bool checkValidationLayerSupport();
@@ -79,7 +87,7 @@ namespace OP
 		void CreateSwapChain();
 		void CreateImageViews();
 		void CreateCommandPool();
-		void CreateCommandBuffer();
+		void CreateSyncObjects();
 	private:
 		static VulkanContext* s_Instance;
 		GLFWwindow* m_WindowHandle;
@@ -96,6 +104,10 @@ namespace OP
 		VkExtent2D m_SwapChainExtent;
 		std::vector<VkImageView> m_SwapChainImageViews;
 		VkCommandPool m_CommandPool;
-		VkCommandBuffer m_CommandBuffer;
+
+		// Sync
+		VkSemaphore m_ImageAvailableSemaphore;
+		VkSemaphore m_RenderFinishedSemaphore;
+		VkFence m_InFlightFence;
 	};
 }

@@ -65,7 +65,7 @@ namespace OP
 		CreateSwapChain();
 		CreateImageViews();
 		CreateCommandPool();
-		CreateCommandBuffer();
+		CreateSyncObjects();
 	}
 
 	void VulkanContext::SwapBuffers()
@@ -330,6 +330,16 @@ namespace OP
 		return m_CommandPool;
 	}
 
+	VkSemaphore VulkanContext::GetImageAvailableSemaphore()
+	{
+		return m_ImageAvailableSemaphore;
+	}
+
+	VkSemaphore VulkanContext::GetRenderFinishedSemaphore()
+	{
+		return m_RenderFinishedSemaphore;
+	}
+
 	void VulkanContext::CreateSurface()
 	{
 		if (glfwCreateWindowSurface(m_Instance, m_WindowHandle, nullptr, &m_Surface) != VK_SUCCESS)
@@ -354,6 +364,26 @@ namespace OP
 		}
 
 		return requiredExtensions.empty();
+	}
+
+	VkFence VulkanContext::GetInFlightFence()
+	{
+		return m_InFlightFence;
+	}
+
+	VkSwapchainKHR VulkanContext::GetSwapchain()
+	{
+		return m_SwapChain;
+	}
+
+	VkQueue VulkanContext::GetGraphicsQueue()
+	{
+		return m_GraphicsQueue;
+	}
+
+	VkQueue VulkanContext::GetPresentQueue()
+	{
+		return m_PresentQueue;
 	}
 
 	SwapChainSupportDetails VulkanContext::QuerySwapChainSupport(VkPhysicalDevice device)
@@ -516,20 +546,21 @@ namespace OP
 		}
 	}
 
-	void VulkanContext::CreateCommandBuffer()
+	void VulkanContext::CreateSyncObjects()
 	{
-		VkCommandBufferAllocateInfo allocInfo{};
-		allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-		allocInfo.commandPool = m_CommandPool;
-		allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-		allocInfo.commandBufferCount = 1;
+		VkSemaphoreCreateInfo semaphoreInfo{};
+		semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
 
-		if (vkAllocateCommandBuffers(m_Device, &allocInfo, &m_CommandBuffer) != VK_SUCCESS)
+		VkFenceCreateInfo fenceInfo{};
+		fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
+		fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
+
+		if (vkCreateSemaphore(m_Device, &semaphoreInfo, nullptr, &m_ImageAvailableSemaphore) != VK_SUCCESS ||
+			vkCreateSemaphore(m_Device, &semaphoreInfo, nullptr, &m_RenderFinishedSemaphore) != VK_SUCCESS ||
+			vkCreateFence(m_Device, &fenceInfo, nullptr, &m_InFlightFence) != VK_SUCCESS)
 		{
-			OP_ENGINE_ERROR("Failed to allocate command buffers!");
+			OP_ENGINE_ERROR("Failed to create sync objects!");
 		}
-
-
 	}
 
 	VkSurfaceFormatKHR VulkanContext::ChooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats)
@@ -622,6 +653,10 @@ namespace OP
 
 	void VulkanContext::Cleanup()
 	{
+		vkDestroySemaphore(m_Device, m_ImageAvailableSemaphore, nullptr);
+		vkDestroySemaphore(m_Device, m_RenderFinishedSemaphore, nullptr);
+		vkDestroyFence(m_Device, m_InFlightFence, nullptr);
+
 		vkDestroyCommandPool(m_Device, m_CommandPool, nullptr);
 
 		for (auto imageView : m_SwapChainImageViews)

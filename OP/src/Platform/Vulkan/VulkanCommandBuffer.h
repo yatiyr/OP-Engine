@@ -12,8 +12,9 @@ namespace OP
 	{
 	public:
 		VulkanCommandBuffer();
-		VkCommandBuffer GetCommandBuffer();
-		void RecordCommandBuffer(Ref<VulkanRenderPass> renderpass, Ref<VulkanFramebuffer> framebuffer, VkExtent2D extent);
+		VkCommandBuffer& GetCommandBuffer();
+		void ResetCommandBuffer();
+		void RecordCommandBuffer(Ref<VulkanRenderPass> renderpass, Ref<VulkanFramebuffer> framebuffer, Ref<VulkanGraphicsPipeline> pipeline, VkExtent2D extent);
 	private:
 		VkCommandBuffer m_CommandBuffer;
 	};

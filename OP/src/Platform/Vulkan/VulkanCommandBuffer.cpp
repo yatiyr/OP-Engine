@@ -22,12 +22,17 @@ namespace OP
 		}
 	}
 
-	VkCommandBuffer VulkanCommandBuffer::GetCommandBuffer()
+	VkCommandBuffer& VulkanCommandBuffer::GetCommandBuffer()
 	{
 		return m_CommandBuffer;
 	}
 
-	void VulkanCommandBuffer::RecordCommandBuffer(Ref<VulkanRenderPass> renderpass, Ref<VulkanFramebuffer> framebuffer, VkExtent2D extent)
+	void VulkanCommandBuffer::ResetCommandBuffer()
+	{
+		vkResetCommandBuffer(m_CommandBuffer, 0);
+	}
+
+	void VulkanCommandBuffer::RecordCommandBuffer(Ref<VulkanRenderPass> renderpass, Ref<VulkanFramebuffer> framebuffer, Ref<VulkanGraphicsPipeline> pipeline, VkExtent2D extent)
 	{
 		VkCommandBufferBeginInfo beginInfo{};
 		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
@@ -54,6 +59,8 @@ namespace OP
 
 		// Begin the render pass
 		vkCmdBeginRenderPass(m_CommandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+
+		vkCmdBindPipeline(m_CommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->GetPipeline());
 
 		// Fixed functions
 		VkViewport viewport{};

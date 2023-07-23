@@ -15,6 +15,7 @@ namespace OP
 		VulkanGraphicsPipeline(Ref<VulkanShaderModule> shaders, Ref<VulkanRenderPass> renderPass);
 		~VulkanGraphicsPipeline();
 
+		VkPipeline GetPipeline();
 	private:
 		VkPipelineLayout m_PipelineLayout;
 		VkPipeline m_Pipeline;

@@ -94,6 +94,7 @@ namespace OP
 		while (is_running)
 		{
 
+			VulkanRenderSystem::Render();
 			/*float time = (float)Application::GetWindow().GetTime();
 			Timestep timestep = time - m_LastFrameTime;
 
