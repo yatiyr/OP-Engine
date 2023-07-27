@@ -63,7 +63,7 @@ namespace OP
 		CreateSurface();
 		PickPhysicalDevice();
 		CreateLogicalDevice();
-		CreateSwapChain();
+		CreateSwapchain();
 		CreateImageViews();
 		CreateCommandPool();
 		CreateSyncObjects();
@@ -449,7 +449,7 @@ namespace OP
 		}
 	}
 
-	void VulkanContext::CreateSwapChain()
+	void VulkanContext::CreateSwapchain()
 	{
 		SwapChainSupportDetails swapChainSupport = QuerySwapChainSupport(m_PhysicalDevice);
 
@@ -550,6 +550,16 @@ namespace OP
 				OP_ENGINE_ERROR("Failed to create Image Views!");
 			}
 		}
+	}
+
+	void VulkanContext::CleanupSwapchain()
+	{
+		for (auto imageView : m_SwapChainImageViews)
+		{
+			vkDestroyImageView(m_Device, imageView, nullptr);
+		}
+
+		vkDestroySwapchainKHR(m_Device, m_SwapChain, nullptr);
 	}
 
 	void VulkanContext::CreateSyncObjects()
@@ -678,12 +688,8 @@ namespace OP
 
 		vkDestroyCommandPool(m_Device, m_CommandPool, nullptr);
 
-		for (auto imageView : m_SwapChainImageViews)
-		{
-			vkDestroyImageView(m_Device, imageView, nullptr);
-		}
+		CleanupSwapchain();
 
-		vkDestroySwapchainKHR(m_Device, m_SwapChain, nullptr);
 		vkDestroyDevice(m_Device, nullptr);
 		if (enableValidationLayers)
 		{

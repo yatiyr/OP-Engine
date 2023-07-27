@@ -94,7 +94,7 @@ namespace OP
 		while (is_running)
 		{
 
-			VulkanRenderSystem::Render();
+
 			/*float time = (float)Application::GetWindow().GetTime();
 			Timestep timestep = time - m_LastFrameTime;
 
@@ -117,8 +117,12 @@ namespace OP
 			}
 			m_ImGuiLayer->End(); */
 
-			m_Window->OnUpdate(); 
-
+			if (!m_Minimized)
+			{
+				VulkanRenderSystem::Render();
+			}
+				
+			m_Window->OnUpdate();
 		}
 	}
 
@@ -138,6 +142,7 @@ namespace OP
 		}
 
 		m_Minimized = false;
+		VulkanRenderSystem::RecreateSwapchain();
 		//Renderer::OnWindowResize(e.GetWidth(), e.GetHeight());
 
 		return false;

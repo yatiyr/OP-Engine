@@ -18,10 +18,9 @@ namespace OP
 		}
 	}
 
-	VulkanGraphicsPipeline::VulkanGraphicsPipeline(Ref<VulkanShaderModule> shaders, Ref<VulkanRenderPass> renderPass)
+	void VulkanGraphicsPipeline::InitializePipeline()
 	{
-		std::map<uint32_t, VkShaderModule> vulkanShaderModules = shaders->GetShaderModules();
-
+		std::map<uint32_t, VkShaderModule> vulkanShaderModules = m_Shaders->GetShaderModules();
 		std::vector<VkPipelineShaderStageCreateInfo> createInfos;
 
 		// Create Stages from vulkan shader modules
@@ -50,10 +49,10 @@ namespace OP
 		// Vertex Input - This will be changed afterwards
 		VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
 		vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-		vertexInputInfo.vertexBindingDescriptionCount = 0;
-		vertexInputInfo.pVertexBindingDescriptions = nullptr;
-		vertexInputInfo.vertexAttributeDescriptionCount = 0;
-		vertexInputInfo.pVertexAttributeDescriptions = nullptr;
+		vertexInputInfo.vertexBindingDescriptionCount = static_cast<uint32_t>(m_VertexInputDescs.Bindings.size());
+		vertexInputInfo.pVertexBindingDescriptions = m_VertexInputDescs.Bindings.data();
+		vertexInputInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(m_VertexInputDescs.Attributes.size());
+		vertexInputInfo.pVertexAttributeDescriptions = m_VertexInputDescs.Attributes.data();
 
 		// Input Assembly
 		VkPipelineInputAssemblyStateCreateInfo inputAssembly{};
@@ -72,7 +71,7 @@ namespace OP
 
 		// Scissor
 		VkRect2D scissor{};
-		scissor.offset = {0, 0};
+		scissor.offset = { 0, 0 };
 		scissor.extent = VulkanContext::GetContext()->GetSwapChainExtent();
 
 		// Dynamic state stuff
@@ -156,16 +155,42 @@ namespace OP
 		pipelineInfo.pColorBlendState = &colorBlending;
 		pipelineInfo.pDynamicState = &dynamicState;
 		pipelineInfo.layout = m_PipelineLayout;
-		pipelineInfo.renderPass = renderPass->GetVkRenderPass();
+		pipelineInfo.renderPass = m_RenderPass->GetVkRenderPass();
 		pipelineInfo.subpass = 0;
 		pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
 		pipelineInfo.basePipelineIndex = -1;
 
 		if (vkCreateGraphicsPipelines(VulkanContext::GetContext()->GetDevice(), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &m_Pipeline) != VK_SUCCESS)
 		{
-			OP_ENGINE_ERROR("Failed to create graphics pipeline!");
+			OP_ENGINE_ERROR("Failed to initialize graphics pipeline!");
 		}
 	}
+
+	void VulkanGraphicsPipeline::ConfigureVertexInput(const VertexInput& input, InputRate inputRate)
+	{
+
+		VkVertexInputBindingDescription bindingDescription{};
+		bindingDescription.binding = 0;
+		bindingDescription.stride = input.GetStride();
+		bindingDescription.inputRate = OpToVkInputRate(inputRate);
+
+		m_VertexInputDescs.Bindings.push_back(bindingDescription);
+
+		// Attribute descriptions
+		uint32_t loc = 0;
+		for (auto& element : input)
+		{
+			VkVertexInputAttributeDescription attrDesc{};
+			attrDesc.binding = 0;
+			attrDesc.location = loc;
+			attrDesc.format = GiveFormatFromBufferType(element.Type);
+			attrDesc.offset = element.Offset;
+			m_VertexInputDescs.Attributes.push_back(attrDesc);
+			loc++;
+		}
+	}
+
+	VulkanGraphicsPipeline::VulkanGraphicsPipeline(Ref<VulkanShaderModule> shaders, Ref<VulkanRenderPass> renderPass) : m_Shaders(shaders) , m_RenderPass(renderPass) {}
 
 	VulkanGraphicsPipeline::~VulkanGraphicsPipeline()
 	{

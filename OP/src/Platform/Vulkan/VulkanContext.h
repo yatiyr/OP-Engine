@@ -86,10 +86,12 @@ namespace OP
 		VkSurfaceFormatKHR ChooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
 		VkPresentModeKHR ChooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);
 		VkExtent2D ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
-		void CreateSwapChain();
+		void CreateSwapchain();
 		void CreateImageViews();
 		void CreateCommandPool();
 		void CreateSyncObjects();
+
+		void CleanupSwapchain();
 	private:
 		static VulkanContext* s_Instance;
 		GLFWwindow* m_WindowHandle;
@@ -113,5 +115,7 @@ namespace OP
 		std::vector<VkFence> m_InFlightFences;
 
 		int m_MaxFramesInFlight;
+
+		friend class VulkanRenderSystem;
 	};
 }

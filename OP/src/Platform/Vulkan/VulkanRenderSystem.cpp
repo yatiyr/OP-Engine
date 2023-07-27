@@ -5,7 +5,6 @@
 #include <Platform/Vulkan/VulkanGraphicsPipeline.h>
 #include <Platform/Vulkan/VulkanRenderPass.h>
 #include <Platform/Vulkan/VulkanCommandBuffer.h>
-
 namespace OP
 {
 	struct VulkanRenderSystemData
@@ -25,17 +24,24 @@ namespace OP
 		s_VulkanRenderData.RenderPass = std::make_shared<VulkanRenderPass>();
 		s_VulkanRenderData.Pipeline = std::make_shared<VulkanGraphicsPipeline>(ResourceManager::GetShader("sandbox"), s_VulkanRenderData.RenderPass);
 
+
+		s_VulkanRenderData.Pipeline->ConfigureVertexInput(
+			                                              {
+														    { BufferElementType::OP_EL_FLOAT2, "a_Position", false },
+														    { BufferElementType::OP_EL_FLOAT3, "a_Color", false}
+														  }, InputRate::VERTEX);
+		s_VulkanRenderData.Pipeline->InitializePipeline();
+
 		CreateFramebuffers();
 		CreateCommandBuffer();
 	}
 
 	void VulkanRenderSystem::Cleanup()
-	{
+	{		
 		VkDevice device = VulkanContext::GetContext()->GetDevice();
-		for (auto framebuffer : s_VulkanRenderData.SwapchainFramebuffers)
-		{
-			framebuffer->~VulkanFramebuffer();
-		}
+		vkDeviceWaitIdle(device);
+		s_VulkanRenderData.SwapchainFramebuffers.clear();
+
 	}
 
 	void VulkanRenderSystem::Render()
@@ -138,6 +144,22 @@ namespace OP
 		{
 			s_VulkanRenderData.CommandBuffers.push_back(std::make_shared<VulkanCommandBuffer>());
 		}
+	}
+
+	void VulkanRenderSystem::RecreateSwapchain()
+	{
+		VkDevice device = VulkanContext::GetContext()->GetDevice();
+		vkDeviceWaitIdle(device);
+
+		VulkanContext::GetContext()->CleanupSwapchain();
+
+		// Destroy framebuffers here
+		s_VulkanRenderData.SwapchainFramebuffers.clear();
+
+		VulkanContext::GetContext()->CreateSwapchain();
+		VulkanContext::GetContext()->CreateImageViews();
+
+		CreateFramebuffers();
 	}
 
 }
