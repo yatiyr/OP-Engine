@@ -5,6 +5,8 @@
 #include <Platform/Vulkan/VulkanGraphicsPipeline.h>
 #include <Platform/Vulkan/VulkanRenderPass.h>
 #include <Platform/Vulkan/VulkanCommandBuffer.h>
+#include <Platform/Vulkan/VulkanBuffer.h>
+
 namespace OP
 {
 	struct VulkanRenderSystemData
@@ -13,6 +15,7 @@ namespace OP
 		Ref<VulkanRenderPass> RenderPass;
 		std::vector<Ref<VulkanFramebuffer>> SwapchainFramebuffers;
 		std::vector<Ref<VulkanCommandBuffer>> CommandBuffers;
+		Ref<VulkanVertexBuffer> VertexBuffer;
 		uint32_t CurrentFrame = 0;
 	} s_VulkanRenderData;
 
@@ -32,6 +35,13 @@ namespace OP
 														  }, InputRate::VERTEX);
 		s_VulkanRenderData.Pipeline->InitializePipeline();
 
+		const std::vector<float> vertices = {
+			0.0f, -0.5f, 1.0f, 1.0f, 1.0f,
+			0.5f, 0.5f, 0.0f, 1.0f, 0.0f,
+			-0.5f, 0.5f, 0.0f, 0.0f, 1.0f
+		};
+
+		s_VulkanRenderData.VertexBuffer = std::make_shared<VulkanVertexBuffer>((void*)vertices.data(), vertices.size() * sizeof(float));
 		CreateFramebuffers();
 		CreateCommandBuffer();
 	}
@@ -67,7 +77,9 @@ namespace OP
 		s_VulkanRenderData.CommandBuffers[s_VulkanRenderData.CurrentFrame]->RecordCommandBuffer(s_VulkanRenderData.RenderPass,
 										s_VulkanRenderData.SwapchainFramebuffers[imageIndex],
 										s_VulkanRenderData.Pipeline,
-										extent);
+			                            s_VulkanRenderData.VertexBuffer,
+										extent,
+			                            3);
 
 		// TODO: CLEAN THIS UP
 		VkSubmitInfo submitInfo{};

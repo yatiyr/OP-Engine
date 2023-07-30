@@ -50,6 +50,7 @@ namespace OP
 		virtual void Cleanup() override;
 		static VulkanContext* GetContext();
 		VkDevice GetDevice();
+		VkPhysicalDevice GetPhysicalDevice();
 		VkExtent2D& GetSwapChainExtent();
 		VkFormat& GetSwapChainImageFormat();
 

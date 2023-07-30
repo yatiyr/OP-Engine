@@ -134,6 +134,11 @@ namespace OP
 		return m_Device;
 	}
 
+	VkPhysicalDevice VulkanContext::GetPhysicalDevice()
+	{
+		return m_PhysicalDevice;
+	}
+
 	VkExtent2D& VulkanContext::GetSwapChainExtent()
 	{
 		return m_SwapChainExtent;

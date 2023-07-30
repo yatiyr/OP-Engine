@@ -126,7 +126,19 @@ namespace OP
 
 	class VulkanVertexBuffer
 	{
+	public:
+		VulkanVertexBuffer(void* data, uint32_t size);
+		VulkanVertexBuffer(uint32_t size);
+
+		~VulkanVertexBuffer();
+		void SetData(void* data, uint32_t size);
+
+		VkBuffer& GetBuffer();
 	private:
+		uint32_t FindMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
+		void Populate(void* data, uint32_t size);
+		VkBuffer m_VertexBuffer;
+		VkDeviceMemory m_VertexBufferMemory;
 		VertexInput m_Input;
 		
 	};

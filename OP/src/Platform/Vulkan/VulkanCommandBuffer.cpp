@@ -32,7 +32,12 @@ namespace OP
 		vkResetCommandBuffer(m_CommandBuffer, 0);
 	}
 
-	void VulkanCommandBuffer::RecordCommandBuffer(Ref<VulkanRenderPass> renderpass, Ref<VulkanFramebuffer> framebuffer, Ref<VulkanGraphicsPipeline> pipeline, VkExtent2D extent)
+	void VulkanCommandBuffer::RecordCommandBuffer(Ref<VulkanRenderPass> renderpass,
+		                                          Ref<VulkanFramebuffer> framebuffer,
+		                                          Ref<VulkanGraphicsPipeline> pipeline,
+		                                          Ref<VulkanVertexBuffer> vertexBuffer,
+		                                          VkExtent2D extent,
+												  uint32_t vertexSize)
 	{
 		VkCommandBufferBeginInfo beginInfo{};
 		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
@@ -78,7 +83,9 @@ namespace OP
 		vkCmdSetScissor(m_CommandBuffer, 0, 1, &scissor);
 
 		// TODO: WILL BE CHANGED
-		vkCmdDraw(m_CommandBuffer, 3, 1, 0, 0);
+		VkDeviceSize offsets[] = { 0 };
+		vkCmdBindVertexBuffers(m_CommandBuffer, 0, 1, &vertexBuffer->GetBuffer(), offsets);
+		vkCmdDraw(m_CommandBuffer, vertexSize, 1, 0, 0);
 
 		vkCmdEndRenderPass(m_CommandBuffer);
 

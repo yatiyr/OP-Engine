@@ -160,6 +160,8 @@ namespace OP
 
 		for (auto&& [stage, data] : shaderData)
 			Reflect(stage, data);
+
+		// Fill up vertex input information
 	}
 
 	void VulkanShaderModule::Reflect(uint32_t stage, const std::vector<uint32_t>& shaderData)
@@ -183,6 +185,19 @@ namespace OP
 			OP_ENGINE_TRACE("    Size = {0}", bufferSize);
 			OP_ENGINE_TRACE("    Binding = {0}", binding);
 			OP_ENGINE_TRACE("    Members = {0}", memberCount);
+		}
+
+		// TODO: WE CAN TAKE VERTEX INPUT DIRECTLY FROM THE VERTEX SHADER!!!
+		OP_ENGINE_TRACE("Inputs:");
+		for (const auto& resource : resources.stage_inputs)
+		{
+			const auto& bufferType = compiler.get_type(resource.base_type_id);
+			uint32_t loc = compiler.get_decoration(resource.id, spv::DecorationLocation);
+
+			OP_ENGINE_TRACE(" {0}", resource.name);
+			OP_ENGINE_TRACE("  Size     = {0}", bufferType.type);
+			OP_ENGINE_TRACE("  Location = {0}", loc);
+			OP_ENGINE_TRACE("  Members  = {0}", bufferType.member_types.size());
 		}
 	}
 
