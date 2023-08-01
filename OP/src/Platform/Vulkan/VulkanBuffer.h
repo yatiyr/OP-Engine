@@ -135,10 +135,17 @@ namespace OP
 
 		VkBuffer& GetBuffer();
 	private:
+		void CreateBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties,
+			VkBuffer& buffer, VkDeviceMemory& bufferMemory);
+		void CopyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
 		uint32_t FindMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
 		void Populate(void* data, uint32_t size);
 		VkBuffer m_VertexBuffer;
 		VkDeviceMemory m_VertexBufferMemory;
+
+		VkBuffer m_StagingBuffer;
+		VkDeviceMemory m_StagingBufferMemory;
+
 		VertexInput m_Input;
 		
 	};
