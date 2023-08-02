@@ -16,6 +16,7 @@ namespace OP
 		std::vector<Ref<VulkanFramebuffer>> SwapchainFramebuffers;
 		std::vector<Ref<VulkanCommandBuffer>> CommandBuffers;
 		Ref<VulkanVertexBuffer> VertexBuffer;
+		Ref<VulkanIndexBuffer> IndexBuffer;
 		uint32_t CurrentFrame = 0;
 	} s_VulkanRenderData;
 
@@ -36,12 +37,18 @@ namespace OP
 		s_VulkanRenderData.Pipeline->InitializePipeline();
 
 		const std::vector<float> vertices = {
-			0.0f, -0.5f, 1.0f, 1.0f, 1.0f,
-			0.5f, 0.5f, 0.0f, 1.0f, 0.0f,
-			-0.5f, 0.5f, 0.0f, 0.0f, 1.0f
+			-0.5f, -0.5f, 1.0f, 0.0f, 0.0f,
+			0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+			0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
+			-0.5f, 0.5f, 1.0f, 1.0f, 1.0f
+		};
+
+		const std::vector<uint32_t> indices = {
+			0, 1, 2, 2, 3, 0
 		};
 
 		s_VulkanRenderData.VertexBuffer = std::make_shared<VulkanVertexBuffer>((void*)vertices.data(), vertices.size() * sizeof(float));
+		s_VulkanRenderData.IndexBuffer = std::make_shared<VulkanIndexBuffer>((void*)indices.data(), indices.size() * sizeof(uint32_t));
 		CreateFramebuffers();
 		CreateCommandBuffer();
 	}
@@ -78,8 +85,9 @@ namespace OP
 										s_VulkanRenderData.SwapchainFramebuffers[imageIndex],
 										s_VulkanRenderData.Pipeline,
 			                            s_VulkanRenderData.VertexBuffer,
+										s_VulkanRenderData.IndexBuffer,
 										extent,
-			                            3);
+			                            6);
 
 		// TODO: CLEAN THIS UP
 		VkSubmitInfo submitInfo{};

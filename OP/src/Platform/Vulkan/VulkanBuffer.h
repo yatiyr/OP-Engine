@@ -128,17 +128,12 @@ namespace OP
 	{
 	public:
 		VulkanVertexBuffer(void* data, uint32_t size);
-		VulkanVertexBuffer(uint32_t size);
 
 		~VulkanVertexBuffer();
 		void SetData(void* data, uint32_t size);
 
 		VkBuffer& GetBuffer();
 	private:
-		void CreateBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties,
-			VkBuffer& buffer, VkDeviceMemory& bufferMemory);
-		void CopyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
-		uint32_t FindMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
 		void Populate(void* data, uint32_t size);
 		VkBuffer m_VertexBuffer;
 		VkDeviceMemory m_VertexBufferMemory;
@@ -150,5 +145,23 @@ namespace OP
 		
 	};
 
-	
+	class VulkanIndexBuffer
+	{
+	public:
+		VulkanIndexBuffer(void* data, uint32_t size);
+
+		~VulkanIndexBuffer();
+		void SetData(void* data, uint32_t size);
+		VkBuffer& GetBuffer();
+	private:
+		void Populate(void* data, uint32_t size);
+	private:
+		VkBuffer m_IndexBuffer;
+		VkDeviceMemory m_IndexBufferMemory;
+
+		VkBuffer m_StagingBuffer;
+		VkDeviceMemory m_StagingBufferMemory;
+
+		
+	};
 }

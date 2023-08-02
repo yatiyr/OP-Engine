@@ -19,8 +19,9 @@ namespace OP
 								 Ref<VulkanFramebuffer> framebuffer,
 								 Ref<VulkanGraphicsPipeline> pipeline,
 								 Ref<VulkanVertexBuffer> vertexBuffer,
+								 Ref<VulkanIndexBuffer> indexBuffer,
 								 VkExtent2D extent,
-			                     uint32_t vertexSize);
+			                     uint32_t indexSize);
 	private:
 		VkCommandBuffer m_CommandBuffer;
 	};

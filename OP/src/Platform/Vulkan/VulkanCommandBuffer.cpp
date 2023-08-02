@@ -36,8 +36,9 @@ namespace OP
 		                                          Ref<VulkanFramebuffer> framebuffer,
 		                                          Ref<VulkanGraphicsPipeline> pipeline,
 		                                          Ref<VulkanVertexBuffer> vertexBuffer,
+												  Ref<VulkanIndexBuffer> indexBuffer,
 		                                          VkExtent2D extent,
-												  uint32_t vertexSize)
+												  uint32_t indexSize)
 	{
 		VkCommandBufferBeginInfo beginInfo{};
 		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
@@ -85,7 +86,8 @@ namespace OP
 		// TODO: WILL BE CHANGED
 		VkDeviceSize offsets[] = { 0 };
 		vkCmdBindVertexBuffers(m_CommandBuffer, 0, 1, &vertexBuffer->GetBuffer(), offsets);
-		vkCmdDraw(m_CommandBuffer, vertexSize, 1, 0, 0);
+		vkCmdBindIndexBuffer(m_CommandBuffer, indexBuffer->GetBuffer(), 0, VK_INDEX_TYPE_UINT32);
+		vkCmdDrawIndexed(m_CommandBuffer, indexSize, 1, 0, 0, 0);
 
 		vkCmdEndRenderPass(m_CommandBuffer);
 
