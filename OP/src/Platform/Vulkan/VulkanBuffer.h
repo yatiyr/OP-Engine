@@ -4,6 +4,10 @@
 
 namespace OP
 {
+
+	namespace Utils
+	{
+	}
 	enum class BufferElementType : uint8_t
 	{
 		OP_EL_NONE = 0,

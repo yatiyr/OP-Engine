@@ -95,11 +95,11 @@ namespace OP
 		{
 
 
-			/*float time = (float)Application::GetWindow().GetTime();
+			float time = (float)Application::GetWindow().GetTime();
 			Timestep timestep = time - m_LastFrameTime;
 
 			m_LastFrameTime = time;
-
+			/*
 			if (!m_Minimized)
 			{
 				{
@@ -119,7 +119,7 @@ namespace OP
 
 			if (!m_Minimized)
 			{
-				VulkanRenderSystem::Render();
+				VulkanRenderSystem::Render(timestep);
 			}
 				
 			m_Window->OnUpdate();

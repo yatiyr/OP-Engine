@@ -3,6 +3,7 @@
 #include <Platform/Vulkan/VulkanRenderPass.h>
 #include <Platform/Vulkan/VulkanShaderModule.h>
 #include <Platform/Vulkan/VulkanBuffer.h>
+#include <Platform/Vulkan/VulkanUniformBuffer.h>
 
 namespace OP
 {
@@ -42,10 +43,11 @@ namespace OP
 		~VulkanGraphicsPipeline();
 
 
-		void InitializePipeline();
+		void InitializePipeline(Ref<VulkanDescriptorSetLayout> descriptorSetLayout);
 		void ConfigureVertexInput(const VertexInput& input, InputRate inputRate);
 
 		VkPipeline GetPipeline();
+		VkPipelineLayout GetPipelineLayout();
 	private:
 		BindingAttributeDescs m_VertexInputDescs;
 		Ref<VulkanShaderModule> m_Shaders;

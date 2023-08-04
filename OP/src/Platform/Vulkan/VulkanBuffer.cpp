@@ -5,8 +5,9 @@
 namespace OP
 {
 	// Utility functions
-	namespace Utils
+	namespace UniformUtils
 	{
+
 		uint32_t FindMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties)
 		{
 			VkPhysicalDevice physicalDevice = VulkanContext::GetContext()->GetPhysicalDevice();
@@ -138,7 +139,7 @@ namespace OP
 		VkDevice device = VulkanContext::GetContext()->GetDevice();
 
 
-		Utils::CreateBuffer(size, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
+		UniformUtils::CreateBuffer(size, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
 			VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, m_StagingBuffer, m_StagingBufferMemory);
 
 		void* d;
@@ -147,11 +148,11 @@ namespace OP
 		vkUnmapMemory(device, m_StagingBufferMemory);
 
 
-		Utils::CreateBuffer(size, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+		UniformUtils::CreateBuffer(size, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
 			m_VertexBuffer, m_VertexBufferMemory);
 
 
-		Utils::CopyBuffer(m_StagingBuffer, m_VertexBuffer, size);
+		UniformUtils::CopyBuffer(m_StagingBuffer, m_VertexBuffer, size);
 
 		vkDestroyBuffer(device, m_StagingBuffer, nullptr);
 		vkFreeMemory(device, m_StagingBufferMemory, nullptr);
@@ -190,7 +191,7 @@ namespace OP
 	{
 		VkDevice device = VulkanContext::GetContext()->GetDevice();
 
-		Utils::CreateBuffer(size, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
+		UniformUtils::CreateBuffer(size, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
 			VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, m_StagingBuffer, m_StagingBufferMemory);
 
 		void* d;
@@ -198,10 +199,10 @@ namespace OP
 		memcpy(d, data, (size_t)size);
 		vkUnmapMemory(device, m_StagingBufferMemory);
 
-		Utils::CreateBuffer(size, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
+		UniformUtils::CreateBuffer(size, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
 			VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, m_IndexBuffer, m_IndexBufferMemory);
 
-		Utils::CopyBuffer(m_StagingBuffer, m_IndexBuffer, size);
+		UniformUtils::CopyBuffer(m_StagingBuffer, m_IndexBuffer, size);
 
 		vkDestroyBuffer(device, m_StagingBuffer, nullptr);
 		vkFreeMemory(device, m_StagingBufferMemory, nullptr);

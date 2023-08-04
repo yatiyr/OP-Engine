@@ -37,6 +37,7 @@ namespace OP
 		                                          Ref<VulkanGraphicsPipeline> pipeline,
 		                                          Ref<VulkanVertexBuffer> vertexBuffer,
 												  Ref<VulkanIndexBuffer> indexBuffer,
+												  VkDescriptorSet descriptorSet,
 		                                          VkExtent2D extent,
 												  uint32_t indexSize)
 	{
@@ -87,6 +88,8 @@ namespace OP
 		VkDeviceSize offsets[] = { 0 };
 		vkCmdBindVertexBuffers(m_CommandBuffer, 0, 1, &vertexBuffer->GetBuffer(), offsets);
 		vkCmdBindIndexBuffer(m_CommandBuffer, indexBuffer->GetBuffer(), 0, VK_INDEX_TYPE_UINT32);
+		vkCmdBindDescriptorSets(m_CommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->GetPipelineLayout(),
+			0, 1, &descriptorSet, 0, nullptr);
 		vkCmdDrawIndexed(m_CommandBuffer, indexSize, 1, 0, 0, 0);
 
 		vkCmdEndRenderPass(m_CommandBuffer);

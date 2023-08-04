@@ -20,6 +20,7 @@ namespace OP
 								 Ref<VulkanGraphicsPipeline> pipeline,
 								 Ref<VulkanVertexBuffer> vertexBuffer,
 								 Ref<VulkanIndexBuffer> indexBuffer,
+							     VkDescriptorSet descriptorSet,
 								 VkExtent2D extent,
 			                     uint32_t indexSize);
 	private:
