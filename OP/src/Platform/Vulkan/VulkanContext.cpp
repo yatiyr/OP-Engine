@@ -1,6 +1,7 @@
 #include <Precomp.h>
 
 #include <Platform/Vulkan/VulkanContext.h>
+#include <Platform/Vulkan/VulkanUtils.h>
 
 
 #include <map>
@@ -296,6 +297,7 @@ namespace OP
 		}
 
 		VkPhysicalDeviceFeatures deviceFeatures{};
+		deviceFeatures.samplerAnisotropy = VK_TRUE;
 
 		VkDeviceCreateInfo createInfo{};
 		createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
@@ -534,26 +536,7 @@ namespace OP
 
 		for (size_t i = 0; i < m_SwapChainImages.size(); i++)
 		{
-			VkImageViewCreateInfo createInfo{};
-			createInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-			createInfo.image = m_SwapChainImages[i];
-			createInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
-			createInfo.format = m_SwapChainImageFormat;
-			createInfo.components.r = VK_COMPONENT_SWIZZLE_IDENTITY;
-			createInfo.components.g = VK_COMPONENT_SWIZZLE_IDENTITY;
-			createInfo.components.b = VK_COMPONENT_SWIZZLE_IDENTITY;
-			createInfo.components.a = VK_COMPONENT_SWIZZLE_IDENTITY;
-
-			createInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-			createInfo.subresourceRange.baseMipLevel = 0;
-			createInfo.subresourceRange.levelCount = 1;
-			createInfo.subresourceRange.baseArrayLayer = 0;
-			createInfo.subresourceRange.layerCount = 1;
-
-			if (vkCreateImageView(m_Device, &createInfo, nullptr, &m_SwapChainImageViews[i]) != VK_SUCCESS)
-			{
-				OP_ENGINE_ERROR("Failed to create Image Views!");
-			}
+			m_SwapChainImageViews[i] = VulkanUtils::CreateImageView(m_SwapChainImages[i], m_SwapChainImageFormat);
 		}
 	}
 
@@ -656,13 +639,18 @@ namespace OP
 		// Check extension for swapChain
 		bool extensionsSupported = CheckDeviceExtensionSupport(device);
 		bool swapChainAdequate = false;
+
+		// Check anisotropy support
+		VkPhysicalDeviceFeatures supportedFeatures;
+		vkGetPhysicalDeviceFeatures(device, &supportedFeatures);
+
 		if (extensionsSupported)
 		{
 			SwapChainSupportDetails swapChainSupport = QuerySwapChainSupport(device);
 			swapChainAdequate = !swapChainSupport.formats.empty() && !swapChainSupport.presentModes.empty();
 		}	
 
-		if (!indices.IsComplete() || !extensionsSupported || !swapChainAdequate)
+		if (!indices.IsComplete() || !extensionsSupported || !swapChainAdequate || !supportedFeatures.samplerAnisotropy)
 			return score;
 
 		// Applications must function with geometry shaders

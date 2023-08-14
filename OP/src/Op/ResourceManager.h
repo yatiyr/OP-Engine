@@ -13,6 +13,7 @@
 
 
 #include <Platform/Vulkan/VulkanShaderModule.h>
+#include <Platform/Vulkan/VulkanTexture.h>
 
 namespace OP
 {
