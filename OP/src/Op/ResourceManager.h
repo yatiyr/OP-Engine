@@ -48,7 +48,8 @@ namespace OP
 		static int CompileShaders();
 
 		static Ref<VulkanShaderModule> GetShader(std::string name);
-
+		static Ref<VulkanTexture> GetTexture(std::string name);
+		static int LoadTextures(std::filesystem::path texturePath);
 
 		static std::string ResolveIncludes(const std::string& shaderSource, const std::string& fileName, std::unordered_map<std::string, bool>& includeMap, bool firstTime);
 

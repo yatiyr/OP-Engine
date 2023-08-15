@@ -9,7 +9,48 @@ namespace OP
 	namespace BufferUtils
 	{
 
-		uint32_t FindMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties)
+		static VkCommandBuffer BeginSingleTimeCommands()
+		{
+			VkDevice device = VulkanContext::GetContext()->GetDevice();
+			VkCommandPool commandPool = VulkanContext::GetContext()->GetCommandPool();
+			VkCommandBufferAllocateInfo allocInfo{};
+			allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+			allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+			allocInfo.commandPool = commandPool;
+			allocInfo.commandBufferCount = 1;
+
+			VkCommandBuffer commandBuffer;
+			vkAllocateCommandBuffers(device, &allocInfo, &commandBuffer);
+
+			VkCommandBufferBeginInfo beginInfo{};
+			beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+			beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+
+			vkBeginCommandBuffer(commandBuffer, &beginInfo);
+
+			return commandBuffer;
+		}
+
+		static void EndSingleTimeCommands(VkCommandBuffer commandBuffer)
+		{
+			VkDevice device = VulkanContext::GetContext()->GetDevice();
+			VkCommandPool commandPool = VulkanContext::GetContext()->GetCommandPool();
+			VkQueue queue = VulkanContext::GetContext()->GetGraphicsQueue();
+
+			vkEndCommandBuffer(commandBuffer);
+
+			VkSubmitInfo submitInfo{};
+			submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+			submitInfo.commandBufferCount = 1;
+			submitInfo.pCommandBuffers = &commandBuffer;
+
+			vkQueueSubmit(queue, 1, &submitInfo, VK_NULL_HANDLE);
+			vkQueueWaitIdle(queue);
+
+			vkFreeCommandBuffers(device, commandPool, 1, &commandBuffer);
+		}
+
+		static uint32_t FindMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties)
 		{
 			VkPhysicalDevice physicalDevice = VulkanContext::GetContext()->GetPhysicalDevice();
 			VkPhysicalDeviceMemoryProperties memProperties;
@@ -29,7 +70,7 @@ namespace OP
 			return result;
 		}
 
-		void CreateBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory)
+		static void CreateBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory)
 		{
 			VkDevice device = VulkanContext::GetContext()->GetDevice();
 
@@ -60,7 +101,7 @@ namespace OP
 			vkBindBufferMemory(device, buffer, bufferMemory, 0);
 		}
 
-		void CopyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size)
+		static void CopyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size)
 		{
 			VkCommandBuffer commandBuffer = BeginSingleTimeCommands();
 
@@ -73,7 +114,7 @@ namespace OP
 
 		}
 
-		void CreateImage(uint32_t width, uint32_t height, VkFormat format,
+		static void CreateImage(uint32_t width, uint32_t height, VkFormat format,
 			             VkImageTiling tiling, VkImageUsageFlags usage,
 			             VkMemoryPropertyFlags properties, VkImage& image,
 			             VkDeviceMemory& imageMemory)
@@ -114,48 +155,7 @@ namespace OP
 			vkBindImageMemory(device, image, imageMemory, 0);
 		}
 
-		VkCommandBuffer BeginSingleTimeCommands()
-		{
-			VkDevice device = VulkanContext::GetContext()->GetDevice();
-			VkCommandPool commandPool = VulkanContext::GetContext()->GetCommandPool();
-			VkCommandBufferAllocateInfo allocInfo{};
-			allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-			allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-			allocInfo.commandPool = commandPool;
-			allocInfo.commandBufferCount = 1;
-
-			VkCommandBuffer commandBuffer;
-			vkAllocateCommandBuffers(device, &allocInfo, &commandBuffer);
-
-			VkCommandBufferBeginInfo beginInfo{};
-			beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-			beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
-
-			vkBeginCommandBuffer(commandBuffer, &beginInfo);
-
-			return commandBuffer;
-		}
-
-		void EndSingleTimeCommands(VkCommandBuffer commandBuffer)
-		{
-			VkDevice device = VulkanContext::GetContext()->GetDevice();
-			VkCommandPool commandPool = VulkanContext::GetContext()->GetCommandPool();
-			VkQueue queue = VulkanContext::GetContext()->GetGraphicsQueue();
-
-			vkEndCommandBuffer(commandBuffer);
-
-			VkSubmitInfo submitInfo{};
-			submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-			submitInfo.commandBufferCount = 1;
-			submitInfo.pCommandBuffers = &commandBuffer;
-
-			vkQueueSubmit(queue, 1, &submitInfo, VK_NULL_HANDLE);
-			vkQueueWaitIdle(queue);
-
-			vkFreeCommandBuffers(device, commandPool, 1, &commandBuffer);
-		}
-
-		void TransitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout,
+		static void TransitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout,
 			VkImageLayout newLayout)
 		{
 			VkCommandBuffer commandBuffer = BeginSingleTimeCommands();
@@ -208,7 +208,7 @@ namespace OP
 			EndSingleTimeCommands(commandBuffer);
 		}
 
-		void CopyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height)
+		static void CopyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height)
 		{
 			VkCommandBuffer commandBuffer = BeginSingleTimeCommands();
 

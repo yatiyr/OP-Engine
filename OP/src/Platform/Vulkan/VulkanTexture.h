@@ -10,6 +10,10 @@ namespace OP
 	public:
 		VulkanTexture(uint32_t width, uint32_t height, unsigned char* data, uint32_t channels);
 		~VulkanTexture();
+
+		VkImageView& GetImageView();
+		VkSampler& GetSampler();
+
 	private:
 		void CreateTextureImageView();
 		void CreateSampler();

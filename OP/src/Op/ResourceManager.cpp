@@ -37,6 +37,8 @@ namespace OP
 		std::unordered_map<uint32_t, Ref<EnvironmentMap>> EnvironmentMaps;
 		std::unordered_map<uint32_t, Ref<Texture>> Textures;
 
+		std::unordered_map<uint32_t, Ref<VulkanTexture>> VulkanTextures;
+
 		std::unordered_map<uint32_t, Ref<VulkanShaderModule>> Shaders;
 		std::unordered_map<std::string, std::string> ShaderSources;
 		std::unordered_map<std::string, std::string> IncludeShaderSources;
@@ -114,6 +116,66 @@ namespace OP
 	{
 		uint32_t shaderHandle =  s_ResourceManagerData.StringLookupTable[name];
 		return s_ResourceManagerData.Shaders[shaderHandle];
+	}
+
+	Ref<VulkanTexture> ResourceManager::GetTexture(std::string name)
+	{
+		uint32_t modelHandle = s_ResourceManagerData.StringLookupTable[name];
+		return s_ResourceManagerData.VulkanTextures[modelHandle];
+	}
+
+	int ResourceManager::LoadTextures(std::filesystem::path texturesFilePath)
+	{
+		uint32_t count = 0;
+		OP_ENGINE_WARN("/tLoading Textures");
+
+		try
+		{
+			stbi_set_flip_vertically_on_load(1);
+
+			for (const auto& entry : std::filesystem::recursive_directory_iterator(texturesFilePath))
+			{
+				if (entry.is_regular_file() && (
+					entry.path().extension() == ".png" ||
+					entry.path().extension() == ".jpeg" ||
+					entry.path().extension() == ".jpg" ||
+					entry.path().extension() == ".bmp" ||
+					entry.path().extension() == ".tga"))
+				{
+
+					std::filesystem::path entryPath = entry.path();
+
+					int width, height, channels;
+					stbi_uc* data = stbi_load(entryPath.string().c_str(), &width, &height, &channels, STBI_rgb_alpha);
+					Ref<VulkanTexture> texture;
+					if (data)
+					{
+						texture = std::make_shared<VulkanTexture>(width, height, data, channels);
+					}
+					else
+					{
+						OP_ENGINE_ERROR("Could not load Texture {0}", entry.path().filename());
+						continue;
+					}
+
+					uint32_t id = Allocate(entryPath.stem().string());
+					s_ResourceManagerData.VulkanTextures[id] = texture;
+					stbi_image_free(data);
+					OP_ENGINE_INFO("\t\tFileName {0}", entryPath.filename());
+					count++;
+				}
+			}
+
+			OP_ENGINE_INFO("\t\tTotal number of processed Textures : {0}", count);
+		}
+		catch (const std::exception&)
+		{
+			OP_ENGINE_ERROR("\tFailed to load Textures.")
+				return 1;
+		}
+
+		OP_ENGINE_WARN("\Textures have been loaded")
+			return 0;
 	}
 	 
 
@@ -266,7 +328,7 @@ namespace OP
 	    // ResourceManager::LoadShaderSources(shaderSrcPath);
 		ResourceManager::CompileShaders();
 
-
+		ResourceManager::LoadTextures(texturePath);
 	/*	ResourceManager::LoadModels(modelPath);
 
 		// Create generic resources

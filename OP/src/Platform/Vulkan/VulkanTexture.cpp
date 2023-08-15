@@ -1,7 +1,7 @@
 #include <Precomp.h>
 #include <Platform/Vulkan/VulkanTexture.h>
-#include <Platform/Vulkan/VulkanBufferUtils.h>
 #include <Platform/Vulkan/VulkanContext.h>
+#include <Platform/Vulkan/VulkanBufferUtils.h>
 #include <Platform/Vulkan/VulkanUtils.h>
 
 namespace OP
@@ -53,6 +53,16 @@ namespace OP
 
 		vkDestroyImage(device, m_TextureImage, nullptr);
 		vkFreeMemory(device, m_TextureImageMemory, nullptr);
+	}
+
+	VkImageView& VulkanTexture::GetImageView()
+	{
+		return m_TextureImageView;
+	}
+
+	VkSampler& VulkanTexture::GetSampler()
+	{
+		return m_TextureSampler;
 	}
 
 	void VulkanTexture::CreateTextureImageView()

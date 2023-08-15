@@ -38,7 +38,7 @@ namespace OP
 		// Turn into classes maybe
 		VkDescriptorPool DescriptorPool;
 		std::vector<VkDescriptorSet> DescriptorSets;
-
+		Ref<VulkanTexture> Texture;
 
 	} s_VulkanRenderData;
 
@@ -48,14 +48,16 @@ namespace OP
 		VkDevice device = VulkanContext::GetContext()->GetDevice();
 		int maxFramesInFlight = VulkanContext::GetContext()->GetMaxFramesInFlight();
 
-		VkDescriptorPoolSize poolSize{};
-		poolSize.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-		poolSize.descriptorCount = static_cast<uint32_t>(maxFramesInFlight);
+		std::array<VkDescriptorPoolSize, 2> poolSizes{};
+		poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+		poolSizes[0].descriptorCount = static_cast<uint32_t>(maxFramesInFlight);
+		poolSizes[1].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+		poolSizes[1].descriptorCount = static_cast<uint32_t>(maxFramesInFlight);
 
 		VkDescriptorPoolCreateInfo poolInfo{};
 		poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
-		poolInfo.poolSizeCount = 1;
-		poolInfo.pPoolSizes = &poolSize;
+		poolInfo.poolSizeCount = static_cast<uint32_t>(poolSizes.size());
+		poolInfo.pPoolSizes = poolSizes.data();
 		poolInfo.maxSets = static_cast<uint32_t>(maxFramesInFlight);
 
 		if (vkCreateDescriptorPool(device, &poolInfo, nullptr, &s_VulkanRenderData.DescriptorPool) != VK_SUCCESS)
@@ -89,19 +91,30 @@ namespace OP
 			bufferInfo.offset = 0;
 			bufferInfo.range = sizeof(UniformBufferObject);
 
-			VkWriteDescriptorSet descriptorWrite{};
-			descriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-			descriptorWrite.dstSet = s_VulkanRenderData.DescriptorSets[i];
-			descriptorWrite.dstBinding = 0;
-			descriptorWrite.dstArrayElement = 0;
+			VkDescriptorImageInfo imageInfo{};
+			imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+			imageInfo.imageView = s_VulkanRenderData.Texture->GetImageView();
+			imageInfo.sampler = s_VulkanRenderData.Texture->GetSampler();
 
-			descriptorWrite.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-			descriptorWrite.descriptorCount = 1;
-			descriptorWrite.pBufferInfo = &bufferInfo;
-			descriptorWrite.pImageInfo = nullptr;
-			descriptorWrite.pTexelBufferView = nullptr;
+			std::array<VkWriteDescriptorSet, 2> descriptorWrites{};
 
-			vkUpdateDescriptorSets(device, 1, &descriptorWrite, 0, nullptr);
+			descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+			descriptorWrites[0].dstSet = s_VulkanRenderData.DescriptorSets[i];
+			descriptorWrites[0].dstBinding = 0;
+			descriptorWrites[0].dstArrayElement = 0;
+			descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+			descriptorWrites[0].descriptorCount = 1;
+			descriptorWrites[0].pBufferInfo = &bufferInfo;
+
+			descriptorWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+			descriptorWrites[1].dstSet = s_VulkanRenderData.DescriptorSets[i];
+			descriptorWrites[1].dstBinding = 1;
+			descriptorWrites[1].dstArrayElement = 0;
+			descriptorWrites[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+			descriptorWrites[1].descriptorCount = 1;
+			descriptorWrites[1].pImageInfo = &imageInfo;
+
+			vkUpdateDescriptorSets(device, static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
 		}
 
 	}
@@ -122,7 +135,7 @@ namespace OP
 
 	void VulkanRenderSystem::Init()
 	{
-
+		s_VulkanRenderData.Texture = ResourceManager::GetTexture("texture");
 		s_VulkanRenderData.RenderPass = std::make_shared<VulkanRenderPass>();
 		s_VulkanRenderData.Pipeline = std::make_shared<VulkanGraphicsPipeline>(ResourceManager::GetShader("sandbox"), s_VulkanRenderData.RenderPass);
 
@@ -130,7 +143,8 @@ namespace OP
 		s_VulkanRenderData.Pipeline->ConfigureVertexInput(
 			                                              {
 														    { BufferElementType::OP_EL_FLOAT2, "a_Position", false },
-														    { BufferElementType::OP_EL_FLOAT3, "a_Color", false}
+														    { BufferElementType::OP_EL_FLOAT3, "a_Color", false},
+															{ BufferElementType::OP_EL_FLOAT2, "a_TexCoord", false}
 														  }, InputRate::VERTEX);
 
 		s_VulkanRenderData.DescriptorSetLayout = std::make_shared<VulkanDescriptorSetLayout>();
@@ -139,10 +153,10 @@ namespace OP
 
 
 		const std::vector<float> vertices = {
-			-0.5f, -0.5f, 1.0f, 0.0f, 0.0f,
-			0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
-			0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
-			-0.5f, 0.5f, 1.0f, 1.0f, 1.0f
+			-0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+			0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f,
+			0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
+			-0.5f, 0.5f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f
 		};
 
 		const std::vector<uint32_t> indices = {

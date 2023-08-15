@@ -8,7 +8,7 @@ namespace OP
 {
 	namespace VulkanUtils
 	{
-		VkImageView CreateImageView(VkImage image, VkFormat format)
+		static VkImageView CreateImageView(VkImage image, VkFormat format)
 		{
 			VkDevice device = VulkanContext::GetContext()->GetDevice();
 
