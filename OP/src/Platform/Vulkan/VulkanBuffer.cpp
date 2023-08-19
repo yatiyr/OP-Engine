@@ -61,7 +61,7 @@ namespace OP
 		vkFreeMemory(device, m_StagingBufferMemory, nullptr);
 	}
 
-	VulkanIndexBuffer::VulkanIndexBuffer(void* data, uint32_t size)
+	VulkanIndexBuffer::VulkanIndexBuffer(void* data, uint32_t size, uint32_t indexCount) : m_IndexCount(indexCount)
 	{
 		Populate(data, size);
 	}
@@ -88,6 +88,11 @@ namespace OP
 	VkBuffer& VulkanIndexBuffer::GetBuffer()
 	{
 		return m_IndexBuffer;
+	}
+
+	uint32_t VulkanIndexBuffer::GetIndexCount()
+	{
+		return m_IndexCount;
 	}
 
 	void VulkanIndexBuffer::Populate(void* data, uint32_t size)

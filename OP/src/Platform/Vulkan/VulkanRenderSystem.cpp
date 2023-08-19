@@ -22,6 +22,14 @@ namespace OP
 		glm::mat4 proj;
 	};
 
+
+	struct Vert
+	{
+		glm::vec3 pos;
+		glm::vec3 color;
+		glm::vec2 texCoord;
+	};
+
 	struct VulkanRenderSystemData
 	{
 		Ref<VulkanGraphicsPipeline> Pipeline;
@@ -142,7 +150,7 @@ namespace OP
 
 		s_VulkanRenderData.Pipeline->ConfigureVertexInput(
 			                                              {
-														    { BufferElementType::OP_EL_FLOAT2, "a_Position", false },
+														    { BufferElementType::OP_EL_FLOAT3, "a_Position", false },
 														    { BufferElementType::OP_EL_FLOAT3, "a_Color", false},
 															{ BufferElementType::OP_EL_FLOAT2, "a_TexCoord", false}
 														  }, InputRate::VERTEX);
@@ -152,19 +160,25 @@ namespace OP
 		s_VulkanRenderData.Pipeline->InitializePipeline(s_VulkanRenderData.DescriptorSetLayout);
 
 
-		const std::vector<float> vertices = {
-			-0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
-			0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f,
-			0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
-			-0.5f, 0.5f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f
+		const std::vector<Vert> vertices = {
+			{{-0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}},
+			{{0.5f, -0.5f, 0.0f}, {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f}},
+			{{0.5f, 0.5f, 0.0f}, {0.0f, 0.0f, 1.0f}, {1.0f, 1.0f}},
+			{{-0.5f, 0.5f, 0.0f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f}},
+
+			{{-0.5f, -0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}},
+			{{0.5f, -0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f}},
+			{{0.5f, 0.5f, -0.5f}, {0.0f, 0.0f, 1.0f}, {1.0f, 1.0f}},
+			{{-0.5f, 0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f}}
 		};
 
 		const std::vector<uint32_t> indices = {
-			0, 1, 2, 2, 3, 0
+			0, 1, 2, 2, 3, 0,
+			4, 5, 6, 6, 7, 4
 		};
 
-		s_VulkanRenderData.VertexBuffer = std::make_shared<VulkanVertexBuffer>((void*)vertices.data(), vertices.size() * sizeof(float));
-		s_VulkanRenderData.IndexBuffer = std::make_shared<VulkanIndexBuffer>((void*)indices.data(), indices.size() * sizeof(uint32_t));
+		s_VulkanRenderData.VertexBuffer = std::make_shared<VulkanVertexBuffer>((void*)vertices.data(), vertices.size() * sizeof(Vert));
+		s_VulkanRenderData.IndexBuffer = std::make_shared<VulkanIndexBuffer>((void*)indices.data(), indices.size() * sizeof(uint32_t), indices.size());
 		CreateFramebuffers();
 		CreateCommandBuffer();
 
@@ -216,8 +230,7 @@ namespace OP
 			                            s_VulkanRenderData.VertexBuffer,
 										s_VulkanRenderData.IndexBuffer,
 										s_VulkanRenderData.DescriptorSets[s_VulkanRenderData.CurrentFrame],
-										extent,
-			                            6);
+										extent);
 
 		UpdateUniformBuffer(s_VulkanRenderData.CurrentFrame, ts);
 

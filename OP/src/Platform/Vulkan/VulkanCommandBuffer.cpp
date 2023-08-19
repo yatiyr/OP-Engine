@@ -38,8 +38,7 @@ namespace OP
 		                                          Ref<VulkanVertexBuffer> vertexBuffer,
 												  Ref<VulkanIndexBuffer> indexBuffer,
 												  VkDescriptorSet descriptorSet,
-		                                          VkExtent2D extent,
-												  uint32_t indexSize)
+		                                          VkExtent2D extent)
 	{
 		VkCommandBufferBeginInfo beginInfo{};
 		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
@@ -90,7 +89,7 @@ namespace OP
 		vkCmdBindIndexBuffer(m_CommandBuffer, indexBuffer->GetBuffer(), 0, VK_INDEX_TYPE_UINT32);
 		vkCmdBindDescriptorSets(m_CommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->GetPipelineLayout(),
 			0, 1, &descriptorSet, 0, nullptr);
-		vkCmdDrawIndexed(m_CommandBuffer, indexSize, 1, 0, 0, 0);
+		vkCmdDrawIndexed(m_CommandBuffer, indexBuffer->GetIndexCount(), 1, 0, 0, 0);
 
 		vkCmdEndRenderPass(m_CommandBuffer);
 

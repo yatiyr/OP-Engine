@@ -152,14 +152,16 @@ namespace OP
 	class VulkanIndexBuffer
 	{
 	public:
-		VulkanIndexBuffer(void* data, uint32_t size);
+		VulkanIndexBuffer(void* data, uint32_t size, uint32_t indexCount);
 
 		~VulkanIndexBuffer();
 		void SetData(void* data, uint32_t size);
 		VkBuffer& GetBuffer();
+		uint32_t GetIndexCount();
 	private:
 		void Populate(void* data, uint32_t size);
 	private:
+		uint32_t m_IndexCount;
 		VkBuffer m_IndexBuffer;
 		VkDeviceMemory m_IndexBufferMemory;
 

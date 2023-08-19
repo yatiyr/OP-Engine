@@ -21,8 +21,7 @@ namespace OP
 								 Ref<VulkanVertexBuffer> vertexBuffer,
 								 Ref<VulkanIndexBuffer> indexBuffer,
 							     VkDescriptorSet descriptorSet,
-								 VkExtent2D extent,
-			                     uint32_t indexSize);
+								 VkExtent2D extent);
 	private:
 		VkCommandBuffer m_CommandBuffer;
 	};

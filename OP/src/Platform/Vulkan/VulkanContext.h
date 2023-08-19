@@ -15,6 +15,8 @@ struct GLFWwindow;
 
 #include <Op/ResourceManager.h>
 
+#define GLM_FORCE_DEPTH_ZERO_TO_ONE
+
 namespace OP
 {
 	// Forward declaration
