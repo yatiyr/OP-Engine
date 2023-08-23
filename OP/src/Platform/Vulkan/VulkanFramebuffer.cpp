@@ -1,10 +1,17 @@
 #include <Precomp.h>
 #include <Platform/Vulkan/VulkanFramebuffer.h>
 
-
+#include <Platform/Vulkan/VulkanBufferUtils.h>
+#include <Platform/Vulkan/VulkanUtils.h>
 
 namespace OP
 {
+
+	VulkanFramebuffer::VulkanFramebuffer(Ref<VulkanRenderPass> renderpass, uint32_t width, uint32_t height)
+	{
+		
+	}
+
 	VulkanFramebuffer::VulkanFramebuffer(Ref<VulkanRenderPass> renderpass, VkImageView* attachments, uint32_t width, uint32_t height)
 	{
 		VkDevice device = VulkanContext::GetContext()->GetDevice();

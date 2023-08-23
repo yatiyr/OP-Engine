@@ -67,7 +67,7 @@ namespace OP
 
 	void VulkanTexture::CreateTextureImageView()
 	{
-		m_TextureImageView = VulkanUtils::CreateImageView(m_TextureImage, VK_FORMAT_R8G8B8A8_SRGB);
+		m_TextureImageView = VulkanUtils::CreateImageView(m_TextureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_ASPECT_COLOR_BIT);
 	}
 
 	void VulkanTexture::CreateSampler()
