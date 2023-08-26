@@ -33,8 +33,6 @@ namespace OP
 	struct VulkanRenderSystemData
 	{
 		Ref<VulkanGraphicsPipeline> Pipeline;
-		Ref<VulkanRenderPass> RenderPass;
-		std::vector<Ref<VulkanFramebuffer>> SwapchainFramebuffers;
 		std::vector<Ref<VulkanCommandBuffer>> CommandBuffers;
 		Ref<VulkanVertexBuffer> VertexBuffer;
 		Ref<VulkanIndexBuffer> IndexBuffer;
@@ -143,9 +141,10 @@ namespace OP
 
 	void VulkanRenderSystem::Init()
 	{
+		VulkanContext* context = VulkanContext::GetContext();
+
 		s_VulkanRenderData.Texture = ResourceManager::GetTexture("texture");
-		s_VulkanRenderData.RenderPass = std::make_shared<VulkanRenderPass>();
-		s_VulkanRenderData.Pipeline = std::make_shared<VulkanGraphicsPipeline>(ResourceManager::GetShader("sandbox"), s_VulkanRenderData.RenderPass);
+		s_VulkanRenderData.Pipeline = std::make_shared<VulkanGraphicsPipeline>(ResourceManager::GetShader("sandbox"), context->GetSwapChainRenderPass());
 
 
 		s_VulkanRenderData.Pipeline->ConfigureVertexInput(
@@ -182,7 +181,6 @@ namespace OP
 		CreateFramebuffers();
 		CreateCommandBuffer();
 
-		VulkanContext* context = VulkanContext::GetContext();
 		int maxFramesInFlight = context->GetMaxFramesInFlight();
 		s_VulkanRenderData.UniformBuffers.resize(maxFramesInFlight);
 
@@ -199,7 +197,7 @@ namespace OP
 	{		
 		VkDevice device = VulkanContext::GetContext()->GetDevice();
 		vkDeviceWaitIdle(device);
-		s_VulkanRenderData.SwapchainFramebuffers.clear();
+		//s_VulkanRenderData.SwapchainFramebuffers.clear();
 
 		vkDestroyDescriptorPool(device, s_VulkanRenderData.DescriptorPool, nullptr);
 	}
@@ -224,8 +222,8 @@ namespace OP
 		vkAcquireNextImageKHR(device, swapchain, UINT64_MAX, imageAvailableSemaphores[s_VulkanRenderData.CurrentFrame], VK_NULL_HANDLE, &imageIndex);
 
 		s_VulkanRenderData.CommandBuffers[s_VulkanRenderData.CurrentFrame]->ResetCommandBuffer();
-		s_VulkanRenderData.CommandBuffers[s_VulkanRenderData.CurrentFrame]->RecordCommandBuffer(s_VulkanRenderData.RenderPass,
-										s_VulkanRenderData.SwapchainFramebuffers[imageIndex],
+		s_VulkanRenderData.CommandBuffers[s_VulkanRenderData.CurrentFrame]->RecordCommandBuffer(context->GetSwapChainRenderPass(),
+										context->GetSwapChainFramebuffers()[imageIndex],
 										s_VulkanRenderData.Pipeline,
 			                            s_VulkanRenderData.VertexBuffer,
 										s_VulkanRenderData.IndexBuffer,
@@ -277,7 +275,7 @@ namespace OP
 	// Try to move framebuffer to a separate class
 	void VulkanRenderSystem::CreateFramebuffers()
 	{
-		VulkanContext* context = VulkanContext::GetContext();
+		/*VulkanContext* context = VulkanContext::GetContext();
 
 		std::vector<VkImageView> swapchainImageViews = context->GetSwapChainImageViews();
 		VkExtent2D swapchainExtent = context->GetSwapChainExtent();
@@ -296,7 +294,7 @@ namespace OP
 				                                                                              attachments,
 				                                                                              swapchainExtent.width, swapchainExtent.height);
 
-		}
+		} */
 
 	}
 
@@ -319,7 +317,7 @@ namespace OP
 		VulkanContext::GetContext()->CleanupSwapchain();
 
 		// Destroy framebuffers here
-		s_VulkanRenderData.SwapchainFramebuffers.clear();
+		//s_VulkanRenderData.SwapchainFramebuffers.clear();
 
 		VulkanContext::GetContext()->CreateSwapchain();
 		VulkanContext::GetContext()->CreateImageViews();

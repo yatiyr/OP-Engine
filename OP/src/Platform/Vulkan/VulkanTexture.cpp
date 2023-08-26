@@ -3,17 +3,25 @@
 #include <Platform/Vulkan/VulkanContext.h>
 #include <Platform/Vulkan/VulkanBufferUtils.h>
 #include <Platform/Vulkan/VulkanUtils.h>
+#include <Platform/Vulkan/VulkanTextureUtils.h>
 
 namespace OP
 {
 	VulkanTexture::VulkanTexture(uint32_t width, uint32_t height, unsigned char* data, uint32_t channels)
 	{
 
-		VkDevice device = VulkanContext::GetContext()->GetDevice();
+		VulkanContext* context = VulkanContext::GetContext();
+		VkDevice device = context->GetDevice();
+		VkPhysicalDevice physicalDevice = context->GetPhysicalDevice();
+		VkCommandPool commandPool = context->GetCommandPool();
+		VkQueue queue = context->GetGraphicsQueue();
+
 		VkDeviceSize size = width * height * channels;
 
 
-		BufferUtils::CreateBuffer(size, VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+		BufferUtils::CreateBuffer(device,
+			                      physicalDevice,
+			                      size, VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
 								  VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
 								      VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
 								  m_StagingBuffer,
@@ -24,17 +32,18 @@ namespace OP
 			memcpy(d, data, static_cast<size_t>(size));
 		vkUnmapMemory(device, m_StagingBufferMemory);
 
-		BufferUtils::CreateImage(width, height, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_TILING_OPTIMAL,
-								VK_IMAGE_USAGE_TRANSFER_DST_BIT | 
+		TextureUtils::CreateImage(device, physicalDevice,
+			                      width, height, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_TILING_OPTIMAL,
+								  VK_IMAGE_USAGE_TRANSFER_DST_BIT | 
 									VK_IMAGE_USAGE_SAMPLED_BIT,
-			                    VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
-								m_TextureImage, m_TextureImageMemory);
+			                      VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+								  m_TextureImage, m_TextureImageMemory);
 
-		BufferUtils::TransitionImageLayout(m_TextureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_UNDEFINED,
+		TextureUtils::TransitionImageLayout(device, commandPool, queue, m_TextureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_UNDEFINED,
 			VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
-		BufferUtils::CopyBufferToImage(m_StagingBuffer, m_TextureImage, width, height);
+		TextureUtils::CopyBufferToImage(device, commandPool, queue, m_StagingBuffer, m_TextureImage, width, height);
 
-		BufferUtils::TransitionImageLayout(m_TextureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+		TextureUtils::TransitionImageLayout(device, commandPool, queue, m_TextureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
 			VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 
 		vkDestroyBuffer(device, m_StagingBuffer, nullptr);
@@ -67,7 +76,10 @@ namespace OP
 
 	void VulkanTexture::CreateTextureImageView()
 	{
-		m_TextureImageView = VulkanUtils::CreateImageView(m_TextureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_ASPECT_COLOR_BIT);
+		VulkanContext* context = VulkanContext::GetContext();
+		VkDevice device = context->GetDevice();
+
+		m_TextureImageView = TextureUtils::CreateImageView(device, m_TextureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_ASPECT_COLOR_BIT);
 	}
 
 	void VulkanTexture::CreateSampler()

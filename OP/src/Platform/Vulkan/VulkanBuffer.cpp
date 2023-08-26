@@ -39,11 +39,20 @@ namespace OP
 	void VulkanVertexBuffer::Populate(void* data, uint32_t size)
 	{
 
-		VkDevice device = VulkanContext::GetContext()->GetDevice();
+		VulkanContext* context = VulkanContext::GetContext();
 
+		VkDevice device = context->GetDevice();
+		VkPhysicalDevice physicalDevice = context->GetPhysicalDevice();
+		VkCommandPool commandPool = context->GetCommandPool();
+		VkQueue queue = context->GetGraphicsQueue();
 
-		BufferUtils::CreateBuffer(size, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
-			VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, m_StagingBuffer, m_StagingBufferMemory);
+		BufferUtils::CreateBuffer(device, physicalDevice,
+			                      size, 
+			                      VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+			                      VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
+									VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+			                      m_StagingBuffer,
+			                      m_StagingBufferMemory);
 
 		void* d;
 		vkMapMemory(device, m_StagingBufferMemory, 0, size, 0, &d);
@@ -51,11 +60,15 @@ namespace OP
 		vkUnmapMemory(device, m_StagingBufferMemory);
 
 
-		BufferUtils::CreateBuffer(size, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
-			m_VertexBuffer, m_VertexBufferMemory);
+		BufferUtils::CreateBuffer(device, physicalDevice,
+			                      size,
+			                      VK_BUFFER_USAGE_TRANSFER_DST_BIT |
+									VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
+			                      VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+								  m_VertexBuffer, m_VertexBufferMemory);
 
 
-		BufferUtils::CopyBuffer(m_StagingBuffer, m_VertexBuffer, size);
+		BufferUtils::CopyBuffer(device, commandPool, queue, m_StagingBuffer, m_VertexBuffer, size);
 
 		vkDestroyBuffer(device, m_StagingBuffer, nullptr);
 		vkFreeMemory(device, m_StagingBufferMemory, nullptr);
@@ -97,20 +110,33 @@ namespace OP
 
 	void VulkanIndexBuffer::Populate(void* data, uint32_t size)
 	{
-		VkDevice device = VulkanContext::GetContext()->GetDevice();
+		VulkanContext* context = VulkanContext::GetContext();
 
-		BufferUtils::CreateBuffer(size, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
-			VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, m_StagingBuffer, m_StagingBufferMemory);
+		VkDevice device = context->GetDevice();
+		VkPhysicalDevice physicalDevice = context->GetPhysicalDevice();
+		VkCommandPool commandPool = context->GetCommandPool();
+		VkQueue queue = context->GetGraphicsQueue();
+
+		BufferUtils::CreateBuffer(device, physicalDevice,
+			                      size,
+			                      VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+			                      VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
+									VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+			                      m_StagingBuffer, m_StagingBufferMemory);
 
 		void* d;
 		vkMapMemory(device, m_StagingBufferMemory, 0, size, 0, &d);
 		memcpy(d, data, (size_t)size);
 		vkUnmapMemory(device, m_StagingBufferMemory);
 
-		BufferUtils::CreateBuffer(size, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
-			VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, m_IndexBuffer, m_IndexBufferMemory);
+		BufferUtils::CreateBuffer(device, physicalDevice,
+			                      size,
+			                      VK_BUFFER_USAGE_TRANSFER_DST_BIT |
+									VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
+			                      VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+			                      m_IndexBuffer, m_IndexBufferMemory);
 
-		BufferUtils::CopyBuffer(m_StagingBuffer, m_IndexBuffer, size);
+		BufferUtils::CopyBuffer(device, commandPool, queue, m_StagingBuffer, m_IndexBuffer, size);
 
 		vkDestroyBuffer(device, m_StagingBuffer, nullptr);
 		vkFreeMemory(device, m_StagingBufferMemory, nullptr);

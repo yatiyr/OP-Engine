@@ -8,35 +8,12 @@ namespace OP
 {
 	namespace VulkanUtils
 	{
-		static VkImageView CreateImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags)
+
+		static VkFormat FindSupportedFormat(VkDevice device, VkPhysicalDevice physicalDevice,
+			                                const std::vector<VkFormat>& candidates,
+			                                VkImageTiling tiling,
+			                                VkFormatFeatureFlags features)
 		{
-			VkDevice device = VulkanContext::GetContext()->GetDevice();
-
-			VkImageViewCreateInfo viewInfo{};
-			viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-			viewInfo.image = image;
-			viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
-			viewInfo.format = format;
-			viewInfo.subresourceRange.aspectMask = aspectFlags;//VK_IMAGE_ASPECT_COLOR_BIT;
-			viewInfo.subresourceRange.baseMipLevel = 0;
-			viewInfo.subresourceRange.levelCount = 1;
-			viewInfo.subresourceRange.baseArrayLayer = 0;
-			viewInfo.subresourceRange.layerCount = 1;
-
-			VkImageView imageView;
-
-			if (vkCreateImageView(device, &viewInfo, nullptr, &imageView) != VK_SUCCESS)
-			{
-				OP_ENGINE_ERROR("Failed to craete texture image view!");
-			}
-
-			return imageView;
-		}
-
-		static VkFormat FindSupportedFormat(const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features)
-		{
-			VkDevice device = VulkanContext::GetContext()->GetDevice();
-			VkPhysicalDevice physicalDevice = VulkanContext::GetContext()->GetPhysicalDevice();
 
 			for (VkFormat format : candidates)
 			{
@@ -59,9 +36,9 @@ namespace OP
 
 		}
 
-		static VkFormat FindDepthFormat()
+		static VkFormat FindDepthFormat(VkDevice device, VkPhysicalDevice physicalDevice)
 		{
-			return FindSupportedFormat(
+			return FindSupportedFormat(device, physicalDevice,
 				{ VK_FORMAT_D32_SFLOAT, VK_FORMAT_D32_SFLOAT_S8_UINT, VK_FORMAT_D24_UNORM_S8_UINT },
 				VK_IMAGE_TILING_OPTIMAL,
 				VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT

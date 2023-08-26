@@ -6,14 +6,13 @@
 #include <Renderer/GraphicsContext.h>
 struct GLFWwindow;
 
+#include <Op/ResourceManager.h>
+#include <Platform/Vulkan/VulkanRenderPass.h>
+#include <Platform/Vulkan/VulkanFramebuffer.h>
+#include <Platform/Vulkan/VulkanGraphicsPipeline.h>
 #include <optional>
 #include <vector>
 
-
-#include <Platform/Vulkan/VulkanGraphicsPipeline.h>
-#include <Platform/Vulkan/VulkanRenderPass.h>
-
-#include <Op/ResourceManager.h>
 
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 
@@ -46,15 +45,16 @@ namespace OP
 
 		VulkanContext(GLFWwindow* windowHandle);
 
-		virtual void Init() override;
 		virtual void SwapBuffers() override;
+		virtual void Cleanup()     override;
+		virtual void Init()        override;
 
-		virtual void Cleanup() override;
-		static VulkanContext* GetContext();
-		VkDevice GetDevice();
+
 		VkPhysicalDevice GetPhysicalDevice();
 		VkExtent2D& GetSwapChainExtent();
 		VkFormat& GetSwapChainImageFormat();
+		VkDevice         GetDevice();
+
 
 		std::vector<VkImageView>& GetSwapChainImageViews();
 		VkCommandPool& GetCommandPool();
@@ -69,48 +69,74 @@ namespace OP
 		VkQueue GetPresentQueue();
 
 		int GetMaxFramesInFlight();
+
+		static VulkanContext* GetContext();
+
+		std::vector<Ref<VulkanFramebuffer>>& GetSwapChainFramebuffers();
+		Ref<VulkanRenderPass> GetSwapChainRenderPass();
 	private:
-		void CreateInstance();
-		bool checkValidationLayerSupport();
-		void SetupDebugMessenger();
-		std::vector<const char*> GetRequiredExtensions();
-		VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo,
-											  const VkAllocationCallbacks* pAllocator, VkDebugUtilsMessengerEXT* pDebugMessenger);
-		void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debugMessenger,
-										       const VkAllocationCallbacks* pAllocator);
-		void PopulateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo);
-		void PickPhysicalDevice();
-		int RateDevice(VkPhysicalDevice device);
-		QueueFamilyIndices FindQueueFamilies(VkPhysicalDevice device);
-		void CreateLogicalDevice();
 		void CreateSurface();
-		bool CheckDeviceExtensionSupport(VkPhysicalDevice device);
-		SwapChainSupportDetails QuerySwapChainSupport(VkPhysicalDevice device);
-		VkSurfaceFormatKHR ChooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
-		VkPresentModeKHR ChooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);
-		VkExtent2D ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
+		void CreateInstance();
 		void CreateSwapchain();
 		void CreateImageViews();
 		void CreateCommandPool();
 		void CreateSyncObjects();
+		void SetupDebugMessenger();
+		void CreateLogicalDevice();
+		void CreateSwapchainRenderPass();
+		void CreateSwapchainFramebuffers();
+		void PopulateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo);
+		void PickPhysicalDevice();
+
+		bool checkValidationLayerSupport();
+		bool CheckDeviceExtensionSupport(VkPhysicalDevice device);
+
+		std::vector<const char*> GetRequiredExtensions();
+
+		VkResult CreateDebugUtilsMessengerEXT(VkInstance instance,
+			const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo,
+			const VkAllocationCallbacks* pAllocator,
+			VkDebugUtilsMessengerEXT* pDebugMessenger);
+
+		void DestroyDebugUtilsMessengerEXT(VkInstance instance,
+			VkDebugUtilsMessengerEXT debugMessenger,
+			const VkAllocationCallbacks* pAllocator);
+
+
+		int RateDevice(VkPhysicalDevice device);
+
+		QueueFamilyIndices FindQueueFamilies(VkPhysicalDevice device);
+
+
+		SwapChainSupportDetails QuerySwapChainSupport(VkPhysicalDevice device);
+		VkSurfaceFormatKHR ChooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
+		VkPresentModeKHR ChooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);
+		VkExtent2D ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
+
 
 		void CleanupSwapchain();
 	private:
 		static VulkanContext* s_Instance;
-		GLFWwindow* m_WindowHandle;
+	private:
 		VkInstance m_Instance;
+		VkDevice m_Device;
+		GLFWwindow* m_WindowHandle;
 		VkDebugUtilsMessengerEXT m_DebugMessenger;
 		VkPhysicalDevice m_PhysicalDevice;
-		VkDevice m_Device;
+
 		VkQueue m_GraphicsQueue;
 		VkQueue m_PresentQueue;
 		VkSurfaceKHR m_Surface;
-		VkSwapchainKHR m_SwapChain;
-		std::vector<VkImage> m_SwapChainImages;
-		VkFormat m_SwapChainImageFormat;
-		VkExtent2D m_SwapChainExtent;
-		std::vector<VkImageView> m_SwapChainImageViews;
 		VkCommandPool m_CommandPool;
+
+		// Swapchain Elements
+		VkSwapchainKHR m_SwapChain;
+		VkExtent2D m_SwapChainExtent;
+		VkFormat m_SwapChainImageFormat;
+		std::vector<VkImage> m_SwapChainImages;
+		std::vector<VkImageView> m_SwapChainImageViews;
+		std::vector<Ref<VulkanFramebuffer>> m_SwapChainFramebuffers;
+		Ref<VulkanRenderPass> m_SwapChainRenderPass;
 
 		// Sync
 		std::vector<VkSemaphore> m_ImageAvailableSemaphores;

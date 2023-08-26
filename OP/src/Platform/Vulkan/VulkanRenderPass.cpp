@@ -16,8 +16,8 @@ namespace OP
 		for (auto& spec : m_ColorAttachmentSpecifications)
 		{
 			VkAttachmentDescription colorAttachment{};
-			colorAttachment.format         = GiveVkFormat(spec.TextureFormat);
-			colorAttachment.samples        = GiveSampleCount(spec.Samples);
+			colorAttachment.format         = TextureUtils::GiveVkFormat(spec.TextureFormat);
+			colorAttachment.samples        = TextureUtils::GiveSampleCount(spec.Samples);
 			colorAttachment.loadOp         = VK_ATTACHMENT_LOAD_OP_CLEAR;
 			colorAttachment.storeOp        = VK_ATTACHMENT_STORE_OP_STORE;
 			colorAttachment.stencilLoadOp  = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
@@ -37,8 +37,8 @@ namespace OP
 		
 		if (m_DepthAttachmentSpecification.TextureFormat != AttachmentFormat::None)
 		{
-			m_DepthAttachmentDescription.format         = GiveVkFormat(m_DepthAttachmentSpecification.TextureFormat);
-			m_DepthAttachmentDescription.samples        = GiveSampleCount(m_DepthAttachmentSpecification.Samples);
+			m_DepthAttachmentDescription.format         = TextureUtils::GiveVkFormat(m_DepthAttachmentSpecification.TextureFormat);
+			m_DepthAttachmentDescription.samples        = TextureUtils::GiveSampleCount(m_DepthAttachmentSpecification.Samples);
 			m_DepthAttachmentDescription.loadOp         = VK_ATTACHMENT_LOAD_OP_CLEAR;
 			m_DepthAttachmentDescription.storeOp        = VK_ATTACHMENT_STORE_OP_DONT_CARE;
 			m_DepthAttachmentDescription.stencilLoadOp  = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
@@ -126,7 +126,7 @@ namespace OP
 	{
 		for (auto attachment : attachments.Attachments)
 		{
-			if (IsDepth(attachment.TextureFormat))
+			if (TextureUtils::IsDepth(attachment.TextureFormat))
 			{
 				m_DepthAttachmentSpecification = attachment;
 			}

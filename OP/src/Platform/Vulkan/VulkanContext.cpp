@@ -68,6 +68,8 @@ namespace OP
 		CreateImageViews();
 		CreateCommandPool();
 		CreateSyncObjects();
+		CreateSwapchainRenderPass();
+		CreateSwapchainFramebuffers();
 	}
 
 	void VulkanContext::SwapBuffers()
@@ -328,6 +330,34 @@ namespace OP
 		vkGetDeviceQueue(m_Device, indices.presentFamily.value(), 0, &m_PresentQueue);
 	}
 
+	void VulkanContext::CreateSwapchainRenderPass()
+	{
+		AttachmentSpecification spec;
+		spec.Attachments = { AttachmentFormat::RGBA8, AttachmentFormat::DEPTH24STENCIL8 };
+
+		m_SwapChainRenderPass =
+			std::make_shared<VulkanRenderPass>(spec);
+	}
+
+	void VulkanContext::CreateSwapchainFramebuffers()
+	{
+		m_SwapChainFramebuffers.resize(m_SwapChainImages.size());
+
+		for (uint32_t i = 0; i < m_SwapChainImageViews.size(); i++)
+		{
+			VkImageView attachments[] =
+			{
+				m_SwapChainImageViews[i]
+			};
+
+			m_SwapChainFramebuffers[i] =
+				std::make_shared<VulkanFramebuffer>(
+					m_SwapChainRenderPass,
+					attachments,
+					m_SwapChainExtent.width, m_SwapChainExtent.height);
+		}
+	}
+
 	std::vector<VkImageView>& VulkanContext::GetSwapChainImageViews()
 	{
 		return m_SwapChainImageViews;
@@ -456,6 +486,16 @@ namespace OP
 		}
 	}
 
+	std::vector<Ref<VulkanFramebuffer>>& VulkanContext::GetSwapChainFramebuffers()
+	{
+		return m_SwapChainFramebuffers;
+	}
+
+	Ref<VulkanRenderPass> VulkanContext::GetSwapChainRenderPass()
+	{
+		return m_SwapChainRenderPass;
+	}
+
 	void VulkanContext::CreateSwapchain()
 	{
 		SwapChainSupportDetails swapChainSupport = QuerySwapChainSupport(m_PhysicalDevice);
@@ -536,7 +576,7 @@ namespace OP
 
 		for (size_t i = 0; i < m_SwapChainImages.size(); i++)
 		{
-			m_SwapChainImageViews[i] = VulkanUtils::CreateImageView(m_SwapChainImages[i], m_SwapChainImageFormat);
+			m_SwapChainImageViews[i] = TextureUtils::CreateImageView(m_Device, m_SwapChainImages[i], m_SwapChainImageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
 		}
 	}
 
@@ -579,7 +619,7 @@ namespace OP
 	{
 		for (const auto& availableFormat : availableFormats)
 		{
-			if (availableFormat.format == VK_FORMAT_B8G8R8A8_SRGB && availableFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
+			if (availableFormat.format == VK_FORMAT_R8G8B8A8_UNORM )// && availableFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
 				return availableFormat;
 		}
 

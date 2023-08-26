@@ -8,6 +8,8 @@
 namespace OP
 {
 
+	// Forward declaration of VulkanRenderPass
+	class VulkanRenderPass;
 
 	struct VulkanFramebufferSpecification
 	{
