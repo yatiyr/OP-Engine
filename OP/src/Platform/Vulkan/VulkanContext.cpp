@@ -333,7 +333,7 @@ namespace OP
 	void VulkanContext::CreateSwapchainRenderPass()
 	{
 		AttachmentSpecification spec;
-		spec.Attachments = { AttachmentFormat::RGBA8, AttachmentFormat::DEPTH24STENCIL8 };
+		spec.Attachments = { AttachmentFormat::BGRA8, AttachmentFormat::DEPTH24STENCIL8 };
 
 		m_SwapChainRenderPass =
 			std::make_shared<VulkanRenderPass>(spec);
@@ -619,7 +619,7 @@ namespace OP
 	{
 		for (const auto& availableFormat : availableFormats)
 		{
-			if (availableFormat.format == VK_FORMAT_R8G8B8A8_UNORM )// && availableFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
+			if (availableFormat.format == VK_FORMAT_B8G8R8A8_UNORM )// && availableFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
 				return availableFormat;
 		}
 

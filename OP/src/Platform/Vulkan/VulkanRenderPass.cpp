@@ -16,6 +16,7 @@ namespace OP
 		for (auto& spec : m_ColorAttachmentSpecifications)
 		{
 			VkAttachmentDescription colorAttachment{};
+			colorAttachment.flags          = 0;
 			colorAttachment.format         = TextureUtils::GiveVkFormat(spec.TextureFormat);
 			colorAttachment.samples        = TextureUtils::GiveSampleCount(spec.Samples);
 			colorAttachment.loadOp         = VK_ATTACHMENT_LOAD_OP_CLEAR;
@@ -37,6 +38,7 @@ namespace OP
 		
 		if (m_DepthAttachmentSpecification.TextureFormat != AttachmentFormat::None)
 		{
+			m_DepthAttachmentDescription.flags          = 0;
 			m_DepthAttachmentDescription.format         = TextureUtils::GiveVkFormat(m_DepthAttachmentSpecification.TextureFormat);
 			m_DepthAttachmentDescription.samples        = TextureUtils::GiveSampleCount(m_DepthAttachmentSpecification.Samples);
 			m_DepthAttachmentDescription.loadOp         = VK_ATTACHMENT_LOAD_OP_CLEAR;
@@ -84,7 +86,8 @@ namespace OP
 		for (auto& attachment : m_ColorAttachmentDescriptions)
 			allAttachments.push_back(attachment);
 
-		allAttachments.push_back(m_DepthAttachmentDescription);
+		if (m_DepthAttachmentSpecification.TextureFormat != AttachmentFormat::None)
+			allAttachments.push_back(m_DepthAttachmentDescription);
 
 		// Render Pass
 		VkRenderPassCreateInfo renderPassInfo{};

@@ -13,7 +13,7 @@ namespace OP
 		None = 0,
 
 		// Color
-		RGBA8, RGBA32F, SRGB, RED_INTEGER, SM_VARIANCE32F,
+		BGRA8, RGBA8, RGBA32F, SRGB, RED_INTEGER, SM_VARIANCE32F,
 
 		// Depth / stencil
 		DEPTH24STENCIL8,
@@ -33,6 +33,8 @@ namespace OP
 			{
 			case VK_FORMAT_UNDEFINED:
 				return OP::AttachmentFormat::None;
+			case VK_FORMAT_B8G8R8A8_UNORM:
+				return OP::AttachmentFormat::BGRA8;
 			case VK_FORMAT_R8G8B8A8_UNORM:
 				return OP::AttachmentFormat::RGBA8;
 			case  VK_FORMAT_R32G32B32A32_SFLOAT:
@@ -62,6 +64,8 @@ namespace OP
 			{
 			case OP::AttachmentFormat::None:
 				return VK_FORMAT_UNDEFINED;
+			case OP::AttachmentFormat::BGRA8:
+				return VK_FORMAT_B8G8R8A8_UNORM;
 			case OP::AttachmentFormat::RGBA8:
 				return VK_FORMAT_R8G8B8A8_UNORM;
 			case OP::AttachmentFormat::RGBA32F:
