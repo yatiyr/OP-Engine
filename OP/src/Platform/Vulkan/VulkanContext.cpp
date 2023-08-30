@@ -230,6 +230,19 @@ namespace OP
 		}
 	}
 
+	void VulkanContext::CleanupSwapchainFramebuffers()
+	{
+		for (uint32_t i = 0; i < m_SwapChainImages.size(); i++)
+		{
+
+		}
+
+		for (uint32_t i = 0; i < m_SwapChainImageViews.size(); i++)
+		{
+
+		}
+	}
+
 	void VulkanContext::PopulateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo)
 	{
 		createInfo = {};
@@ -341,19 +354,18 @@ namespace OP
 
 	void VulkanContext::CreateSwapchainFramebuffers()
 	{
+
+		m_SwapChainFramebuffers.clear();
+
 		m_SwapChainFramebuffers.resize(m_SwapChainImages.size());
 
 		for (uint32_t i = 0; i < m_SwapChainImageViews.size(); i++)
 		{
-			VkImageView attachments[] =
-			{
-				m_SwapChainImageViews[i]
-			};
 
 			m_SwapChainFramebuffers[i] =
 				std::make_shared<VulkanFramebuffer>(
 					m_SwapChainRenderPass,
-					attachments,
+					m_SwapChainImageViews[i],
 					m_SwapChainExtent.width, m_SwapChainExtent.height);
 		}
 	}

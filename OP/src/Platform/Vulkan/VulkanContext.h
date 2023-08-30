@@ -115,6 +115,7 @@ namespace OP
 
 
 		void CleanupSwapchain();
+		void CleanupSwapchainFramebuffers();
 	private:
 		static VulkanContext* s_Instance;
 	private:

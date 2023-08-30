@@ -178,7 +178,6 @@ namespace OP
 
 		s_VulkanRenderData.VertexBuffer = std::make_shared<VulkanVertexBuffer>((void*)vertices.data(), vertices.size() * sizeof(Vert));
 		s_VulkanRenderData.IndexBuffer = std::make_shared<VulkanIndexBuffer>((void*)indices.data(), indices.size() * sizeof(uint32_t), indices.size());
-		CreateFramebuffers();
 		CreateCommandBuffer();
 
 		int maxFramesInFlight = context->GetMaxFramesInFlight();
@@ -272,32 +271,6 @@ namespace OP
 		s_VulkanRenderData.CurrentFrame = (s_VulkanRenderData.CurrentFrame + 1) % context->GetMaxFramesInFlight();
 	}
 
-	// Try to move framebuffer to a separate class
-	void VulkanRenderSystem::CreateFramebuffers()
-	{
-		/*VulkanContext* context = VulkanContext::GetContext();
-
-		std::vector<VkImageView> swapchainImageViews = context->GetSwapChainImageViews();
-		VkExtent2D swapchainExtent = context->GetSwapChainExtent();
-		VkDevice device = context->GetDevice();
-
-		s_VulkanRenderData.SwapchainFramebuffers.resize(swapchainImageViews.size());
-
-		for (uint32_t i = 0; i < swapchainImageViews.size(); i++)
-		{
-			VkImageView attachments[] =
-			{
-				swapchainImageViews[i]
-			};
-
-			s_VulkanRenderData.SwapchainFramebuffers[i] = std::make_shared<VulkanFramebuffer>(s_VulkanRenderData.RenderPass,
-				                                                                              attachments,
-				                                                                              swapchainExtent.width, swapchainExtent.height);
-
-		} */
-
-	}
-
 	void VulkanRenderSystem::CreateCommandBuffer()
 	{
 		VulkanContext* context = VulkanContext::GetContext();
@@ -316,13 +289,10 @@ namespace OP
 
 		VulkanContext::GetContext()->CleanupSwapchain();
 
-		// Destroy framebuffers here
-		//s_VulkanRenderData.SwapchainFramebuffers.clear();
-
 		VulkanContext::GetContext()->CreateSwapchain();
 		VulkanContext::GetContext()->CreateImageViews();
+		VulkanContext::GetContext()->CreateSwapchainFramebuffers();
 
-		CreateFramebuffers();
 	}
 
 }

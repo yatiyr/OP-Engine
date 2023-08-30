@@ -19,7 +19,7 @@ namespace OP
 
 	// This constructor is currently used for creating the swapchain framebuffer
 	// I will delete the depth attachment later!
-	VulkanFramebuffer::VulkanFramebuffer(Ref<VulkanRenderPass> renderpass, VkImageView* attachments, uint32_t width, uint32_t height)
+	VulkanFramebuffer::VulkanFramebuffer(Ref<VulkanRenderPass> renderpass, VkImageView swapchainAttachment, uint32_t width, uint32_t height)
 	{
 		VulkanContext* context = VulkanContext::GetContext();
 
@@ -27,6 +27,7 @@ namespace OP
 		VkPhysicalDevice physicalDevice = context->GetPhysicalDevice();
 
 		TextureSpecification depthAttachment = renderpass->GetDepthAttachment();
+
 		if (depthAttachment.TextureFormat != AttachmentFormat::None)
 		{
 			VkFormat texFormat = TextureUtils::GiveVkFormat(depthAttachment.TextureFormat);
@@ -42,11 +43,14 @@ namespace OP
 									  m_DepthImage,
 									  m_DepthImageMemory);
 
-			m_DepthImageView = TextureUtils::CreateImageView(device, m_DepthImage, texFormat, VK_IMAGE_ASPECT_DEPTH_BIT);
+			m_DepthImageView = TextureUtils::CreateImageView(device,
+				                                             m_DepthImage,
+				                                             texFormat,
+				                                             VK_IMAGE_ASPECT_DEPTH_BIT);
 		}
 
 		std::vector<VkImageView> atts;
-		atts.push_back(attachments[0]);
+		atts.push_back(swapchainAttachment);
 		atts.push_back(m_DepthImageView);
 
 		VkFramebufferCreateInfo framebufferInfo{};
@@ -67,13 +71,36 @@ namespace OP
 
 	VulkanFramebuffer::~VulkanFramebuffer()
 	{
-		VkDevice device = VulkanContext::GetContext()->GetDevice();
-		vkDestroyFramebuffer(device, m_Framebuffer, nullptr);
+		CleanupFramebuffer();
 	}
 
 	VkFramebuffer VulkanFramebuffer::GetVkFramebuffer()
 	{
 		return m_Framebuffer;
+	}
+
+	void VulkanFramebuffer::ResizeFramebuffer(VkImageView swapchainAttachment, uint32_t width, uint32_t height)
+	{
+	}
+
+	void VulkanFramebuffer::CleanupFramebuffer()
+	{
+		VkDevice device = VulkanContext::GetContext()->GetDevice();
+
+		for (auto& imageView : m_ColorImageViews)
+		{
+			vkDestroyImageView(device, imageView, nullptr);
+		}
+
+		for (auto& image : m_ColorImages)
+		{
+			vkDestroyImage(device, image, nullptr);
+		}
+
+		vkDestroyImageView(device, m_DepthImageView, nullptr);
+		vkDestroyImage(device, m_DepthImage, nullptr);
+
+		vkDestroyFramebuffer(device, m_Framebuffer, nullptr);
 	}
 
 }
