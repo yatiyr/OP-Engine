@@ -588,7 +588,7 @@ namespace OP
 
 		for (size_t i = 0; i < m_SwapChainImages.size(); i++)
 		{
-			m_SwapChainImageViews[i] = TextureUtils::CreateImageView(m_Device, m_SwapChainImages[i], m_SwapChainImageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
+			m_SwapChainImageViews[i] = TextureUtils::CreateImageView(m_Device, m_SwapChainImages[i], m_SwapChainImageFormat, VK_IMAGE_ASPECT_COLOR_BIT, 1);
 		}
 	}
 

@@ -36,6 +36,7 @@ namespace OP
 				                      physicalDevice,
 				                      width,
 									  height,
+									  1,
 									  texFormat,
 									  VK_IMAGE_TILING_OPTIMAL,
 									  VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT,
@@ -46,7 +47,7 @@ namespace OP
 			m_DepthImageView = TextureUtils::CreateImageView(device,
 				                                             m_DepthImage,
 				                                             texFormat,
-				                                             VK_IMAGE_ASPECT_DEPTH_BIT);
+				                                             VK_IMAGE_ASPECT_DEPTH_BIT, 1);
 		}
 
 		std::vector<VkImageView> atts;
