@@ -24,6 +24,25 @@ namespace OP
 		Depth = DEPTH24STENCIL8
 	};
 
+	enum class AttachmentSample
+	{
+		SAMP1 = 0,
+		SAMP2,
+		SAMP4,
+		SAMP8,
+		SAMP16,
+		SAMP32,
+		SAMP64,
+
+		NONE
+	};
+
+	enum class ResolveAttachment
+	{
+		None = 0,
+		Resolve
+	};
+
 	namespace TextureUtils
 	{
 
@@ -91,23 +110,23 @@ namespace OP
 			}
 		}
 
-		static VkSampleCountFlagBits GiveSampleCount(uint32_t sampleCount)
+		static VkSampleCountFlagBits GiveSampleCount(AttachmentSample sampleCount)
 		{
 			switch (sampleCount)
 			{
-			case 1:
+			case AttachmentSample::SAMP1:
 				return VK_SAMPLE_COUNT_1_BIT;
-			case 2:
+			case AttachmentSample::SAMP2:
 				return VK_SAMPLE_COUNT_2_BIT;
-			case 4:
+			case AttachmentSample::SAMP4:
 				return VK_SAMPLE_COUNT_4_BIT;
-			case 8:
+			case AttachmentSample::SAMP8:
 				return VK_SAMPLE_COUNT_8_BIT;
-			case 16:
+			case AttachmentSample::SAMP16:
 				return VK_SAMPLE_COUNT_16_BIT;
-			case 32:
+			case AttachmentSample::SAMP32:
 				return VK_SAMPLE_COUNT_32_BIT;
-			case 64:
+			case AttachmentSample::SAMP64:
 				return VK_SAMPLE_COUNT_64_BIT;
 			default:
 				return VK_SAMPLE_COUNT_FLAG_BITS_MAX_ENUM;
@@ -133,7 +152,7 @@ namespace OP
 		}
 
 		static void CreateImage(VkDevice device, VkPhysicalDevice physicalDevice,
-			                    uint32_t width, uint32_t height, uint32_t mipLevels,
+			                    uint32_t width, uint32_t height, uint32_t mipLevels, VkSampleCountFlagBits numSamples,
 			                    VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage,
 								VkMemoryPropertyFlags properties, VkImage& image,
 								VkDeviceMemory& imageMemory)
@@ -151,7 +170,7 @@ namespace OP
 			imageInfo.tiling = tiling;
 			imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 			imageInfo.usage = usage;
-			imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
+			imageInfo.samples = numSamples;
 			imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
 			if (vkCreateImage(device, &imageInfo, nullptr, &image) != VK_SUCCESS) {

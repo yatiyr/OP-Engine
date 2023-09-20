@@ -156,7 +156,7 @@ namespace OP
 
 		s_VulkanRenderData.DescriptorSetLayout = std::make_shared<VulkanDescriptorSetLayout>();
 
-		s_VulkanRenderData.Pipeline->InitializePipeline(s_VulkanRenderData.DescriptorSetLayout);
+		s_VulkanRenderData.Pipeline->InitializePipeline(s_VulkanRenderData.DescriptorSetLayout, AttachmentSample::SAMP16);
 
 
 		const std::vector<Vert> vertices = {

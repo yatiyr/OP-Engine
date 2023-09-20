@@ -1,7 +1,6 @@
 #include <Precomp.h>
-#include <Platform/Vulkan/VulkanRenderPass.h>
 #include <Platform/Vulkan/VulkanContext.h>
-
+#include <Platform/Vulkan/VulkanRenderPass.h>
 
 namespace OP
 {
@@ -9,16 +8,25 @@ namespace OP
 	VulkanRenderPass::VulkanRenderPass(const AttachmentSpecification& attachments)
 	{
 		VulkanContext* context = VulkanContext::GetContext();
+		VkSampleCountFlagBits maxSampleCount = context->GetMaxSampleCount();
 
 		PopulateSpecifications(attachments);
+
 
 		// Process color attachments
 		for (auto& spec : m_ColorAttachmentSpecifications)
 		{
+
 			VkAttachmentDescription colorAttachment{};
 			colorAttachment.flags          = 0;
 			colorAttachment.format         = TextureUtils::GiveVkFormat(spec.TextureFormat);
-			colorAttachment.samples        = TextureUtils::GiveSampleCount(spec.Samples);
+			if (spec.ResAttachment == ResolveAttachment::None)
+			{
+				VkSampleCountFlagBits candidateSampleCount = TextureUtils::GiveSampleCount(spec.Samples);
+				colorAttachment.samples = maxSampleCount < candidateSampleCount ? maxSampleCount : candidateSampleCount;
+			}				
+			else
+				colorAttachment.samples    = VK_SAMPLE_COUNT_1_BIT;
 			colorAttachment.loadOp         = VK_ATTACHMENT_LOAD_OP_CLEAR;
 			colorAttachment.storeOp        = VK_ATTACHMENT_STORE_OP_STORE;
 			colorAttachment.stencilLoadOp  = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
@@ -32,15 +40,27 @@ namespace OP
 			colorAttachmentRef.attachment = m_ColorAttachmentDescriptions.size() - 1;
 			colorAttachmentRef.layout     = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 
-			m_ColorAttachmentReferences.push_back(colorAttachmentRef);
+
+			if (spec.ResAttachment == ResolveAttachment::None)
+			{
+				m_ColorAttachmentReferences.push_back(colorAttachmentRef);
+			}
+			else
+			{
+				m_ResolveColorAttachmentReference = colorAttachmentRef;
+				m_ResolveColorAttachmentExists = true;
+			}
+				
 		}
 
 		
 		if (m_DepthAttachmentSpecification.TextureFormat != AttachmentFormat::None)
 		{
+			VkSampleCountFlagBits candidateSampleCount = TextureUtils::GiveSampleCount(m_DepthAttachmentSpecification.Samples);
+
 			m_DepthAttachmentDescription.flags          = 0;
 			m_DepthAttachmentDescription.format         = TextureUtils::GiveVkFormat(m_DepthAttachmentSpecification.TextureFormat);
-			m_DepthAttachmentDescription.samples        = TextureUtils::GiveSampleCount(m_DepthAttachmentSpecification.Samples);
+			m_DepthAttachmentDescription.samples        = maxSampleCount < candidateSampleCount ? maxSampleCount : candidateSampleCount;
 			m_DepthAttachmentDescription.loadOp         = VK_ATTACHMENT_LOAD_OP_CLEAR;
 			m_DepthAttachmentDescription.storeOp        = VK_ATTACHMENT_STORE_OP_DONT_CARE;
 			m_DepthAttachmentDescription.stencilLoadOp  = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
@@ -55,9 +75,11 @@ namespace OP
 		// Subpass
 		VkSubpassDescription subpass{};
 		subpass.pipelineBindPoint       = VK_PIPELINE_BIND_POINT_GRAPHICS;
-		subpass.colorAttachmentCount    = m_ColorAttachmentDescriptions.size();
+		subpass.colorAttachmentCount    = m_ColorAttachmentReferences.size();
 		subpass.pColorAttachments       = m_ColorAttachmentReferences.data();
 		subpass.pDepthStencilAttachment = &m_DepthAttachmentReference;
+		if(m_ResolveColorAttachmentExists)
+			subpass.pResolveAttachments     = &m_ResolveColorAttachmentReference;
 
 
 		// Subpass Dependency

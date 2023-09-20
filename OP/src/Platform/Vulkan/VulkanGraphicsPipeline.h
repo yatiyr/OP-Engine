@@ -43,7 +43,7 @@ namespace OP
 		~VulkanGraphicsPipeline();
 
 
-		void InitializePipeline(Ref<VulkanDescriptorSetLayout> descriptorSetLayout);
+		void InitializePipeline(Ref<VulkanDescriptorSetLayout> descriptorSetLayout, AttachmentSample samples);
 		void ConfigureVertexInput(const VertexInput& input, InputRate inputRate);
 
 		VkPipeline GetPipeline();

@@ -17,8 +17,10 @@ namespace OP
 		}
 	}
 
-	void VulkanGraphicsPipeline::InitializePipeline(Ref<VulkanDescriptorSetLayout> descriptorSetLayout)
+	void VulkanGraphicsPipeline::InitializePipeline(Ref<VulkanDescriptorSetLayout> descriptorSetLayout, AttachmentSample samples)
 	{
+		VulkanContext* context = VulkanContext::GetContext();
+
 		std::map<uint32_t, VkShaderModule> vulkanShaderModules = m_Shaders->GetShaderModules();
 		std::vector<VkPipelineShaderStageCreateInfo> createInfos;
 
@@ -94,11 +96,13 @@ namespace OP
 		rasterizer.depthBiasSlopeFactor = 0.0f;
 
 		// Multisampling
+		VkSampleCountFlagBits maxSamples = context->GetMaxSampleCount();
+		VkSampleCountFlagBits candidateSamples = TextureUtils::GiveSampleCount(samples);
 		VkPipelineMultisampleStateCreateInfo multisampling{};
 		multisampling.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
-		multisampling.sampleShadingEnable = VK_FALSE;
-		multisampling.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
-		multisampling.minSampleShading = 1.0f;
+		multisampling.sampleShadingEnable = VK_TRUE;
+		multisampling.rasterizationSamples = maxSamples < candidateSamples ? maxSamples : candidateSamples;
+		multisampling.minSampleShading = 0.2f;
 		multisampling.pSampleMask = nullptr;
 		multisampling.alphaToCoverageEnable = VK_FALSE;
 		multisampling.alphaToOneEnable = VK_FALSE;

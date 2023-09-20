@@ -230,6 +230,24 @@ namespace OP
 		}
 	}
 
+	VkSampleCountFlagBits VulkanContext::GetMaxUsableSampleCount()
+	{
+		VkPhysicalDeviceProperties physicalDeviceProperties;
+		vkGetPhysicalDeviceProperties(m_PhysicalDevice, &physicalDeviceProperties);
+
+		VkSampleCountFlags counts = physicalDeviceProperties.limits.framebufferColorSampleCounts &
+			physicalDeviceProperties.limits.framebufferDepthSampleCounts;
+
+		if (counts & VK_SAMPLE_COUNT_64_BIT) { return VK_SAMPLE_COUNT_64_BIT; }
+		if (counts & VK_SAMPLE_COUNT_32_BIT) { return VK_SAMPLE_COUNT_32_BIT; }
+		if (counts & VK_SAMPLE_COUNT_16_BIT) { return VK_SAMPLE_COUNT_16_BIT; }
+		if (counts & VK_SAMPLE_COUNT_8_BIT)  { return VK_SAMPLE_COUNT_8_BIT; }
+		if (counts & VK_SAMPLE_COUNT_4_BIT)  { return VK_SAMPLE_COUNT_4_BIT; }
+		if (counts & VK_SAMPLE_COUNT_2_BIT)  { return VK_SAMPLE_COUNT_2_BIT; }
+
+		return VK_SAMPLE_COUNT_1_BIT;
+	}
+
 	void VulkanContext::CleanupSwapchainFramebuffers()
 	{
 		for (uint32_t i = 0; i < m_SwapChainImages.size(); i++)
@@ -285,6 +303,7 @@ namespace OP
 		if (candidates.rbegin()->first > 0)
 		{
 			m_PhysicalDevice = candidates.rbegin()->second;
+			m_MaxMSAASamples = GetMaxUsableSampleCount();
 		}
 		else
 		{
@@ -313,6 +332,7 @@ namespace OP
 
 		VkPhysicalDeviceFeatures deviceFeatures{};
 		deviceFeatures.samplerAnisotropy = VK_TRUE;
+		deviceFeatures.sampleRateShading = VK_TRUE;
 
 		VkDeviceCreateInfo createInfo{};
 		createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
@@ -346,7 +366,21 @@ namespace OP
 	void VulkanContext::CreateSwapchainRenderPass()
 	{
 		AttachmentSpecification spec;
-		spec.Attachments = { AttachmentFormat::BGRA8, AttachmentFormat::DEPTH24STENCIL8 };
+		TextureSpecification tSpec1;
+		tSpec1.TextureFormat = AttachmentFormat::BGRA8;
+		tSpec1.Samples = AttachmentSample::SAMP16;
+		tSpec1.ResAttachment = ResolveAttachment::None;
+
+		TextureSpecification tSpec2;
+		tSpec2.TextureFormat = AttachmentFormat::BGRA8;
+		tSpec2.Samples = AttachmentSample::SAMP1;
+		tSpec2.ResAttachment = ResolveAttachment::Resolve;
+
+		TextureSpecification tSpecDepth;
+		tSpecDepth.TextureFormat = AttachmentFormat::DEPTH24STENCIL8;
+		tSpecDepth.Samples = AttachmentSample::SAMP16;
+
+		spec.Attachments = { tSpec1, tSpec2, tSpecDepth };
 
 		m_SwapChainRenderPass =
 			std::make_shared<VulkanRenderPass>(spec);
@@ -506,6 +540,11 @@ namespace OP
 	Ref<VulkanRenderPass> VulkanContext::GetSwapChainRenderPass()
 	{
 		return m_SwapChainRenderPass;
+	}
+
+	VkSampleCountFlagBits VulkanContext::GetMaxSampleCount()
+	{
+		return m_MaxMSAASamples;
 	}
 
 	void VulkanContext::CreateSwapchain()

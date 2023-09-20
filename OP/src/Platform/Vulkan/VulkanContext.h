@@ -74,6 +74,8 @@ namespace OP
 
 		std::vector<Ref<VulkanFramebuffer>>& GetSwapChainFramebuffers();
 		Ref<VulkanRenderPass> GetSwapChainRenderPass();
+
+		VkSampleCountFlagBits GetMaxSampleCount();
 	private:
 		void CreateSurface();
 		void CreateInstance();
@@ -114,6 +116,8 @@ namespace OP
 		VkExtent2D ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
 
 
+		VkSampleCountFlagBits GetMaxUsableSampleCount();
+
 		void CleanupSwapchain();
 		void CleanupSwapchainFramebuffers();
 	private:
@@ -144,8 +148,11 @@ namespace OP
 		std::vector<VkSemaphore> m_RenderFinishedSemaphores;
 		std::vector<VkFence> m_InFlightFences;
 
-		int m_MaxFramesInFlight;
+		// MSAA - We keep track of maximum samples that can be achieved
+		// with the current hardware
+		VkSampleCountFlagBits m_MaxMSAASamples;
 
+		int m_MaxFramesInFlight;
 		friend class VulkanRenderSystem;
 	};
 }
