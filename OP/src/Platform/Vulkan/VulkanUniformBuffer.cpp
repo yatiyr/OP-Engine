@@ -3,7 +3,6 @@
 #include <Platform/Vulkan/VulkanContext.h>
 
 
-
 namespace OP
 {
 

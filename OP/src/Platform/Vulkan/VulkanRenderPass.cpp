@@ -7,7 +7,7 @@ namespace OP
 
 	VulkanRenderPass::VulkanRenderPass(const AttachmentSpecification& attachments)
 	{
-		VulkanContext* context = VulkanContext::GetContext();
+		VulkanContext* context               = VulkanContext::GetContext();
 		VkSampleCountFlagBits maxSampleCount = context->GetMaxSampleCount();
 
 		PopulateSpecifications(attachments);
@@ -20,6 +20,8 @@ namespace OP
 			VkAttachmentDescription colorAttachment{};
 			colorAttachment.flags          = 0;
 			colorAttachment.format         = TextureUtils::GiveVkFormat(spec.TextureFormat);
+
+			// If the color attacment is not a resolve attachment, we can give any available sample count
 			if (spec.ResAttachment == ResolveAttachment::None)
 			{
 				VkSampleCountFlagBits candidateSampleCount = TextureUtils::GiveSampleCount(spec.Samples);
@@ -27,6 +29,7 @@ namespace OP
 			}				
 			else
 				colorAttachment.samples    = VK_SAMPLE_COUNT_1_BIT;
+
 			colorAttachment.loadOp         = VK_ATTACHMENT_LOAD_OP_CLEAR;
 			colorAttachment.storeOp        = VK_ATTACHMENT_STORE_OP_STORE;
 			colorAttachment.stencilLoadOp  = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
@@ -34,13 +37,16 @@ namespace OP
 			colorAttachment.initialLayout  = VK_IMAGE_LAYOUT_UNDEFINED;
 			colorAttachment.finalLayout    = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
 
+			// Push the color attachment to descriptions
 			m_ColorAttachmentDescriptions.push_back(colorAttachment);
 
+			// 
 			VkAttachmentReference colorAttachmentRef{};
 			colorAttachmentRef.attachment = m_ColorAttachmentDescriptions.size() - 1;
 			colorAttachmentRef.layout     = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 
 
+			// To the references, only add non resolve attachments
 			if (spec.ResAttachment == ResolveAttachment::None)
 			{
 				m_ColorAttachmentReferences.push_back(colorAttachmentRef);
@@ -53,7 +59,7 @@ namespace OP
 				
 		}
 
-		
+		// If a Depth Attachment exists
 		if (m_DepthAttachmentSpecification.TextureFormat != AttachmentFormat::None)
 		{
 			VkSampleCountFlagBits candidateSampleCount = TextureUtils::GiveSampleCount(m_DepthAttachmentSpecification.Samples);
@@ -86,8 +92,8 @@ namespace OP
 		VkSubpassDependency dependency{};
 		if (m_DepthAttachmentSpecification.TextureFormat != AttachmentFormat::None)
 		{
-			dependency.srcSubpass = VK_SUBPASS_EXTERNAL;
-			dependency.dstSubpass = 0;
+			dependency.srcSubpass   = VK_SUBPASS_EXTERNAL;
+			dependency.dstSubpass   = 0;
 			dependency.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT |
 									  VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT;
 			dependency.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT |
@@ -97,11 +103,11 @@ namespace OP
 		}
 		else
 		{
-			dependency.srcSubpass = VK_SUBPASS_EXTERNAL;
-			dependency.dstSubpass = 0;
-			dependency.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+			dependency.srcSubpass    = VK_SUBPASS_EXTERNAL;
+			dependency.dstSubpass    = 0;
+			dependency.srcStageMask  = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
 			dependency.srcAccessMask = 0;
-			dependency.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+			dependency.dstStageMask  = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
 		}
 		
 		std::vector<VkAttachmentDescription> allAttachments;
@@ -113,13 +119,13 @@ namespace OP
 
 		// Render Pass
 		VkRenderPassCreateInfo renderPassInfo{};
-		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
+		renderPassInfo.sType           = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
 		renderPassInfo.attachmentCount = allAttachments.size();
-		renderPassInfo.pAttachments = allAttachments.data();
-		renderPassInfo.subpassCount = 1;
-		renderPassInfo.pSubpasses = &subpass;
+		renderPassInfo.pAttachments    = allAttachments.data();
+		renderPassInfo.subpassCount    = 1;
+		renderPassInfo.pSubpasses      = &subpass;
 		renderPassInfo.dependencyCount = 1;
-		renderPassInfo.pDependencies = &dependency;
+		renderPassInfo.pDependencies   = &dependency;
 
 		if (vkCreateRenderPass(context->GetDevice(), &renderPassInfo, nullptr, &m_RenderPass) != VK_SUCCESS)
 		{

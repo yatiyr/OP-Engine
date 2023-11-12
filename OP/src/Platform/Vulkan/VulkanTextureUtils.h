@@ -151,11 +151,12 @@ namespace OP
 			return false;
 		}
 
-		static void CreateImage(VkDevice device, VkPhysicalDevice physicalDevice,
-			                    uint32_t width, uint32_t height, uint32_t mipLevels, VkSampleCountFlagBits numSamples,
-			                    VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage,
-								VkMemoryPropertyFlags properties, VkImage& image,
-								VkDeviceMemory& imageMemory)
+		static void CreateImage(VkDevice          device,    VkPhysicalDevice      physicalDevice,
+			                    uint32_t          width,     uint32_t              height, 
+			                    uint32_t          mipLevels, VkSampleCountFlagBits numSamples,
+			                    VkFormat          format,    VkImageTiling         tiling, 
+			                    VkImageUsageFlags usage,     VkMemoryPropertyFlags properties,
+			                    VkImage&          image,     VkDeviceMemory&       imageMemory)
 		{
 
 			VkImageCreateInfo imageInfo{};
@@ -193,10 +194,11 @@ namespace OP
 			vkBindImageMemory(device, image, imageMemory, 0);
 		}
 
-		static VkImageView CreateImageView(VkDevice device,
-			                               VkImage image,
-			                               VkFormat format,
-			                               VkImageAspectFlags aspectFlags, uint32_t mipLevels)
+		static VkImageView CreateImageView(VkDevice           device,
+			                               VkImage            image,
+			                               VkFormat           format,
+			                               VkImageAspectFlags aspectFlags,
+			                               uint32_t           mipLevels)
 		{
 
 			VkImageViewCreateInfo viewInfo{};
@@ -220,9 +222,9 @@ namespace OP
 			return imageView;
 		}
 
-		static void TransitionImageLayout(VkDevice device, VkCommandPool commandPool, VkQueue queue,
-			                              VkImage image, VkFormat format, VkImageLayout oldLayout,
-			VkImageLayout newLayout, uint32_t mipLevels)
+		static void TransitionImageLayout(VkDevice      device,    VkCommandPool commandPool, VkQueue       queue,
+			                              VkImage       image,     VkFormat      format,      VkImageLayout oldLayout,
+			                              VkImageLayout newLayout, uint32_t      mipLevels)
 		{
 			VkCommandBuffer commandBuffer = OP::BufferUtils::BeginSingleTimeCommands(device, commandPool);
 
@@ -260,7 +262,7 @@ namespace OP
 				barrier.srcAccessMask = 0;
 				barrier.dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
 
-				sourceStage = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
+				sourceStage      = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
 				destinationStage = VK_PIPELINE_STAGE_TRANSFER_BIT;
 			}
 			else if (oldLayout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL && newLayout == VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL)
@@ -268,7 +270,7 @@ namespace OP
 				barrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
 				barrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
 
-				sourceStage = VK_PIPELINE_STAGE_TRANSFER_BIT;
+				sourceStage      = VK_PIPELINE_STAGE_TRANSFER_BIT;
 				destinationStage = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
 			}
 			else if (oldLayout == VK_IMAGE_LAYOUT_UNDEFINED && newLayout == VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL)
@@ -276,7 +278,7 @@ namespace OP
 				barrier.srcAccessMask = 0;
 				barrier.dstAccessMask = VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
 
-				sourceStage = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
+				sourceStage      = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
 				destinationStage = VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT;
 			}
 			else
@@ -294,8 +296,8 @@ namespace OP
 			OP::BufferUtils::EndSingleTimeCommands(device, commandPool, queue, commandBuffer);
 		}
 
-		static void CopyBufferToImage(VkDevice device, VkCommandPool commandPool, VkQueue queue,
-			                          VkBuffer buffer, VkImage image, uint32_t width, uint32_t height)
+		static void CopyBufferToImage(VkDevice device, VkCommandPool commandPool, VkQueue  queue,
+			                          VkBuffer buffer, VkImage       image,       uint32_t width, uint32_t height)
 		{
 			VkCommandBuffer commandBuffer = OP::BufferUtils::BeginSingleTimeCommands(device, commandPool);
 
@@ -324,8 +326,9 @@ namespace OP
 			OP::BufferUtils::EndSingleTimeCommands(device, commandPool, queue, commandBuffer);
 		}
 
-		static void GenerateMipMaps(VkDevice device, VkPhysicalDevice physicalDevice, VkCommandPool commandPool, VkQueue queue,
-			VkImage image, VkFormat imageFormat, uint32_t width, uint32_t height, uint32_t mipLevels)
+		static void GenerateMipMaps(VkDevice device, VkPhysicalDevice physicalDevice, VkCommandPool commandPool, VkQueue  queue,
+			                        VkImage  image, VkFormat          imageFormat,    uint32_t      width,       uint32_t height,
+			                        uint32_t mipLevels)
 		{
 
 			// Check if image format supports linear blitting

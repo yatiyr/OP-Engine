@@ -21,19 +21,25 @@ namespace OP
 	// I will delete the depth attachment later!
 	VulkanFramebuffer::VulkanFramebuffer(Ref<VulkanRenderPass> renderpass, VkImageView swapchainAttachment, uint32_t width, uint32_t height)
 	{
-		VulkanContext* context = VulkanContext::GetContext();
-		VkDevice device = context->GetDevice();		
+		VulkanContext*   context        = VulkanContext::GetContext();
+		VkDevice         device         = context->GetDevice();		
 		VkPhysicalDevice physicalDevice = context->GetPhysicalDevice();
 
+		// Max Sample Count is needed for setting the boundaries for Attachment
+		// Sample Counts
 		VkSampleCountFlagBits maxSampleCount = context->GetMaxSampleCount();
 
+		// This is going to be deleted.
 		TextureSpecification depthAttachment = renderpass->GetDepthAttachment();
 
+		// If we do not have a depth attachment
 		if (depthAttachment.TextureFormat != AttachmentFormat::None)
 		{
+			// Obtain Format and Sample Count for Vulkan
 			VkFormat texFormat = TextureUtils::GiveVkFormat(depthAttachment.TextureFormat);
 			VkSampleCountFlagBits candidateSampleCount = TextureUtils::GiveSampleCount(depthAttachment.Samples);
 
+			// Create Depth Image
 			TextureUtils::CreateImage(device,
 				                      physicalDevice,
 				                      width,
@@ -47,23 +53,39 @@ namespace OP
 									  m_DepthImage,
 									  m_DepthImageMemory);
 
+			// Create Deoth Image View
 			m_DepthImageView = TextureUtils::CreateImageView(device,
 				                                             m_DepthImage,
 				                                             texFormat,
 				                                             VK_IMAGE_ASPECT_DEPTH_BIT, 1);
 		}
 
+
+		// Find the number of non resolve color attachments
+		int i = 0;
 		for (auto& att : renderpass->GetColorAttachments())
 		{
+			if (att.ResAttachment == ResolveAttachment::None)
+				i++;
+		}
+
+		m_ColorImages       .resize(i);
+		m_ColorImageViews   .resize(i);
+		m_ColorImageMemories.resize(i);
+
+		i = 0;
+		std::vector<VkImageView> atts;
+
+		// We iterate through the color attachments now
+		for (auto& att : renderpass->GetColorAttachments())
+		{
+			// If we have a resolve attachment, we do not need to create image for that,
+			// renderpass will handle that attachment
 			if (att.ResAttachment != ResolveAttachment::None)
 				continue;
 
-			VkFormat texFormat = TextureUtils::GiveVkFormat(att.TextureFormat);
+			VkFormat texFormat                         = TextureUtils::GiveVkFormat(att.TextureFormat);
 			VkSampleCountFlagBits candidateSampleCount = TextureUtils::GiveSampleCount(att.Samples);
-
-			m_ColorImages.resize(1);
-			m_ColorImageMemories.resize(1);
-			m_ColorImageViews.resize(1);
 
 			TextureUtils::CreateImage(device,
 									  physicalDevice,
@@ -75,14 +97,14 @@ namespace OP
 									  VK_IMAGE_TILING_OPTIMAL,
 									  VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT,
 									  VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
-									  m_ColorImages[0],
-									  m_ColorImageMemories[0]);
+									  m_ColorImages[i],
+									  m_ColorImageMemories[i]);
 
-			m_ColorImageViews[0] = TextureUtils::CreateImageView(device, m_ColorImages[0], texFormat, VK_IMAGE_ASPECT_COLOR_BIT, 1);
+			m_ColorImageViews[i] = TextureUtils::CreateImageView(device, m_ColorImages[i], texFormat, VK_IMAGE_ASPECT_COLOR_BIT, 1);
+			atts.push_back(m_ColorImageViews[i]);
+			i++;
 		}
 
-		std::vector<VkImageView> atts;
-		atts.push_back(m_ColorImageViews[0]);
 		atts.push_back(swapchainAttachment);
 		atts.push_back(m_DepthImageView);
 

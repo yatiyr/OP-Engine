@@ -19,9 +19,14 @@ namespace OP
 
 	void VulkanGraphicsPipeline::InitializePipeline(Ref<VulkanDescriptorSetLayout> descriptorSetLayout, AttachmentSample samples)
 	{
+
+		// Obtain the context
 		VulkanContext* context = VulkanContext::GetContext();
 
+		// Obtain shader modules as a map
 		std::map<uint32_t, VkShaderModule> vulkanShaderModules = m_Shaders->GetShaderModules();
+
+		// This vector will be filled with shader stages
 		std::vector<VkPipelineShaderStageCreateInfo> createInfos;
 
 		// Create Stages from vulkan shader modules

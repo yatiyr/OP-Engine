@@ -5,9 +5,6 @@
 namespace OP
 {
 
-	namespace Utils
-	{
-	}
 	enum class BufferElementType : uint8_t
 	{
 		OP_EL_NONE = 0,
@@ -132,42 +129,40 @@ namespace OP
 	{
 	public:
 		VulkanVertexBuffer(void* data, uint32_t size);
-
 		~VulkanVertexBuffer();
-		void SetData(void* data, uint32_t size);
 
+		void SetData(void* data, uint32_t size);
 		VkBuffer& GetBuffer();
 	private:
 		void Populate(void* data, uint32_t size);
+	private:
 		VkBuffer m_VertexBuffer;
-		VkDeviceMemory m_VertexBufferMemory;
-
 		VkBuffer m_StagingBuffer;
+
+		VkDeviceMemory m_VertexBufferMemory;		
 		VkDeviceMemory m_StagingBufferMemory;
 
 		VertexInput m_Input;
-		
 	};
 
 	class VulkanIndexBuffer
 	{
 	public:
 		VulkanIndexBuffer(void* data, uint32_t size, uint32_t indexCount);
-
 		~VulkanIndexBuffer();
+
 		void SetData(void* data, uint32_t size);
-		VkBuffer& GetBuffer();
 		uint32_t GetIndexCount();
+		VkBuffer& GetBuffer();		
 	private:
 		void Populate(void* data, uint32_t size);
 	private:
-		uint32_t m_IndexCount;
 		VkBuffer m_IndexBuffer;
-		VkDeviceMemory m_IndexBufferMemory;
-
 		VkBuffer m_StagingBuffer;
+
+		VkDeviceMemory m_IndexBufferMemory;		
 		VkDeviceMemory m_StagingBufferMemory;
 
-		
+		uint32_t m_IndexCount;
 	};
 }
